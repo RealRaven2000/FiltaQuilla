@@ -131,8 +131,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
   self._mimeMsg = {};
   Cu.import("resource:///modules/gloda/mimemsg.js", self._mimeMsg);
 
-  self._init = function()
-  {
+  self._init = function() {
     self.strings = document.getElementById("filtaquilla-strings");
 
     /*
@@ -409,7 +408,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var file = Cc["@mozilla.org/file/local;1"]
-                     .createInstance(Ci.nsILocalFile);
+                     .createInstance(Ci.nsILocalFile || Ci.nsIFile);
         file.initWithPath(aActionValue);
         file.launch();
       },
@@ -428,7 +427,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var file = Cc["@mozilla.org/file/local;1"]
-                     .createInstance(Ci.nsILocalFile);
+                     .createInstance(Ci.nsILocalFile || Ci.nsIFile);
         // the action value string consists of comma-separated fields. The
         // first field is the file URL for the process to run. Subsequent
         // fields are parameter strings to pass to the file. These parameters
@@ -612,7 +611,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
-                           .createInstance(Ci.nsILocalFile);
+                           .createInstance(Ci.nsILocalFile || Ci.nsIFile);
         directory.initWithPath(aActionValue);
         let callbackObject = new SaveAttachmentCallback(directory, false);
 
@@ -685,7 +684,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
-                           .createInstance(Ci.nsILocalFile);
+                           .createInstance(Ci.nsILocalFile || Ci.nsIFile);
         directory.initWithPath(aActionValue);
         let callbackObject = new SaveAttachmentCallback(directory, true);
 
@@ -748,7 +747,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
         }
 
         let directory = Cc["@mozilla.org/file/local;1"]
-                           .createInstance(Ci.nsILocalFile);
+                           .createInstance(Ci.nsILocalFile || Ci.nsIFile);
         directory.initWithPath(path);
         for (let i = 0; i < msgHdrs.length; i++)
         {
@@ -1173,13 +1172,13 @@ Components.utils.import("resource:///modules/MailUtils.js");
         length.value = 3;
         return [Contains, DoesntContain, IsntEmpty];
       },
-      match: function threadAnyTag_matches(message, aSearchValue, aSearchOp)
-      {
+      match: function threadAnyTag_matches(message, aSearchValue, aSearchOp) {
         var tagArray = tagService.getAllTags({});
         var tagKeys = {};
-        for each (var tagInfo in tagArray)
+        for (let tagInfo of tagArray) {
           if (tagInfo.tag)
             tagKeys[tagInfo.key] = true;
+				}
 
         let thread = message.folder.msgDatabase.GetThreadContainingMsgHdr(message);
 
@@ -1427,16 +1426,15 @@ Components.utils.import("resource:///modules/MailUtils.js");
 
   // local private functions
 
-  function MoveLaterNotify(aMessages, aSource, aDestination, aTimerIndex)
-  {
+  function MoveLaterNotify(aMessages, aSource, aDestination, aTimerIndex)  {
     this.messages = aMessages;
     this.source = aSource;
     this.destination = aDestination;
     this.timerIndex = aTimerIndex;
     this.recallCount = MOVE_LATER_LIMIT;
   }
-  MoveLaterNotify.prototype.notify = function notify(aTimer)
-  {
+	
+  MoveLaterNotify.prototype.notify = function notify(aTimer) {
     // Check the moveLater values for the headers. If this is set by a routine
     //  with a reliable finish listener, then we will wait until that is done to
     //  move. For others, we move on the first callback after the delay.
@@ -1466,8 +1464,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
   }
 
   // is this search scope local, and therefore valid for db-based terms?
-  function _isLocalSearch(aSearchScope)
-  {
+  function _isLocalSearch(aSearchScope) {
     switch (aSearchScope) {
       case Ci.nsMsgSearchScope.offlineMail:
       case Ci.nsMsgSearchScope.offlineMailFilter:
@@ -1481,8 +1478,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
 
 //  take the text utf8Append and either prepend (direction == true)
 //    or suffix (direction == false) to the subject
-  function _mimeAppend(utf8Append, subject, direction)
-  {
+  function _mimeAppend(utf8Append, subject, direction) {
     // append a UTF8 string to a mime-encoded subject
     var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"]
              .getService(Ci.nsIMimeConverter);
@@ -1494,8 +1490,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     return recodedSubject;
   }
 
-  function _replaceParameters(hdr, parameter)
-  {
+  function _replaceParameters(hdr, parameter) {
     // replace ambersand-delimited fields in a parameter
     if (/@SUBJECT@/.test(parameter))
       return parameter.replace(/@SUBJECT@/, hdr.mime2DecodedSubject);
@@ -1533,15 +1528,15 @@ Components.utils.import("resource:///modules/MailUtils.js");
   }
 
   // Given an nsIMsgDBHdr object, return an array containing its tag keys
-  function _getTagArray(aMsgHdr)
-  {
+  function _getTagArray(aMsgHdr) {
     //  -- Get and cleanup the list of message headers following code from
     //  -- msgHdrViewOverlay.js SetTagHeader()
     let tagArray = tagService.getAllTags({});
     let tagKeys = {};
-    for each (let tagInfo in tagArray)
+    for (let tagInfo of tagArray) {
       if (tagInfo.tag)
         tagKeys[tagInfo.key] = true;
+		}
 
     // extract the tag keys from the msgHdr
     let msgKeyArray = aMsgHdr.getStringProperty("keywords").split(" ");
@@ -1565,8 +1560,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
   }
 
   var gJunkService;
-  function _trainJunkFilter(aIsJunk, aMsgHdrs, aMsgWindow)
-  {
+  function _trainJunkFilter(aIsJunk, aMsgHdrs, aMsgWindow) {
     if (!gJunkService)
       gJunkService = Cc["@mozilla.org/messenger/filter-plugin;1?name=bayesianfilter"]
                       .getService(Ci.nsIJunkMailPlugin);
@@ -1618,8 +1612,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     }
   }
 
-  function _getRegEx(aSearchValue)
-  {
+  function _getRegEx(aSearchValue) {
     /*
      * If there are no flags added, you can add a regex expression without
      * / delimiters. If we detect a / though, we will look for flags and
@@ -1636,8 +1629,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     return [searchValue, searchFlags];
   }
 
-  function _saveAs(aMsgHdr, aDirectory, aType)
-  {
+  function _saveAs(aMsgHdr, aDirectory, aType) {
     let msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr);
     let fileName = _sanitizeName(aMsgHdr.subject);
     let file = aDirectory.clone();
@@ -1705,8 +1697,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
   // actions that need the body can conflict with a move. These should
   //  set the MoveLaterCount to prevent problems, and then use a MoveLater
   //  function instead of a normal move.
-  function _incrementMoveLaterCount(msgHdr)
-  {
+  function _incrementMoveLaterCount(msgHdr) {
     let moveLaterCount = 0;
     try {
       moveLaterCount = msgHdr.getUint32Property("moveLaterCount");

@@ -31,8 +31,10 @@
 -->
 <?xml-stylesheet href='chrome://filtaquilla/skin/filtaquilla.css' type='text/css'?>
 <overlay id='filtaquillaFilterEditorOverlay'>
-  <stringbundleset id="stringbundleset">
-    <stringbundle id="filtaquilla-strings" src="chrome://filtaquilla/locale/filtaquilla.properties"/>
-  </stringbundleset>
+	<dialog id="FilterEditor">
+		<stringbundleset id="stringbundleset">
+			<stringbundle id="filtaquilla-strings" src="chrome://filtaquilla/locale/filtaquilla.properties"/>
+		</stringbundleset>
+	</dialog>
 </overlay>
 

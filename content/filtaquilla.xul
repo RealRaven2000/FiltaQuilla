@@ -33,7 +33,7 @@
 <?xml-stylesheet href="chrome://filtaquilla/skin/filtaquilla.css" type="text/css"?>
 <overlay id="filtaquilla-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/javascript" src="filtaquilla.js"/>
+  <script type="application/javascript" src="filtaquilla.js"/>			 
   <stringbundleset id="stringbundleset">
     <stringbundle id="filtaquilla-strings" src="chrome://filtaquilla/locale/filtaquilla.properties"/>
   </stringbundleset>

@@ -78,12 +78,24 @@
               fp.defaultString = file.leafName;
             }
             catch (e) {}
+						
+						//closured stuff:
+						let pathBox = this.textbox,
+						    hBox = this.hbox;
+						    
+						let fpCallback = function fpCallback_done(aResult) {
+							if (aResult == nsIFilePicker.returnOK) {
+								pathBox.value = fp.file.path;
+								hBox.value = fp.file.path;
+							}
+						}
+						
+						if (fp.open)
+							fp.open(fpCallback);		
+						else { // old code
+							fpCallback(fp.show());
+						}
  
-            var ret = fp.show();
-            if (ret == nsIFilePicker.returnOK) {
-              this.textbox.value = fp.file.path;
-              this.hbox.value = fp.file.path;
-            }
           ]]>
         </body>
       </method>
@@ -139,13 +151,26 @@
               fp.defaultString = file.leafName;
             }
             catch (e) {}
- 
-            var ret = fp.show();
-            if (ret == nsIFilePicker.returnOK) {
-              // We will setup a default using the subject
-              this.textbox.value = fp.file.path + ",@SUBJECT@,@MESSAGEID@";
-              this.hbox.value = this.textbox.value;
-            }
+						
+						
+						//closured stuff:
+						let pathBox = this.textbox,
+						    hBox = this.hbox;
+						    
+						let fpCallback = function fpCallback_done(aResult) {
+							if (aResult == nsIFilePicker.returnOK) {
+								// We will setup a default using the subject
+								pathBox.value = fp.file.path  + ",@SUBJECT@,@MESSAGEID@";
+								hBox.value = pathBox.value;
+							}
+						}
+						
+						if (fp.open)
+							fp.open(fpCallback);		
+						else { // old code
+							fpCallback(fp.show());
+						}
+						
           ]]>
         </body>
       </method>
@@ -258,13 +283,25 @@
               fp.defaultString = file.leafName;
             }
             catch (e) {}
+						
+						//closured stuff:
+						let pathBox = this.textbox,
+						    hBox = this.hbox;
+						    
+						let fpCallback = function fpCallback_done(aResult) {
+							if (aResult == nsIFilePicker.returnOK) {
+								// We will setup a default using the subject
+								pathBox.value = fp.file.path;
+								hBox.value = pathBox.value;
+							}
+						}
+						
+						if (fp.open)
+							fp.open(fpCallback);		
+						else { // old code
+							fpCallback(fp.show());
+						}
  
-            var ret = fp.show();
-            if (ret == nsIFilePicker.returnOK) {
-              // We will setup a default using the subject
-              this.textbox.value = fp.file.path;
-              this.hbox.value = this.textbox.value;
-            }
           ]]>
         </body>
       </method>
