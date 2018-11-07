@@ -1,0 +1,443 @@
+<?xml version="1.0"?>
+<!-- 
+/*
+ ***** BEGIN LICENSE BLOCK *****
+ * This file is part of FiltaQuilla, Custom Filter Actions, by Mesquilla.
+ *
+ * FiltaQuilla is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with FiltaQuilla.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is FiltaQuilla code.
+ *
+ * The Initial Developer of the Original Code is
+ * Kent James <rkent@mesquilla.com>
+ * Portions created by the Initial Developer are Copyright (C) 2008
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * ***** END LICENSE BLOCK *****
+ */
+-->
+<!DOCTYPE bindings SYSTEM "chrome://filtaquilla/locale/bindings.dtd">
+<bindings   id="filtaquillaBindings"
+            xmlns="http://www.mozilla.org/xbl"
+            xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+            xmlns:xbl="http://www.mozilla.org/xbl">
+
+  <!-- filter action bindings -->
+
+  <binding id="launchPicker" extends="chrome://messenger/content/searchWidgets.xml#ruleactiontarget-base">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:hbox>
+        <xul:textbox  class="ruleactionitem" onchange="this.parentNode.value = this.value;"/>
+        <xul:toolbarbutton image="chrome://filtaquilla/skin/folder.png"
+                    class="focusbutton" tooltiptext="&filebutton;"
+                    oncommand="this.parentNode.parentNode.getURL()"/>
+        <xul:toolbarbutton image="chrome://filtaquilla/skin/folder_go.png"
+                    class="focusbutton" tooltiptext="&launchbutton;"
+                    oncommand="this.parentNode.parentNode.launch()"/>
+      </xul:hbox>
+    </content>
+    <implementation>
+      <constructor>
+        <![CDATA[
+          if (typeof(this.hbox.value) != 'undefined')
+            this.textbox.setAttribute('value', this.hbox.value);
+        ]]>
+      </constructor>
+      <field name="hbox">document.getAnonymousNodes(this)[0]</field>
+      <field name="textbox">document.getAnonymousNodes(this)[0].firstChild</field>
+      <field name="launchtitle">"&filebutton;"</field>
+      <method name="getURL">
+        <body>
+          <![CDATA[
+            const nsIFilePicker = Components.interfaces.nsIFilePicker;
+            var fp = Components.classes["@mozilla.org/filepicker;1"]
+                        .createInstance(nsIFilePicker);
+            fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+            fp.appendFilters(nsIFilePicker.filterAll);
+            try {
+              var file = Components.classes["@mozilla.org/file/local;1"]
+                                   .createInstance(Components.interfaces.nsILocalFile);
+              file.initWithPath(this.textbox.value);
+              fp.displayDirectory = file.parent;
+              fp.defaultString = file.leafName;
+            }
+            catch (e) {}
+ 
+            var ret = fp.show();
+            if (ret == nsIFilePicker.returnOK) {
+              this.textbox.value = fp.file.path;
+              this.hbox.value = fp.file.path;
+            }
+          ]]>
+        </body>
+      </method>
+      <method name="launch">
+        <body>
+          <![CDATA[
+          var file = Components.classes["@mozilla.org/file/local;1"]
+                               .createInstance(Components.interfaces.nsILocalFile);
+          file.initWithPath(this.textbox.value);
+          file.launch();
+          ]]>
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+  <binding id="runPicker" extends="chrome://messenger/content/searchWidgets.xml#ruleactiontarget-base">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:hbox>
+        <xul:textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"/>
+        <xul:toolbarbutton image="chrome://filtaquilla/skin/folder.png"
+                    class="focusbutton" tooltiptext="&filebutton;"
+                    oncommand="this.parentNode.parentNode.getURL()"/>
+      </xul:hbox>
+    </content>
+    <implementation>
+      <constructor>
+        <![CDATA[
+          this.textbox.setAttribute('value', this.hbox.value);
+        ]]>
+      </constructor>
+      <field name="hbox">document.getAnonymousNodes(this)[0]</field>
+      <field name="textbox">document.getAnonymousNodes(this)[0].firstChild</field>
+      <field name="launchtitle">"&filebutton;"</field>
+      <method name="getURL">
+        <body>
+          <![CDATA[
+            const nsIFilePicker = Components.interfaces.nsIFilePicker;
+            var fp = Components.classes["@mozilla.org/filepicker;1"]
+                        .createInstance(nsIFilePicker);
+            fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+            fp.appendFilters(nsIFilePicker.filterAll);
+            try {
+              var file = Components.classes["@mozilla.org/file/local;1"]
+                                   .createInstance(Components.interfaces.nsILocalFile);
+              // the file url is the first comma-separated parameter
+              var filePath = this.textbox.value.split(',')[0];
+              file.initWithPath(filePath);
+              fp.displayDirectory = file.parent;
+              fp.defaultString = file.leafName;
+            }
+            catch (e) {}
+ 
+            var ret = fp.show();
+            if (ret == nsIFilePicker.returnOK) {
+              // We will setup a default using the subject
+              this.textbox.value = fp.file.path + ",@SUBJECT@,@MESSAGEID@";
+              this.hbox.value = this.textbox.value;
+            }
+          ]]>
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+  <binding id='abPicker' extends="chrome://messenger/content/searchWidgets.xml#ruleactiontarget-base">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:menulist flex="1" class="ruleactionitem" xbl:inherits="disabled"
+                    onchange="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value">
+        <xul:menupopup />
+      </xul:menulist>
+    </content>
+    <implementation>
+      <method name="addDirectories">
+        <parameter name="aDirEnum"/>
+        <parameter name="aMenupopup"/>
+        <body>
+          <![CDATA[
+            while (aDirEnum.hasMoreElements()) {
+              let dir = aDirEnum.getNext();
+              if (dir instanceof Components.interfaces.nsIAbDirectory)
+              {
+                // get children
+                let newMenuItem = document.createElement('menuitem');
+                let displayLabel = dir.dirName;
+                if (dir.isMailList)
+                  displayLabel = "  " + displayLabel;
+                newMenuItem.setAttribute('label', displayLabel);
+                newMenuItem.setAttribute('value', dir.URI);
+                aMenupopup.appendChild(newMenuItem);
+                // recursive add of child mailing lists
+                let childNodes = dir.childNodes;
+                if (childNodes && childNodes.hasMoreElements())
+                  this.addDirectories(childNodes, aMenupopup);
+              }
+            }
+          ]]>
+        </body>
+      </method>
+      <constructor>
+        <![CDATA[
+          let menulist = document.getAnonymousNodes(this)[0];
+          let value = menulist.value;
+          let menupopup = menulist.menupopup;
+
+          // set the default to the personal address book
+          if (!value || !value.length)
+            value = "moz-abmdbdirectory://abook.mab";
+
+          // recursively add all address books and email lists
+          let abManager = Components.classes["@mozilla.org/abmanager;1"]
+                                    .getService(Components.interfaces.nsIAbManager);
+          this.addDirectories(abManager.directories, menupopup);
+
+          // scan all menupopup items to find the uri for the selection
+          let valueElements = menupopup.getElementsByAttribute('value', value);
+          if (valueElements && valueElements.length)
+            menulist.selectedItem = valueElements[0];
+          else
+            menulist.selectedIndex = 0;
+          this.value = menulist.selectedItem.getAttribute("value");;
+        ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+  <binding id="directoryPicker" extends="chrome://messenger/content/searchWidgets.xml#ruleactiontarget-base">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:hbox>
+        <xul:textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"/>
+        <xul:toolbarbutton image="chrome://filtaquilla/skin/folder.png"
+                    class="focusbutton" tooltiptext="&filebutton;"
+                    oncommand="this.parentNode.parentNode.getURL()"/>
+      </xul:hbox>
+    </content>
+    <implementation>
+      <constructor>
+        <![CDATA[
+          if (typeof(this.hbox.value) != 'undefined')
+            this.textbox.setAttribute('value', this.hbox.value);
+          else
+            this.textbox.setAttribute('value', '');
+        ]]>
+      </constructor>
+      <field name="hbox">document.getAnonymousNodes(this)[0]</field>
+      <field name="textbox">document.getAnonymousNodes(this)[0].firstChild</field>
+      <field name="filetitle">"&filebutton;"</field>
+      <method name="getURL">
+        <body>
+          <![CDATA[
+            const nsIFilePicker = Components.interfaces.nsIFilePicker;
+            var fp = Components.classes["@mozilla.org/filepicker;1"]
+                        .createInstance(nsIFilePicker);
+            fp.init(window, this.filetitle, nsIFilePicker.modeGetFolder);
+            fp.appendFilters(nsIFilePicker.filterAll);
+            try {
+              var file = Components.classes["@mozilla.org/file/local;1"]
+                                   .createInstance(Components.interfaces.nsILocalFile);
+              // the file url is the first comma-separated parameter
+              var filePath = this.textbox.value;
+              file.initWithPath(filePath);
+              fp.displayDirectory = file.parent;
+              fp.defaultString = file.leafName;
+            }
+            catch (e) {}
+ 
+            var ret = fp.show();
+            if (ret == nsIFilePicker.returnOK) {
+              // We will setup a default using the subject
+              this.textbox.value = fp.file.path;
+              this.hbox.value = this.textbox.value;
+            }
+          ]]>
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+  <binding id="javascriptAction" extends="chrome://messenger/content/searchWidgets.xml#ruleactiontarget-base">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:hbox>
+        <xul:textbox class="ruleactionitem" newlines="pasteintact" anonid='thetextbox'
+                     onchange="this.parentNode.value = this.value;"/>
+        <xul:toolbarbutton image="chrome://filtaquilla/skin/script_edit.png"
+            class="focusbutton" tooltiptext="&editJavascript;" />
+      </xul:hbox>
+    </content>
+    <implementation>
+      <method name="onCommand">
+        <body>
+          <![CDATA[
+            let textbox = this.parentNode.firstChild;
+            window.openDialog("chrome://filtaquilla/content/jsEditor.xul", "",
+                              "chrome, dialog, modal, resizable=yes", textbox);
+          ]]>
+        </body>
+      </method>
+      <constructor>
+        <![CDATA[
+          this.textbox.value = this.hbox.value;
+          this.toolbarbutton.addEventListener("command", this.onCommand, false);
+        ]]>
+      </constructor>
+      <field name="hbox">document.getAnonymousNodes(this)[0]</field>
+      <field name="textbox">document.getAnonymousNodes(this)[0].childNodes[0]</field>
+      <field name="toolbarbutton">document.getAnonymousNodes(this)[0].childNodes[1]</field>
+    </implementation>
+  </binding>
+
+  <!-- search term bindings -->
+
+  <binding id="textbox">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:textbox flex="1" class="search-value-textbox" xbl:inherits="disabled"
+                   onchange="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value"/>
+    </content>
+    <implementation>
+      <constructor>
+        <![CDATA[
+          let value = this.getAttribute("value");
+          let textbox = document.getAnonymousNodes(this)[0];
+          textbox.value = value;
+          this.value = value;
+          // override the opParentValue setter to detect ops needing no value
+          let parent = this.parentNode;
+          parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
+          parent.__defineSetter__('opParentValue', function (aValue) {
+            let element = document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
+            if (element)
+            {
+              // hide the value if not relevant
+              if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
+                  aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
+                element.setAttribute('hidden', 'true');
+              else
+                element.removeAttribute('hidden');
+            }
+            this.oldOpParentValueSetter(aValue);
+          });
+
+        ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+  <binding id="javascript">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:toolbarbutton image="chrome://filtaquilla/skin/script_edit.png"
+          class="focusbutton" tooltiptext="&editJavascript;" />
+      <xul:textbox flex="1" class="search-value-textbox" xbl:inherits="disabled"
+                   newlines="pasteintact"
+                   onchange="this.parentNode.setAttribute('value', this.value);"/>
+    </content>
+    <implementation>
+      <method name="onCommand">
+        <body>
+          <![CDATA[
+            let textbox = document.getAnonymousNodes(document.getBindingParent(this))[1];
+            window.openDialog("chrome://filtaquilla/content/jsEditor.xul", "",
+                              "chrome, dialog, modal, resizable=yes", textbox);
+          ]]>
+        </body>
+      </method>
+      <constructor>
+        <![CDATA[
+          let textbox = document.getAnonymousNodes(this)[1];
+          let toolbarbutton = document.getAnonymousNodes(this)[0];
+          textbox.value = this.getAttribute("value");
+          toolbarbutton.addEventListener("command", this.onCommand, false);
+        ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+  <binding id="tag">
+    <resources>
+      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+    </resources>
+    <content>
+      <xul:menulist flex="1" class="search-value-menulist" xbl:inherits="disabled"
+                    type="threadheadtag"
+                    oncommand="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.getAttribute('label');">
+        <xul:menupopup class="search-value-popup">
+        </xul:menupopup>
+      </xul:menulist>
+    </content>
+    <implementation>
+      <constructor>
+        <![CDATA[
+          let value = this.getAttribute("value");
+          let menulist = document.getAnonymousNodes(this)[0];
+          menulist.selectedIndex = 0;
+          let menuPopup = menulist.menupopup;
+          let tagService = Components.classes["@mozilla.org/messenger/tagservice;1"]
+                                     .getService(Components.interfaces.nsIMsgTagService);
+          let tagArray = tagService.getAllTags({});
+          let selectedIndex = 0;
+          for (let i = 0; i < tagArray.length; ++i)
+          {
+            let taginfo = tagArray[i];
+            let newMenuItem = document.createElement('menuitem');
+            newMenuItem.setAttribute('label', taginfo.tag);
+            newMenuItem.setAttribute('value', taginfo.key);
+            menuPopup.appendChild(newMenuItem);
+            if (taginfo.key == value)
+              selectedIndex = i;
+          }
+          menulist.selectedIndex = selectedIndex;
+          this.setAttribute('value', menulist.value);
+          // The AssignMeaningfulName functions uses the item's js value, so set this to
+          //  allow this to be shown correctly.
+          this.value = menulist.getAttribute("label");
+
+          // override the opParentValue setter to detect ops needing no value
+          let parent = this.parentNode;
+          parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
+          parent.__defineSetter__('opParentValue', function (aValue) {
+            let element = document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
+            if (element)
+            {
+              // hide the value if not relevant
+              if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
+                  aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
+                element.setAttribute('hidden', 'true');
+              else
+                element.removeAttribute('hidden');
+            }
+            this.oldOpParentValueSetter(aValue);
+          });
+
+          let searchrow = parent.parentNode.parentNode;
+          let searchop = searchrow.getElementsByTagName('searchoperator')[0].value;
+          parent.opParentValue = searchop;
+        ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+</bindings>

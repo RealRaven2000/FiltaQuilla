@@ -1,0 +1,4 @@
+<!ENTITY enabled "Enabled">
+<!ENTITY default "Use default">
+<!ENTITY inheritedProperties "Inherited Properties">
+<!ENTITY indexInGlobalDatabase "Index in Global Database">
