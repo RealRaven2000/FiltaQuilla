@@ -1,0 +1,59 @@
+<!ENTITY prefwindow.title "Einstellungen für FiltaQuilla">
+<!ENTITY pane1.title "Einstellungen für FiltaQuilla">
+<!ENTITY checkMoveLaterEnabled.label "Später verschieben">
+<!ENTITY checkMoveLaterEnabled.accesskey "S">
+<!ENTITY checkCopyAsReadEnabled.label "Gelesene Kopie erstellen">
+<!ENTITY checkCopyAsReadEnabled.accesskey "L">
+<!ENTITY checkDetachAttachmentsEnabled.label "Anhänge abtrennen nach">
+<!ENTITY checkDetachAttachmentsEnabled.accesskey "X">
+<!ENTITY checkMarkRepliedEnabled.label "Als gelesen markieren">
+<!ENTITY checkMarkRepliedEnabled.accesskey "M">
+<!ENTITY checkLaunchFileEnabled.label "Datei ausführen">
+<!ENTITY checkLaunchFileEnabled.accesskey "F">
+<!ENTITY checkTrainAsGoodEnabled.label "Als kein Junk kategorisieren">
+<!ENTITY checkTrainAsGoodEnabled.accesskey "k">
+<!ENTITY checkSaveAttachmentEnabled.label "Anhänge abspeichern in">
+<!ENTITY checkSaveAttachmentEnabled.accesskey "A">
+<!ENTITY checkSaveMessageAsFileEnabled.label "Mail als Datei abspeichern">
+<!ENTITY checkSaveMessageAsFileEnabled.accesskey "D">
+<!ENTITY checkTrainAsJunkEnabled.label "Als Junk markieren">
+<!ENTITY checkTrainAsJunkEnabled.accesskey "J">
+<!ENTITY checkAddSenderEnabled.label "Absender zu Liste hinzufügen">
+<!ENTITY checkAddSenderEnabled.accesskey "L">
+<!ENTITY checkMarkUnreadEnabled.label "Als ungelesen markieren">
+<!ENTITY checkMarkUnreadEnabled.accesskey "U">
+<!ENTITY checkNoBiffEnabled.label "Nicht ändern">
+<!ENTITY checkNoBiffEnabled.accesskey "N">
+<!ENTITY checkRemoveKeywordEnabled.label "Schlagwort entfernen">
+<!ENTITY checkRemoveKeywordEnabled.accesskey "w">
+<!ENTITY checkPrintEnabled.label "Ausdrucken">
+<!ENTITY checkPrintEnabled.accesskey "K">
+<!ENTITY checkRunFileEnabled.label "Programm ausführen">
+<!ENTITY checkRunFileEnabled.accesskey "R">
+<!ENTITY checkRemoveFlaggedEnabled.label "Stern entfernen">
+<!ENTITY checkRemoveFlaggedEnabled.accesskey "S">
+<!ENTITY checkSubjectAppendEnabled.label "Betreff Präfix">
+<!ENTITY checkSubjectAppendEnabled.accesskey "X">
+<!ENTITY checkJavascriptActionEnabled.label "Javascript Aktion">
+<!ENTITY checkJavascriptActionEnabled.accesskey "J">
+<!ENTITY checkSubjectSuffixEnabled.label "Betreff Postfix">
+<!ENTITY checkSubjectSuffixEnabled.accesskey "O">
+<!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Aktion (mit body)">
+<!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY optionsIntro "Aktivieren Sie die Eintrage welche angezeigt werden sollen. Neustart erforderlich.">
+<!ENTITY filterActions "Filter Aktionen">
+<!ENTITY searchTerms "Suchbegriffe">
+<!ENTITY checkSearchBccEnabled.label "Blindkopie (Bcc)">
+<!ENTITY checkSearchBccEnabled.accesskey "B">
+<!ENTITY checkFolderNameEnabled.label "Verzeichnisname">
+<!ENTITY checkFolderNameEnabled.accesskey "V">
+<!ENTITY checkThreadHeadTagEnabled.label "Schlagwort der Ersten Mail der Unterhaltung">
+<!ENTITY checkThreadHeadTagEnabled.accesskey "U">
+<!ENTITY checkHeaderRegexEnabled.label "Header Vergleichen (Regulärer Ausdruck)">
+<!ENTITY checkHeaderRegexEnabled.accesskey "R">
+<!ENTITY checkJavascriptEnabled.label "JavaScript">
+<!ENTITY checkJavascriptEnabled.accesskey "J">
+<!ENTITY checkSubjectRegexEnabled.label "Betreff Vergleichen (Regulärer Ausdruck)">
+<!ENTITY checkSubjectRegexEnabled.accesskey "V">
+<!ENTITY checkThreadAnyTagEnabled.label "Schlagwort für Thema setzen">
+<!ENTITY checkThreadAnyTagEnabled.accesskey "T">
