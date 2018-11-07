@@ -29,7 +29,7 @@
 <!ENTITY checkRemoveKeywordEnabled.accesskey "O">
 <!ENTITY checkPrintEnabled.label "Print">
 <!ENTITY checkPrintEnabled.accesskey "P">
-<!ENTITY checkRunFileEnabled.label "Run File">
+<!ENTITY checkRunFileEnabled.label "Run Program">
 <!ENTITY checkRunFileEnabled.accesskey "R">
 <!ENTITY checkRemoveFlaggedEnabled.label "Remove Star">
 <!ENTITY checkRemoveFlaggedEnabled.accesskey "S">
