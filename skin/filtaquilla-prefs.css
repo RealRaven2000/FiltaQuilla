@@ -1,0 +1,92 @@
+/* styling for filtaquilla preferences dialog */
+
+.buttonLink {
+	cursor: pointer !important;
+	padding: 4px 16px;
+	margin: 4px auto 6px;
+	border: 1px solid rgba(120,120,120,0.5);
+	box-shadow: 4px 4px 3px rgba(80,80,80,0.3);
+}
+
+#mesquillaLink {
+	background: linear-gradient(to bottom, #67b6ce 0%,#316c8c 31%,#066dab 100%);
+	color: #FFF;
+}
+
+#mesquillaLink:hover {
+	background: linear-gradient(to bottom, #6ecfec 0%,#1e98da 31%,#0492ea 100%);
+}
+
+#quickFiltersLink {
+	background: linear-gradient(to bottom, #cb60b3 0%,#c146a1 50%,#a80077 51%,#db36a4 100%);
+	color: #FFF;
+}
+
+#quickFiltersLink:hover {
+	background: linear-gradient(to bottom, #f85032 0%,#f16f5c 50%,#f6290c 51%,#f02f17 71%,#e73827 100%);
+}
+
+
+.customLogo {
+  margin-left: 5px;
+	width: 32px;
+	height: 32px;
+}
+
+#filtaquilla_img {
+	/* just a hack as I don't appear to be able to use img url for a chrome address? */
+	background-image:url("chrome://filtaquilla/skin/filtaquilla-32.png"); 
+	background-repeat: no-repeat;
+}
+
+#quickfilters_img {
+	/* just a hack as I don't appear to be able to use img url for a chrome address? */
+	background-image:url("chrome://filtaquilla/skin/quickfilters.png"); 
+	background-repeat: no-repeat;
+}
+
+.linkBox {
+	border: 1px solid rgb(230,230,230);
+	margin: 0 20px 1em 20px !important;
+	padding-top: 0.75em;
+	max-width: 660px;
+	
+	/* width: 550px; */
+	white-space: normal !important;
+}
+
+.linkDescription {
+	-moz-appearance: none;
+	min-width: 620px;
+	padding: 4px;
+	text-align: left;
+	white-space: normal !important;
+	width: auto;
+}
+
+#actionCols column {
+	min-width: 175px;
+}
+
+.icontabs tab {
+	padding: 5px 8px;
+  margin-top: 5px;
+}
+
+.icontabs tab label {
+	margin-left:5px !important;
+}
+
+#filterActionsTab {
+  list-style-image: url("chrome://filtaquilla/skin/fugue-arrow-curve.png") !important;
+}
+
+#conditionsTab {
+  list-style-image: url("chrome://filtaquilla/skin/script.png") !important;
+}
+
+#supportTab {
+  list-style-image: url("chrome://filtaquilla/skin/fugue-question.png") !important;
+}
+
+
