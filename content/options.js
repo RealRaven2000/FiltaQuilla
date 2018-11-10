@@ -27,8 +27,7 @@
  * ***** END LICENSE BLOCK *****
  */
 
-function onLoad()
-{
+function onLoad() {
   // disable items that are not valid in current core version
   const Cc = Components.classes;
   const Ci = Components.interfaces;
@@ -66,3 +65,4 @@ function onLoad()
   javascriptActionBody.disabled = haveActionNeedsBody || javascriptActionBody.checked ? false : true;
 
 }
+

@@ -32,12 +32,16 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://messenger/skin/preferences/preferences.css" type="text/css" ?>
+<?xml-stylesheet href="chrome://filtaquilla/skin/filtaquilla-prefs.css" type="text/css" ?>
+
 <!DOCTYPE prefwindow SYSTEM "chrome://filtaquilla/locale/prefwindow.dtd">
 <prefwindow id="filtaquillaPreferences"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="&prefwindow.title;"
             onload="onLoad();">
   <script type="application/javascript" src="chrome://filtaquilla/content/options.js"/>
+  <script type="application/javascript" src="chrome://filtaquilla/content/filtaquilla-util.js"/>
+	
   <prefpane id="pane1" label="&pane1.title;">
     <preferences>
       <preference id="subjectAppendEnabled" name="extensions.filtaquilla.subjectAppend.enabled" type="bool"/>
@@ -70,16 +74,17 @@
     </preferences>
     <label value="&optionsIntro;"/>
     <tabbox id="filtaquillatabbox" flex="1">
-      <tabs>
-        <tab label="&filterActions;"/>
-        <tab label="&searchTerms;"/>
+      <tabs class="icontabs">
+        <tab label="&filterActions;" id="filterActionsTab"/>
+        <tab label="&searchTerms;" id="conditionsTab"/>
+        <tab label="&aboutAndSupport;" id="supportTab"/>
       </tabs>
 
       <tabpanels flex="1">
         <!-- Filter actions -->
         <tabpanel orient="vertical">
           <grid>
-            <columns>
+            <columns id="actionCols">
               <column flex="1"/>
               <column flex="1"/>
               <column flex="1"/>
@@ -196,7 +201,53 @@
             </rows>
           </grid>
         </tabpanel>
-      </tabpanels>
+        <tabpanel orient="vertical">
+				  <vbox class="linkBox">
+						<hbox>
+							<spacer flex="1" />
+							<a href="http://quickfilters.mozdev.org/filtaquilla.html" 
+								 id="mesquillaLink"
+								 class="buttonLink"
+								 onclick="FiltaQuilla.Util.openLinkInTab('http://quickfilters.mozdev.org/filtaquilla.html');window.close();">
+								 &supportPage;
+							</a>
+							<spacer flex="1" />
+						</hbox>
+						<hbox>
+							<img src="chrome://filtaquilla/skin/filtaquilla-32.png"
+									 class="customLogo"
+									 id="filtaquilla_img" />
+							<textbox 
+							  class="linkDescription"
+							  multiline="true"
+								rows="2"
+								value="&supportPage_desc;" />
+						</hbox>
+					</vbox>
+				  <vbox class="linkBox">
+						<hbox>
+							<spacer flex="1" />
+							<a href="https://addons.thunderbird.net/addon/quickfilters/"
+								 id="quickFiltersLink"
+								 class="buttonLink"
+								 onclick="FiltaQuilla.Util.openLinkInTab('https://addons.thunderbird.net/addon/quickfilters/');window.close();">
+								 &quickFiltersPage;
+							</a>
+							<spacer flex="1" />
+						</hbox>
+						<hbox>
+							<img src="chrome://filtaquilla/skin/quickfilters.png"
+									 class="customLogo"
+									 id="quickfilters_img" />
+							<textbox 
+							  class="linkDescription" 
+							  multiline="true"
+								rows="2"
+							  value="&quickFiltersPage_desc;" />
+						</hbox>
+					</vbox>
+				</tabpanel>
+			</tabpanels>
     </tabbox>
   </prefpane>
 </prefwindow>
