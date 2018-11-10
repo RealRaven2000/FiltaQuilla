@@ -3,15 +3,15 @@
 <!ENTITY checkMoveLaterEnabled.label "Später verschieben">
 <!ENTITY checkMoveLaterEnabled.accesskey "S">
 <!ENTITY checkCopyAsReadEnabled.label "Gelesene Kopie erstellen">
-<!ENTITY checkCopyAsReadEnabled.accesskey "L">
+<!ENTITY checkCopyAsReadEnabled.accesskey "K">
 <!ENTITY checkDetachAttachmentsEnabled.label "Anhänge abtrennen nach">
-<!ENTITY checkDetachAttachmentsEnabled.accesskey "X">
+<!ENTITY checkDetachAttachmentsEnabled.accesskey "B">
 <!ENTITY checkMarkRepliedEnabled.label "Als gelesen markieren">
 <!ENTITY checkMarkRepliedEnabled.accesskey "M">
 <!ENTITY checkLaunchFileEnabled.label "Datei ausführen">
 <!ENTITY checkLaunchFileEnabled.accesskey "F">
 <!ENTITY checkTrainAsGoodEnabled.label "Als kein Junk kategorisieren">
-<!ENTITY checkTrainAsGoodEnabled.accesskey "k">
+<!ENTITY checkTrainAsGoodEnabled.accesskey "N">
 <!ENTITY checkSaveAttachmentEnabled.label "Anhänge abspeichern in">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "A">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Mail als Datei abspeichern">
@@ -40,9 +40,15 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "O">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Aktion (mit body)">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
-<!ENTITY optionsIntro "Aktivieren Sie die Eintrage welche angezeigt werden sollen. Neustart erforderlich.">
+<!ENTITY optionsIntro "Aktivieren Sie alle Einträge die im 'Filter bearbeiten' Dialog angeboten werden sollen. Neustart erforderlich.">
 <!ENTITY filterActions "Filter Aktionen">
 <!ENTITY searchTerms "Suchbegriffe">
+<!ENTITY aboutAndSupport "Über FiltaQuilla / Hilfe">
+<!ENTITY supportPage "Support Seite besuchen">
+<!ENTITY supportPage_desc "Diese Seite beschreibt die verschiedenen Aktionen und Bedingungen die man mit FiltaQuilla zu den Filterregeln hinzufügen kann.">
+<!ENTITY quickFiltersPage "Holen Sie sich quickFilters!">
+<!ENTITY quickFiltersPage_desc "Laden Sie dieses fantastische Add-on um Ihre Filterregeln aufzufrisieren. quickFilters macht Filter Definition und Management zum Kinderspiel.">
+<!-- search terms -->
 <!ENTITY checkSearchBccEnabled.label "Blindkopie (Bcc)">
 <!ENTITY checkSearchBccEnabled.accesskey "B">
 <!ENTITY checkFolderNameEnabled.label "Verzeichnisname">
