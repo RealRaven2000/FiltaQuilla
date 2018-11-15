@@ -39,6 +39,8 @@ const Cu = Components.utils;
 const catMan = Cc["@mozilla.org/categorymanager;1"]
                  .getService(Ci.nsICategoryManager);
 
+/*
+
 // we don't seem to have Application in a module :(
 var Application = null;
 
@@ -56,6 +58,9 @@ if (!Application)
                     .getService(Ci.extIApplication);
   } catch (e) {}
 }
+*/
+
+Cu.import("resource://gre/modules/Services.jsm");
 
 var InheritedPropertiesGrid = {
 
@@ -76,7 +81,7 @@ var InheritedPropertiesGrid = {
   {
     /*
      * New method: we store the object containing inherited properties using
-     *             Application.storage
+     *             Services.prefs
      *
      *             The new method still uses the category to store the names of
      *             the inherited properties, but the value is not important.
@@ -89,9 +94,10 @@ var InheritedPropertiesGrid = {
                             false /* aPersist */,
                             true /* aReplace */);
     // new method, saving in a global context
-    let inheritedProperties = Application.storage.get("mesquillaInheritedProperties", {});
+    let inheritedProperties = Services.prefs.getStringPref("mesquillaInheritedProperties", "{}");
+    inheritedProperties = JSON.parse(inheritedProperties);
     inheritedProperties[aPropertyObject.property] = aPropertyObject;
-    Application.storage.set("mesquillaInheritedProperties", inheritedProperties);
+    Services.prefs.setStringPref("mesquillaInheritedProperties", JSON.stringify(inheritedProperties));
     return;
   },
 
@@ -100,7 +106,7 @@ var InheritedPropertiesGrid = {
   {
     /*
      * New method: we store the object containing inherited properties using
-     *             Application.storage
+     *             Services.prefs
      *
      *             The new method still uses the category to store the names of
      *             the inherited properties, but the value is not important.
@@ -111,9 +117,10 @@ var InheritedPropertiesGrid = {
                                aPropertyObject.property,
                                false /* aPersist */);
     // new method, saving in a global context
-    let inheritedProperties = Application.storage.get("mesquillaInheritedProperties", {});
+    let inheritedProperties = Services.prefs.getStringPref("mesquillaInheritedProperties", "{}");
+    inheritedProperties = JSON.parse(inheritedProperties);
     inheritedProperties[aPropertyObject.property] = null;
-    Application.storage.set("mesquillaInheritedProperties", inheritedProperties);
+    Services.prefs.setStringPref("mesquillaInheritedProperties", JSON.stringify(inheritedProperties));
     return;
   },
 
@@ -122,7 +129,8 @@ var InheritedPropertiesGrid = {
   {
     // new method: shared global context
     try {
-      let inheritedProperties = Application.storage.get("mesquillaInheritedProperties", {});
+      let inheritedProperties = Services.prefs.getStringPref("mesquillaInheritedProperties", "{}");
+      inheritedProperties = JSON.parse(inheritedProperties);
       let property = inheritedProperties[aProperty];
       if (typeof property != 'undefined')
         return property;
@@ -383,8 +391,8 @@ var InheritedPropertiesGrid = {
     if (isInherited)
       inheritCheckbox.setAttribute("checked", "true");
 
-    let isEnabled = propertyObject.defaultValue(aFolder) ? inheritedValue != "false" :
-                                                           inheritedValue == "true";
+    let isEnabled = true;
+/* propertyObject.defaultValue(aFolder) ? inheritedValue != "false" : inheritedValue == "true"; */
     enableCheckbox.setAttribute("checked", isEnabled ? "true" : "false");
     if (isInherited)
       enableCheckbox.setAttribute("disabled", "true");
@@ -401,7 +409,7 @@ var InheritedPropertiesGrid = {
 
     // Whether a property is "enabled" depends on its default, since the
     //  inherited folder property is usually an override. 
-    let defaultValue = propertyObject.defaultValue(aFolder);
+    let defaultValue = true; // propertyObject.defaultValue(aFolder);
 
     let elementInherit = document.getElementById("inherit-" + property);
     let elementEnable = document.getElementById("enable-" + property);

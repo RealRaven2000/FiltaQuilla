@@ -33,5 +33,5 @@
 <?xml-stylesheet href="chrome://filtaquilla/skin/filtaquilla.css" type="text/css"?>
 <overlay id="filtaquilla-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/javascript;version=1.8" src="folderPropsOverlay.js"/>
+  <script type="application/javascript" src="folderPropsOverlay.js"/>
 </overlay>

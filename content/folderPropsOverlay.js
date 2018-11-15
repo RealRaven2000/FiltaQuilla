@@ -33,8 +33,7 @@
 
 Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
  
-(function()
-{
+(function() {
   // global scope variables
   this.filtaquillaFolderProps = {};
 
@@ -48,8 +47,7 @@ Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
 
   let folder; // nsIMsgFolder passed to the window
 
-  self.onLoad = function onLoad(e)
-  {
+  self.onLoad = function onLoad(e) {
     folder = window.arguments[0].folder;
 
     // setup UI for the "applyIncomingFilters" inherited property, but only for
@@ -62,13 +60,15 @@ Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
     window.gInheritTarget = folder;
 
     // create or get the rows from the inherit grid
-    let rows = InheritedPropertiesGrid.getInheritRows(document);
-    let row;
+    let rows = InheritedPropertiesGrid.getInheritRows(document),
+        row;
     try {
-    row = InheritedPropertiesGrid.createInheritRow("applyIncomingFilters", folder, document);
-    } catch (e) {Cu.reportError(e);}
-    if (row)
-    {
+			row = InheritedPropertiesGrid.createInheritRow("applyIncomingFilters", folder, document);
+    } catch (e) {
+			Cu.reportError(e);
+		}
+		
+    if (row) {
       rows.appendChild(row);
       // extend the ondialogaccept attribute
       let dialog = document.getElementsByTagName("dialog")[0];

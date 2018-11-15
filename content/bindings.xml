@@ -65,14 +65,14 @@
       <method name="getURL">
         <body>
           <![CDATA[
-            const nsIFilePicker = Components.interfaces.nsIFilePicker;
-            var fp = Components.classes["@mozilla.org/filepicker;1"]
-                        .createInstance(nsIFilePicker);
+            const Ci = Components.interfaces,
+						      Cc = Components.classes,
+									nsIFilePicker = Ci.nsIFilePicker;
+            var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
             fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
             fp.appendFilters(nsIFilePicker.filterAll);
             try {
-              var file = Components.classes["@mozilla.org/file/local;1"]
-                                   .createInstance(Components.interfaces.nsILocalFile);
+              var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
               file.initWithPath(this.textbox.value);
               fp.displayDirectory = file.parent;
               fp.defaultString = file.leafName;
@@ -102,8 +102,8 @@
       <method name="launch">
         <body>
           <![CDATA[
-          var file = Components.classes["@mozilla.org/file/local;1"]
-                               .createInstance(Components.interfaces.nsILocalFile);
+					const Ci = Components.interfaces;
+          var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
           file.initWithPath(this.textbox.value);
           file.launch();
           ]]>
@@ -136,14 +136,14 @@
       <method name="getURL">
         <body>
           <![CDATA[
-            const nsIFilePicker = Components.interfaces.nsIFilePicker;
-            var fp = Components.classes["@mozilla.org/filepicker;1"]
-                        .createInstance(nsIFilePicker);
+            const Ci = Components.interfaces,
+						      Cc = Components.classes,
+									nsIFilePicker = Ci.nsIFilePicker;
+            var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
             fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
             fp.appendFilters(nsIFilePicker.filterAll);
             try {
-              var file = Components.classes["@mozilla.org/file/local;1"]
-                                   .createInstance(Components.interfaces.nsILocalFile);
+              var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
               // the file url is the first comma-separated parameter
               var filePath = this.textbox.value.split(',')[0];
               file.initWithPath(filePath);
@@ -216,9 +216,9 @@
       </method>
       <constructor>
         <![CDATA[
-          let menulist = document.getAnonymousNodes(this)[0];
-          let value = menulist.value;
-          let menupopup = menulist.menupopup;
+          let menulist = document.getAnonymousNodes(this)[0],
+              value = menulist.value,
+              menupopup = menulist.menupopup;
 
           // set the default to the personal address book
           if (!value || !value.length)
@@ -268,14 +268,14 @@
       <method name="getURL">
         <body>
           <![CDATA[
-            const nsIFilePicker = Components.interfaces.nsIFilePicker;
-            var fp = Components.classes["@mozilla.org/filepicker;1"]
-                        .createInstance(nsIFilePicker);
+            const Ci = Components.interfaces,
+						      Cc = Components.classes,
+									nsIFilePicker = Ci.nsIFilePicker;
+            var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
             fp.init(window, this.filetitle, nsIFilePicker.modeGetFolder);
             fp.appendFilters(nsIFilePicker.filterAll);
             try {
-              var file = Components.classes["@mozilla.org/file/local;1"]
-                                   .createInstance(Components.interfaces.nsILocalFile);
+              var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
               // the file url is the first comma-separated parameter
               var filePath = this.textbox.value;
               file.initWithPath(filePath);
