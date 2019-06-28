@@ -66,6 +66,10 @@ toolbarbutton.focusbutton {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
 }
 
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#attachmentRegex"] {
+  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
+}
+
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#headerRegex"] {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
 }

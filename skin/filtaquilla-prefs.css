@@ -45,6 +45,25 @@
 	background-repeat: no-repeat;
 }
 
+.helpLink,
+.helpLinkDisabled {
+  -moz-appearance: none !important;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  margin-top: 3px;
+  width: 16px !important;
+  min-width: 22px;
+}
+
+.helpLink {
+  background-image: url("chrome://filtaquilla/skin/fugue-question.png");
+}
+.helpLinkDisabled {
+  background-image: url("chrome://filtaquilla/skin/fugue-question-disabled.png");
+}
+
+
+
 .linkBox {
 	border: 1px solid rgb(230,230,230);
 	margin: 0 20px 1em 20px !important;

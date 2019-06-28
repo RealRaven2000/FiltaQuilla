@@ -1,0 +1,68 @@
+<!ENTITY prefwindow.title "Alternativ för FiltaQuilla">
+<!ENTITY pane1.title "Alternativ för FiltaQuilla">
+<!-- filter actions -->
+<!ENTITY checkMoveLaterEnabled.label "Flytta senare">
+<!ENTITY checkMoveLaterEnabled.accesskey "a">
+<!ENTITY checkCopyAsReadEnabled.label "Kopiera som läst">
+<!ENTITY checkCopyAsReadEnabled.accesskey "K">
+<!ENTITY checkDetachAttachmentsEnabled.label "Flytta bifogade filer till">
+<!ENTITY checkDetachAttachmentsEnabled.accesskey "F">
+<!ENTITY checkMarkRepliedEnabled.label "Markera som besvarad">
+<!ENTITY checkMarkRepliedEnabled.accesskey "b">
+<!ENTITY checkLaunchFileEnabled.label "Kör fil">
+<!ENTITY checkLaunchFileEnabled.accesskey "f">
+<!ENTITY checkTrainAsGoodEnabled.label "Träna som bra">
+<!ENTITY checkTrainAsGoodEnabled.accesskey "b">
+<!ENTITY checkSaveAttachmentEnabled.label "Spara bifogade filer till">
+<!ENTITY checkSaveAttachmentEnabled.accesskey "p">
+<!ENTITY checkAttachmentRegexEnabled.label "Regexmatchning i bilagans namn">
+<!ENTITY checkSaveMessageAsFileEnabled.label "Spara meddelande som fil">
+<!ENTITY checkSaveMessageAsFileEnabled.accesskey "m">
+<!ENTITY checkTrainAsJunkEnabled.label "Träna som skräp">
+<!ENTITY checkTrainAsJunkEnabled.accesskey "ä">
+<!ENTITY checkAddSenderEnabled.label "Lägg till avsändare i adresslistan">
+<!ENTITY checkAddSenderEnabled.accesskey "v">
+<!ENTITY checkMarkUnreadEnabled.label "Markera som oläst">
+<!ENTITY checkMarkUnreadEnabled.accesskey "k">
+<!ENTITY checkNoBiffEnabled.label "Avisera inte">
+<!ENTITY checkNoBiffEnabled.accesskey "n">
+<!ENTITY checkRemoveKeywordEnabled.label "Ta bort tag">
+<!ENTITY checkRemoveKeywordEnabled.accesskey "b">
+<!ENTITY checkPrintEnabled.label "Skriv ut">
+<!ENTITY checkPrintEnabled.accesskey "u">
+<!ENTITY checkRunFileEnabled.label "Kör program">
+<!ENTITY checkRunFileEnabled.accesskey "k">
+<!ENTITY checkRemoveFlaggedEnabled.label "Ta bort stjärna">
+<!ENTITY checkRemoveFlaggedEnabled.accesskey "j">
+<!ENTITY checkSubjectAppendEnabled.label "Lägg till i ämnets början">
+<!ENTITY checkSubjectAppendEnabled.accesskey "l">
+<!ENTITY checkJavascriptActionEnabled.label "JavaScript-åtgärd">
+<!ENTITY checkJavascriptActionEnabled.accesskey "v">
+<!ENTITY checkSubjectSuffixEnabled.label "Lägg till i ämnets slut">
+<!ENTITY checkSubjectSuffixEnabled.accesskey "s">
+<!ENTITY checkJavascriptActionBodyEnabled.label "JavaScript-åtgärd med innehållstext">
+<!ENTITY checkJavascriptActionBodyEnabled.accesskey "c">
+<!ENTITY optionsIntro "Aktivera alla elemet du vill ha tillgängliga i dialogruan &quot;Filtreringsregler&quot;. Starta om efter ändringar.">
+<!ENTITY filterActions "Filtreringsåtgärder">
+<!ENTITY searchTerms "Söktermer">
+<!ENTITY aboutAndSupport "Om FiltaQuilla / Hjälp">
+<!ENTITY supportPage "Besök supportsida">
+<!ENTITY supportPage_desc "Denna sida beskriver de olika åtgärderna och villkoren du kan lägga till i e-postfilter med FiltaQuilla.">
+<!ENTITY quickFiltersPage "Hämta quickFilters!">
+<!ENTITY quickFiltersPage_desc "Ladda ned detta häftiga tillägg för att turboladda din filtrering. quickFilters förenklar filterdefinition och -hantering.">
+<!-- search terms -->
+<!ENTITY checkSearchBccEnabled.label "Hemlig kopia">
+<!ENTITY checkSearchBccEnabled.accesskey "H">
+<!ENTITY checkFolderNameEnabled.label "Mappnamn">
+<!ENTITY checkFolderNameEnabled.accesskey "M">
+<!ENTITY checkThreadHeadTagEnabled.label "Tagg för trådsidhuvudet">
+<!ENTITY checkThreadHeadTagEnabled.accesskey "s">
+<!ENTITY checkHeaderRegexEnabled.label "Regex-matchning i sidhuvudet">
+<!ENTITY checkHeaderRegexEnabled.accesskey "m">
+<!ENTITY checkJavascriptEnabled.label "JavaScript">
+<!ENTITY checkJavascriptEnabled.accesskey "J">
+<!ENTITY checkSubjectRegexEnabled.label "Regex-matchning i ämnet">
+<!ENTITY checkSubjectRegexEnabled.accesskey "ä">
+<!ENTITY checkThreadAnyTagEnabled.label "Tagg för trådmeddelanden">
+<!ENTITY checkThreadAnyTagEnabled.accesskey "m">
+<!ENTITY helpFeatureTip "Visa detaljer om denna funktion">

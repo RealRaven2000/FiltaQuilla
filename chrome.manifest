@@ -2,6 +2,8 @@ content  filtaquilla   content/
 resource filtaquilla   content/
 locale   filtaquilla   en-US      locale/en-US/
 locale   filtaquilla   de         locale/de/
+locale   filtaquilla   sv         locale/sv-SE/
+locale   filtaquilla   nl         locale/nl/
 skin     filtaquilla   classic/1.0   skin/
 overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul
 overlay  chrome://messenger/content/folderProps.xul chrome://filtaquilla/content/folderPropsOverlay.xul

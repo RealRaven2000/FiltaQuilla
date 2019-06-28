@@ -1,0 +1,4 @@
+<!ENTITY enabled "Aktiverad">
+<!ENTITY default "Använd standardvärden">
+<!ENTITY inheritedProperties "Ärvda egenskaper">
+<!ENTITY indexInGlobalDatabase "Index i global databas">

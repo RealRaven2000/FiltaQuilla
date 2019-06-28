@@ -15,6 +15,7 @@
 <!ENTITY checkTrainAsGoodEnabled.accesskey "G">
 <!ENTITY checkSaveAttachmentEnabled.label "Save Attachments To">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "H">
+<!ENTITY checkAttachmentRegexEnabled.label "Attachment Name Regex Match">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Save Message as File">
 <!ENTITY checkSaveMessageAsFileEnabled.accesskey "I">
 <!ENTITY checkTrainAsJunkEnabled.label "Train as Junk">
@@ -64,4 +65,5 @@
 <!ENTITY checkSubjectRegexEnabled.accesskey "S">
 <!ENTITY checkThreadAnyTagEnabled.label  "Tag of Thread Messages">
 <!ENTITY checkThreadAnyTagEnabled.accesskey "T">
+<!ENTITY helpFeatureTip "Show Details on this feature">
 

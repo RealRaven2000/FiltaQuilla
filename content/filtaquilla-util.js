@@ -1,4 +1,5 @@
 "use strict";
+
 /*
  ***** BEGIN LICENSE BLOCK *****
  * This file is part of FiltaQuilla, Custom Filter Actions
@@ -20,10 +21,23 @@
  */
 
 var FiltaQuilla = {};
+var EXPORTED_SYMBOLS = ['FiltaQuilla'];
+
 
 FiltaQuilla.Util = {
   mAppName: null,
   mAppver: null,
+	_prefs: null,
+	_consoleService: null,
+	lastTime: 0,
+	get prefs () {
+    const Ci = Components.interfaces,
+          Cc = Components.classes;
+		if (this._prefs) return this._prefs;
+		var prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService);
+		this._prefs = prefs.getBranch("extensions.filtaquilla.");		
+		return this._prefs;
+	},
 	
   get AppverFull() {
     let appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
@@ -64,6 +78,12 @@ FiltaQuilla.Util = {
     }
     return this.mAppName;
   },
+	
+	get tabmail() {
+		let doc = this.getMail3PaneWindow().document,
+		    tabmail = doc.getElementById("tabmail");
+		return tabmail;
+	} ,
 	
   getMail3PaneWindow: function getMail3PaneWindow() {
     let windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1']
@@ -114,8 +134,7 @@ FiltaQuilla.Util = {
 				let tabUri = util.getBaseURI(info.browser.currentURI.spec);
 				if (tabUri == baseURL) {
 					tabmail.switchToTab(i);
-					// focus on tabmail ?
-					
+					info.browser.loadURI(URL);
 					return true;
 				}
 			}
@@ -123,6 +142,13 @@ FiltaQuilla.Util = {
 		return false;
 	} ,	
 	
+	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
+		let f = (fragment ? "#" + fragment : ""),
+		    URL = "http://quickfilters.mozdev.org/filtaquilla.html" + f;
+		window.setTimeout(function() {
+			FiltaQuilla.Util.openLinkInTab(URL);
+			});
+	} ,
 	
 	openLinkInTab : function FiltaQuilla_openLinkInTab(URL) {
 		const util = FiltaQuilla.Util;
@@ -140,14 +166,20 @@ FiltaQuilla.Util = {
 						let mail3PaneWindow = this.getMail3PaneWindow();
 						if (mail3PaneWindow) {
 							tabmail = mail3PaneWindow.document.getElementById("tabmail");
-							mail3PaneWindow.focus();
+							mail3PaneWindow.setTimeout(function() 
+									{	mail3PaneWindow.focus();
+									},
+									250
+								);
 						}
 					}
 					// note: findMailTab will activate the tab if it is already open
-					if (tabmail && (!util.findMailTab(tabmail, URL))) {
-						sTabMode = (util.Application === "Thunderbird" && util.Appver >= 3) ? "contentTab" : "3pane";
-						tabmail.openTab(sTabMode,
-						{ contentPage: URL}); // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);"
+					if (tabmail) {
+						if (!util.findMailTab(tabmail, URL)) {
+							sTabMode = (util.Application === "Thunderbird" && util.Appver >= 3) ? "contentTab" : "3pane";
+							tabmail.openTab(sTabMode,
+							{ contentPage: URL}); // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);"
+						}
 					}
 					else {
 						window.openDialog("chrome://messenger/content/", "_blank",
@@ -185,7 +217,7 @@ FiltaQuilla.Util = {
 					}, 250);
         }
         else {
-          this.getMail3PaneWindow().window.openDialog(getBrowserURL(), "_blank", "all,dialog=no", linkURI, null, 'QuickFilters');
+          this.getMail3PaneWindow().window.openDialog(getBrowserURL(), "_blank", "all,dialog=no", linkURI, null, 'FiltaQuilla');
         }
 
         return;
@@ -199,6 +231,140 @@ FiltaQuilla.Util = {
     }
     catch(e) { this.logDebug("openLinkInBrowserForced (" + linkURI + ") " + e.toString()); }
   },
+	
+  logTime: function logTime() {
+    let timePassed = '',
+        end = new Date(),
+        endTime = end.getTime();
+    try { // AG added time logging for test
+      if (this.lastTime === 0) {
+        this.lastTime = endTime;
+        return "[logTime init]"
+      }
+      let elapsed = new String(endTime - this.lastTime); // time in milliseconds
+      timePassed = '[' + elapsed + ' ms]   ';
+      this.lastTime = endTime; // remember last time
+    }
+    catch(e) {;}
+    return end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds() + '.' + end.getMilliseconds() + '  ' + timePassed;
+  },
+
+  logToConsole: function logToConsole(msg, optionTag) {
+    let consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
+    consoleService.logStringMessage("FiltaQuilla " 
+			+ (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '')
+			+ this.logTime() + "\n"+ msg);
+  },
+
+  // flags
+  // errorFlag    0x0   Error messages. A pseudo-flag for the default, error case.
+  // warningFlag    0x1   Warning messages.
+  // exceptionFlag  0x2   An exception was thrown for this case - exception-aware hosts can ignore this.
+  // strictFlag     0x4
+  logError: function logError(aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags) {
+    const Ci = Components.interfaces,
+					Cc = Components.classes;
+    let consoleService = Cc["@mozilla.org/consoleservice;1"]
+                                   .getService(Ci.nsIConsoleService),
+        aCategory = '',
+        scriptError = Cc["@mozilla.org/scripterror;1"].createInstance(Ci.nsIScriptError);
+    scriptError.init(aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory);
+    consoleService.logMessage(scriptError);
+  } ,
+
+  logException: function logException(aMessage, ex) {
+    let stack = '';
+    if (typeof ex.stack!='undefined')
+      stack= ex.stack.replace("@","\n  ");
+
+    let srcName = ex.fileName ? ex.fileName : "";
+    this.logError(aMessage + "\n" + ex.message, srcName, stack, ex.lineNumber, 0, 0x1); // use warning flag, as this is an exception we caught ourselves
+  } ,
+  
+  logDebug: function logDebug(msg) {
+    if (this.isDebug)
+      this.logToConsole(msg);
+  },
+	
+  isDebug: function isDebug() {
+		return this.prefs.getBoolPref("debug");
+  },
+	
+	isDebugOption: function isDebugOption(o) {
+		if(!this.isDebug) return false;
+		try {return this.prefs.getBoolPref("debug." + option);}
+		catch(e) {return false;}
+	},
+
+  /** 
+	* only logs if debug mode is set and specific debug option are active
+	* 
+	* @optionString {string}: comma delimited options
+  * @msg {string}: text to log 
+	*/   
+  logDebugOptional: function logDebugOptional(optionString, msg) {
+		try {
+			let options = optionString.split(',');
+			for (let i=0; i<options.length; i++) {
+				let option = options[i];
+				if (this.isDebugOption(option)) {
+					this.logToConsole(msg, option);
+					break; // only log once, in case multiple log switches are on
+				}
+			}        
+		}
+		catch(ex) {;}
+  },	
+	
+  toggleBoolPreference: function(cb, noUpdate) {
+    const Ci = Components.interfaces,
+					Cc = Components.classes;
+    let prefString = cb.getAttribute("preference");
+    let pref = document.getElementById(prefString);
+    
+    if (pref)
+			Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch).setBoolPref(pref.getAttribute('name'), cb.checked);
+    if (noUpdate)
+      return true;
+    return false // this.updateMainWindow();
+  },
+  
+  showAboutConfig: function(clickedElement, filter, readOnly) {
+    const name = "Preferences:ConfigManager",
+		      util = FiltaQuilla.Util;
+    let uri = "chrome://global/content/config.xul";
+		if (util.Application)
+			uri += "?debug";
+
+    let mediator = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    let w = mediator.getMostRecentWindow(name);
+
+    let win = clickedElement ?
+		          (clickedElement.ownerDocument.defaultView ? clickedElement.ownerDocument.defaultView : window)
+							: window;
+    if (!w) {
+      let watcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
+      w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=500px,height=350px", null);
+    }
+    w.focus();
+    w.addEventListener('load', 
+      function () {
+        let flt = w.document.getElementById("textbox");
+        if (flt) {
+          flt.value=filter;
+          // make filter box readonly to prevent damage!
+          if (!readOnly)
+            flt.focus();
+          else
+            flt.setAttribute('readonly',true);
+          if (w.self.FilterPrefs) {
+            w.self.FilterPrefs();
+          }
+        }
+      });
+  },	
+	
+	
 	
 	
 }

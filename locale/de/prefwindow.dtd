@@ -1,5 +1,6 @@
 <!ENTITY prefwindow.title "Einstellungen für FiltaQuilla">
 <!ENTITY pane1.title "Einstellungen für FiltaQuilla">
+<!-- search terms -->
 <!ENTITY checkMoveLaterEnabled.label "Später verschieben">
 <!ENTITY checkMoveLaterEnabled.accesskey "S">
 <!ENTITY checkCopyAsReadEnabled.label "Gelesene Kopie erstellen">
@@ -14,6 +15,7 @@
 <!ENTITY checkTrainAsGoodEnabled.accesskey "N">
 <!ENTITY checkSaveAttachmentEnabled.label "Anhänge abspeichern in">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "A">
+<!ENTITY checkAttachmentRegexEnabled.label "Anhangs-Namen vergleichen (Regulärer Ausdruck)">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Mail als Datei abspeichern">
 <!ENTITY checkSaveMessageAsFileEnabled.accesskey "D">
 <!ENTITY checkTrainAsJunkEnabled.label "Als Junk markieren">
@@ -55,11 +57,12 @@
 <!ENTITY checkFolderNameEnabled.accesskey "V">
 <!ENTITY checkThreadHeadTagEnabled.label "Schlagwort der Ersten Mail der Unterhaltung">
 <!ENTITY checkThreadHeadTagEnabled.accesskey "U">
-<!ENTITY checkHeaderRegexEnabled.label "Header Vergleichen (Regulärer Ausdruck)">
+<!ENTITY checkHeaderRegexEnabled.label "Header vergleichen (Regulärer Ausdruck)">
 <!ENTITY checkHeaderRegexEnabled.accesskey "R">
 <!ENTITY checkJavascriptEnabled.label "JavaScript">
 <!ENTITY checkJavascriptEnabled.accesskey "J">
-<!ENTITY checkSubjectRegexEnabled.label "Betreff Vergleichen (Regulärer Ausdruck)">
+<!ENTITY checkSubjectRegexEnabled.label "Betreff vergleichen (Regulärer Ausdruck)">
 <!ENTITY checkSubjectRegexEnabled.accesskey "V">
 <!ENTITY checkThreadAnyTagEnabled.label "Schlagwort für Thema setzen">
 <!ENTITY checkThreadAnyTagEnabled.accesskey "T">
+<!ENTITY helpFeatureTip "Mehr Informationen über diese Funktion">

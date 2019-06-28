@@ -1,3 +1,4 @@
+
 /*
  ***** BEGIN LICENSE BLOCK *****
  * This file is part of FiltaQuilla, Custom Filter Actions, by Mesquilla.
@@ -33,9 +34,12 @@ Components.utils.import("resource:///modules/MailUtils.js");
 
 (function filtaQuilla()
 {
-  const Cc = Components.classes;
-  const Ci = Components.interfaces;
-  const Cu = Components.utils;
+	Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+  const Cc = Components.classes,
+        Ci = Components.interfaces,
+        Cu = Components.utils,
+				util = FiltaQuilla.Util;
+	
 
   // parameters for MoveLater
   //  delay (in milliseconds) between calls to move later
@@ -109,6 +113,8 @@ Components.utils.import("resource:///modules/MailUtils.js");
   let ThreadHeadTagEnabled;
   let ThreadAnyTagEnabled;
   let FolderNameEnabled;
+	// [#5] AG new condition - attachment name regex
+	let AttachmentRegexEnabled;
 
   let moveLaterTimers = {}; // references to timers used in moveLater action
   let moveLaterIndex = 0; // next index to use to store timers
@@ -612,15 +618,28 @@ Components.utils.import("resource:///modules/MailUtils.js");
       {
         let directory = Cc["@mozilla.org/file/local;1"]
                            .createInstance(Ci.nsILocalFile || Ci.nsIFile);
-        directory.initWithPath(aActionValue);
-        let callbackObject = new SaveAttachmentCallback(directory, false);
+				try {
+					directory.initWithPath(aActionValue);
+					if (directory.exists()) {
+						util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
+					}
+					let callbackObject = new SaveAttachmentCallback(directory, false);
 
-        for (let i = 0; i < aMsgHdrs.length; i++)
-        {
-          var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
-          self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
-                                            false /* allowDownload */);
-        }
+					for (let i = 0; i < aMsgHdrs.length; i++)
+					{
+						try {
+							var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
+							self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
+																								false /* allowDownload */);
+						}
+						catch (ex) {
+							util.logException("FiltaQuilla.saveAttachment - converting message headers failed.", ex);
+						}
+					}
+				}
+				catch (ex) {
+					util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
+				}
       },
       isValidForType: function(type, scope) {return saveAttachmentEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -639,40 +658,56 @@ Components.utils.import("resource:///modules/MailUtils.js");
 
     SaveAttachmentCallback.prototype = {
       callback: function saveAttachmentCallback_callback(aMsgHdr, aMimeMessage) {
+				if (util.isDebug) {
+					util.logDebug('saveAttachmentCallback_callback');
+					debugger;
+				}
         this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
         this.attachments = aMimeMessage.allAttachments;
         let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
-        if (!this.detach) {
-          for (let j = 0; j < this.attachments.length; j++)
-          {
-            let attachment = this.attachments[j];
-            // create a unique file for this attachment
-            let uniqueFile = this.directory.clone();
-            uniqueFile.append(attachment.name);
-            uniqueFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0600);
-            messenger.saveAttachmentToFile(uniqueFile, attachment.url, this.msgURI,
-                                           attachment.contentType, null);
-          }
-        }
-        else
-        {
-          if (this.attachments.length > 0) {
-            let msgURIs = [];
-            let contentTypes = [];
-            let urls = [];
-            let displayNames = [];
-            for (let j = 0; j < this.attachments.length; j++)
-            {
-              let attachment = this.attachments[j];
-              msgURIs.push(this.msgURI);
-              contentTypes.push(attachment.contentType);
-              urls.push(attachment.url);
-              displayNames.push(attachment.name);
-            }
-            messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length,
-                                    contentTypes, urls, displayNames, msgURIs, null);
-          }
-        }
+				try {
+					if (!this.detach) {
+						for (let j = 0; j < this.attachments.length; j++) {
+							let attachment = this.attachments[j],
+							// create a unique file for this attachment
+							    uniqueFile = this.directory.clone();
+							uniqueFile.append(attachment.name);
+							util.logDebug("Save attachment [" + j + "] to " + uniqueFile.path + 
+									"...\n msgURI=" + this.msgURI + 
+									"\n att.url=" + attachment.url +
+									"\n att.ncontentType=" + attachment.contentType);
+							uniqueFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
+							messenger.saveAttachmentToFile(uniqueFile, attachment.url, this.msgURI,
+																						 attachment.contentType, null);
+						}
+					}
+					else
+					{
+						if (this.attachments.length > 0) {
+							let msgURIs = [],
+							    contentTypes = [],
+							    urls = [],
+							    displayNames = [];
+							for (let j = 0; j < this.attachments.length; j++) {
+								let attachment = this.attachments[j];
+								msgURIs.push(this.msgURI);
+								contentTypes.push(attachment.contentType);
+								urls.push(attachment.url);
+								displayNames.push(attachment.name);
+								util.logDebug("Detach attachment [" + j + "] to " + uniqueFile.path + 
+										"...\n msgURI=" + this.msgURI + 
+										"\n att.url=" + attachment.url +
+										"\n att.ncontentType=" + attachment.contentType)
+								
+							}
+							messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length,
+																			contentTypes, urls, displayNames, msgURIs, null);
+						}
+					}
+				}
+				catch (ex) {
+					util.logException("SaveAttachmentCallback", ex);
+				}
       } 
     },
     // end save Attachment
@@ -685,15 +720,28 @@ Components.utils.import("resource:///modules/MailUtils.js");
       {
         let directory = Cc["@mozilla.org/file/local;1"]
                            .createInstance(Ci.nsILocalFile || Ci.nsIFile);
-        directory.initWithPath(aActionValue);
-        let callbackObject = new SaveAttachmentCallback(directory, true);
-
-        for (let i = 0; i < aMsgHdrs.length; i++)
-        {
-          var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
-          self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
-                                            false /* allowDownload */);
-        }
+				try {
+					directory.initWithPath(aActionValue);
+					if (directory.exists()) {
+						util.logDebug("detachAttachments() - target directory exists:\n" + aActionValue);
+					}
+					
+					let callbackObject = new SaveAttachmentCallback(directory, true);
+					for (let i = 0; i < aMsgHdrs.length; i++)
+					{
+						try {
+							var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
+							self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
+																								false /* allowDownload */);
+						}
+						catch (ex) {
+							util.logException("FiltaQuilla.detachAttachments - converting message headers failed.", ex);
+						}
+					}
+				}
+				catch (ex) {
+					util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
+				}
       },
       isValidForType: function(type, scope) {return detachAttachmentsEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -982,8 +1030,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       match: function subjectRegEx_match(aMsgHdr, aSearchValue, aSearchOp)
       {
         var subject = aMsgHdr.mime2DecodedSubject;
-        let searchValue;
-        let searchFlags;
+        let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
         switch (aSearchOp)
         {
@@ -993,8 +1040,126 @@ Components.utils.import("resource:///modules/MailUtils.js");
             return !RegExp(searchValue, searchFlags).test(subject);
         }
       },
-      needsBody: false,
     };
+		
+   // local object used for callback
+    function ReadAttachmentCallback(matchRegex) {
+      this.regex = matchRegex;
+      this.found = false;
+			this.processed = false;
+      this.msgURI = null;
+      this.attachments = null;
+    }
+
+    ReadAttachmentCallback.prototype = {
+      callback: function readAttachmentCallback_callback(aMsgHdr, aMimeMessage) {
+				debugger;
+				if (aMimeMessage==null) { // failure parsing during MsgHdrToMimeMessage
+					this.processed = true;
+					return;
+				}
+				try {
+					this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
+					this.attachments = aMimeMessage.allAttachments;
+					let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
+					{
+						if (this.attachments.length > 0) {
+							let msgURIs = [];
+							let contentTypes = [];
+							let urls = [];
+							let displayNames = [];
+							for (let j = 0; j < this.attachments.length; j++)
+							{
+								let attachment = this.attachments[j];
+								msgURIs.push(this.msgURI);
+								contentTypes.push(attachment.contentType);
+								urls.push(attachment.url);
+								displayNames.push(attachment.name);
+								if (this.regex.test(attachment.name)) {
+									this.found = true;
+									break;
+								}
+							}
+							// messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length, contentTypes, urls, displayNames, msgURIs, null);
+						}
+						else
+							this.found = false;
+						this.processed = true;
+					}
+				} catch(ex) {
+					Services.console.logStringMessage("readAttachmentCallback_callback failed: " + ex.toString());
+					this.processed = true;
+				}
+      } 
+    },
+    // end read Attachment		
+		
+		// search attachment names with regular expression
+		self.attachmentRegex =
+		{
+      id: "filtaquilla@mesquilla.com#attachmentRegex",
+      name: self.strings.getString("filtaquilla.attachmentregex.name"),
+      getEnabled: function attachRegEx_getEnabled(scope, op)
+      {
+        return _isLocalSearch(scope);
+      },
+      getAvailable: function attachRegEx_getAvailable(scope, op)
+      {
+        return _isLocalSearch(scope) && AttachmentRegexEnabled;
+      },
+      getAvailableOperators: function attachRegEx_getAvailableOperators(scope, length)
+      {
+        if (!_isLocalSearch(scope))
+        {
+          length.value = 0;
+          return [];
+        }
+        length.value = 2;
+        return [Matches, DoesntMatch];
+      },
+      match: function attachRegEx_match(aMsgHdr, aSearchValue, aSearchOp)
+      {
+				// attach Regexp 
+        // var subject = aMsgHdr.mime2DecodedSubject;
+        let searchValue, searchFlags,
+				    isMatched = false;
+				// 
+        [searchValue, searchFlags] = _getRegEx(aSearchValue);
+				
+				if (!aMsgHdr.folder.msgDatabase.HasAttachments(aMsgHdr.messageKey))  {
+					switch (aSearchOp) {
+						case Matches: return false;
+						case DoesntMatch: return true; // or false? no attachment means we cannot really say...
+					}
+				}
+				debugger;
+				
+				let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);				
+				let callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
+				// message must be available offline!
+				try {
+					self._mimeMsg.MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, false /* allowDownload */);		
+					
+					// we need a listener for "processed" flag. is match called synchronously though?
+					/*
+					while (!callbackObject.processed) {
+						// we need to yield ...
+					}
+					*/
+					if (!callbackObject.processed)
+						alert("sorry, we cannot read attachments without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this.");
+					isMatched = callbackObject.found;
+					switch (aSearchOp) {
+						case Matches: return isMatched;
+						case DoesntMatch: return !isMatched;
+					}
+				}
+				catch (ex) {
+					Services.console.logStringMessage("could not attachRegEx_match" + ex.toString());
+				}
+      },
+      needsBody: true,			
+		};
 
     self.headerRegex =
     {
@@ -1022,13 +1187,12 @@ Components.utils.import("resource:///modules/MailUtils.js");
       match: function headerRegEx_match(aMsgHdr, aSearchValue, aSearchOp)
       {
         // the header and its regex are separated by a ':' in aSearchValue
-        var colonIndex = aSearchValue.indexOf(':');
+        let colonIndex = aSearchValue.indexOf(':');
         if (colonIndex == -1) // not found, default to does not match
           return aSearchOp != Matches;
-        var headerName = aSearchValue.slice(0, colonIndex);
-        var regex = aSearchValue.slice(colonIndex + 1);
-        let searchValue;
-        let searchFlags;
+        let headerName = aSearchValue.slice(0, colonIndex),
+            regex = aSearchValue.slice(colonIndex + 1);
+        let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(regex);
 
         /*
@@ -1413,6 +1577,15 @@ Components.utils.import("resource:///modules/MailUtils.js");
       FolderNameEnabled = prefs.getBoolPref("FolderNameEnabled");
     } catch(e) {}
     filterService.addCustomTerm(self.folderName);
+		
+		try {
+			AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
+		} catch(e) {}
+		if (AttachmentRegexEnabled) {
+			debugger;
+			filterService.addCustomTerm(self.attachmentRegex);
+		}
+    
 
     // Inherited properties setup
     // standard format for inherited property rows
@@ -1630,11 +1803,11 @@ Components.utils.import("resource:///modules/MailUtils.js");
   }
 
   function _saveAs(aMsgHdr, aDirectory, aType) {
-    let msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr);
-    let fileName = _sanitizeName(aMsgHdr.subject);
-    let file = aDirectory.clone();
+    let msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr),
+        fileName = _sanitizeName(aMsgHdr.subject),
+        file = aDirectory.clone();
     file.append(fileName + "." + aType);
-    file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0600);
+    file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
     let service = messenger.messageServiceFromURI(msgSpec);
     /*
     void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
@@ -1656,10 +1829,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
    *          no valid characters).
    */
   function _sanitizeName(aName) {
-    const chars = "-abcdefghijklmnopqrstuvwxyz0123456789";
-    const maxLength = 60;
+    const chars = "-abcdefghijklmnopqrstuvwxyz0123456789",
+          maxLength = 60;
 
-    var name = aName.toLowerCase();
+    let name = aName.toLowerCase();
     name = name.replace(/ /g, "-");
     name = name.split("").filter(function (el) {
                                    return chars.indexOf(el) != -1;
@@ -1667,8 +1840,8 @@ Components.utils.import("resource:///modules/MailUtils.js");
 
     if (!name) {
       // Our input had no valid characters - use a random name
-      var cl = chars.length - 1;
-      for (var i = 0; i < 8; ++i)
+      let cl = chars.length - 1;
+      for (let i = 0; i < 8; ++i)
         name += chars.charAt(Math.round(Math.random() * cl));
     }
 
@@ -1678,15 +1851,15 @@ Components.utils.import("resource:///modules/MailUtils.js");
     return name;
   }
 
-  _urlListener = {
+  var _urlListener = {
     OnStartRunningUrl: function _onStartRunningUrl(aUrl) {},
     OnStopRunningUrl: function _onStopRunningUrl(aUrl, aStatus)
     {
       let messageUri;
       if (aUrl instanceof Ci.nsIMsgMessageUrl)
         messageUri = aUrl.uri;
-      let msgHdr = messenger.msgHdrFromURI(messageUri);
-      let moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
+      let msgHdr = messenger.msgHdrFromURI(messageUri),
+          moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
       if (moveLaterCount)
         msgHdr.setUint32Property("moveLaterCount", moveLaterCount - 1);
     }

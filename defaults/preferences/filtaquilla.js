@@ -31,3 +31,4 @@ pref("extensions.filtaquilla.SearchBccEnabled", true);
 pref("extensions.filtaquilla.FolderNameEnabled", false);
 pref("extensions.filtaquilla.ThreadHeadTagEnabled", false);
 pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
+pref("extensions.filtaquilla.debug", false);
