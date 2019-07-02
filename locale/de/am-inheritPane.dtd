@@ -1,0 +1,4 @@
+<!ENTITY enabled "Aktiv">
+<!ENTITY default "Standardeinstellung">
+<!ENTITY inheritedProperties "Übernommene Eigenschaften">
+<!ENTITY indexInGlobalDatabase "In Globaler Datenbank indizieren (GLODA)">
