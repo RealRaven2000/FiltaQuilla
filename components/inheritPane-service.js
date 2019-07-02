@@ -45,6 +45,7 @@ inheritPane.prototype = {
      *  InheritedPropertiesGrid, the hidefor values are stored in the category
      *  manager as part of the property object.
      */
+		 debugger;
      Components.utils.import("resource://" + this.chromePackageName + "/inheritedPropertiesGrid.jsm");
      let catEnum = catMan.enumerateCategory("InheritedPropertiesGrid");
      let type = server.type;
