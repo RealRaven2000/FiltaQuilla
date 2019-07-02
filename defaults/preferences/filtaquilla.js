@@ -6,8 +6,10 @@ pref("filters.customfilters.maxthreadscan", 20); // was extensions.filtaquilla.
 pref("filters.customfilters.subjectAppend.enabled", true);
 pref("filters.customfilters.subjectSuffix.enabled", true);
 pref("filters.customfilters.addSender.enabled", true);
+pref("filters.customfilters.debug", false);
 
 // disabled for now
+/*
 pref("filters.customfilters.removeKeyword.enabled", false);
 pref("filters.customfilters.removeFlagged.enabled", false);
 pref("filters.customfilters.markUnread.enabled", false);
@@ -33,4 +35,4 @@ pref("filters.customfilters.SearchBccEnabled", false);
 pref("filters.customfilters.FolderNameEnabled", false);
 pref("filters.customfilters.ThreadHeadTagEnabled", false);
 pref("filters.customfilters.ThreadAnyTagEnabled", false);
-pref("filters.customfilters.debug", false);
+*/
