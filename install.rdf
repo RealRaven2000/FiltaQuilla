@@ -3,7 +3,7 @@
  xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
     <em:id>filtaquilla@mesquilla.com</em:id>
-    <em:version>1.5</em:version>
+    <em:version>1.5pre4</em:version>
     <em:creator>R Kent James</em:creator>
 		<em:developer>Axel Grude</em:developer>
     <em:description>Mail filter custom actions and searches</em:description>
@@ -16,20 +16,20 @@
     <em:translator>Markh van BabelZilla.org (nl-NL)</em:translator>
     <em:translator>A. Regnander - Phoenix (se-SV)</em:translator>
 		
+    <!-- Postbox  -->
+    <em:targetApplication>
+        <Description>
+            <em:id>postbox@postbox-inc.com</em:id>
+            <em:minVersion>6.0.0</em:minVersion>
+            <em:maxVersion>7.*</em:maxVersion>
+        </Description>
+    </em:targetApplication>		
      <!-- Thunderbird -->
      <em:targetApplication>
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>52.0</em:minVersion>
         <em:maxVersion>60.*</em:maxVersion>
-      </Description>
-    </em:targetApplication>
-    <!-- SeaMonkey -->
-    <em:targetApplication>
-      <Description>
-        <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
-        <em:minVersion>2.0b1pre</em:minVersion>
-        <em:maxVersion>2.49.*</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>

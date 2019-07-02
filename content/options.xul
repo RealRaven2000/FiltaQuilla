@@ -44,35 +44,35 @@
 	
   <prefpane id="pane1" label="&pane1.title;">
     <preferences>
-      <preference id="subjectAppendEnabled" name="extensions.filtaquilla.subjectAppend.enabled" type="bool"/>
-      <preference id="subjectSuffixEnabled" name="extensions.filtaquilla.subjectSuffix.enabled" type="bool"/>
-      <preference id="removeKeywordEnabled" name="extensions.filtaquilla.removeKeyword.enabled" type="bool"/>
-      <preference id="removeFlaggedEnabled" name="extensions.filtaquilla.removeFlagged.enabled" type="bool"/>
-      <preference id="noBiffEnabled" name="extensions.filtaquilla.noBiff.enabled" type="bool"/>
-      <preference id="copyAsReadEnabled" name="extensions.filtaquilla.copyAsRead.enabled" type="bool"/>
-      <preference id="markUnreadEnabled" name="extensions.filtaquilla.markUnread.enabled" type="bool"/>
-      <preference id="markRepliedEnabled" name="extensions.filtaquilla.markReplied.enabled" type="bool"/>
-      <preference id="launchFileEnabled" name="extensions.filtaquilla.launchFile.enabled" type="bool"/>
-      <preference id="runFileEnabled" name="extensions.filtaquilla.runFile.enabled" type="bool"/>
-      <preference id="trainAsJunkEnabled" name="extensions.filtaquilla.trainAsJunk.enabled" type="bool"/>
-      <preference id="trainAsGoodEnabled" name="extensions.filtaquilla.trainAsGood.enabled" type="bool"/>
-      <preference id="printEnabled" name="extensions.filtaquilla.print.enabled" type="bool"/>
-      <preference id="addSenderEnabled" name="extensions.filtaquilla.addSender.enabled" type="bool"/>
-      <preference id="saveAttachmentEnabled" name="extensions.filtaquilla.saveAttachment.enabled" type="bool"/>
-      <preference id="AttachmentRegexEnabled" name="extensions.filtaquilla.AttachmentRegexEnabled" type="bool"/>
-      <preference id="detachAttachmentsEnabled" name="extensions.filtaquilla.detachAttachments.enabled" type="bool"/>
-      <preference id="javascriptActionEnabled" name="extensions.filtaquilla.javascriptAction.enabled" type="bool"/>
-      <preference id="javascriptActionBodyEnabled" name="extensions.filtaquilla.javascriptActionBody.enabled" type="bool"/>
-      <preference id="saveMessageAsFileEnabled" name="extensions.filtaquilla.saveMessageAsFile.enabled" type="bool"/>
-      <preference id="moveLaterEnabled" name="extensions.filtaquilla.moveLater.enabled" type="bool"/>
-      <preference id="SubjectRegexEnabled" name="extensions.filtaquilla.SubjectRegexEnabled" type="bool"/>
-      <preference id="HeaderRegexEnabled" name="extensions.filtaquilla.HeaderRegexEnabled" type="bool"/>
-      <preference id="JavascriptEnabled" name="extensions.filtaquilla.JavascriptEnabled" type="bool"/>
-      <preference id="SearchBccEnabled" name="extensions.filtaquilla.SearchBccEnabled" type="bool"/>
-      <preference id="FolderNameEnabled" name="extensions.filtaquilla.FolderNameEnabled" type="bool"/>
-      <preference id="ThreadHeadTagEnabled" name="extensions.filtaquilla.ThreadHeadTagEnabled" type="bool"/>
-      <preference id="ThreadAnyTagEnabled" name="extensions.filtaquilla.ThreadAnyTagEnabled" type="bool"/>
-			<preference id="debug" name="extensions.filtaquilla.debug" type="bool"/>
+      <preference id="subjectAppendEnabled" name="filters.customfilters.subjectAppend.enabled" type="bool"/>
+      <preference id="subjectSuffixEnabled" name="filters.customfilters.subjectSuffix.enabled" type="bool"/>
+      <preference id="removeKeywordEnabled" name="filters.customfilters.removeKeyword.enabled" type="bool"/>
+      <preference id="removeFlaggedEnabled" name="filters.customfilters.removeFlagged.enabled" type="bool"/>
+      <preference id="noBiffEnabled" name="filters.customfilters.noBiff.enabled" type="bool"/>
+      <preference id="copyAsReadEnabled" name="filters.customfilters.copyAsRead.enabled" type="bool"/>
+      <preference id="markUnreadEnabled" name="filters.customfilters.markUnread.enabled" type="bool"/>
+      <preference id="markRepliedEnabled" name="filters.customfilters.markReplied.enabled" type="bool"/>
+      <preference id="launchFileEnabled" name="filters.customfilters.launchFile.enabled" type="bool"/>
+      <preference id="runFileEnabled" name="filters.customfilters.runFile.enabled" type="bool"/>
+      <preference id="trainAsJunkEnabled" name="filters.customfilters.trainAsJunk.enabled" type="bool"/>
+      <preference id="trainAsGoodEnabled" name="filters.customfilters.trainAsGood.enabled" type="bool"/>
+      <preference id="printEnabled" name="filters.customfilters.print.enabled" type="bool"/>
+      <preference id="addSenderEnabled" name="filters.customfilters.addSender.enabled" type="bool"/>
+      <preference id="saveAttachmentEnabled" name="filters.customfilters.saveAttachment.enabled" type="bool"/>
+      <preference id="AttachmentRegexEnabled" name="filters.customfilters.AttachmentRegexEnabled" type="bool"/>
+      <preference id="detachAttachmentsEnabled" name="filters.customfilters.detachAttachments.enabled" type="bool"/>
+      <preference id="javascriptActionEnabled" name="filters.customfilters.javascriptAction.enabled" type="bool"/>
+      <preference id="javascriptActionBodyEnabled" name="filters.customfilters.javascriptActionBody.enabled" type="bool"/>
+      <preference id="saveMessageAsFileEnabled" name="filters.customfilters.saveMessageAsFile.enabled" type="bool"/>
+      <preference id="moveLaterEnabled" name="filters.customfilters.moveLater.enabled" type="bool"/>
+      <preference id="SubjectRegexEnabled" name="filters.customfilters.SubjectRegexEnabled" type="bool"/>
+      <preference id="HeaderRegexEnabled" name="filters.customfilters.HeaderRegexEnabled" type="bool"/>
+      <preference id="JavascriptEnabled" name="filters.customfilters.JavascriptEnabled" type="bool"/>
+      <preference id="SearchBccEnabled" name="filters.customfilters.SearchBccEnabled" type="bool"/>
+      <preference id="FolderNameEnabled" name="filters.customfilters.FolderNameEnabled" type="bool"/>
+      <preference id="ThreadHeadTagEnabled" name="filters.customfilters.ThreadHeadTagEnabled" type="bool"/>
+      <preference id="ThreadAnyTagEnabled" name="filters.customfilters.ThreadAnyTagEnabled" type="bool"/>
+			<preference id="debug" name="filters.customfilters.debug" type="bool"/>
     </preferences>
     <label value="&optionsIntro;"/>
     <tabbox id="filtaquillatabbox" flex="1">

@@ -158,6 +158,7 @@ FiltaQuilla.Util = {
 				case "SeaMonkey":
 					util.openLinkInBrowserForced(URL);
 					return;
+				case "Postbox":
 				case "Thunderbird":
 					let sTabMode="",
 							tabmail = this.tabmail;

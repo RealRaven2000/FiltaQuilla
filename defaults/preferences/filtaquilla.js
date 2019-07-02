@@ -1,34 +1,36 @@
 // See http://kb.mozillazine.org/Localize_extension_descriptions
 pref("extensions.filtaquilla@mesquilla.com.description", "chrome://filtaquilla/locale/filtaquilla.properties");
 // the maximum number of items to scan in a thread search
-pref("extensions.filtaquilla.maxthreadscan", 20);
-// filter actions
-pref("extensions.filtaquilla.subjectAppend.enabled", false);
-pref("extensions.filtaquilla.subjectSuffix.enabled", false);
-pref("extensions.filtaquilla.removeKeyword.enabled", false);
-pref("extensions.filtaquilla.removeFlagged.enabled", false);
-pref("extensions.filtaquilla.markUnread.enabled", false);
-pref("extensions.filtaquilla.markReplied.enabled", false);
-pref("extensions.filtaquilla.noBiff.enabled", false);
-pref("extensions.filtaquilla.copyAsRead.enabled", false);
-pref("extensions.filtaquilla.launchFile.enabled", true);
-pref("extensions.filtaquilla.runFile.enabled", false);
-pref("extensions.filtaquilla.trainAsJunk.enabled", false);
-pref("extensions.filtaquilla.trainAsGood.enabled", false);
-pref("extensions.filtaquilla.print.enabled", true);
-pref("extensions.filtaquilla.addSender.enabled", false);
-pref("extensions.filtaquilla.saveAttachment.enabled", false);
-pref("extensions.filtaquilla.detachAttachments.enabled", false);
-pref("extensions.filtaquilla.javascriptAction.enabled", false);
-pref("extensions.filtaquilla.javascriptActionBody.enabled", false);
-pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
-pref("extensions.filtaquilla.moveLater.enabled", false);
+pref("filters.customfilters.maxthreadscan", 20); // was extensions.filtaquilla.
+// new filter actions postbox
+pref("filters.customfilters.subjectAppend.enabled", true);
+pref("filters.customfilters.subjectSuffix.enabled", true);
+pref("filters.customfilters.addSender.enabled", true);
+
+// disabled for now
+pref("filters.customfilters.removeKeyword.enabled", false);
+pref("filters.customfilters.removeFlagged.enabled", false);
+pref("filters.customfilters.markUnread.enabled", false);
+pref("filters.customfilters.markReplied.enabled", false);
+pref("filters.customfilters.noBiff.enabled", false);
+pref("filters.customfilters.copyAsRead.enabled", false);
+pref("filters.customfilters.launchFile.enabled", false);
+pref("filters.customfilters.runFile.enabled", false);
+pref("filters.customfilters.trainAsJunk.enabled", false);
+pref("filters.customfilters.trainAsGood.enabled", false);
+pref("filters.customfilters.print.enabled", false);
+pref("filters.customfilters.saveAttachment.enabled", false);
+pref("filters.customfilters.detachAttachments.enabled", false);
+pref("filters.customfilters.javascriptAction.enabled", false);
+pref("filters.customfilters.javascriptActionBody.enabled", false);
+pref("filters.customfilters.saveMessageAsFile.enabled", false);
+pref("filters.customfilters.moveLater.enabled", false);
 // search terms
-pref("extensions.filtaquilla.SubjectRegexEnabled", true);
-pref("extensions.filtaquilla.HeaderRegexEnabled", false);
-pref("extensions.filtaquilla.JavascriptEnabled", false);
-pref("extensions.filtaquilla.SearchBccEnabled", true);
-pref("extensions.filtaquilla.FolderNameEnabled", false);
-pref("extensions.filtaquilla.ThreadHeadTagEnabled", false);
-pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
-pref("extensions.filtaquilla.debug", false);
+pref("filters.customfilters.SubjectRegexEnabled", false);
+pref("filters.customfilters.HeaderRegexEnabled", false);
+pref("filters.customfilters.JavascriptEnabled", false);
+pref("filters.customfilters.SearchBccEnabled", false);
+pref("filters.customfilters.FolderNameEnabled", false);
+pref("filters.customfilters.ThreadHeadTagEnabled", false);
+pref("filters.customfilters.ThreadAnyTagEnabled", false);
+pref("filters.customfilters.debug", false);

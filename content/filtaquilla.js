@@ -71,56 +71,56 @@ Components.utils.import("resource:///modules/MailUtils.js");
   let maxThreadScan = 20; // the largest number of thread messages that we will examine
 
   // cache the values of commonly used search operators
-  let nsMsgSearchOp = Ci.nsMsgSearchOp;
-  let Contains = nsMsgSearchOp.Contains;
-  let DoesntContain = nsMsgSearchOp.DoesntContain;
-  let Is = nsMsgSearchOp.Is;
-  let Isnt = nsMsgSearchOp.Isnt;
-  let IsEmpty = nsMsgSearchOp.IsEmpty;
-  let IsntEmpty = nsMsgSearchOp.IsntEmpty;
-  let BeginsWith = nsMsgSearchOp.BeginsWith;
-  let EndsWith = nsMsgSearchOp.EndsWith;
-  let Matches = nsMsgSearchOp.Matches;
-  let DoesntMatch = nsMsgSearchOp.DoesntMatch;
+  const nsMsgSearchOp = Ci.nsMsgSearchOp,
+				Contains = nsMsgSearchOp.Contains,
+				DoesntContain = nsMsgSearchOp.DoesntContain,
+				Is = nsMsgSearchOp.Is,
+				Isnt = nsMsgSearchOp.Isnt,
+				IsEmpty = nsMsgSearchOp.IsEmpty,
+				IsntEmpty = nsMsgSearchOp.IsntEmpty,
+				BeginsWith = nsMsgSearchOp.BeginsWith,
+				EndsWith = nsMsgSearchOp.EndsWith,
+				Matches = nsMsgSearchOp.Matches,
+				DoesntMatch = nsMsgSearchOp.DoesntMatch;
 
   // Enabling of filter actions.
-  let subjectAppendEnabled;
-  let subjectSuffixEnabled;
-  let removeKeywordEnabled;
-  let removeFlaggedEnabled;
-  let noBiffEnabled;
-  let markUnreadEnabled;
-  let markRepliedEnabled;
-  let copyAsReadEnabled;
-  let launchFileEnabled;
-  let runFileEnabled;
-  let trainAsJunkEnabled;
-  let trainAsGoodEnabled;
-  let printEnabled;
-  let addSenderEnabled;
-  let saveAttachmentEnabled;
-  let detachAttachmentsEnabled;
-  let javascriptActionEnabled;
-  let javascriptActionBodyEnabled;
-  let saveMessageAsFileEnabled;
-  let moveLaterEnabled;
+  let subjectAppendEnabled = false,
+      subjectSuffixEnabled = false,
+      removeKeywordEnabled = false,
+      removeFlaggedEnabled = false,
+      noBiffEnabled = false,
+      markUnreadEnabled = false,
+      markRepliedEnabled = false,
+      copyAsReadEnabled = false,
+      launchFileEnabled = false,
+      runFileEnabled = false,
+      trainAsJunkEnabled = false,
+      trainAsGoodEnabled = false,
+      printEnabled = false,
+      addSenderEnabled = false,
+      saveAttachmentEnabled = false,
+      detachAttachmentsEnabled = false,
+      javascriptActionEnabled = false,
+      javascriptActionBodyEnabled = false,
+      saveMessageAsFileEnabled = false,
+      moveLaterEnabled = false;
 
   // Enabling of search terms.
-  let SubjectRegexEnabled;
-  let HeaderRegexEnabled;
-  let JavascriptEnabled;
-  let SearchBccEnabled;
-  let ThreadHeadTagEnabled;
-  let ThreadAnyTagEnabled;
-  let FolderNameEnabled;
+  let SubjectRegexEnabled = false,
+      HeaderRegexEnabled = false,
+      JavascriptEnabled = false,
+      SearchBccEnabled = false,
+      ThreadHeadTagEnabled = false,
+      ThreadAnyTagEnabled = false,
+      FolderNameEnabled = false;
 	// [#5] AG new condition - attachment name regex
-	let AttachmentRegexEnabled;
+	let AttachmentRegexEnabled = false;
 
   let moveLaterTimers = {}; // references to timers used in moveLater action
   let moveLaterIndex = 0; // next index to use to store timers
 
-  let printQueue = [];
-  let printingMessage = false;
+  let printQueue = [],
+      printingMessage = false;
 
   // inherited property object
   let applyIncomingFilters = {
@@ -1424,6 +1424,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
   // extension initialization
 
   self.onLoad = function() {
+		debugger;
     if (self.initialized)
       return;
     self._init();
@@ -1432,7 +1433,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
 
     var prefs = Cc["@mozilla.org/preferences-service;1"].
                    getService(Ci.nsIPrefService);
-    prefs = prefs.getBranch("extensions.filtaquilla.");
+    prefs = prefs.getBranch("filters.customfilters."); // "extensions.filtaquilla.");
 
     try {
       maxThreadScan = prefs.getIntPref("maxthreadscan");
