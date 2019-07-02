@@ -1,0 +1,68 @@
+<!ENTITY prefwindow.title "FiltaQuilla-voorkeuren">
+<!ENTITY pane1.title "FiltaQuilla-voorkeuren">
+<!-- filter actions -->
+<!ENTITY checkMoveLaterEnabled.label "Later verplaatsen">
+<!ENTITY checkMoveLaterEnabled.accesskey "A">
+<!ENTITY checkCopyAsReadEnabled.label "Als gelezen kopiëren">
+<!ENTITY checkCopyAsReadEnabled.accesskey "K">
+<!ENTITY checkDetachAttachmentsEnabled.label "Bijlagen ontkoppelen naar">
+<!ENTITY checkDetachAttachmentsEnabled.accesskey "O">
+<!ENTITY checkMarkRepliedEnabled.label "Als beantwoord markeren">
+<!ENTITY checkMarkRepliedEnabled.accesskey "E">
+<!ENTITY checkLaunchFileEnabled.label "Bestand uitvoeren">
+<!ENTITY checkLaunchFileEnabled.accesskey "U">
+<!ENTITY checkTrainAsGoodEnabled.label "Als Gewenst trainen">
+<!ENTITY checkTrainAsGoodEnabled.accesskey "G">
+<!ENTITY checkSaveAttachmentEnabled.label "Bijlagen opslaan in">
+<!ENTITY checkSaveAttachmentEnabled.accesskey "J">
+<!ENTITY checkAttachmentRegexEnabled.label "RegEx-overeenkomst bijlagenaam">
+<!ENTITY checkSaveMessageAsFileEnabled.label "Bericht als bestand opslaan">
+<!ENTITY checkSaveMessageAsFileEnabled.accesskey "I">
+<!ENTITY checkTrainAsJunkEnabled.label "Als Ongewenst trainen">
+<!ENTITY checkTrainAsJunkEnabled.accesskey "O">
+<!ENTITY checkAddSenderEnabled.label "Afzender aan adressenlijst toevoegen">
+<!ENTITY checkAddSenderEnabled.accesskey "L">
+<!ENTITY checkMarkUnreadEnabled.label "Als ongelezen markeren">
+<!ENTITY checkMarkUnreadEnabled.accesskey "M">
+<!ENTITY checkNoBiffEnabled.label "Geen notificatie">
+<!ENTITY checkNoBiffEnabled.accesskey "N">
+<!ENTITY checkRemoveKeywordEnabled.label "Label verwijderen">
+<!ENTITY checkRemoveKeywordEnabled.accesskey "A">
+<!ENTITY checkPrintEnabled.label "Afdrukken">
+<!ENTITY checkPrintEnabled.accesskey "D">
+<!ENTITY checkRunFileEnabled.label "Programma uitvoeren">
+<!ENTITY checkRunFileEnabled.accesskey "R">
+<!ENTITY checkRemoveFlaggedEnabled.label "Ster verwijderen">
+<!ENTITY checkRemoveFlaggedEnabled.accesskey "S">
+<!ENTITY checkSubjectAppendEnabled.label "Aan onderwerp vooraf laten gaan">
+<!ENTITY checkSubjectAppendEnabled.accesskey "W">
+<!ENTITY checkJavascriptActionEnabled.label "Javascript-actie">
+<!ENTITY checkJavascriptActionEnabled.accesskey "V">
+<!ENTITY checkSubjectSuffixEnabled.label "Aan onderwerp toevoegen">
+<!ENTITY checkSubjectSuffixEnabled.accesskey "G">
+<!ENTITY checkJavascriptActionBodyEnabled.label "Javascript-actie met body">
+<!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY optionsIntro "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen.">
+<!ENTITY filterActions "Filteracties">
+<!ENTITY searchTerms "Zoekwoorden">
+<!ENTITY aboutAndSupport "Over FiltaQuilla / Help">
+<!ENTITY supportPage "Ondersteuningspagina bezoeken">
+<!ENTITY supportPage_desc "Deze pagina beschrijft de verschillende acties en voorwaarden die met FiltaQuilla aan e-mailfilters kunt toevoegen.">
+<!ENTITY quickFiltersPage "quickFilters downloaden!">
+<!ENTITY quickFiltersPage_desc "Download deze geweldige add-on om uw filteracties een boost te geven. quickFilters maakt definiëren van filters en het beheer ervan een makkie.">
+<!-- search terms -->
+<!ENTITY checkSearchBccEnabled.label "Bcc">
+<!ENTITY checkSearchBccEnabled.accesskey "B">
+<!ENTITY checkFolderNameEnabled.label "Mapnaam">
+<!ENTITY checkFolderNameEnabled.accesskey "M">
+<!ENTITY checkThreadHeadTagEnabled.label "Discussieheaderlabel">
+<!ENTITY checkThreadHeadTagEnabled.accesskey "D">
+<!ENTITY checkHeaderRegexEnabled.label "RegEx-overeenkomst header">
+<!ENTITY checkHeaderRegexEnabled.accesskey "H">
+<!ENTITY checkJavascriptEnabled.label "Javascript">
+<!ENTITY checkJavascriptEnabled.accesskey "J">
+<!ENTITY checkSubjectRegexEnabled.label "RegEx-overeenkomst onderwerp">
+<!ENTITY checkSubjectRegexEnabled.accesskey "W">
+<!ENTITY checkThreadAnyTagEnabled.label "Label van discussieberichten">
+<!ENTITY checkThreadAnyTagEnabled.accesskey "L">
+<!ENTITY helpFeatureTip "Details van deze functie weergeven">
