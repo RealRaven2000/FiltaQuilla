@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:type>2</em:type> 
     <em:id>filtaquilla@mesquilla.com</em:id>
-    <em:version>1.6pre14</em:version>
+    <em:version>1.6pre15</em:version>
     <em:creator>R Kent James</em:creator>
 		<em:developer>Axel Grude</em:developer>
     <em:description>Mail filter custom actions and searches</em:description>
