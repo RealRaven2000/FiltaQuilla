@@ -35,7 +35,7 @@
 <?xml-stylesheet href="chrome://filtaquilla/skin/filtaquilla-prefs.css" type="text/css" ?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://filtaquilla/locale/prefwindow.dtd">
-<prefwindow id="filtaquillaPreferences"
+<dialog id="filtaquillaPreferences"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="&prefwindow.title;"
             onload="onLoad();">
@@ -74,7 +74,8 @@
       <preference id="ThreadAnyTagEnabled" name="extensions.filtaquilla.ThreadAnyTagEnabled" type="bool"/>
 			<preference id="debug" name="extensions.filtaquilla.debug" type="bool"/>
     </preferences>
-    <label value="&optionsIntro;"/>
+    <vbox>
+		<label value="&optionsIntro;"/>
     <tabbox id="filtaquillatabbox" flex="1">
       <tabs class="icontabs">
         <tab label="&filterActions;" id="filterActionsTab"/>
@@ -404,5 +405,11 @@
 				</tabpanel>
 			</tabpanels>
     </tabbox>
+		</vbox>
   </prefpane>
-</prefwindow>
+	<script type="application/javascript" src="chrome://global/content/preferencesBindings.js" />
+	<script>
+	  FiltaQuilla.Util.loadPreferences(); /* Tb 66 compatibility. Should be called _before_ DOMcontent Loaded event */
+	</script>
+	
+</dialog>

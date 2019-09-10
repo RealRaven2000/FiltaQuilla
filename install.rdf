@@ -2,8 +2,9 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
  xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
+    <em:type>2</em:type> 
     <em:id>filtaquilla@mesquilla.com</em:id>
-    <em:version>1.5</em:version>
+    <em:version>1.6pre14</em:version>
     <em:creator>R Kent James</em:creator>
 		<em:developer>Axel Grude</em:developer>
     <em:description>Mail filter custom actions and searches</em:description>

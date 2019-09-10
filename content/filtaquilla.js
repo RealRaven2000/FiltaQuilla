@@ -29,16 +29,28 @@
  */
 
 Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
-Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("resource:///modules/MailUtils.js");
+try {
+	var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+	var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
+}
+catch(ex) {
+	Components.utils.import("resource://gre/modules/Services.jsm");
+	Components.utils.import("resource:///modules/MailUtils.js");
+}
 
 (function filtaQuilla()
 {
-	Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+	debugger;
+	var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+  // FiltaQuilla web extension object
+	var {FiltaQuilla_wx} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-wx.js");
+	// FiltaQuilla.wx = FiltaQuilla_wx;
+	
   const Cc = Components.classes,
         Ci = Components.interfaces,
         Cu = Components.utils,
-				util = FiltaQuilla.Util;
+				util = FiltaQuilla.Util,
+				wx = FiltaQuilla.wx;
 	
 
   // parameters for MoveLater
@@ -71,56 +83,56 @@ Components.utils.import("resource:///modules/MailUtils.js");
   let maxThreadScan = 20; // the largest number of thread messages that we will examine
 
   // cache the values of commonly used search operators
-  let nsMsgSearchOp = Ci.nsMsgSearchOp;
-  let Contains = nsMsgSearchOp.Contains;
-  let DoesntContain = nsMsgSearchOp.DoesntContain;
-  let Is = nsMsgSearchOp.Is;
-  let Isnt = nsMsgSearchOp.Isnt;
-  let IsEmpty = nsMsgSearchOp.IsEmpty;
-  let IsntEmpty = nsMsgSearchOp.IsntEmpty;
-  let BeginsWith = nsMsgSearchOp.BeginsWith;
-  let EndsWith = nsMsgSearchOp.EndsWith;
-  let Matches = nsMsgSearchOp.Matches;
-  let DoesntMatch = nsMsgSearchOp.DoesntMatch;
+  const nsMsgSearchOp = Ci.nsMsgSearchOp,
+				Contains = nsMsgSearchOp.Contains,
+				DoesntContain = nsMsgSearchOp.DoesntContain,
+				Is = nsMsgSearchOp.Is,
+				Isnt = nsMsgSearchOp.Isnt,
+				IsEmpty = nsMsgSearchOp.IsEmpty,
+				IsntEmpty = nsMsgSearchOp.IsntEmpty,
+				BeginsWith = nsMsgSearchOp.BeginsWith,
+				EndsWith = nsMsgSearchOp.EndsWith,
+				Matches = nsMsgSearchOp.Matches,
+				DoesntMatch = nsMsgSearchOp.DoesntMatch;
 
   // Enabling of filter actions.
-  let subjectAppendEnabled;
-  let subjectSuffixEnabled;
-  let removeKeywordEnabled;
-  let removeFlaggedEnabled;
-  let noBiffEnabled;
-  let markUnreadEnabled;
-  let markRepliedEnabled;
-  let copyAsReadEnabled;
-  let launchFileEnabled;
-  let runFileEnabled;
-  let trainAsJunkEnabled;
-  let trainAsGoodEnabled;
-  let printEnabled;
-  let addSenderEnabled;
-  let saveAttachmentEnabled;
-  let detachAttachmentsEnabled;
-  let javascriptActionEnabled;
-  let javascriptActionBodyEnabled;
-  let saveMessageAsFileEnabled;
-  let moveLaterEnabled;
+  let subjectAppendEnabled = false,
+      subjectSuffixEnabled = false,
+      removeKeywordEnabled = false,
+      removeFlaggedEnabled = false,
+      noBiffEnabled = false,
+      markUnreadEnabled = false,
+      markRepliedEnabled = false,
+      copyAsReadEnabled = false,
+      launchFileEnabled = false,
+      runFileEnabled = false,
+      trainAsJunkEnabled = false,
+      trainAsGoodEnabled = false,
+      printEnabled = false,
+      addSenderEnabled = false,
+      saveAttachmentEnabled = false,
+      detachAttachmentsEnabled = false,
+      javascriptActionEnabled = false,
+      javascriptActionBodyEnabled = false,
+      saveMessageAsFileEnabled = false,
+      moveLaterEnabled = false;
 
   // Enabling of search terms.
-  let SubjectRegexEnabled;
-  let HeaderRegexEnabled;
-  let JavascriptEnabled;
-  let SearchBccEnabled;
-  let ThreadHeadTagEnabled;
-  let ThreadAnyTagEnabled;
-  let FolderNameEnabled;
+  let SubjectRegexEnabled = false,
+      HeaderRegexEnabled = false,
+      JavascriptEnabled = false,
+      SearchBccEnabled = false,
+      ThreadHeadTagEnabled = false,
+      ThreadAnyTagEnabled = false,
+      FolderNameEnabled = false;
 	// [#5] AG new condition - attachment name regex
-	let AttachmentRegexEnabled;
+	let AttachmentRegexEnabled = false;
 
   let moveLaterTimers = {}; // references to timers used in moveLater action
   let moveLaterIndex = 0; // next index to use to store timers
 
-  let printQueue = [];
-  let printingMessage = false;
+  let printQueue = [],
+      printingMessage = false;
 
   // inherited property object
   let applyIncomingFilters = {
@@ -662,6 +674,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					util.logDebug('saveAttachmentCallback_callback');
 					debugger;
 				}
+				let txtStackedDump = "";
         this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
         this.attachments = aMimeMessage.allAttachments;
         let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
@@ -672,10 +685,12 @@ Components.utils.import("resource:///modules/MailUtils.js");
 							// create a unique file for this attachment
 							    uniqueFile = this.directory.clone();
 							uniqueFile.append(attachment.name);
-							util.logDebug("Save attachment [" + j + "] to " + uniqueFile.path + 
+							let txt = "Save attachment [" + j + "] to " + uniqueFile.path + 
 									"...\n msgURI=" + this.msgURI + 
 									"\n att.url=" + attachment.url +
-									"\n att.ncontentType=" + attachment.contentType);
+									"\n att.ncontentType=" + attachment.contentType;
+							util.logDebug(txt);
+							txtStackedDump += txtStackedDump + txt + "\n";
 							uniqueFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
 							messenger.saveAttachmentToFile(uniqueFile, attachment.url, this.msgURI,
 																						 attachment.contentType, null);
@@ -694,10 +709,12 @@ Components.utils.import("resource:///modules/MailUtils.js");
 								contentTypes.push(attachment.contentType);
 								urls.push(attachment.url);
 								displayNames.push(attachment.name);
-								util.logDebug("Detach attachment [" + j + "] to " + uniqueFile.path + 
+								let txt = "Detach attachment [" + j + "] to " + uniqueFile.path + 
 										"...\n msgURI=" + this.msgURI + 
 										"\n att.url=" + attachment.url +
-										"\n att.ncontentType=" + attachment.contentType)
+										"\n att.ncontentType=" + attachment.contentType;
+								util.logDebug(txt);
+								txtStackedDump += txtStackedDump + txt + "\n";
 								
 							}
 							messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length,
@@ -706,7 +723,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					}
 				}
 				catch (ex) {
-					util.logException("SaveAttachmentCallback", ex);
+					util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
 				}
       } 
     },
@@ -1424,6 +1441,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
   // extension initialization
 
   self.onLoad = function() {
+		debugger;
     if (self.initialized)
       return;
     self._init();
@@ -1962,7 +1980,14 @@ Components.utils.import("resource:///modules/MailUtils.js");
       return true;
     return false;
   }
-  /**/
+	*/
+	if (customElements) {
+		/* thunderbird 68 has no xml bindings */
+	
+		// FiltaQuilla.wx.init();
+	}
+
+	
 
 })();
 
