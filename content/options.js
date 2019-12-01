@@ -46,7 +46,7 @@ function onLoad() {
   if(appInfo.ID == THUNDERBIRD_ID) {
     haveActionNeedsBody =
       (versionChecker.compare(version, "3.1b2pre") >= 0)  ? true : false;
-    haveDetachToFile = 
+    haveDetachToFile =
       (versionChecker.compare(version, "3.1b2pre") >= 0)  ? true : false;
   }
 
@@ -54,7 +54,7 @@ function onLoad() {
   if(appInfo.ID == SEAMONKEY_ID) {
     haveActionNeedsBody =
       (versionChecker.compare(version, "2.1a1pre") >= 0)  ? true : false;
-    haveDetachToFile = 
+    haveDetachToFile =
       (versionChecker.compare(version, "2.1a1pre") >= 0)  ? true : false;
   }
 

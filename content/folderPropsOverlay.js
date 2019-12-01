@@ -32,7 +32,7 @@
  // to add our xul dynamically.
 
 Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
- 
+
 (function() {
   // global scope variables
   this.filtaquillaFolderProps = {};
@@ -67,12 +67,12 @@ Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
     } catch (e) {
 			Cu.reportError(e);
 		}
-		
+
     if (row) {
       rows.appendChild(row);
       // extend the ondialogaccept attribute
       let dialog = document.getElementsByTagName("dialog")[0];
-      dialog.setAttribute("ondialogaccept", "filtaquillaFolderProps.onAcceptInherit();" + 
+      dialog.setAttribute("ondialogaccept", "filtaquillaFolderProps.onAcceptInherit();" +
                           dialog.getAttribute("ondialogaccept"));
     }
     else
