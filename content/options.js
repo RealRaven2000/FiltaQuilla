@@ -34,7 +34,7 @@ function onLoad() {
         Cu = Components.utils,
         THUNDERBIRD_ID = "{3550f703-e582-4d05-9a08-453d09bdfdc6}",
         SEAMONKEY_ID = "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
-				
+
   let appInfo = Cc["@mozilla.org/xre/app-info;1"]
                   .getService(Ci.nsIXULAppInfo),
       versionChecker = Cc["@mozilla.org/xpcom/version-comparator;1"]
@@ -47,7 +47,7 @@ function onLoad() {
   if(appInfo.ID == THUNDERBIRD_ID) {
     haveActionNeedsBody =
       (versionChecker.compare(version, "3.1b2pre") >= 0)  ? true : false;
-    haveDetachToFile = 
+    haveDetachToFile =
       (versionChecker.compare(version, "3.1b2pre") >= 0)  ? true : false;
   }
 
@@ -55,7 +55,7 @@ function onLoad() {
   if(appInfo.ID == SEAMONKEY_ID) {
     haveActionNeedsBody =
       (versionChecker.compare(version, "2.1a1pre") >= 0)  ? true : false;
-    haveDetachToFile = 
+    haveDetachToFile =
       (versionChecker.compare(version, "2.1a1pre") >= 0)  ? true : false;
   }
 

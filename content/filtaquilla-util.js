@@ -3,7 +3,7 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
  * This file is part of FiltaQuilla, Custom Filter Actions
- * rereleased by Axel Grude (original project by R Kent James 
+ * rereleased by Axel Grude (original project by R Kent James
  * under the Mesquilla Project)
  *
  * FiltaQuilla is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with FiltaQuilla.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
@@ -35,10 +35,10 @@ FiltaQuilla.Util = {
           Cc = Components.classes;
 		if (this._prefs) return this._prefs;
 		var prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService);
-		this._prefs = prefs.getBranch("extensions.filtaquilla.");		
+		this._prefs = prefs.getBranch("extensions.filtaquilla.");
 		return this._prefs;
 	},
-	
+
   get AppverFull() {
     let appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
             .getService(Components.interfaces.nsIXULAppInfo);
@@ -52,7 +52,7 @@ FiltaQuilla.Util = {
     }
     return this.mAppver;
   },
-	
+
   get Application() {
     if (null===this.mAppName) {
     let appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
@@ -78,20 +78,20 @@ FiltaQuilla.Util = {
     }
     return this.mAppName;
   },
-	
+
 	get tabmail() {
 		let doc = this.getMail3PaneWindow().document,
 		    tabmail = doc.getElementById("tabmail");
 		return tabmail;
 	} ,
-	
+
   getMail3PaneWindow: function getMail3PaneWindow() {
     let windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1']
         .getService(Components.interfaces.nsIWindowMediator),
         win3pane = windowManager.getMostRecentWindow("mail:3pane");
     return win3pane;
   } ,
-	
+
   getTabInfoLength: function getTabInfoLength(tabmail) {
 		if (tabmail.tabInfo)
 		  return tabmail.tabInfo.length;
@@ -99,35 +99,35 @@ FiltaQuilla.Util = {
 		  return tabmail.tabOwners.length;
 		return null;
 	} ,
-	
+
 	getTabInfoByIndex: function getTabInfoByIndex(tabmail, idx) {
 		if (tabmail.tabInfo)
 			return tabmail.tabInfo[idx];
 		if (tabmail.tabOwners)
 		  return tabmail.tabOwners[idx];  // Postbox
 		return null;
-	} ,	
-		
+	} ,
+
 	getBaseURI: function baseURI(URL) {
 		let hashPos = URL.indexOf('#'),
 				queryPos = URL.indexOf('?'),
 				baseURL = URL;
-				
+
 		if (hashPos>0)
 			baseURL = URL.substr(0, hashPos);
 		else if (queryPos>0)
 			baseURL = URL.substr(0, queryPos);
 		if (baseURL.endsWith('/'))
 			return baseURL.substr(0, baseURL.length-1); // match "x.com" with "x.com/"
-		return baseURL;		
+		return baseURL;
 	} ,
-	
+
 	findMailTab: function findMailTab(tabmail, URL) {
 		const util = FiltaQuilla.Util;
-		// mail: tabmail.tabInfo[n].browser		
+		// mail: tabmail.tabInfo[n].browser
 		let baseURL = util.getBaseURI(URL),
 				numTabs = util.getTabInfoLength(tabmail);
-		
+
 		for (let i = 0; i < numTabs; i++) {
 			let info = util.getTabInfoByIndex(tabmail, i);
 			if (info.browser && info.browser.currentURI) {
@@ -140,8 +140,8 @@ FiltaQuilla.Util = {
 			}
 		}
 		return false;
-	} ,	
-	
+	} ,
+
 	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
 		let f = (fragment ? "#" + fragment : ""),
 		    URL = "http://quickfilters.mozdev.org/filtaquilla.html" + f;
@@ -149,7 +149,7 @@ FiltaQuilla.Util = {
 			FiltaQuilla.Util.openLinkInTab(URL);
 			});
 	} ,
-	
+
 	openLinkInTab : function FiltaQuilla_openLinkInTab(URL) {
 		const util = FiltaQuilla.Util;
 		// URL = util.makeUriPremium(URL);
@@ -166,7 +166,7 @@ FiltaQuilla.Util = {
 						let mail3PaneWindow = this.getMail3PaneWindow();
 						if (mail3PaneWindow) {
 							tabmail = mail3PaneWindow.document.getElementById("tabmail");
-							mail3PaneWindow.setTimeout(function() 
+							mail3PaneWindow.setTimeout(function()
 									{	mail3PaneWindow.focus();
 									},
 									250
@@ -184,9 +184,9 @@ FiltaQuilla.Util = {
 					else {
 						window.openDialog("chrome://messenger/content/", "_blank",
 											"chrome,dialog=no,all", null,
-							{ tabType: "contentTab", 
+							{ tabType: "contentTab",
 								tabParams: {contentPage: URL, id:"FiltaQuilla_Weblink"}   // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);",
-							} 
+							}
 						);
 					}
 			}
@@ -194,7 +194,7 @@ FiltaQuilla.Util = {
 		catch(e) { return false; }
 		return true;
 	} ,
-	
+
 	openLinkInBrowserForced: function openLinkInBrowserForced(linkURI) {
     const Ci = Components.interfaces,
           Cc = Components.classes,
@@ -206,11 +206,11 @@ FiltaQuilla.Util = {
             browserWin = windowManager.getMostRecentWindow( "navigator:browser" );
         if (browserWin) {
           let URI = linkURI;
-          setTimeout(function() { 
+          setTimeout(function() {
 						let tabBrowser = browserWin.getBrowser(),
 						    params = {"selected":true};
-					  browserWin.currentTab = tabBrowser.addTab(URI, params); 
-						if (browserWin.currentTab.reload) browserWin.currentTab.reload(); 
+					  browserWin.currentTab = tabBrowser.addTab(URI, params);
+						if (browserWin.currentTab.reload) browserWin.currentTab.reload();
 						// activate last tab
 						if (tabBrowser && tabBrowser.tabContainer)
 							tabBrowser.tabContainer.selectedIndex = tabBrowser.tabContainer.childNodes.length-1;
@@ -231,7 +231,7 @@ FiltaQuilla.Util = {
     }
     catch(e) { this.logDebug("openLinkInBrowserForced (" + linkURI + ") " + e.toString()); }
   },
-	
+
   logTime: function logTime() {
     let timePassed = '',
         end = new Date(),
@@ -251,7 +251,7 @@ FiltaQuilla.Util = {
 
   logToConsole: function logToConsole(msg, optionTag) {
     let consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
-    consoleService.logStringMessage("FiltaQuilla " 
+    consoleService.logStringMessage("FiltaQuilla "
 			+ (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '')
 			+ this.logTime() + "\n"+ msg);
   },
@@ -280,28 +280,28 @@ FiltaQuilla.Util = {
     let srcName = ex.fileName ? ex.fileName : "";
     this.logError(aMessage + "\n" + ex.message, srcName, stack, ex.lineNumber, 0, 0x1); // use warning flag, as this is an exception we caught ourselves
   } ,
-  
+
   logDebug: function logDebug(msg) {
     if (this.isDebug)
       this.logToConsole(msg);
   },
-	
+
   isDebug: function isDebug() {
 		return this.prefs.getBoolPref("debug");
   },
-	
+
 	isDebugOption: function isDebugOption(o) {
 		if(!this.isDebug) return false;
 		try {return this.prefs.getBoolPref("debug." + option);}
 		catch(e) {return false;}
 	},
 
-  /** 
+  /**
 	* only logs if debug mode is set and specific debug option are active
-	* 
+	*
 	* @optionString {string}: comma delimited options
-  * @msg {string}: text to log 
-	*/   
+  * @msg {string}: text to log
+	*/
   logDebugOptional: function logDebugOptional(optionString, msg) {
 		try {
 			let options = optionString.split(',');
@@ -311,24 +311,24 @@ FiltaQuilla.Util = {
 					this.logToConsole(msg, option);
 					break; // only log once, in case multiple log switches are on
 				}
-			}        
+			}
 		}
 		catch(ex) {;}
-  },	
-	
+  },
+
   toggleBoolPreference: function(cb, noUpdate) {
     const Ci = Components.interfaces,
 					Cc = Components.classes;
     let prefString = cb.getAttribute("preference");
     let pref = document.getElementById(prefString);
-    
+
     if (pref)
 			Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch).setBoolPref(pref.getAttribute('name'), cb.checked);
     if (noUpdate)
       return true;
     return false // this.updateMainWindow();
   },
-  
+
   showAboutConfig: function(clickedElement, filter, readOnly) {
     const name = "Preferences:ConfigManager",
 		      util = FiltaQuilla.Util;
@@ -347,7 +347,7 @@ FiltaQuilla.Util = {
       w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=500px,height=350px", null);
     }
     w.focus();
-    w.addEventListener('load', 
+    w.addEventListener('load',
       function () {
         let flt = w.document.getElementById("textbox");
         if (flt) {
@@ -362,15 +362,15 @@ FiltaQuilla.Util = {
           }
         }
       });
-  },	
-	
+  },
+
 	// Tb 66 compatibility.
 	loadPreferences: function fq_loadPreferences() {
 		const util = FiltaQuilla.Util;
 		if (typeof Preferences == 'undefined') {
 			util.logDebug("Skipping loadPreferences - Preferences object not defined");
 			return; // older versions of Thunderbird do not need this.
-		}		
+		}
 		let myprefs = document.getElementsByTagName("preference");
 		if (myprefs.length) {
 			let prefArray = [];
@@ -382,9 +382,9 @@ FiltaQuilla.Util = {
 			}
 			if (Preferences)
 				Preferences.addAll(prefArray);
-		}							
-	},	
-	
-	
+		}
+	},
+
+
 }
 
