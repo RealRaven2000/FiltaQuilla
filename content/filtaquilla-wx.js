@@ -3,7 +3,7 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
  * This file is part of FiltaQuilla, Custom Filter Actions
- * rereleased by Axel Grude (original project by R Kent James 
+ * rereleased by Axel Grude (original project by R Kent James
  * under the Mesquilla Project)
  *
  * FiltaQuilla is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with FiltaQuilla.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
@@ -26,7 +26,7 @@ var EXPORTED_SYMBOLS = ['FiltaQuilla_wx'];
 
 
 var FiltaQuilla_wx = {
-  // example - https://dxr.mozilla.org/comm-beta/source/mailnews/base/search/content/searchWidgets.js#133 
+  // example - https://dxr.mozilla.org/comm-beta/source/mailnews/base/search/content/searchWidgets.js#133
   // convert binding id="directoryPicker"
   class MozRuleactiontargetSaveAttachment extends MozXULElement {
     connectedCallback() {
@@ -35,12 +35,12 @@ var FiltaQuilla_wx = {
         MozXULElement.parseXULToFragment(
       `
       <xul:hbox>
-        <xul:textbox 
-          class="ruleactionitem" 
+        <xul:textbox
+          class="ruleactionitem"
           onchange="this.parentNode.value = this.value;"/>
-        <xul:toolbarbutton 
+        <xul:toolbarbutton
           image="chrome://filtaquilla/skin/folder.png"
-          class="focusbutton" 
+          class="focusbutton"
           tooltiptext="&filebutton;"
           oncommand="this.parentNode.parentNode.getURL();"/>
       </xul:hbox>
@@ -48,7 +48,7 @@ var FiltaQuilla_wx = {
           ["chrome://filtaquilla/locale/bindings.dtd"]
         )
       );
-      
+
       this.textbox =  this.querySelector("textbox");
       this.hbox = this.querySelector("hbox");
       this.btnPicker = this.querySelector("toolbarbutton");
@@ -57,10 +57,10 @@ var FiltaQuilla_wx = {
           setPicker(event);
         }
       )
-      
+
       updateParentNode(this.closest(".ruleaction"));
     }
-    
+
     setPicker(event) {
       const Ci = Components.interfaces,
             Cc = Components.classes,
@@ -77,11 +77,11 @@ var FiltaQuilla_wx = {
         fp.defaultString = file.leafName;
       }
       catch (e) {}
-      
+
       //closured stuff:
       let pathBox = this.textbox,
           hBox = this.hbox;
-          
+
       let fpCallback = function fpCallback_done(aResult) {
         if (aResult == nsIFilePicker.returnOK) {
           // We will setup a default using the subject
@@ -89,24 +89,24 @@ var FiltaQuilla_wx = {
           hBox.value = pathBox.value;
         }
       }
-      
+
       if (fp.open)
-        fp.open(fpCallback);    
+        fp.open(fpCallback);
       else { // old code
         fpCallback(fp.show());
       }
     }
-  
+
   }
-  
-  
+
+
   this.init = function fq_wx_init() {
     customElements.define(
       "filtaquilla@mesquilla.com#saveAttachment",
       MozRuleactiontargetSaveAttachment
-    );    
+    );
   }
-  
+
 }
 
 /* CODE CONVERTED USING https://bgrins.github.io/xbl-analysis/converter/ */
@@ -123,11 +123,11 @@ class MozLaunchPicker extends MozRuleactiontargetBase {
     this.appendChild(MozXULElement.parseXULToFragment(`
       <hbox>
         <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-        <toolbarbutton image="chrome://filtaquilla/skin/folder.png" 
-                       class="focusbutton" tooltiptext="FROM-DTD-filebutton" 
+        <toolbarbutton image="chrome://filtaquilla/skin/folder.png"
+                       class="focusbutton" tooltiptext="FROM-DTD-filebutton"
                        oncommand="this.parentNode.parentNode.getURL()">
         </toolbarbutton>
-        <toolbarbutton image="chrome://filtaquilla/skin/folder_go.png" 
+        <toolbarbutton image="chrome://filtaquilla/skin/folder_go.png"
                        class="focusbutton" tooltiptext="FROM-DTD-launchbutton" oncommand="this.parentNode.parentNode.launch()"></toolbarbutton>
       </hbox>
     `));

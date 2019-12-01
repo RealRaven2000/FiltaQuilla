@@ -42,14 +42,14 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 var InheritedPropertiesGrid = {
 	getInheritedProperties: function getInheritedProperties() {
-    let inheritedProperties = 
+    let inheritedProperties =
 		  Services.prefs.getStringPref ?
 		  Services.prefs.getStringPref("mesquillaInheritedProperties", "{}") :
 			Services.prefs.getComplexValue("mesquillaInheritedProperties", Ci.nsISupportsString).data;
-		  
+
 		return JSON.parse(inheritedProperties);
 	},
-	
+
 	setInheritedProperties: function setInheritedProperties(props) {
 		let sData = JSON.stringify(props);
 		if (Services.prefs.setStringPref)
@@ -90,7 +90,7 @@ var InheritedPropertiesGrid = {
                             false /* aPersist */,
                             true /* aReplace */);
     // new method, saving in a global context
-	
+
     let inheritedProperties = this.getInheritedProperties();
     inheritedProperties[aPropertyObject.property] = aPropertyObject;
 		this.setInheritedProperties(inheritedProperties);
@@ -157,7 +157,7 @@ var InheritedPropertiesGrid = {
 
   // Create or get a 3-column grid to describe inherited variables for the
   //  folder properties xul. Account Manager uses an overlay.
-  getInheritRows: function getInheritRows(document) { 
+  getInheritRows: function getInheritRows(document) {
 	  try {
 			/* this is what we are creating, and adding to the GeneralPanel
 			<vbox id="inheritBox">
@@ -218,7 +218,7 @@ var InheritedPropertiesGrid = {
 
 			let inheritColumn = document.createElement("column");
 			columns.appendChild(inheritColumn);
-	 
+
 			let flexColumn = document.createElement("column");
 			flexColumn.setAttribute("flex", "1");
 			grid.appendChild(flexColumn);
@@ -247,7 +247,7 @@ var InheritedPropertiesGrid = {
 			// add it all to the panel
 			inheritBox.appendChild(grid);
 			return rows;
-		} 
+		}
 		catch(e) {Cu.reportError(e);}
 	},
 
@@ -261,7 +261,7 @@ var InheritedPropertiesGrid = {
    * @param aIsAccountManager  true if row in account manager
    */
 
-  createInheritRow: function createInheritRow(aProperty, aFolder, document, aIsAccountManager) { 
+  createInheritRow: function createInheritRow(aProperty, aFolder, document, aIsAccountManager) {
 		try {
 			/* We are creating this:
 
@@ -314,7 +314,7 @@ var InheritedPropertiesGrid = {
 			// We only use this in the account manager
 			if (aIsAccountManager)
 				enableCheckbox.setAttribute("oncommand",
-					"InheritedPropertiesGrid.onCommandEnable('" + property + 
+					"InheritedPropertiesGrid.onCommandEnable('" + property +
 					"' ,gInheritTarget, document);");
 			enableHbox.appendChild(enableCheckbox);
 			row.appendChild(enableHbox);
@@ -324,7 +324,7 @@ var InheritedPropertiesGrid = {
 			let inheritCheckbox = document.createElement("checkbox");
 			inheritCheckbox.setAttribute("id", "inherit-" + property);
 			inheritCheckbox.setAttribute("oncommand",
-				"InheritedPropertiesGrid.onCommandInherit('" + property + 
+				"InheritedPropertiesGrid.onCommandInherit('" + property +
 				"' ,gInheritTarget, document);");
 			inheritHbox.appendChild(inheritCheckbox);
 			row.appendChild(inheritHbox);
@@ -391,17 +391,17 @@ var InheritedPropertiesGrid = {
 
 			return row;
 
-		} 
+		}
 		catch (e) {Cu.reportError(e);}
 	},
 
-  onCommandInherit: function onCommandInherit(property, aFolder, document) { 
+  onCommandInherit: function onCommandInherit(property, aFolder, document) {
 		try {
 
 			// find the property object
 			let propertyObject = this.getPropertyObject(property),
 			// Whether a property is "enabled" depends on its default, since the
-			//  inherited folder property is usually an override. 
+			//  inherited folder property is usually an override.
 			    defaultValue = true, // propertyObject.defaultValue(aFolder);
 			    elementInherit = document.getElementById("inherit-" + property),
 			    elementEnable = document.getElementById("enable-" + property),
@@ -432,12 +432,12 @@ var InheritedPropertiesGrid = {
 				elementEnable.focus();
 			}
 
-		} 
+		}
 		catch (e) {Cu.reportError(e);}
 	},
 
   // this function is only used in the account manager.
-  onCommandEnable: function onCommandEnable(property, aFolder, document) { 
+  onCommandEnable: function onCommandEnable(property, aFolder, document) {
 		try {
 			let elementEnable = document.getElementById("enable-" + property),
 			    isEnabledString = elementEnable.checked ? "true" : "false",
@@ -445,13 +445,13 @@ var InheritedPropertiesGrid = {
 			//  persisting the preference.
 			    elementText = document.getElementById("server." + property);
 			elementText.setAttribute("value", isEnabledString);
-		} 
+		}
 		catch (e) {Cu.reportError(e);}
 	},
 
   // This function does not work with the account manager, which has its
   //  own mechanism for accepting preferences.
-  onAcceptInherit: function onAcceptInherit(aProperty, aFolder, document) { 
+  onAcceptInherit: function onAcceptInherit(aProperty, aFolder, document) {
 		try {
 			let property = aProperty,
 			    elementInherit = document.getElementById("inherit-" + property),
@@ -480,7 +480,7 @@ var InheritedPropertiesGrid = {
 				else
 					aFolder.setStringProperty(property, value);
 			}
-		} 
+		}
 		catch (e) {Cu.reportError(e);}
 	}
 }
