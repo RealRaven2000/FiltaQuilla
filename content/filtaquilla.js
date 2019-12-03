@@ -42,15 +42,11 @@ catch(ex) {
 {
 	debugger;
 	var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
-  // FiltaQuilla web extension object
-	var {FiltaQuilla_wx} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-wx.js");
-	// FiltaQuilla.wx = FiltaQuilla_wx;
 
   const Cc = Components.classes,
         Ci = Components.interfaces,
         Cu = Components.utils,
-				util = FiltaQuilla.Util,
-				wx = FiltaQuilla.wx;
+				util = FiltaQuilla.Util;
 
 
   // parameters for MoveLater
@@ -150,7 +146,8 @@ catch(ex) {
   Cu.import("resource:///modules/gloda/mimemsg.js", self._mimeMsg);
 
   self._init = function() {
-    self.strings = document.getElementById("filtaquilla-strings");
+    self.strings = filtaquillaStrings;
+    //self.strings = Services.strings.createBundle("chrome://filtaquilla/locale/filtaquilla.properties");
 
     /*
      * custom action implementations
@@ -160,7 +157,7 @@ catch(ex) {
     self.subjectAppend =
     {
       id: "filtaquilla@mesquilla.com#subjectAppend",
-      name: self.strings.getString("filtaquilla.subjectappend.name"),
+      name: self.strings.GetStringFromName("filtaquilla.subjectappend.name"),
 
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -184,7 +181,7 @@ catch(ex) {
     self.subjectSuffix =
     {
       id: "filtaquilla@mesquilla.com#subjectSuffix",
-      name: self.strings.getString("filtaquilla.subjectsuffix.name"),
+      name: self.strings.GetStringFromName("filtaquilla.subjectsuffix.name"),
 
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -208,7 +205,7 @@ catch(ex) {
     self.removeKeyword =
     {
       id: "filtaquilla@mesquilla.com#removeTag",
-      name: self.strings.getString("filtaquilla.removekeyword.name"),
+      name: self.strings.GetStringFromName("filtaquilla.removekeyword.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
@@ -225,7 +222,7 @@ catch(ex) {
     self.removeFlagged =
     {
       id: "filtaquilla@mesquilla.com#removeStar",
-      name: self.strings.getString("filtaquilla.removeflagged.name"),
+      name: self.strings.GetStringFromName("filtaquilla.removeflagged.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
@@ -240,7 +237,7 @@ catch(ex) {
     self.markUnread =
     {
       id: "filtaquilla@mesquilla.com#markUnread",
-      name: self.strings.getString("filtaquilla.markunread.name"),
+      name: self.strings.GetStringFromName("filtaquilla.markunread.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
@@ -255,7 +252,7 @@ catch(ex) {
     self.markReplied =
     {
       id: "filtaquilla@mesquilla.com#markReplied",
-      name: self.strings.getString("filtaquilla.markreplied.name"),
+      name: self.strings.GetStringFromName("filtaquilla.markreplied.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         // what a pain, the folder function does not take an array like all others!
@@ -274,7 +271,7 @@ catch(ex) {
     self.noBiff =
     {
       id: "filtaquilla@mesquilla.com#noBiff",
-      name: self.strings.getString("filtaquilla.nobiff.name"),
+      name: self.strings.GetStringFromName("filtaquilla.nobiff.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var folder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
@@ -294,7 +291,7 @@ catch(ex) {
       self.copyAsRead =
       {
         id: "filtaquilla@mesquilla.com#copyAsRead",
-        name: self.strings.getString("filtaquilla.copyasread.name"),
+        name: self.strings.GetStringFromName("filtaquilla.copyasread.name"),
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
         {
           _aListener = aListener;
@@ -318,7 +315,7 @@ catch(ex) {
           var msgFolder = MailUtils.getFolderForURI(aActionValue, false);
           if (!msgFolder || !msgFolder.canFileMessages)
           {
-            return self.strings.getString("filtaquilla.mustSelectFolder");
+            return self.strings.GetStringFromName("filtaquilla.mustSelectFolder");
           }
           return null;
         },
@@ -422,7 +419,7 @@ catch(ex) {
     self.launchFile =
     {
       id: "filtaquilla@mesquilla.com#launchFile",
-      name: self.strings.getString("filtaquilla.launchfile.name"),
+      name: self.strings.GetStringFromName("filtaquilla.launchfile.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var file = Cc["@mozilla.org/file/local;1"]
@@ -441,7 +438,7 @@ catch(ex) {
     self.runFile =
     {
       id: "filtaquilla@mesquilla.com#runFile",
-      name: self.strings.getString("filtaquilla.runfile.name"),
+      name: self.strings.GetStringFromName("filtaquilla.runfile.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var file = Cc["@mozilla.org/file/local;1"]
@@ -486,7 +483,7 @@ catch(ex) {
     self.trainAsJunk =
     {
       id: "filtaquilla@mesquilla.com#trainAsJunk",
-      name: self.strings.getString("filtaquilla.trainasjunk.name"),
+      name: self.strings.GetStringFromName("filtaquilla.trainasjunk.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         _trainJunkFilter(true, aMsgHdrs, aMsgWindow);
@@ -502,7 +499,7 @@ catch(ex) {
     self.trainAsGood =
     {
       id: "filtaquilla@mesquilla.com#trainAsGood",
-      name: self.strings.getString("filtaquilla.trainasgood.name"),
+      name: self.strings.GetStringFromName("filtaquilla.trainasgood.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         _trainJunkFilter(false, aMsgHdrs, aMsgWindow);
@@ -518,7 +515,7 @@ catch(ex) {
     self.print =
     {
       id: "filtaquilla@mesquilla.com#print",
-      name: self.strings.getString("filtaquilla.print.name"),
+      name: self.strings.GetStringFromName("filtaquilla.print.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         // print me
@@ -583,7 +580,7 @@ catch(ex) {
     self.addSender =
     {
       id: "filtaquilla@mesquilla.com#addSender",
-      name: self.strings.getString("filtaquilla.addSender.name"),
+      name: self.strings.GetStringFromName("filtaquilla.addSender.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let dir = abManager.getDirectory(aActionValue);
@@ -625,7 +622,7 @@ catch(ex) {
     self.saveAttachment =
     {
       id: "filtaquilla@mesquilla.com#saveAttachment",
-      name: self.strings.getString("filtaquilla.saveAttachment.name"),
+      name: self.strings.GetStringFromName("filtaquilla.saveAttachment.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
@@ -732,7 +729,7 @@ catch(ex) {
     self.detachAttachments =
     {
       id: "filtaquilla@mesquilla.com#detachAttachments",
-      name: self.strings.getString("filtaquilla.detachAttachments.name"),
+      name: self.strings.GetStringFromName("filtaquilla.detachAttachments.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
@@ -770,7 +767,7 @@ catch(ex) {
     self.javascriptAction =
     {
       id: "filtaquilla@mesquilla.com#javascriptAction",
-      name: self.strings.getString("filtaquilla.javascriptAction.name"),
+      name: self.strings.GetStringFromName("filtaquilla.javascriptAction.name"),
       apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
       {
         return eval(actionValue);
@@ -784,7 +781,7 @@ catch(ex) {
     self.javascriptActionBody =
     {
       id: "filtaquilla@mesquilla.com#javascriptActionBody",
-      name: self.strings.getString("filtaquilla.javascriptActionBody.name"),
+      name: self.strings.GetStringFromName("filtaquilla.javascriptActionBody.name"),
       apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
       {
         return eval(actionValue);
@@ -798,7 +795,7 @@ catch(ex) {
     self.saveMessageAsFile =
     {
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
-      name: self.strings.getString("filtaquilla.saveMessageAsFile.name"),
+      name: self.strings.GetStringFromName("filtaquilla.saveMessageAsFile.name"),
       apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
       {
         // allow specifying directory with suffix of |htm
@@ -830,7 +827,7 @@ catch(ex) {
     self.moveLater =
     {
       id: "filtaquilla@mesquilla.com#moveLater",
-      name: self.strings.getString("filtaquilla.moveLater.name"),
+      name: self.strings.GetStringFromName("filtaquilla.moveLater.name"),
       apply: function(aMsgHdrs, aActionValue, copyListener, filterType, msgWindow)
       {
         let srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
@@ -855,7 +852,7 @@ catch(ex) {
     self.folderName =
     {
       id: "filtaquilla@mesquilla.com#folderName",
-      name: self.strings.getString("filtaquilla.folderName.name"),
+      name: self.strings.GetStringFromName("filtaquilla.folderName.name"),
       getEnabled: function folderName_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -917,7 +914,7 @@ catch(ex) {
     self.searchBcc =
     {
       id: "filtaquilla@mesquilla.com#searchBcc",
-      name: self.strings.getString("filtaquilla.searchBcc.name"),
+      name: self.strings.GetStringFromName("filtaquilla.searchBcc.name"),
       getEnabled: function searchBcc_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1024,7 +1021,7 @@ catch(ex) {
     self.subjectRegex =
     {
       id: "filtaquilla@mesquilla.com#subjectRegex",
-      name: self.strings.getString("filtaquilla.subjectregex.name"),
+      name: self.strings.GetStringFromName("filtaquilla.subjectregex.name"),
       getEnabled: function subjectRegEx_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1115,7 +1112,7 @@ catch(ex) {
 		self.attachmentRegex =
 		{
       id: "filtaquilla@mesquilla.com#attachmentRegex",
-      name: self.strings.getString("filtaquilla.attachmentregex.name"),
+      name: self.strings.GetStringFromName("filtaquilla.attachmentregex.name"),
       getEnabled: function attachRegEx_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1181,7 +1178,7 @@ catch(ex) {
     self.headerRegex =
     {
       id: "filtaquilla@mesquilla.com#headerRegex",
-      name: self.strings.getString("filtaquilla.headerregex.name"),
+      name: self.strings.GetStringFromName("filtaquilla.headerregex.name"),
       getEnabled: function headerRegEx_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1237,7 +1234,7 @@ catch(ex) {
     self.javascript =
     {
       id: "filtaquilla@mesquilla.com#javascript",
-      name: self.strings.getString("filtaquilla.javascript.name"),
+      name: self.strings.GetStringFromName("filtaquilla.javascript.name"),
       getEnabled: function javascript_getEnabled(scope, op)
       {
         return true;
@@ -1269,7 +1266,7 @@ catch(ex) {
     self.threadHeadTag =
     {
       id: "filtaquilla@mesquilla.com#threadheadtag",
-      name: self.strings.getString("filtaquilla.threadheadtag.name"),
+      name: self.strings.GetStringFromName("filtaquilla.threadheadtag.name"),
       getEnabled: function threadHeadTag_getEnabled(scope, op)
       {
         return true;
@@ -1338,7 +1335,7 @@ catch(ex) {
     self.threadAnyTag =
     {
       id: "filtaquilla@mesquilla.com#threadanytag",
-      name: self.strings.getString("filtaquilla.threadanytag.name"),
+      name: self.strings.GetStringFromName("filtaquilla.threadanytag.name"),
       getEnabled: function threadAnyTag_getEnabled(scope, op)
       {
         return true;
@@ -1981,14 +1978,6 @@ catch(ex) {
     return false;
   }
 	*/
-	if (customElements) {
-		/* thunderbird 68 has no xml bindings */
-
-		// FiltaQuilla.wx.init();
-	}
-
-
-
 })();
 
 window.addEventListener("load", function(e) { filtaquilla.onLoad(e); }, false);
