@@ -6,11 +6,11 @@ locale   filtaquilla   sv         locale/sv-SE/
 locale   filtaquilla   nl         locale/nl/
 skin     filtaquilla   classic/1.0   skin/
 overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul
-overlay  chrome://messenger/content/folderProps.xul chrome://filtaquilla/content/folderPropsOverlay.xul
 overlay  chrome://messenger/content/FilterEditor.xul chrome://filtaquilla/content/filterEditorOverlay.xul
 overlay  chrome://messenger/content/SearchDialog.xul chrome://filtaquilla/content/filterEditorOverlay.xul
 overlay  chrome://messenger/content/mailViewSetup.xul chrome://filtaquilla/content/filterEditorOverlay.xul
 overlay  chrome://messenger/content/virtualFolderProperties.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-component   {f2809396-1cd1-12b2-841b-8e15f007c699} components/inheritPane-service.js
-contract    @mozilla.org/accountmanager/extension;1?name=inheritPane {f2809396-1cd1-12b2-841b-8e15f007c699}
-category    mailnews-accountmanager-extensions mesquilla-extension-inherit-pane @mozilla.org/accountmanager/extension;1?name=inheritPane
+#overlay  chrome://messenger/content/folderProps.xul chrome://filtaquilla/content/folderPropsOverlay.xul
+#component   {f2809396-1cd1-12b2-841b-8e15f007c699} components/inheritPane-service.js
+#contract    @mozilla.org/accountmanager/extension;1?name=inheritPane {f2809396-1cd1-12b2-841b-8e15f007c699}
+#category    mailnews-accountmanager-extensions mesquilla-extension-inherit-pane #@mozilla.org/accountmanager/extension;1?name=inheritPane

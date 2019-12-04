@@ -29,17 +29,25 @@
  */
 
 Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
-Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("resource:///modules/MailUtils.js");
+try {
+	var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+	var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
+}
+catch(ex) {
+	Components.utils.import("resource://gre/modules/Services.jsm");
+	Components.utils.import("resource:///modules/MailUtils.js");
+}
 
 (function filtaQuilla()
 {
-	Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+	debugger;
+	var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+
   const Cc = Components.classes,
         Ci = Components.interfaces,
         Cu = Components.utils,
 				util = FiltaQuilla.Util;
-	
+
 
   // parameters for MoveLater
   //  delay (in milliseconds) between calls to move later
@@ -71,56 +79,56 @@ Components.utils.import("resource:///modules/MailUtils.js");
   let maxThreadScan = 20; // the largest number of thread messages that we will examine
 
   // cache the values of commonly used search operators
-  let nsMsgSearchOp = Ci.nsMsgSearchOp;
-  let Contains = nsMsgSearchOp.Contains;
-  let DoesntContain = nsMsgSearchOp.DoesntContain;
-  let Is = nsMsgSearchOp.Is;
-  let Isnt = nsMsgSearchOp.Isnt;
-  let IsEmpty = nsMsgSearchOp.IsEmpty;
-  let IsntEmpty = nsMsgSearchOp.IsntEmpty;
-  let BeginsWith = nsMsgSearchOp.BeginsWith;
-  let EndsWith = nsMsgSearchOp.EndsWith;
-  let Matches = nsMsgSearchOp.Matches;
-  let DoesntMatch = nsMsgSearchOp.DoesntMatch;
+  const nsMsgSearchOp = Ci.nsMsgSearchOp,
+				Contains = nsMsgSearchOp.Contains,
+				DoesntContain = nsMsgSearchOp.DoesntContain,
+				Is = nsMsgSearchOp.Is,
+				Isnt = nsMsgSearchOp.Isnt,
+				IsEmpty = nsMsgSearchOp.IsEmpty,
+				IsntEmpty = nsMsgSearchOp.IsntEmpty,
+				BeginsWith = nsMsgSearchOp.BeginsWith,
+				EndsWith = nsMsgSearchOp.EndsWith,
+				Matches = nsMsgSearchOp.Matches,
+				DoesntMatch = nsMsgSearchOp.DoesntMatch;
 
   // Enabling of filter actions.
-  let subjectAppendEnabled;
-  let subjectSuffixEnabled;
-  let removeKeywordEnabled;
-  let removeFlaggedEnabled;
-  let noBiffEnabled;
-  let markUnreadEnabled;
-  let markRepliedEnabled;
-  let copyAsReadEnabled;
-  let launchFileEnabled;
-  let runFileEnabled;
-  let trainAsJunkEnabled;
-  let trainAsGoodEnabled;
-  let printEnabled;
-  let addSenderEnabled;
-  let saveAttachmentEnabled;
-  let detachAttachmentsEnabled;
-  let javascriptActionEnabled;
-  let javascriptActionBodyEnabled;
-  let saveMessageAsFileEnabled;
-  let moveLaterEnabled;
+  let subjectAppendEnabled = false,
+      subjectSuffixEnabled = false,
+      removeKeywordEnabled = false,
+      removeFlaggedEnabled = false,
+      noBiffEnabled = false,
+      markUnreadEnabled = false,
+      markRepliedEnabled = false,
+      copyAsReadEnabled = false,
+      launchFileEnabled = false,
+      runFileEnabled = false,
+      trainAsJunkEnabled = false,
+      trainAsGoodEnabled = false,
+      printEnabled = false,
+      addSenderEnabled = false,
+      saveAttachmentEnabled = false,
+      detachAttachmentsEnabled = false,
+      javascriptActionEnabled = false,
+      javascriptActionBodyEnabled = false,
+      saveMessageAsFileEnabled = false,
+      moveLaterEnabled = false;
 
   // Enabling of search terms.
-  let SubjectRegexEnabled;
-  let HeaderRegexEnabled;
-  let JavascriptEnabled;
-  let SearchBccEnabled;
-  let ThreadHeadTagEnabled;
-  let ThreadAnyTagEnabled;
-  let FolderNameEnabled;
+  let SubjectRegexEnabled = false,
+      HeaderRegexEnabled = false,
+      JavascriptEnabled = false,
+      SearchBccEnabled = false,
+      ThreadHeadTagEnabled = false,
+      ThreadAnyTagEnabled = false,
+      FolderNameEnabled = false;
 	// [#5] AG new condition - attachment name regex
-	let AttachmentRegexEnabled;
+	let AttachmentRegexEnabled = false;
 
   let moveLaterTimers = {}; // references to timers used in moveLater action
   let moveLaterIndex = 0; // next index to use to store timers
 
-  let printQueue = [];
-  let printingMessage = false;
+  let printQueue = [],
+      printingMessage = false;
 
   // inherited property object
   let applyIncomingFilters = {
@@ -138,7 +146,8 @@ Components.utils.import("resource:///modules/MailUtils.js");
   Cu.import("resource:///modules/gloda/mimemsg.js", self._mimeMsg);
 
   self._init = function() {
-    self.strings = document.getElementById("filtaquilla-strings");
+    self.strings = filtaquillaStrings;
+    //self.strings = Services.strings.createBundle("chrome://filtaquilla/locale/filtaquilla.properties");
 
     /*
      * custom action implementations
@@ -148,7 +157,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.subjectAppend =
     {
       id: "filtaquilla@mesquilla.com#subjectAppend",
-      name: self.strings.getString("filtaquilla.subjectappend.name"),
+      name: self.strings.GetStringFromName("filtaquilla.subjectappend.name"),
 
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -172,7 +181,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.subjectSuffix =
     {
       id: "filtaquilla@mesquilla.com#subjectSuffix",
-      name: self.strings.getString("filtaquilla.subjectsuffix.name"),
+      name: self.strings.GetStringFromName("filtaquilla.subjectsuffix.name"),
 
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -196,7 +205,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.removeKeyword =
     {
       id: "filtaquilla@mesquilla.com#removeTag",
-      name: self.strings.getString("filtaquilla.removekeyword.name"),
+      name: self.strings.GetStringFromName("filtaquilla.removekeyword.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
@@ -213,7 +222,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.removeFlagged =
     {
       id: "filtaquilla@mesquilla.com#removeStar",
-      name: self.strings.getString("filtaquilla.removeflagged.name"),
+      name: self.strings.GetStringFromName("filtaquilla.removeflagged.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
@@ -228,7 +237,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.markUnread =
     {
       id: "filtaquilla@mesquilla.com#markUnread",
-      name: self.strings.getString("filtaquilla.markunread.name"),
+      name: self.strings.GetStringFromName("filtaquilla.markunread.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
@@ -243,7 +252,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.markReplied =
     {
       id: "filtaquilla@mesquilla.com#markReplied",
-      name: self.strings.getString("filtaquilla.markreplied.name"),
+      name: self.strings.GetStringFromName("filtaquilla.markreplied.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         // what a pain, the folder function does not take an array like all others!
@@ -262,7 +271,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.noBiff =
     {
       id: "filtaquilla@mesquilla.com#noBiff",
-      name: self.strings.getString("filtaquilla.nobiff.name"),
+      name: self.strings.GetStringFromName("filtaquilla.nobiff.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var folder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
@@ -282,7 +291,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       self.copyAsRead =
       {
         id: "filtaquilla@mesquilla.com#copyAsRead",
-        name: self.strings.getString("filtaquilla.copyasread.name"),
+        name: self.strings.GetStringFromName("filtaquilla.copyasread.name"),
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
         {
           _aListener = aListener;
@@ -306,7 +315,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
           var msgFolder = MailUtils.getFolderForURI(aActionValue, false);
           if (!msgFolder || !msgFolder.canFileMessages)
           {
-            return self.strings.getString("filtaquilla.mustSelectFolder");
+            return self.strings.GetStringFromName("filtaquilla.mustSelectFolder");
           }
           return null;
         },
@@ -410,7 +419,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.launchFile =
     {
       id: "filtaquilla@mesquilla.com#launchFile",
-      name: self.strings.getString("filtaquilla.launchfile.name"),
+      name: self.strings.GetStringFromName("filtaquilla.launchfile.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var file = Cc["@mozilla.org/file/local;1"]
@@ -429,7 +438,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.runFile =
     {
       id: "filtaquilla@mesquilla.com#runFile",
-      name: self.strings.getString("filtaquilla.runfile.name"),
+      name: self.strings.GetStringFromName("filtaquilla.runfile.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var file = Cc["@mozilla.org/file/local;1"]
@@ -474,7 +483,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.trainAsJunk =
     {
       id: "filtaquilla@mesquilla.com#trainAsJunk",
-      name: self.strings.getString("filtaquilla.trainasjunk.name"),
+      name: self.strings.GetStringFromName("filtaquilla.trainasjunk.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         _trainJunkFilter(true, aMsgHdrs, aMsgWindow);
@@ -490,7 +499,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.trainAsGood =
     {
       id: "filtaquilla@mesquilla.com#trainAsGood",
-      name: self.strings.getString("filtaquilla.trainasgood.name"),
+      name: self.strings.GetStringFromName("filtaquilla.trainasgood.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         _trainJunkFilter(false, aMsgHdrs, aMsgWindow);
@@ -503,10 +512,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
     }; // end trainAsJunk
 
     // print messages
-    self.print = 
+    self.print =
     {
       id: "filtaquilla@mesquilla.com#print",
-      name: self.strings.getString("filtaquilla.print.name"),
+      name: self.strings.GetStringFromName("filtaquilla.print.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         // print me
@@ -522,7 +531,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
          *  that, but it is a global setting. I'll do it here, but hopefully I can
          *  add a future backend hook to allow me to specify that. I'll override that
          *  in setup.
-         *  
+         *
          */
         let rootprefs = Cc["@mozilla.org/preferences-service;1"]
                            .getService(Ci.nsIPrefService)
@@ -539,7 +548,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
             let hdr = printQueue.shift();
             let uri = hdr.folder.generateMessageURI(hdr.messageKey);
             Services.console.logStringMessage("Queue filter request to print message: " + hdr.subject);
-            let printDialog = 
+            let printDialog =
               window.openDialog("chrome://messenger/content/msgPrintEngine.xul", "",
                                 "chrome,dialog=no,all,centerscreen",
                                 1, [uri], statusFeedback,
@@ -568,10 +577,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
     } catch (e) {}
 
     // add sender to a specific address book
-    self.addSender = 
+    self.addSender =
     {
       id: "filtaquilla@mesquilla.com#addSender",
-      name: self.strings.getString("filtaquilla.addSender.name"),
+      name: self.strings.GetStringFromName("filtaquilla.addSender.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let dir = abManager.getDirectory(aActionValue);
@@ -610,10 +619,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
       needsBody: false
     }; // end add Sender
 
-    self.saveAttachment = 
+    self.saveAttachment =
     {
       id: "filtaquilla@mesquilla.com#saveAttachment",
-      name: self.strings.getString("filtaquilla.saveAttachment.name"),
+      name: self.strings.GetStringFromName("filtaquilla.saveAttachment.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
@@ -662,6 +671,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					util.logDebug('saveAttachmentCallback_callback');
 					debugger;
 				}
+				let txtStackedDump = "";
         this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
         this.attachments = aMimeMessage.allAttachments;
         let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
@@ -672,10 +682,12 @@ Components.utils.import("resource:///modules/MailUtils.js");
 							// create a unique file for this attachment
 							    uniqueFile = this.directory.clone();
 							uniqueFile.append(attachment.name);
-							util.logDebug("Save attachment [" + j + "] to " + uniqueFile.path + 
-									"...\n msgURI=" + this.msgURI + 
+							let txt = "Save attachment [" + j + "] to " + uniqueFile.path +
+									"...\n msgURI=" + this.msgURI +
 									"\n att.url=" + attachment.url +
-									"\n att.ncontentType=" + attachment.contentType);
+									"\n att.ncontentType=" + attachment.contentType;
+							util.logDebug(txt);
+							txtStackedDump += txtStackedDump + txt + "\n";
 							uniqueFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
 							messenger.saveAttachmentToFile(uniqueFile, attachment.url, this.msgURI,
 																						 attachment.contentType, null);
@@ -694,11 +706,13 @@ Components.utils.import("resource:///modules/MailUtils.js");
 								contentTypes.push(attachment.contentType);
 								urls.push(attachment.url);
 								displayNames.push(attachment.name);
-								util.logDebug("Detach attachment [" + j + "] to " + uniqueFile.path + 
-										"...\n msgURI=" + this.msgURI + 
+								let txt = "Detach attachment [" + j + "] to " + uniqueFile.path +
+										"...\n msgURI=" + this.msgURI +
 										"\n att.url=" + attachment.url +
-										"\n att.ncontentType=" + attachment.contentType)
-								
+										"\n att.ncontentType=" + attachment.contentType;
+								util.logDebug(txt);
+								txtStackedDump += txtStackedDump + txt + "\n";
+
 							}
 							messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length,
 																			contentTypes, urls, displayNames, msgURIs, null);
@@ -706,16 +720,16 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					}
 				}
 				catch (ex) {
-					util.logException("SaveAttachmentCallback", ex);
+					util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
 				}
-      } 
+      }
     },
     // end save Attachment
 
-    self.detachAttachments = 
+    self.detachAttachments =
     {
       id: "filtaquilla@mesquilla.com#detachAttachments",
-      name: self.strings.getString("filtaquilla.detachAttachments.name"),
+      name: self.strings.GetStringFromName("filtaquilla.detachAttachments.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
@@ -725,7 +739,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					if (directory.exists()) {
 						util.logDebug("detachAttachments() - target directory exists:\n" + aActionValue);
 					}
-					
+
 					let callbackObject = new SaveAttachmentCallback(directory, true);
 					for (let i = 0; i < aMsgHdrs.length; i++)
 					{
@@ -750,10 +764,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
     },
     // end detach Attachments
 
-    self.javascriptAction = 
+    self.javascriptAction =
     {
       id: "filtaquilla@mesquilla.com#javascriptAction",
-      name: self.strings.getString("filtaquilla.javascriptAction.name"),
+      name: self.strings.GetStringFromName("filtaquilla.javascriptAction.name"),
       apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
       {
         return eval(actionValue);
@@ -764,10 +778,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
       needsBody: false
     },
 
-    self.javascriptActionBody = 
+    self.javascriptActionBody =
     {
       id: "filtaquilla@mesquilla.com#javascriptActionBody",
-      name: self.strings.getString("filtaquilla.javascriptActionBody.name"),
+      name: self.strings.GetStringFromName("filtaquilla.javascriptActionBody.name"),
       apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
       {
         return eval(actionValue);
@@ -778,10 +792,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
       needsBody: true
     },
 
-    self.saveMessageAsFile = 
+    self.saveMessageAsFile =
     {
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
-      name: self.strings.getString("filtaquilla.saveMessageAsFile.name"),
+      name: self.strings.GetStringFromName("filtaquilla.saveMessageAsFile.name"),
       apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
       {
         // allow specifying directory with suffix of |htm
@@ -810,10 +824,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
       needsBody: true
     },
 
-    self.moveLater = 
+    self.moveLater =
     {
       id: "filtaquilla@mesquilla.com#moveLater",
-      name: self.strings.getString("filtaquilla.moveLater.name"),
+      name: self.strings.GetStringFromName("filtaquilla.moveLater.name"),
       apply: function(aMsgHdrs, aActionValue, copyListener, filterType, msgWindow)
       {
         let srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
@@ -835,10 +849,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
      */
 
     // search of folder name
-    self.folderName = 
+    self.folderName =
     {
       id: "filtaquilla@mesquilla.com#folderName",
-      name: self.strings.getString("filtaquilla.folderName.name"),
+      name: self.strings.GetStringFromName("filtaquilla.folderName.name"),
       getEnabled: function folderName_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -897,10 +911,10 @@ Components.utils.import("resource:///modules/MailUtils.js");
     },
 
     // search of BCC field
-    self.searchBcc = 
+    self.searchBcc =
     {
       id: "filtaquilla@mesquilla.com#searchBcc",
-      name: self.strings.getString("filtaquilla.searchBcc.name"),
+      name: self.strings.GetStringFromName("filtaquilla.searchBcc.name"),
       getEnabled: function searchBcc_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1007,7 +1021,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.subjectRegex =
     {
       id: "filtaquilla@mesquilla.com#subjectRegex",
-      name: self.strings.getString("filtaquilla.subjectregex.name"),
+      name: self.strings.GetStringFromName("filtaquilla.subjectregex.name"),
       getEnabled: function subjectRegEx_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1041,7 +1055,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
         }
       },
     };
-		
+
    // local object used for callback
     function ReadAttachmentCallback(matchRegex) {
       this.regex = matchRegex;
@@ -1090,15 +1104,15 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					Services.console.logStringMessage("readAttachmentCallback_callback failed: " + ex.toString());
 					this.processed = true;
 				}
-      } 
+      }
     },
-    // end read Attachment		
-		
+    // end read Attachment
+
 		// search attachment names with regular expression
 		self.attachmentRegex =
 		{
       id: "filtaquilla@mesquilla.com#attachmentRegex",
-      name: self.strings.getString("filtaquilla.attachmentregex.name"),
+      name: self.strings.GetStringFromName("filtaquilla.attachmentregex.name"),
       getEnabled: function attachRegEx_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1119,13 +1133,13 @@ Components.utils.import("resource:///modules/MailUtils.js");
       },
       match: function attachRegEx_match(aMsgHdr, aSearchValue, aSearchOp)
       {
-				// attach Regexp 
+				// attach Regexp
         // var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags,
 				    isMatched = false;
-				// 
+				//
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
-				
+
 				if (!aMsgHdr.folder.msgDatabase.HasAttachments(aMsgHdr.messageKey))  {
 					switch (aSearchOp) {
 						case Matches: return false;
@@ -1133,13 +1147,13 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					}
 				}
 				debugger;
-				
-				let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);				
+
+				let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);
 				let callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
 				// message must be available offline!
 				try {
-					self._mimeMsg.MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, false /* allowDownload */);		
-					
+					self._mimeMsg.MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, false /* allowDownload */);
+
 					// we need a listener for "processed" flag. is match called synchronously though?
 					/*
 					while (!callbackObject.processed) {
@@ -1158,13 +1172,13 @@ Components.utils.import("resource:///modules/MailUtils.js");
 					Services.console.logStringMessage("could not attachRegEx_match" + ex.toString());
 				}
       },
-      needsBody: true,			
+      needsBody: true,
 		};
 
     self.headerRegex =
     {
       id: "filtaquilla@mesquilla.com#headerRegex",
-      name: self.strings.getString("filtaquilla.headerregex.name"),
+      name: self.strings.GetStringFromName("filtaquilla.headerregex.name"),
       getEnabled: function headerRegEx_getEnabled(scope, op)
       {
         return _isLocalSearch(scope);
@@ -1220,7 +1234,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.javascript =
     {
       id: "filtaquilla@mesquilla.com#javascript",
-      name: self.strings.getString("filtaquilla.javascript.name"),
+      name: self.strings.GetStringFromName("filtaquilla.javascript.name"),
       getEnabled: function javascript_getEnabled(scope, op)
       {
         return true;
@@ -1252,7 +1266,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.threadHeadTag =
     {
       id: "filtaquilla@mesquilla.com#threadheadtag",
-      name: self.strings.getString("filtaquilla.threadheadtag.name"),
+      name: self.strings.GetStringFromName("filtaquilla.threadheadtag.name"),
       getEnabled: function threadHeadTag_getEnabled(scope, op)
       {
         return true;
@@ -1321,7 +1335,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     self.threadAnyTag =
     {
       id: "filtaquilla@mesquilla.com#threadanytag",
-      name: self.strings.getString("filtaquilla.threadanytag.name"),
+      name: self.strings.GetStringFromName("filtaquilla.threadanytag.name"),
       getEnabled: function threadAnyTag_getEnabled(scope, op)
       {
         return true;
@@ -1424,6 +1438,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
   // extension initialization
 
   self.onLoad = function() {
+		debugger;
     if (self.initialized)
       return;
     self._init();
@@ -1577,7 +1592,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       FolderNameEnabled = prefs.getBoolPref("FolderNameEnabled");
     } catch(e) {}
     filterService.addCustomTerm(self.folderName);
-		
+
 		try {
 			AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
 		} catch(e) {}
@@ -1585,7 +1600,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
 			debugger;
 			filterService.addCustomTerm(self.attachmentRegex);
 		}
-    
+
 
     // Inherited properties setup
     // standard format for inherited property rows
@@ -1606,7 +1621,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     this.timerIndex = aTimerIndex;
     this.recallCount = MOVE_LATER_LIMIT;
   }
-	
+
   MoveLaterNotify.prototype.notify = function notify(aTimer) {
     // Check the moveLater values for the headers. If this is set by a routine
     //  with a reliable finish listener, then we will wait until that is done to
@@ -1811,7 +1826,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
     let service = messenger.messageServiceFromURI(msgSpec);
     /*
     void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
-                           in boolean aGenerateDummyEnvelope, 
+                           in boolean aGenerateDummyEnvelope,
                            in nsIUrlListener aUrlListener, out nsIURI aURL,
                            in boolean canonicalLineEnding, in nsIMsgWindow aMsgWindow);
     */
@@ -1962,8 +1977,7 @@ Components.utils.import("resource:///modules/MailUtils.js");
       return true;
     return false;
   }
-  /**/
-
+	*/
 })();
 
 window.addEventListener("load", function(e) { filtaquilla.onLoad(e); }, false);

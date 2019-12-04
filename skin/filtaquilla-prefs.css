@@ -35,13 +35,13 @@
 
 #filtaquilla_img {
 	/* just a hack as I don't appear to be able to use img url for a chrome address? */
-	background-image:url("chrome://filtaquilla/skin/filtaquilla-32.png"); 
+	background-image:url("chrome://filtaquilla/skin/filtaquilla-32.png");
 	background-repeat: no-repeat;
 }
 
 #quickfilters_img {
 	/* just a hack as I don't appear to be able to use img url for a chrome address? */
-	background-image:url("chrome://filtaquilla/skin/quickfilters.png"); 
+	background-image:url("chrome://filtaquilla/skin/quickfilters.png");
 	background-repeat: no-repeat;
 }
 
@@ -69,7 +69,7 @@
 	margin: 0 20px 1em 20px !important;
 	padding-top: 0.75em;
 	max-width: 660px;
-	
+
 	/* width: 550px; */
 	white-space: normal !important;
 }

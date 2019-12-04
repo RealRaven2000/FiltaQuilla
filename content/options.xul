@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 /*
  ***** BEGIN LICENSE BLOCK *****
  * This file is part of FiltaQuilla, Custom Filter Actions, by Mesquilla.
@@ -11,7 +11,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with FiltaQuilla.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
@@ -35,13 +35,13 @@
 <?xml-stylesheet href="chrome://filtaquilla/skin/filtaquilla-prefs.css" type="text/css" ?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://filtaquilla/locale/prefwindow.dtd">
-<prefwindow id="filtaquillaPreferences"
+<dialog id="filtaquillaPreferences"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="&prefwindow.title;"
             onload="onLoad();">
   <script type="application/javascript" src="chrome://filtaquilla/content/options.js"/>
   <script type="application/javascript" src="chrome://filtaquilla/content/filtaquilla-util.js"/>
-	
+
   <prefpane id="pane1" label="&pane1.title;">
     <preferences>
       <preference id="subjectAppendEnabled" name="extensions.filtaquilla.subjectAppend.enabled" type="bool"/>
@@ -74,7 +74,8 @@
       <preference id="ThreadAnyTagEnabled" name="extensions.filtaquilla.ThreadAnyTagEnabled" type="bool"/>
 			<preference id="debug" name="extensions.filtaquilla.debug" type="bool"/>
     </preferences>
-    <label value="&optionsIntro;"/>
+    <vbox>
+		<label value="&optionsIntro;"/>
     <tabbox id="filtaquillatabbox" flex="1">
       <tabs class="icontabs">
         <tab label="&filterActions;" id="filterActionsTab"/>
@@ -97,13 +98,13 @@
 							  <span>
 									<checkbox id="checkSubjectAppendEnabled" preference="subjectAppendEnabled"
 														label="&checkSubjectAppendEnabled.label;" accesskey="&checkSubjectAppendEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('prepend_subject');"
 											tooltiptext="&helpFeatureTip;"
 											/>
 								</span>
-								
+
                 <checkbox id="checkRemoveKeywordEnabled" preference="removeKeywordEnabled"
                           label="&checkRemoveKeywordEnabled.label;" accesskey="&checkRemoveKeywordEnabled.accesskey;"/>
                 <checkbox id="checkRemoveFlaggedEnabled" preference="removeFlaggedEnabled"
@@ -111,7 +112,7 @@
 								<span>
 									<checkbox id="checknoBiffEnabled" preference="noBiffEnabled"
 														label="&checkNoBiffEnabled.label;" accesskey="&checkNoBiffEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('do_not_notify');"
 											tooltiptext="&helpFeatureTip;"
@@ -123,7 +124,7 @@
 									<checkbox id="checkCopyAsReadEnabled" preference="copyAsReadEnabled"
 														label="&checkCopyAsReadEnabled.label;"
 														accesskey="&checkCopyAsReadEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('copy_as_read');"
 											tooltiptext="&helpFeatureTip;"
@@ -139,7 +140,7 @@
 									<checkbox id="checkLaunchFileEnabled" preference="launchFileEnabled"
 														label="&checkLaunchFileEnabled.label;"
 														accesskey="&checkLaunchFileEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 										class="helpLink"
 										onclick="FiltaQuilla.Util.openHelpTab('launch_file');"
 										tooltiptext="&helpFeatureTip;"
@@ -151,7 +152,7 @@
 									<checkbox id="checkRunFileEnabled" preference="runFileEnabled"
 														label="&checkRunFileEnabled.label;"
 														accesskey="&checkRunFileEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 										class="helpLink"
 										onclick="FiltaQuilla.Util.openHelpTab('run_file');"
 										tooltiptext="&helpFeatureTip;"
@@ -161,7 +162,7 @@
 									<checkbox id="checkTrainAsJunkEnabled" preference="trainAsJunkEnabled"
 														label="&checkTrainAsJunkEnabled.label;"
 														accesskey="&checkTrainAsJunkEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('train_as_junk');"
 											tooltiptext="&helpFeatureTip;"
@@ -178,7 +179,7 @@
 								<span>
 									<checkbox id="checkSubjectSuffixEnabled" preference="subjectSuffixEnabled"
 														label="&checkSubjectSuffixEnabled.label;" accesskey="&checkSubjectSuffixEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('prepend_subject');"
 											tooltiptext="&helpFeatureTip;"
@@ -189,7 +190,7 @@
 									<checkbox id="checkDetachAttachmentsEnabled" preference="detachAttachmentsEnabled"
 														label="&checkDetachAttachmentsEnabled.label;"
 														accesskey="&checkDetachAttachmentsEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('detach_attachment');"
 											tooltiptext="&helpFeatureTip;"
@@ -202,7 +203,7 @@
 									<checkbox id="checkMoveLaterEnabled" preference="moveLaterEnabled"
 														label="&checkMoveLaterEnabled.label;"
 														accesskey="&checkMoveLaterEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('move_later');"
 											tooltiptext="&helpFeatureTip;"
@@ -217,7 +218,7 @@
 									<checkbox id="checkSaveAttachmentEnabled" preference="saveAttachmentEnabled"
 														label="&checkSaveAttachmentEnabled.label;"
 														accesskey="&checkSaveAttachmentEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('save_attachment');"
 											tooltiptext="&helpFeatureTip;"
@@ -230,7 +231,7 @@
 									<checkbox id="checkJavascriptActionBodyEnabled" preference="javascriptActionBodyEnabled"
 														label="&checkJavascriptActionBodyEnabled.label;"
 														accesskey="&checkJavascriptActionBodyEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('javascript_action');"
 											tooltiptext="&helpFeatureTip;"
@@ -258,7 +259,7 @@
 									<checkbox id="checkSubjectRegexEnabled" preference="SubjectRegexEnabled"
 														label="&checkSubjectRegexEnabled.label;"
 														accesskey="&checkSubjectRegexEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 										class="helpLink"
 										onclick="FiltaQuilla.Util.openHelpTab('subject_regex');"
 										/>
@@ -267,7 +268,7 @@
 									<checkbox id="checkHeaderRegexEnabled" preference="HeaderRegexEnabled"
 														label="&checkHeaderRegexEnabled.label;"
 														accesskey="&checkHeaderRegexEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 										class="helpLink"
 										onclick="FiltaQuilla.Util.openHelpTab('header_regex');"
 										tooltiptext="&helpFeatureTip;"
@@ -280,70 +281,70 @@
 									<checkbox id="checkJavascriptEnabled" preference="JavascriptEnabled"
 														label="&checkJavascriptEnabled.label;"
 														accesskey="&checkJavascriptEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('match_javascript');"
 											tooltiptext="&helpFeatureTip;"
 											/>
 								</span>
-													
+
               </row>
               <row>
 								<span>
 									<checkbox id="checkThreadHeadTagEnabled" preference="ThreadHeadTagEnabled"
 														label="&checkThreadHeadTagEnabled.label;"
 														accesskey="&checkThreadHeadTagEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('tag_thread_head');"
 											tooltiptext="&helpFeatureTip;"
 											/>
 								</span>
-								
+
 								<span>
 									<checkbox id="checkThreadAnyTagEnabled" preference="ThreadAnyTagEnabled"
 														label="&checkThreadAnyTagEnabled.label;"
 														accesskey="&checkThreadAnyTagEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('tag_thread_msg');"
 											tooltiptext="&helpFeatureTip;"
 											/>
 								</span>
-								
+
 								<span>
 									<checkbox id="checkFolderNameEnabled" preference="FolderNameEnabled"
 														label="&checkFolderNameEnabled.label;"
 														accesskey="&checkFolderNameEnabled.accesskey;"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLink"
 											onclick="FiltaQuilla.Util.openHelpTab('match_folder_name');"
 											tooltiptext="&helpFeatureTip;"
 											/>
 								</span>
-													
+
               </row>
-							
+
 							<row>
 							  <spacer></spacer>
 								<hr />
 							</row>
               <row>
 								<span>
-									<checkbox id="checkAttachRegexEnabled" 
+									<checkbox id="checkAttachRegexEnabled"
 														preference="AttachmentRegexEnabled"
 														label="&checkAttachmentRegexEnabled.label;"
 														tooltip="As long as the filter mechanims in Thunderbird is synchronous, we cannot read attachmeent info during filtering."
 														disabled="true"/>
-									<toolbarbutton 
+									<toolbarbutton
 											class="helpLinkDisabled"
 											onclick="FiltaQuilla.Util.openHelpTab('match_attachmentname');"
 											tooltiptext="&helpFeatureTip;"
 											/>
 								</span>
-								
+
               </row>
-							
+
             </rows>
           </grid>
         </tabpanel>
@@ -351,7 +352,7 @@
 				  <vbox class="linkBox">
 						<hbox>
 							<spacer flex="1" />
-							<a href="http://quickfilters.mozdev.org/filtaquilla.html" 
+							<a href="http://quickfilters.mozdev.org/filtaquilla.html"
 								 id="mesquillaLink"
 								 class="buttonLink"
 								 onclick="FiltaQuilla.Util.openHelpTab();window.close();">
@@ -363,7 +364,7 @@
 							<img src="chrome://filtaquilla/skin/filtaquilla-32.png"
 									 class="customLogo"
 									 id="filtaquilla_img" />
-							<textbox 
+							<textbox
 							  class="linkDescription"
 							  multiline="true"
 								rows="2"
@@ -385,8 +386,8 @@
 							<img src="chrome://filtaquilla/skin/quickfilters.png"
 									 class="customLogo"
 									 id="quickfilters_img" />
-							<textbox 
-							  class="linkDescription" 
+							<textbox
+							  class="linkDescription"
 							  multiline="true"
 								rows="2"
 							  value="&quickFiltersPage_desc;" />
@@ -394,7 +395,7 @@
 					</vbox>
 					<hbox>
 						<spacer flex="1" />
-						<checkbox id="checkJavascriptEnabled" 
+						<checkbox id="checkJavascriptEnabled"
 											preference="debug"
 											instantApply="true"
 											label="Debug"
@@ -404,5 +405,11 @@
 				</tabpanel>
 			</tabpanels>
     </tabbox>
+		</vbox>
   </prefpane>
-</prefwindow>
+	<script type="application/javascript" src="chrome://global/content/preferencesBindings.js" />
+	<script>
+	  FiltaQuilla.Util.loadPreferences(); /* Tb 66 compatibility. Should be called _before_ DOMcontent Loaded event */
+	</script>
+
+</dialog>

@@ -38,7 +38,7 @@ inheritPane.prototype = {
   name: "inheritPane",
   // This should be the extension that
   //  contains the am-inheritPane.* files
-  chromePackageName: "filtaquilla", 
+  chromePackageName: "filtaquilla",
   showPanel: function showPanel(server) {
     /*
      * For each inherited property that has been registered with

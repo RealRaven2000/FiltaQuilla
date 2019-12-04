@@ -1,0 +1,27 @@
+{ 
+    "manifest_version" : 2,
+    "name" : "FiltaQuilla",
+    "description" : "Mail filter custom actions and searches",
+    "version" : "2.0pre21",
+    "author" : "R Kent James,Axel Grude",
+    "legacy" : { 
+        "options" : { 
+            "page" : "chrome://filtaquilla/content/options.xul",
+            "open_in_tab" : false
+        }
+    },
+    "developer" : { 
+        "name" : "Axel Grude,Pawel Tomulik",
+        "url" : "http://quickfilters.mozdev.org/filtaquilla.html"
+    },
+    "applications" : { 
+        "gecko" : { 
+            "id" : "filtaquilla@mesquilla.com",
+            "strict_min_version" : "68.0"
+        }
+    },
+    "icons" : { 
+        "32" : "skin/filtaquilla-32.png",
+        "64" : "skin/filtaquilla-64.png"
+    }
+}

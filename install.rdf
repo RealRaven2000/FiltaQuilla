@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
  xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
+    <em:type>2</em:type>
     <em:id>filtaquilla@mesquilla.com</em:id>
-    <em:version>1.5</em:version>
+    <em:version>1.6pre16</em:version>
     <em:creator>R Kent James</em:creator>
 		<em:developer>Axel Grude</em:developer>
     <em:description>Mail filter custom actions and searches</em:description>
@@ -15,7 +16,7 @@
     <em:translator>Axel Grude (de-DE)</em:translator>
     <em:translator>Markh van BabelZilla.org (nl-NL)</em:translator>
     <em:translator>A. Regnander - Phoenix (se-SV)</em:translator>
-		
+
      <!-- Thunderbird -->
      <em:targetApplication>
       <Description>

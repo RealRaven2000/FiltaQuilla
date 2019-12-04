@@ -1,60 +1,32 @@
-.ruleactiontarget[type="filtaquilla@mesquilla.com#subjectAppend"] {
-  -moz-binding: url("chrome://messenger/content/searchWidgets.xml#ruleactiontarget-forwardto");
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#subjectSuffix"] {
-  -moz-binding: url("chrome://messenger/content/searchWidgets.xml#ruleactiontarget-forwardto");
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#removeTag"] {
-  -moz-binding: url("chrome://messenger/content/searchWidgets.xml#ruleactiontarget-tag");
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#copyAsRead"] {
-  -moz-binding: url("chrome://messenger/content/searchWidgets.xml#ruleactiontarget-folder");
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#moveLater"] {
-  -moz-binding: url("chrome://messenger/content/searchWidgets.xml#ruleactiontarget-folder");
-}
-
 .ruleactiontarget[type="filtaquilla@mesquilla.com#launchFile"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#launchPicker");
   -moz-box-flex: 1;
 }
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#runFile"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#runPicker");
   -moz-box-flex: 1;
 }
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#addSender"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#abPicker");
   -moz-box-flex: 1;
 }
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#saveAttachment"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#directoryPicker");
   -moz-box-flex: 1;
 }
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#detachAttachments"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#directoryPicker");
   -moz-box-flex: 1;
 }
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptAction"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#javascriptAction");
   -moz-box-flex: 1;
 }
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptActionBody"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#javascriptAction");
   -moz-box-flex: 1;
 }
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#saveMessageAsFile"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#directoryPicker");
   -moz-box-flex: 1;
 }
 
