@@ -104,9 +104,8 @@
         </hbox>
       `));
 
-      this.hbox = document.getAnonymousNodes(this)[0];
-
-      this.textbox = document.getAnonymousNodes(this)[0].firstChild;
+      this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
+      this.textbox = this.hbox.firstChild;              // document.getAnonymousNodes(this)[0].firstChild;
 
       this.launchtitle = "FROM-DTD-filebutton";
 
@@ -172,9 +171,8 @@
         </hbox>
       `));
 
-      this.hbox = document.getAnonymousNodes(this)[0];
-
-      this.textbox = document.getAnonymousNodes(this)[0].firstChild;
+      this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
+      this.textbox =  this.hbox.firstChild;             // document.getAnonymousNodes(this)[0].firstChild;
 
       this.launchtitle = "FROM-DTD-filebutton";
 
@@ -235,7 +233,7 @@
       `));
       // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
 
-      let menulist = document.getAnonymousNodes(this)[0],
+      let menulist = this.getElementsByTagName("menulist")[0]; // document.getAnonymousNodes(this)[0],
         value = menulist.value,
         menupopup = menulist.menupopup;
 
@@ -295,9 +293,8 @@
         </hbox>
       `));
 
-      this.hbox = document.getAnonymousNodes(this)[0];
-
-      this.textbox = document.getAnonymousNodes(this)[0].firstChild;
+      this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
+      this.textbox = this.hbox.firstChild; //  document.getAnonymousNodes(this)[0].firstChild;
 
       this.filetitle = "FROM-DTD-filebutton";
 
@@ -361,9 +358,9 @@
         </hbox>
       `));
 
-      this.hbox = document.getAnonymousNodes(this)[0];
-      this.textbox = document.getAnonymousNodes(this)[0].childNodes[0];
-      this.toolbarbutton = document.getAnonymousNodes(this)[0].childNodes[1];
+      this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
+      this.textbox = this.hbox.firstChild;              // document.getAnonymousNodes(this)[0].childNodes[0];
+      this.toolbarbutton = this.getElementsByTagName("toolbarbutton")[0]; // document.getAnonymousNodes(this)[0].childNodes[1];
       this.textbox.value = this.hbox.value;
       this.toolbarbutton.addEventListener("command", this.onCommand, false);
 
