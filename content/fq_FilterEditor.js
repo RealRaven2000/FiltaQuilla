@@ -74,7 +74,14 @@
 
   patchRuleactiontargetWrapper();
 
-
+  const updateParentNode = (parentNode) => {
+    if (parentNode.hasAttribute("initialActionIndex")) {
+      let actionIndex = parentNode.getAttribute("initialActionIndex");
+      let filterAction = gFilter.getActionAt(actionIndex);
+      parentNode.initWithAction(filterAction);
+    }
+    parentNode.updateRemoveButton();
+  };
 
   class FiltaQuillaRuleactiontargetBase extends MozXULElement { }
 
@@ -106,12 +113,12 @@
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
       this.textbox = this.hbox.firstChild;              // document.getAnonymousNodes(this)[0].firstChild;
-
       this.launchtitle = "FROM-DTD-filebutton";
 
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
-
+      
+      updateParentNode(this.closest(".ruleaction")); 
     }
 
     getURL() {
@@ -173,10 +180,10 @@
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
       this.textbox =  this.hbox.firstChild;             // document.getAnonymousNodes(this)[0].firstChild;
-
       this.launchtitle = "FROM-DTD-filebutton";
 
       this.textbox.setAttribute('value', this.hbox.value);
+      updateParentNode(this.closest(".ruleaction")); 
 
     }
 
@@ -253,7 +260,8 @@
       else
         menulist.selectedIndex = 0;
       this.value = menulist.selectedItem.getAttribute("value");;
-
+      
+      updateParentNode(this.closest(".ruleaction")); 
     }
 
     addDirectories(aDirEnum, aMenupopup) {
@@ -302,7 +310,8 @@
         this.textbox.setAttribute('value', this.hbox.value);
       else
         this.textbox.setAttribute('value', '');
-
+      
+      updateParentNode(this.closest(".ruleaction")); 
     }
 
     getURL() {
@@ -363,7 +372,8 @@
       this.toolbarbutton = this.getElementsByTagName("toolbarbutton")[0]; // document.getAnonymousNodes(this)[0].childNodes[1];
       this.textbox.value = this.hbox.value;
       this.toolbarbutton.addEventListener("command", this.onCommand, false);
-
+      
+      updateParentNode(this.closest(".ruleaction")); 
     }
 
     onCommand() {
