@@ -29,7 +29,24 @@ FiltaQuilla.Util = {
   mAppver: null,
 	_prefs: null,
 	_consoleService: null,
+  _stringBundleSvc: null,
+  _properties: null,
 	lastTime: 0,
+  
+  get StringBundleSvc() {
+    if (!_stringBundleSvc)
+      _stringBundleSvc = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(Components.interfaces.nsIStringBundleService);
+    return _stringBundleSvc;
+  },
+  
+  get Properties() {
+    if (!_properties)
+      _properties = this.StringBundleSvc.createBundle("chrome://filtaquilla/locale/filtaquilla.properties")
+        .QueryInterface(Components.interfaces.nsIStringBundle);
+    return _properties;
+  },
+  
+  
 	get prefs () {
     const Ci = Components.interfaces,
           Cc = Components.classes;
@@ -384,6 +401,20 @@ FiltaQuilla.Util = {
 				Preferences.addAll(prefArray);
 		}
 	},
+  
+  // l10n
+
+  getBundleString: function getBundleString(id, defaultText) { 
+		let s="";
+		try {
+			s= this.Properties.GetStringFromName(id);
+		}
+		catch(e) {
+			s = defaultText;
+			this.logToConsole ("Could not retrieve bundle string: " + id + "");
+		}
+		return s;
+	} ,
 
 
 }

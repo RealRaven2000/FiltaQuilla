@@ -2,7 +2,7 @@
     "manifest_version" : 2,
     "name" : "FiltaQuilla",
     "description" : "Mail filter custom actions and searches",
-    "version" : "2.0pre25",
+    "version" : "2.0pre29",
     "author" : "R Kent James,Axel Grude",
     "legacy" : {
         "options" : {

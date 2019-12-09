@@ -1,7 +1,4 @@
 "use strict";
-
-/* global customElements MozXULElement */
-
 /*
  ***** BEGIN LICENSE BLOCK *****
  * This file is part of FiltaQuilla, Custom Filter Actions
@@ -103,17 +100,27 @@
         <hbox>
           <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
           <toolbarbutton image="chrome://filtaquilla/skin/folder.png"
-                         class="focusbutton" tooltiptext="FROM-DTD-filebutton"
+                         class="focusbutton"
+                         tooltiptext="dummy"
                          oncommand="this.parentNode.parentNode.getURL()">
           </toolbarbutton>
           <toolbarbutton image="chrome://filtaquilla/skin/folder_go.png"
-                         class="focusbutton" tooltiptext="FROM-DTD-launchbutton" oncommand="this.parentNode.parentNode.launch()"></toolbarbutton>
+                         class="focusbutton" 
+                         tooltiptext="dummy" 
+                         oncommand="this.parentNode.parentNode.launch()"></toolbarbutton>
         </hbox>
       `));
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
       this.textbox = this.hbox.firstChild;              // document.getAnonymousNodes(this)[0].firstChild;
-      this.launchtitle = "FROM-DTD-filebutton";
+      const txtLaunchSelector = util.getBundleString('filtaquilla.launcher.select', "Select a File…");
+      this.launchtitle = txtLaunchSelector;
+      
+      let btns = this.getElementsByTagName("toolbarbutton");
+      btns[0].setAttribute('tooltiptext', txtLaunchSelector);
+      btns[1].setAttribute('tooltiptext',
+        util.getBundleString('filtaquilla.launcher.launch', "Launch the File!"));
+
 
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
@@ -174,13 +181,18 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="chrome://filtaquilla/skin/folder.png" class="focusbutton" tooltiptext="FROM-DTD-filebutton" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+          <toolbarbutton image="chrome://filtaquilla/skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
         </hbox>
       `));
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
       this.textbox =  this.hbox.firstChild;             // document.getAnonymousNodes(this)[0].firstChild;
-      this.launchtitle = "FROM-DTD-filebutton";
+      
+      let btn = this.getElementsByTagName("toolbarbutton")[0];
+      btn.setAttribute('tooltiptext', 
+        util.getBundleString('filtaquilla.runProgram.select', "Select a Program…"));
+      
+      this.launchtitle = util.getBundleString('filtaquilla.runProgram.title', "Select a Program to run");
 
       this.textbox.setAttribute('value', this.hbox.value);
       updateParentNode(this.closest(".ruleaction")); 
@@ -297,14 +309,17 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="chrome://filtaquilla/skin/folder.png" class="focusbutton" tooltiptext="FROM-DTD-filebutton" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+          <toolbarbutton image="chrome://filtaquilla/skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
         </hbox>
       `));
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
+      
       this.textbox = this.hbox.firstChild; //  document.getAnonymousNodes(this)[0].firstChild;
-
-      this.filetitle = "FROM-DTD-filebutton";
+      this.dialogTitle = util.getBundleString('filtaquilla.selectFolder.title',"Select a Folder");
+      let btn = this.getElementsByTagName("toolbarbutton")[0];
+      btn.setAttribute("tooltiptext",
+                       util.getBundleString('filtaquilla.selectFolder.btn',"Pick Folder…"));
 
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
@@ -319,7 +334,7 @@
         Cc = Components.classes,
         nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-      fp.init(window, this.filetitle, nsIFilePicker.modeGetFolder);
+      fp.init(window, this.dialogTitle, nsIFilePicker.modeGetFolder);
       fp.appendFilters(nsIFilePicker.filterAll);
       try {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
@@ -363,7 +378,7 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" newlines="pasteintact" anonid="thetextbox" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="chrome://filtaquilla/skin/script_edit.png" class="focusbutton" tooltiptext="FROM-DTD-editJavascript"></toolbarbutton>
+          <toolbarbutton image="chrome://filtaquilla/skin/script_edit.png" class="focusbutton" tooltiptext="dummy"></toolbarbutton>
         </hbox>
       `));
 
@@ -372,6 +387,9 @@
       this.toolbarbutton = this.getElementsByTagName("toolbarbutton")[0]; // document.getAnonymousNodes(this)[0].childNodes[1];
       this.textbox.value = this.hbox.value;
       this.toolbarbutton.addEventListener("command", this.onCommand, false);
+      
+      this.toolbarbutton.setAttribute('tooltiptext',
+        util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
       
       updateParentNode(this.closest(".ruleaction")); 
     }
