@@ -34,16 +34,16 @@ FiltaQuilla.Util = {
 	lastTime: 0,
   
   get StringBundleSvc() {
-    if (!_stringBundleSvc)
-      _stringBundleSvc = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(Components.interfaces.nsIStringBundleService);
-    return _stringBundleSvc;
+    if (!this._stringBundleSvc)
+      this._stringBundleSvc = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(Components.interfaces.nsIStringBundleService);
+    return this._stringBundleSvc;
   },
   
   get Properties() {
-    if (!_properties)
-      _properties = this.StringBundleSvc.createBundle("chrome://filtaquilla/locale/filtaquilla.properties")
+    if (!this._properties)
+      this._properties = this.StringBundleSvc.createBundle("chrome://filtaquilla/locale/filtaquilla.properties")
         .QueryInterface(Components.interfaces.nsIStringBundle);
-    return _properties;
+    return this._properties;
   },
   
   
