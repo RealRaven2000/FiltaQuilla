@@ -37,7 +37,6 @@
 <!DOCTYPE prefwindow SYSTEM "chrome://filtaquilla/locale/prefwindow.dtd">
 <dialog id="filtaquillaPreferences"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-            xmlns:html="http://www.w3.org/1999/xhtml"
             title="&prefwindow.title;"
             onload="onLoad();">
   <script type="application/javascript" src="chrome://filtaquilla/content/options.js"/>
@@ -365,8 +364,9 @@
 							<img src="chrome://filtaquilla/skin/filtaquilla-32.png"
 									 class="customLogo"
 									 id="filtaquilla_img" />
-							<html:textarea
+							<textbox
 							  class="linkDescription"
+							  multiline="true"
 								rows="2"
 								value="&supportPage_desc;" />
 						</hbox>
@@ -386,8 +386,9 @@
 							<img src="chrome://filtaquilla/skin/quickfilters.png"
 									 class="customLogo"
 									 id="quickfilters_img" />
-							<html:textarea
+							<textbox
 							  class="linkDescription"
+							  multiline="true"
 								rows="2"
 							  value="&quickFiltersPage_desc;" />
 						</hbox>
