@@ -30,13 +30,17 @@
  */
 -->
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://filtaquilla/skin/js-editor.css" type='text/css'?>
 <!DOCTYPE dialog SYSTEM "chrome://filtaquilla/locale/bindings.dtd">
-<dialog title="&editJavascript;" orient="vertical" autostretch="always"
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="&editJavascript;" 
+        orient="vertical" 
+        autostretch="always"
         onload="onLoad();"
         buttons="accept,cancel"
         ondialogaccept="onAccept();"
         style="width: 80ch"
-        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+        >
   <script type="application/javascript" src="jsEditor.js"/>
   <textbox id="jscode" flex="1" multiline="true" rows="10" />
 </dialog>

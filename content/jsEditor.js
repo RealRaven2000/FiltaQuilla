@@ -32,11 +32,11 @@
 //  truncated. So we use it to store the newlines.
 const LS = '\u2028';
 
-function onLoad()
-{
-  let rootTextbox = window.arguments[0];
-  let displayValue = "";
-  let rawString = rootTextbox.value;
+function onLoad() {
+  let rootTextbox = window.arguments[0],
+      displayValue = "",
+      rawString = rootTextbox.value;
+      
   for (let i = 0; i < rawString.length; i++)
   {
     let character = rawString.charAt(i);
@@ -48,15 +48,20 @@ function onLoad()
   let textbox = document.getElementById("jscode");
   textbox.value = displayValue;
   sizeToContent();
+  window.addEventListener('dialogaccept', 
+    function () { 
+      onAccept(); 
+    }
+  );
 }
 
-function onAccept()
-{
-  let rootTextbox = window.arguments[0];
-  let textbox = document.getElementById("jscode");
-  // replace all new lines with line separators
-  let displayValue = textbox.value;
-  let rawValue = "";
+function onAccept() {
+  let rootTextbox = window.arguments[0],
+      textbox = document.getElementById("jscode"),
+      // replace all new lines with line separators
+      displayValue = textbox.value,
+      rawValue = "";
+      
   for (let i = 0; i < displayValue.length; i++)
   {
     let character = displayValue.charAt(i);

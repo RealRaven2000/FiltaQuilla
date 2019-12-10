@@ -122,10 +122,11 @@
         util.getBundleString('filtaquilla.launcher.launch', "Launch the File!"));
 
 
+      updateParentNode(this.closest(".ruleaction")); 
+      
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
       
-      updateParentNode(this.closest(".ruleaction")); 
     }
 
     getURL() {
@@ -167,7 +168,7 @@
       file.initWithPath(this.textbox.value);
       file.launch();
     }
-  }
+  } // launch picker
 
   customElements.define("filtaquilla-ruleactiontarget-launchpicker", FiltaQuillaRuleactiontargetLaunchPicker);
 
@@ -194,8 +195,8 @@
       
       this.launchtitle = util.getBundleString('filtaquilla.runProgram.title', "Select a Program to run");
 
-      this.textbox.setAttribute('value', this.hbox.value);
       updateParentNode(this.closest(".ruleaction")); 
+      this.textbox.setAttribute('value', this.hbox.value);
 
     }
 
@@ -234,7 +235,7 @@
       }
 
     }
-  }
+  } // run picker
 
   customElements.define("filtaquilla-ruleactiontarget-runpicker", FiltaQuillaRuleactiontargetRunPicker);
 
@@ -265,6 +266,7 @@
         .getService(Components.interfaces.nsIAbManager);
       this.addDirectories(abManager.directories, menupopup);
 
+      updateParentNode(this.closest(".ruleaction")); 
       // scan all menupopup items to find the uri for the selection
       let valueElements = menupopup.getElementsByAttribute('value', value);
       if (valueElements && valueElements.length)
@@ -273,7 +275,6 @@
         menulist.selectedIndex = 0;
       this.value = menulist.selectedItem.getAttribute("value");;
       
-      updateParentNode(this.closest(".ruleaction")); 
     }
 
     addDirectories(aDirEnum, aMenupopup) {
@@ -321,12 +322,12 @@
       btn.setAttribute("tooltiptext",
                        util.getBundleString('filtaquilla.selectFolder.btn',"Pick Folder…"));
 
+      updateParentNode(this.closest(".ruleaction")); 
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
       else
         this.textbox.setAttribute('value', '');
       
-      updateParentNode(this.closest(".ruleaction")); 
     }
 
     getURL() {
@@ -364,7 +365,7 @@
       }
 
     }
-  }
+  } // directory picker
 
   customElements.define("filtaquilla-ruleactiontarget-directorypicker", FiltaQuillaRuleactiontargetDirectoryPicker);
 
@@ -385,13 +386,13 @@
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
       this.textbox = this.hbox.firstChild;              // document.getAnonymousNodes(this)[0].childNodes[0];
       this.toolbarbutton = this.getElementsByTagName("toolbarbutton")[0]; // document.getAnonymousNodes(this)[0].childNodes[1];
-      this.textbox.value = this.hbox.value;
       this.toolbarbutton.addEventListener("command", this.onCommand, false);
-      
       this.toolbarbutton.setAttribute('tooltiptext',
         util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
       
       updateParentNode(this.closest(".ruleaction")); 
+      this.textbox.value = this.hbox.value;
+      
     }
 
     onCommand() {
@@ -406,7 +407,7 @@
   util.logDebug("fq_FilterEditor.js - Finished.");
 
 
-}
+} // javascript action
 
 // // XXX: As long as CSS "-moz-binding" works, the following code doesn't have
 // //      to be used, but once mozilla disables bindings at all, the following
