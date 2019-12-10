@@ -369,7 +369,8 @@
               </description>
 						</hbox>
 					</vbox>
-				  <vbox class="linkBox">
+				  
+          <vbox class="linkBox">
 						<hbox>
 							<spacer flex="1" />
 							<a href="https://addons.thunderbird.net/addon/quickfilters/"
@@ -389,6 +390,30 @@
               </description>
 						</hbox>
 					</vbox>
+          
+				  <vbox class="linkBox">
+						<hbox>
+							<spacer flex="1" />
+							<a href="http://quickfilters.mozdev.org/donate.html"
+								 id="licenseLink"
+								 class="buttonLink"
+								 onclick="FiltaQuilla.Util.openLinkInTab('http://quickfilters.mozdev.org/donate.html');window.close();">
+                 &supportFiltaquilla;
+							</a>
+							<spacer flex="1" />
+						</hbox>
+						<hbox>
+							<img src="chrome://filtaquilla/skin/community.png"
+									 class="customLogo"
+									 id="community_img" />
+							<description class="linkDescription">
+                &supportFiltaquilla_desc;
+              </description>
+						</hbox>
+					</vbox>
+          
+          
+          
 					<hbox>
 						<spacer flex="1" />
 						<checkbox id="checkJavascriptEnabled"

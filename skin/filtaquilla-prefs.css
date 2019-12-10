@@ -26,6 +26,15 @@
 	background: linear-gradient(to bottom, #f85032 0%,#f16f5c 50%,#f6290c 51%,#f02f17 71%,#e73827 100%);
 }
 
+#licenseLink {
+	background: linear-gradient(to bottom, #f78a4f 0%,#f05a04 31%,#b84300 61%,#f7782f 100%);
+	color: #FFF;
+}
+
+#licenseLink:hover {
+  background: linear-gradient(to bottom, #fdd8b3 0%,#fea546 31%,#f47e00 61%,#fdc589 100%);
+}
+
 
 .customLogo {
   margin-left: 5px;
@@ -42,6 +51,11 @@
 #quickfilters_img {
 	/* just a hack as I don't appear to be able to use img url for a chrome address? */
 	background-image:url("chrome://filtaquilla/skin/quickfilters.png");
+	background-repeat: no-repeat;
+}
+
+#community_img {
+	background-image:url("chrome://filtaquilla/skin/community.png");
 	background-repeat: no-repeat;
 }
 
@@ -80,11 +94,17 @@
 
 .linkDescription {
 	-moz-appearance: none;
-	max-width: 50em;
+	white-space: wrap;
+	display: inline-block;
+	max-width: 50em !important;
+	width: 50em !important;
 	padding: 4px;
+	padding-bottom: 0.7em;
 	text-align: left;
-	white-space: normal !important;
-	width: auto;
+}
+
+.linkDescription * {
+	max-width: 50em !important;
 }
 
 #actionCols column {

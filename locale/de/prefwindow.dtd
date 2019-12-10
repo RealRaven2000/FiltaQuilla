@@ -50,6 +50,8 @@
 <!ENTITY supportPage_desc "Diese Seite beschreibt die verschiedenen Aktionen und Bedingungen die man mit FiltaQuilla zu den Filterregeln hinzufügen kann.">
 <!ENTITY quickFiltersPage "Holen Sie sich quickFilters!">
 <!ENTITY quickFiltersPage_desc "Laden Sie dieses fantastische Add-on um Ihre Filterregeln aufzufrisieren. quickFilters macht Filter Definition und Management zum Kinderspiel.">
+<!ENTITY supportFiltaquilla "FiltaQuilla Unterstützen">
+<!ENTITY supportFiltaquilla_desc "FiltaQuilla kann kostenlos heruntergeladen und verwendet werden. Der beste Weg, das Entwicklungsteam zu unterstützen, ist der Kauf einer Lizenz für quickFilters Pro. Es ist die beeindruckendste Filtererweiterung für die Verwaltung und Erstellung von Filtern auf äußerst praktische Weise.">
 <!-- search terms -->
 <!ENTITY checkSearchBccEnabled.label "Blindkopie (Bcc)">
 <!ENTITY checkSearchBccEnabled.accesskey "B">
