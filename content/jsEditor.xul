@@ -42,5 +42,5 @@
         style="width: 80ch"
         >
   <script type="application/javascript" src="jsEditor.js"/>
-  <textbox id="jscode" flex="1" multiline="true" rows="10" />
+  <textbox id="jscode" flex="1" multiline="true" rows="10" newlines="pasteintact" />
 </dialog>
