@@ -74,9 +74,13 @@
 	white-space: normal !important;
 }
 
+.linkBox hbox {
+	max-width: 55em;
+}
+
 .linkDescription {
 	-moz-appearance: none;
-	min-width: 620px;
+	max-width: 50em;
 	padding: 4px;
 	text-align: left;
 	white-space: normal !important;

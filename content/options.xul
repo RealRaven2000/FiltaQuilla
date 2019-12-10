@@ -364,11 +364,9 @@
 							<img src="chrome://filtaquilla/skin/filtaquilla-32.png"
 									 class="customLogo"
 									 id="filtaquilla_img" />
-							<textbox
-							  class="linkDescription"
-							  multiline="true"
-								rows="2"
-								value="&supportPage_desc;" />
+							<description class="linkDescription">
+                &supportPage_desc;
+              </description>
 						</hbox>
 					</vbox>
 				  <vbox class="linkBox">
@@ -386,11 +384,9 @@
 							<img src="chrome://filtaquilla/skin/quickfilters.png"
 									 class="customLogo"
 									 id="quickfilters_img" />
-							<textbox
-							  class="linkDescription"
-							  multiline="true"
-								rows="2"
-							  value="&quickFiltersPage_desc;" />
+							<description class="linkDescription">
+                &quickFiltersPage_desc;
+              </description>
 						</hbox>
 					</vbox>
 					<hbox>
