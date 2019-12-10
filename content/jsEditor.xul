@@ -33,6 +33,7 @@
 <?xml-stylesheet href="chrome://filtaquilla/skin/js-editor.css" type='text/css'?>
 <!DOCTYPE dialog SYSTEM "chrome://filtaquilla/locale/bindings.dtd">
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html="http://www.w3.org/1999/xhtml"
         title="&editJavascript;" 
         orient="vertical" 
         autostretch="always"
@@ -42,5 +43,5 @@
         style="width: 80ch"
         >
   <script type="application/javascript" src="jsEditor.js"/>
-  <textbox id="jscode" flex="1" multiline="true" rows="10" newlines="pasteintact" />
+  <html:textarea id="jscode" flex="1" rows="10" />
 </dialog>
