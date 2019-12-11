@@ -21,7 +21,9 @@
 
 {
   var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
-  let util = FiltaQuilla.Util;
+  const util = FiltaQuilla.Util,
+        Ci = Components.interfaces,
+        Cc = Components.classes;
 
   util.logDebug("fq_FilterEditor.js - start...");
 
@@ -43,30 +45,33 @@
           "filtaquilla@mesquilla.com#javascriptAction": "filtaquilla-ruleactiontarget-javascriptaction",
           "filtaquilla@mesquilla.com#javascriptActionBody": "filtaquilla-ruleactiontarget-javascriptaction",
           "filtaquilla@mesquilla.com#saveMessageAsFile": "filtaquilla-ruleactiontarget-directorypicker",
+          // Conditions
+          "filtaquilla@mesquilla.com#threadheadtag": "filtaquilla-search-value-tag",
+          "filtaquilla@mesquilla.com#threadanytag": "filtaquilla-search-value-tag",
       };
       const elementName = elementMapping[type];
       return elementName ? document.createXULElement(elementName) : null;
   }
 
   function patchRuleactiontargetWrapper() {
-      let wrapper = customElements.get("ruleactiontarget-wrapper");
-      if (wrapper) {
-          let alreadyPatched = wrapper.prototype.hasOwnProperty("_patchedByFiltaQuillaExtension") ?
-                               wrapper.prototype._patchedByFiltaQuillaExtension :
-                               false;
-          if (alreadyPatched) {
-              // already patched
-              return;
-          }
-          let prevMethod = wrapper.prototype._getChildNode;
-          if (prevMethod) {
-              wrapper.prototype._getChildNode = function(type) {
-                  let element = getChildNode(type);
-                  return element ? element : prevMethod(type);
-              };
-              wrapper.prototype._patchedByFiltaQuillaExtension = true;
-          }
+    let wrapper = customElements.get("ruleactiontarget-wrapper");
+    if (wrapper) {
+      let alreadyPatched = wrapper.prototype.hasOwnProperty("_patchedByFiltaQuillaExtension") ?
+                           wrapper.prototype._patchedByFiltaQuillaExtension :
+                           false;
+      if (alreadyPatched) {
+        // already patched
+        return;
       }
+      let prevMethod = wrapper.prototype._getChildNode;
+      if (prevMethod) {
+        wrapper.prototype._getChildNode = function(type) {
+          let element = getChildNode(type);
+          return element ? element : prevMethod(type);
+        };
+        wrapper.prototype._patchedByFiltaQuillaExtension = true;
+      }
+    }
   }
 
   patchRuleactiontargetWrapper();
@@ -130,9 +135,7 @@
     }
 
     getURL() {
-      const Ci = Components.interfaces,
-        Cc = Components.classes,
-        nsIFilePicker = Ci.nsIFilePicker;
+      const nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
       fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilters(nsIFilePicker.filterAll);
@@ -163,8 +166,7 @@
     }
 
     launch() {
-      const Ci = Components.interfaces;
-      var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+      var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
       file.initWithPath(this.textbox.value);
       file.launch();
     }
@@ -201,9 +203,7 @@
     }
 
     getURL() {
-      const Ci = Components.interfaces,
-        Cc = Components.classes,
-        nsIFilePicker = Ci.nsIFilePicker;
+      const nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
       fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilters(nsIFilePicker.filterAll);
@@ -262,8 +262,7 @@
         value = "moz-abmdbdirectory://abook.mab";
 
       // recursively add all address books and email lists
-      let abManager = Components.classes["@mozilla.org/abmanager;1"]
-        .getService(Components.interfaces.nsIAbManager);
+      let abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager);
       this.addDirectories(abManager.directories, menupopup);
 
       updateParentNode(this.closest(".ruleaction")); 
@@ -280,7 +279,7 @@
     addDirectories(aDirEnum, aMenupopup) {
       while (aDirEnum.hasMoreElements()) {
         let dir = aDirEnum.getNext();
-        if (dir instanceof Components.interfaces.nsIAbDirectory) {
+        if (dir instanceof Ci.nsIAbDirectory) {
           // get children
           let newMenuItem = document.createElement('menuitem');
           let displayLabel = dir.dirName;
@@ -331,9 +330,7 @@
     }
 
     getURL() {
-      const Ci = Components.interfaces,
-        Cc = Components.classes,
-        nsIFilePicker = Ci.nsIFilePicker;
+      const nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
       fp.init(window, this.dialogTitle, nsIFilePicker.modeGetFolder);
       fp.appendFilters(nsIFilePicker.filterAll);
@@ -403,6 +400,74 @@
   }
 
   customElements.define("filtaquilla-ruleactiontarget-javascriptaction", FiltaQuillaRuleactiontargetJavascriptAction);
+
+// ***********  CONDITIONS  ***********
+
+  class FiltaQuillaSearchValueTag extends MozXULElement {
+    connectedCallback() {
+      if (this.delayConnectedCallback()) {
+        return;
+      }
+      this.textContent = "";
+      this.appendChild(MozXULElement.parseXULToFragment(`
+        <menulist flex="1" class="search-value-menulist" inherits="disabled" type="threadheadtag" oncommand="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.getAttribute('label');">
+          <menupopup class="search-value-popup"></menupopup>
+        </menulist>
+      `));
+      // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
+
+      let value = this.getAttribute("value"),
+          menulist = document.getAnonymousNodes(this)[0];
+      menulist.selectedIndex = 0; // why here?
+      
+      let menuPopup = menulist.firstChild,
+          tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
+          tagArray = tagService.getAllTags({}),
+          selectedIndex = 0;
+          
+      for (let i = 0; i < tagArray.length; ++i) {
+        let taginfo = tagArray[i],
+            newMenuItem = document.createElement('menuitem');
+        newMenuItem.setAttribute('label', taginfo.tag);
+        newMenuItem.setAttribute('value', taginfo.key);
+        menuPopup.appendChild(newMenuItem);
+        if (taginfo.key == value)
+          selectedIndex = i;
+      }
+      
+      menulist.selectedIndex = selectedIndex;
+      this.setAttribute('value', menulist.value);
+      // The AssignMeaningfulName functions uses the item's js value, so set this to
+      //  allow this to be shown correctly.
+      this.value = menulist.getAttribute("label");
+
+      // override the opParentValue setter to detect ops needing no value
+      let parent = this.parentNode;
+      parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
+      parent.__defineSetter__('opParentValue', function(aValue) {
+        let element = document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
+        if (element) {
+          // hide the value if not relevant
+          if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
+            aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
+            element.setAttribute('hidden', 'true');
+          else
+            element.removeAttribute('hidden');
+        }
+        this.oldOpParentValueSetter(aValue);
+      });
+
+      let searchrow = parent.parentNode.parentNode;
+      let searchop = searchrow.getElementsByTagName('searchoperator')[0].value;
+      parent.opParentValue = searchop;
+
+    }
+  }
+
+  customElements.define("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
+  
+  
+  
 
   util.logDebug("fq_FilterEditor.js - Finished.");
 

@@ -123,18 +123,19 @@
     <implementation>
       <constructor>
         <![CDATA[
-          let value = this.getAttribute("value");
-          let menulist = document.getAnonymousNodes(this)[0];
+          let value = this.getAttribute("value"),
+              menulist = document.getAnonymousNodes(this)[0];
           menulist.selectedIndex = 0;
-          let menuPopup = menulist.menupopup;
-          let tagService = Components.classes["@mozilla.org/messenger/tagservice;1"]
-                                     .getService(Components.interfaces.nsIMsgTagService);
-          let tagArray = tagService.getAllTags({});
-          let selectedIndex = 0;
+          let menuPopup = menulist.firstChild, // now a axul:menupopup
+              tagService = Components.classes["@mozilla.org/messenger/tagservice;1"]
+                                     .getService(Components.interfaces.nsIMsgTagService),
+              tagArray = tagService.getAllTags({}),
+              selectedIndex = 0;
+              
           for (let i = 0; i < tagArray.length; ++i)
           {
-            let taginfo = tagArray[i];
-            let newMenuItem = document.createElement('menuitem');
+            let taginfo = tagArray[i],
+                newMenuItem = document.createElement('menuitem');
             newMenuItem.setAttribute('label', taginfo.tag);
             newMenuItem.setAttribute('value', taginfo.key);
             menuPopup.appendChild(newMenuItem);

@@ -58,6 +58,7 @@ toolbarbutton.focusbutton {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
 }
 
+/*  converted to js, BUT AIN'T WORKING YET */
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadheadtag"] {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag");
 }
@@ -65,3 +66,4 @@ toolbarbutton.focusbutton {
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadanytag"] {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag");
 }
+
