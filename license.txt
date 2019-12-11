@@ -672,3 +672,13 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.
+
+=======================
+Icons 
+the following icons are under their own license:
+community icon - by JLS-Creation
+https://pixabay.com/users/jls-creation-8659235/
+quickFilters icon - by Axel Grude see license at:
+https://github.com/RealRaven2000/quickFilters/blob/master/license.txt
+
+
