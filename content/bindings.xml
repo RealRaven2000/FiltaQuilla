@@ -135,7 +135,7 @@
           for (let i = 0; i < tagArray.length; ++i)
           {
             let taginfo = tagArray[i],
-                newMenuItem = document.createElement('menuitem');
+                newMenuItem = document.createElement('menuitem');  // createXULElement  ???
             newMenuItem.setAttribute('label', taginfo.tag);
             newMenuItem.setAttribute('value', taginfo.key);
             menuPopup.appendChild(newMenuItem);
@@ -165,8 +165,8 @@
             this.oldOpParentValueSetter(aValue);
           });
 
-          let searchrow = parent.parentNode.parentNode;
-          let searchop = searchrow.getElementsByTagName('searchoperator')[0].value;
+          let searchrow = parent.parentNode.parentNode,
+              searchop = searchrow.getElementsByTagName('search-operator')[0].value;
           parent.opParentValue = searchop;
         ]]>
       </constructor>

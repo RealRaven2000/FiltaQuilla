@@ -427,7 +427,7 @@
           
       for (let i = 0; i < tagArray.length; ++i) {
         let taginfo = tagArray[i],
-            newMenuItem = document.createElement('menuitem');
+            newMenuItem = document.createXULElement('menuitem');
         newMenuItem.setAttribute('label', taginfo.tag);
         newMenuItem.setAttribute('value', taginfo.key);
         menuPopup.appendChild(newMenuItem);
@@ -458,7 +458,7 @@
       });
 
       let searchrow = parent.parentNode.parentNode;
-      let searchop = searchrow.getElementsByTagName('searchoperator')[0].value;
+      let searchop = searchrow.getElementsByTagName('search-operator')[0].value;
       parent.opParentValue = searchop;
 
     }
@@ -553,66 +553,6 @@
 //
 //    customElements.define("filtaquilla-search-value-javascript", FiltaQuillaSearchValueJavascript);
 //
-//    class FiltaQuillaSearchValueTag extends MozXULElement {
-//      connectedCallback() {
-//        if (this.delayConnectedCallback()) {
-//          return;
-//        }
-//        this.textContent = "";
-//        this.appendChild(MozXULElement.parseXULToFragment(`
-//          <menulist flex="1" class="search-value-menulist" inherits="disabled" type="threadheadtag" oncommand="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.getAttribute('label');">
-//            <menupopup class="search-value-popup"></menupopup>
-//          </menulist>
-//        `));
-//        // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
-//
-//        let value = this.getAttribute("value");
-//        let menulist = document.getAnonymousNodes(this)[0];
-//        menulist.selectedIndex = 0;
-//        let menuPopup = menulist.menupopup;
-//        let tagService = Components.classes["@mozilla.org/messenger/tagservice;1"]
-//          .getService(Components.interfaces.nsIMsgTagService);
-//        let tagArray = tagService.getAllTags({});
-//        let selectedIndex = 0;
-//        for (let i = 0; i < tagArray.length; ++i) {
-//          let taginfo = tagArray[i];
-//          let newMenuItem = document.createElement('menuitem');
-//          newMenuItem.setAttribute('label', taginfo.tag);
-//          newMenuItem.setAttribute('value', taginfo.key);
-//          menuPopup.appendChild(newMenuItem);
-//          if (taginfo.key == value)
-//            selectedIndex = i;
-//        }
-//        menulist.selectedIndex = selectedIndex;
-//        this.setAttribute('value', menulist.value);
-//        // The AssignMeaningfulName functions uses the item's js value, so set this to
-//        //  allow this to be shown correctly.
-//        this.value = menulist.getAttribute("label");
-//
-//        // override the opParentValue setter to detect ops needing no value
-//        let parent = this.parentNode;
-//        parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
-//        parent.__defineSetter__('opParentValue', function(aValue) {
-//          let element = document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
-//          if (element) {
-//            // hide the value if not relevant
-//            if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
-//              aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
-//              element.setAttribute('hidden', 'true');
-//            else
-//              element.removeAttribute('hidden');
-//          }
-//          this.oldOpParentValueSetter(aValue);
-//        });
-//
-//        let searchrow = parent.parentNode.parentNode;
-//        let searchop = searchrow.getElementsByTagName('searchoperator')[0].value;
-//        parent.opParentValue = searchop;
-//
-//      }
-//    }
-//
-//    customElements.define("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
 //}
 //
 
