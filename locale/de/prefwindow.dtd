@@ -65,6 +65,6 @@
 <!ENTITY checkJavascriptEnabled.accesskey "J">
 <!ENTITY checkSubjectRegexEnabled.label "Betreff vergleichen (Regulärer Ausdruck)">
 <!ENTITY checkSubjectRegexEnabled.accesskey "V">
-<!ENTITY checkThreadAnyTagEnabled.label "Schlagwort für Thema setzen">
+<!ENTITY checkThreadAnyTagEnabled.label "Schlagwort der Mails der Unterhaltung">
 <!ENTITY checkThreadAnyTagEnabled.accesskey "T">
 <!ENTITY helpFeatureTip "Mehr Informationen über diese Funktion">
