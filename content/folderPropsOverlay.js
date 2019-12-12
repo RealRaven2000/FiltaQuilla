@@ -87,3 +87,5 @@ Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
 })();
 
 window.addEventListener("load", function(e) { filtaquillaFolderProps.onLoad(e); }, false);
+
+// vim: set expandtab tabstop=2 shiftwidth=2:

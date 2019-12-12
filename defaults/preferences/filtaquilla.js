@@ -40,3 +40,5 @@ pref("extensions.filtaquilla.debug.firstrun", false);
 pref("extensions.filtaquilla.installDate", "");
 pref("extensions.filtaquilla.firstRun", true);
 pref("extensions.filtaquilla.version", "?");
+
+// vim: set expandtab tabstop=2 shiftwidth=2

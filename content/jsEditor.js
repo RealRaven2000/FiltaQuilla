@@ -76,3 +76,5 @@ function onAccept() {
   rootTextbox.parentNode.value = rawValue;
   return true;
 }
+
+// vim: set expandtab tabstop=2 shiftwidth=2:

@@ -74,3 +74,5 @@ if (XPCOMUtils.generateNSGetFactory)
   var NSGetFactory = XPCOMUtils.generateNSGetFactory([inheritPane]);
 else
   var NSGetModule= XPCOMUtils.generateNSGetModule([inheritPane]);
+
+// vim: set expandtab tabstop=2 shiftwidth=2:
