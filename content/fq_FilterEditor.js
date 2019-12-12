@@ -45,9 +45,6 @@
           "filtaquilla@mesquilla.com#javascriptAction": "filtaquilla-ruleactiontarget-javascriptaction",
           "filtaquilla@mesquilla.com#javascriptActionBody": "filtaquilla-ruleactiontarget-javascriptaction",
           "filtaquilla@mesquilla.com#saveMessageAsFile": "filtaquilla-ruleactiontarget-directorypicker",
-          // Conditions
-          "filtaquilla@mesquilla.com#threadheadtag": "filtaquilla-search-value-tag",
-          "filtaquilla@mesquilla.com#threadanytag": "filtaquilla-search-value-tag",
       };
       const elementName = elementMapping[type];
       return elementName ? document.createXULElement(elementName) : null;
@@ -110,8 +107,8 @@
                          oncommand="this.parentNode.parentNode.getURL()">
           </toolbarbutton>
           <toolbarbutton image="chrome://filtaquilla/skin/folder_go.png"
-                         class="focusbutton" 
-                         tooltiptext="dummy" 
+                         class="focusbutton"
+                         tooltiptext="dummy"
                          oncommand="this.parentNode.parentNode.launch()"></toolbarbutton>
         </hbox>
       `));
@@ -120,18 +117,18 @@
       this.textbox = this.hbox.firstChild;              // document.getAnonymousNodes(this)[0].firstChild;
       const txtLaunchSelector = util.getBundleString('filtaquilla.launcher.select', "Select a File…");
       this.launchtitle = txtLaunchSelector;
-      
+
       let btns = this.getElementsByTagName("toolbarbutton");
       btns[0].setAttribute('tooltiptext', txtLaunchSelector);
       btns[1].setAttribute('tooltiptext',
         util.getBundleString('filtaquilla.launcher.launch', "Launch the File!"));
 
 
-      updateParentNode(this.closest(".ruleaction")); 
-      
+      updateParentNode(this.closest(".ruleaction"));
+
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
-      
+
     }
 
     getURL() {
@@ -190,14 +187,14 @@
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
       this.textbox =  this.hbox.firstChild;             // document.getAnonymousNodes(this)[0].firstChild;
-      
+
       let btn = this.getElementsByTagName("toolbarbutton")[0];
-      btn.setAttribute('tooltiptext', 
+      btn.setAttribute('tooltiptext',
         util.getBundleString('filtaquilla.runProgram.select', "Select a Program…"));
-      
+
       this.launchtitle = util.getBundleString('filtaquilla.runProgram.title', "Select a Program to run");
 
-      updateParentNode(this.closest(".ruleaction")); 
+      updateParentNode(this.closest(".ruleaction"));
       this.textbox.setAttribute('value', this.hbox.value);
 
     }
@@ -265,7 +262,7 @@
       let abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager);
       this.addDirectories(abManager.directories, menupopup);
 
-      updateParentNode(this.closest(".ruleaction")); 
+      updateParentNode(this.closest(".ruleaction"));
       // scan all menupopup items to find the uri for the selection
       let valueElements = menupopup.getElementsByAttribute('value', value);
       if (valueElements && valueElements.length)
@@ -273,7 +270,7 @@
       else
         menulist.selectedIndex = 0;
       this.value = menulist.selectedItem.getAttribute("value");;
-      
+
     }
 
     addDirectories(aDirEnum, aMenupopup) {
@@ -314,19 +311,19 @@
       `));
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
-      
+
       this.textbox = this.hbox.firstChild; //  document.getAnonymousNodes(this)[0].firstChild;
       this.dialogTitle = util.getBundleString('filtaquilla.selectFolder.title',"Select a Folder");
       let btn = this.getElementsByTagName("toolbarbutton")[0];
       btn.setAttribute("tooltiptext",
                        util.getBundleString('filtaquilla.selectFolder.btn',"Pick Folder…"));
 
-      updateParentNode(this.closest(".ruleaction")); 
+      updateParentNode(this.closest(".ruleaction"));
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
       else
         this.textbox.setAttribute('value', '');
-      
+
     }
 
     getURL() {
@@ -386,10 +383,10 @@
       this.toolbarbutton.addEventListener("command", this.onCommand, false);
       this.toolbarbutton.setAttribute('tooltiptext',
         util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
-      
-      updateParentNode(this.closest(".ruleaction")); 
+
+      updateParentNode(this.closest(".ruleaction"));
       this.textbox.value = this.hbox.value;
-      
+
     }
 
     onCommand() {
@@ -404,27 +401,37 @@
 // ***********  CONDITIONS  ***********
 
   class FiltaQuillaSearchValueTag extends MozXULElement {
+    updateSearchValue(menulist) {
+      let target = this.closest(".search-value-custom");
+      target.setAttribute("value", menulist.value);
+      // The AssignMeaningfulName functions uses the item's js value, so set
+      // this to allow this to be shown correctly.
+      target.value = menulist.getAttribute('label');
+    }
+
     connectedCallback() {
       if (this.delayConnectedCallback()) {
         return;
       }
       this.textContent = "";
       this.appendChild(MozXULElement.parseXULToFragment(`
-        <menulist flex="1" class="search-value-menulist" inherits="disabled" type="threadheadtag" oncommand="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.getAttribute('label');">
+        <menulist flex="1" class="search-value-menulist" inherits="disabled"
+                           oncommand="this.parentNode.updateSearchValue(this);">
           <menupopup class="search-value-popup"></menupopup>
         </menulist>
       `));
       // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
 
-      let value = this.getAttribute("value"),
-          menulist = document.getAnonymousNodes(this)[0];
-      menulist.selectedIndex = 0; // why here?
-      
-      let menuPopup = menulist.firstChild,
+      let target = this.closest(".search-value-custom"),
+          wrapper = target.closest("search-value");
+      let value = target.getAttribute("value"),
+          menulist = this.getElementsByTagName("menulist")[0];
+
+      let menuPopup = menulist.getElementsByTagName("menupopup")[0],
           tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
           tagArray = tagService.getAllTags({}),
           selectedIndex = 0;
-          
+
       for (let i = 0; i < tagArray.length; ++i) {
         let taginfo = tagArray[i],
             newMenuItem = document.createXULElement('menuitem');
@@ -434,19 +441,16 @@
         if (taginfo.key == value)
           selectedIndex = i;
       }
-      
+
       menulist.selectedIndex = selectedIndex;
-      this.setAttribute('value', menulist.value);
-      // The AssignMeaningfulName functions uses the item's js value, so set this to
-      //  allow this to be shown correctly.
-      this.value = menulist.getAttribute("label");
+      this.updateSearchValue(menulist);
 
       // override the opParentValue setter to detect ops needing no value
-      let parent = this.parentNode;
-      parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
-      parent.__defineSetter__('opParentValue', function(aValue) {
-        let element = document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
-        if (element) {
+      wrapper.oldOpParentValueSetter = wrapper.__lookupSetter__('opParentValue');
+      wrapper.__defineSetter__('opParentValue', function(aValue) {
+        let elements = this.getElementsByClassName('search-value-custom');
+        if (elements.length > 0) {
+          let element = elements[0];
           // hide the value if not relevant
           if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
             aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
@@ -454,20 +458,18 @@
           else
             element.removeAttribute('hidden');
         }
-        this.oldOpParentValueSetter(aValue);
+        return this.oldOpParentValueSetter(aValue);
       });
 
-      let searchrow = parent.parentNode.parentNode;
+      let searchrow = wrapper.parentNode.parentNode;
       let searchop = searchrow.getElementsByTagName('search-operator')[0].value;
-      parent.opParentValue = searchop;
+      wrapper.opParentValue = searchop;
 
     }
   }
 
   customElements.define("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
-  
-  
-  
+
 
   util.logDebug("fq_FilterEditor.js - Finished.");
 
@@ -556,4 +558,4 @@
 //}
 //
 
-// vim: set expandtab tabstop=4 shiftwidth=4:
+// vim: set expandtab tabstop=2 shiftwidth=2:
