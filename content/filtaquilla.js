@@ -1297,8 +1297,7 @@
         if (threadCount < thread.numChildren) {
           // find this message in the thread, and use that as the center of the search
           let threadIndex = 0;
-          for (; threadIndex < thread.numChildren; threadIndex++)
-          {
+          for (; threadIndex < thread.numChildren; threadIndex++) {
             if (myKey == thread.getChildKeyAt(threadIndex))
               break;
           }
@@ -1312,7 +1311,7 @@
         for (let index = 0; index < threadCount; index++) {
           // always examine the thread head
           let useIndex = (index == 0) ? 0 : threadStart + index,
-              hdr = thread.getChildAt(useIndex);
+              hdr = thread.getChildHdrAt(useIndex); // was getChildAt
           //  -- Get and cleanup the list of message headers following code from
           //  -- msgHdrViewOverlay.js SetTagHeader()
 
