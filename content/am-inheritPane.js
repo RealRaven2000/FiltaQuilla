@@ -38,3 +38,5 @@ function onPreInit(account, accountValues)
   let type = parent.getAccountValue(account, accountValues, "server", "type", null, false);
   hideShowControls(type);
 }
+
+// vim: set expandtab tabstop=2 shiftwidth=2:
