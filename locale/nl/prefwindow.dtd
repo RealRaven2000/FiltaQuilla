@@ -50,6 +50,8 @@
 <!ENTITY supportPage_desc "Deze pagina beschrijft de verschillende acties en voorwaarden die met FiltaQuilla aan e-mailfilters kunt toevoegen.">
 <!ENTITY quickFiltersPage "quickFilters downloaden!">
 <!ENTITY quickFiltersPage_desc "Download deze geweldige add-on om uw filteracties een boost te geven. quickFilters maakt definiëren van filters en het beheer ervan een makkie.">
+<!ENTITY supportFiltaquilla "Support FiltaQuilla">
+<!ENTITY supportFiltaquilla_desc "FiltaQuilla is free to download and use - the best way to support the development team is by buying a license for quickFilters Pro. It is the most awesome filter extensions for managing and creating filters in a super convenient way.">
 <!-- search terms -->
 <!ENTITY checkSearchBccEnabled.label "Bcc">
 <!ENTITY checkSearchBccEnabled.accesskey "B">

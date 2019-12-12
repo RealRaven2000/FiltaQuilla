@@ -1,3 +1,4 @@
+// "use strict";
 
 /*
  ***** BEGIN LICENSE BLOCK *****
@@ -28,19 +29,21 @@
  * ***** END LICENSE BLOCK *****
  */
 
-Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
-try {
-	var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
-	var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
-}
-catch(ex) {
-	Components.utils.import("resource://gre/modules/Services.jsm");
-	Components.utils.import("resource:///modules/MailUtils.js");
-}
 
 (function filtaQuilla()
 {
 	debugger;
+  
+  Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
+  try {
+    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+    var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
+  }
+  catch(ex) {
+    Components.utils.import("resource://gre/modules/Services.jsm");
+    Components.utils.import("resource:///modules/MailUtils.js");
+  }
+  
 	var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
 
   const Cc = Components.classes,
@@ -51,12 +54,12 @@ catch(ex) {
 
   // parameters for MoveLater
   //  delay (in milliseconds) between calls to move later
-  const MOVE_LATER_DELAY = 5000;
-  //  Maximum number of callbacks before we just go ahead and move it.
-  const MOVE_LATER_LIMIT = 12;
+  const MOVE_LATER_DELAY = 5000,
+        //  Maximum number of callbacks before we just go ahead and move it.
+        MOVE_LATER_LIMIT = 12;
 
   // global scope variables
-  this.filtaquilla = {};
+  this.filtaquilla = {}; // use strict leads to "this is undefined" error
 
   // local shorthand for the global reference
   var self = this.filtaquilla;
@@ -66,20 +69,12 @@ catch(ex) {
 
   const filtaquillaStrings = Cc["@mozilla.org/intl/stringbundle;1"]
                                 .getService(Ci.nsIStringBundleService)
-                                .createBundle("chrome://filtaquilla/locale/filtaquilla.properties");
-  const headerParser = Cc["@mozilla.org/messenger/headerparser;1"]
-                          .getService(Ci.nsIMsgHeaderParser);
-
-  const tagService = Cc["@mozilla.org/messenger/tagservice;1"]
-                        .getService(Ci.nsIMsgTagService);
-
-  const abManager = Cc["@mozilla.org/abmanager;1"]
-                       .getService(Ci.nsIAbManager);
-
-  let maxThreadScan = 20; // the largest number of thread messages that we will examine
-
-  // cache the values of commonly used search operators
-  const nsMsgSearchOp = Ci.nsMsgSearchOp,
+                                .createBundle("chrome://filtaquilla/locale/filtaquilla.properties"),
+        headerParser = Cc["@mozilla.org/messenger/headerparser;1"].getService(Ci.nsIMsgHeaderParser),
+        tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
+        abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager),
+        // cache the values of commonly used search operators
+        nsMsgSearchOp = Ci.nsMsgSearchOp,
 				Contains = nsMsgSearchOp.Contains,
 				DoesntContain = nsMsgSearchOp.DoesntContain,
 				Is = nsMsgSearchOp.Is,
@@ -91,6 +86,8 @@ catch(ex) {
 				Matches = nsMsgSearchOp.Matches,
 				DoesntMatch = nsMsgSearchOp.DoesntMatch;
 
+  let maxThreadScan = 20; // the largest number of thread messages that we will examine
+  
   // Enabling of filter actions.
   let subjectAppendEnabled = false,
       subjectSuffixEnabled = false,
@@ -122,10 +119,9 @@ catch(ex) {
       ThreadAnyTagEnabled = false,
       FolderNameEnabled = false;
 	// [#5] AG new condition - attachment name regex
-	let AttachmentRegexEnabled = false;
-
-  let moveLaterTimers = {}; // references to timers used in moveLater action
-  let moveLaterIndex = 0; // next index to use to store timers
+	let AttachmentRegexEnabled = false,
+      moveLaterTimers = {}, // references to timers used in moveLater action
+      moveLaterIndex = 0; // next index to use to store timers
 
   let printQueue = [],
       printingMessage = false;
@@ -206,8 +202,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#removeTag",
       name: self.strings.GetStringFromName("filtaquilla.removekeyword.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
                 .folder.removeKeywordsFromMessages(aMsgHdrs, aActionValue);
       },
@@ -223,8 +218,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#removeStar",
       name: self.strings.GetStringFromName("filtaquilla.removeflagged.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
                 .folder.markMessagesFlagged(aMsgHdrs, false);
       },
@@ -238,8 +232,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#markUnread",
       name: self.strings.GetStringFromName("filtaquilla.markunread.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
                 .folder.markMessagesRead(aMsgHdrs, false);
       },
@@ -253,8 +246,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#markReplied",
       name: self.strings.GetStringFromName("filtaquilla.markreplied.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // what a pain, the folder function does not take an array like all others!
         for (var index = 0; index < aMsgHdrs.length; index++)
         {
@@ -272,8 +264,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#noBiff",
       name: self.strings.GetStringFromName("filtaquilla.nobiff.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var folder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
         var numNewMessages = folder.getNumNewMessages(false);
         var hdrCount = aMsgHdrs.length;
@@ -292,8 +283,7 @@ catch(ex) {
       {
         id: "filtaquilla@mesquilla.com#copyAsRead",
         name: self.strings.GetStringFromName("filtaquilla.copyasread.name"),
-        apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-        {
+        apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
           _aListener = aListener;
           var srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
           _dstFolder = MailUtils.getFolderForURI(aActionValue, false);
@@ -310,8 +300,7 @@ catch(ex) {
 
         },
         isValidForType: function(type, scope) { return type == Ci.nsMsgFilterType.Manual && copyAsReadEnabled;},
-        validateActionValue: function(aActionValue, aFilterFolder, type)
-        {
+        validateActionValue: function(aActionValue, aFilterFolder, type) {
           var msgFolder = MailUtils.getFolderForURI(aActionValue, false);
           if (!msgFolder || !msgFolder.canFileMessages)
           {
@@ -325,34 +314,29 @@ catch(ex) {
       }
 
       // local variables and methods
-      var _messageIds = null;
-      var _dstFolder = null;
-      var _aListener = null;
+      var _messageIds = null,
+          _dstFolder = null,
+          _aListener = null;
 
       var _localListener =
       {
-        OnStartCopy: function()
-        {
+        OnStartCopy: function() {
           if (_aListener)
             _aListener.OnStartCopy();
         },
-        OnProgress: function(aProgress, aProgressMax)
-        {
+        OnProgress: function(aProgress, aProgressMax) {
           if (_aListener)
             _aListener.OnProgress(aProgress, aProgressMax);
         },
-        SetMessageKey: function(aKey)
-        {
+        SetMessageKey: function(aKey) {
           if (_aListener)
             _aListener.SetMessageKey(aKey);
         },
-        SetMessageId: function(aMessageId)
-        {
+        SetMessageId: function(aMessageId) {
           if (_aListener)
             _aListener.SetMessageId(aMessageId);
         },
-        OnStopCopy: function(aStatus)
-        {
+        OnStopCopy: function(aStatus) {
           // local folders can be set unread now. Imap folders must be loaded
           if (_dstFolder.URI.substr(0, 4) == "imap")
           {
@@ -368,13 +352,11 @@ catch(ex) {
         },
       };
 
-      var _setRead = function (aStatus)
-      {
+      var _setRead = function (aStatus) {
         var dstMessages = Cc["@mozilla.org/array;1"]
                           .createInstance(Ci.nsIMutableArray);
         var dstDb = _dstFolder.msgDatabase;
-        for (var i = 0; i < _messageIds.length; i++)
-        {
+        for (var i = 0; i < _messageIds.length; i++) {
           var hdr = dstDb.getMsgHdrForMessageID(_messageIds[i]);
           if (hdr)
             dstMessages.appendElement(dstDb.getMsgHdrForMessageID(_messageIds[i]), false);
@@ -398,8 +380,7 @@ catch(ex) {
         OnItemBoolPropertyChanged: function(item, property, oldValue, newValue) {},
         OnItemUnicharPropertyChanged: function(item, property, oldValue, newValue){},
         OnItemPropertyFlagChanged: function(item, property, oldFlag, newFlag) {},
-        OnItemEvent: function(folder, event)
-        {
+        OnItemEvent: function(folder, event) {
           var eventType = event.toString();
 
           if (eventType == "FolderLoaded") {
@@ -439,8 +420,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#runFile",
       name: self.strings.GetStringFromName("filtaquilla.runfile.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"]
                      .createInstance(Ci.nsILocalFile || Ci.nsIFile);
         // the action value string consists of comma-separated fields. The
@@ -457,12 +437,12 @@ catch(ex) {
         //   @MESSAGEURI@ URI for the message
         //   @PROPERTY@somedbproperty@ uses .getStringProperty("somedbproperty")
 
-        var args = aActionValue.split(',');
-        var fileURL = args[0];
+        var args = aActionValue.split(','),
+            fileURL = args[0],
+            parmCount = args.length - 1;
+            
         file.initWithPath(fileURL);
-        var parmCount = args.length - 1;
-        for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++)
-        {
+        for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           let theProcess = Cc["@mozilla.org/process/util;1"]
                            .createInstance(Ci.nsIProcess);
           theProcess.init(file);
@@ -484,8 +464,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#trainAsJunk",
       name: self.strings.GetStringFromName("filtaquilla.trainasjunk.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         _trainJunkFilter(true, aMsgHdrs, aMsgWindow);
       },
 
@@ -500,8 +479,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#trainAsGood",
       name: self.strings.GetStringFromName("filtaquilla.trainasgood.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         _trainJunkFilter(false, aMsgHdrs, aMsgWindow);
       },
 
@@ -516,12 +494,10 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#print",
       name: self.strings.GetStringFromName("filtaquilla.print.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // print me
         let count = aMsgHdrs.length;
-        for (let i = 0; i < count; i++)
-        {
+        for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
           printQueue.push(hdr);
         }
@@ -538,8 +514,7 @@ catch(ex) {
                            .getBranch("");
         rootprefs.setBoolPref("print.always_print_silent", true);
 
-        function printNextMessage()
-        {
+        function printNextMessage() {
           if (printingMessage || !printQueue.length)
             return;
           printingMessage = true;
@@ -581,8 +556,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#addSender",
       name: self.strings.GetStringFromName("filtaquilla.addSender.name"),
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let dir = abManager.getDirectory(aActionValue);
         if (!dir) {
           Cu.reportError("During filter action, can't find directory: " + aActionValue);
@@ -590,8 +564,7 @@ catch(ex) {
         }
 
         let count = aMsgHdrs.length;
-        for (let i = 0; i < count; i++)
-        {
+        for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
           let addresses = {}, names = {};
           headerParser.parseHeadersWithArray(hdr.mime2DecodedAuthor, addresses, names, {});
@@ -634,8 +607,7 @@ catch(ex) {
 					}
 					let callbackObject = new SaveAttachmentCallback(directory, false);
 
-					for (let i = 0; i < aMsgHdrs.length; i++)
-					{
+					for (let i = 0; i < aMsgHdrs.length; i++) {
 						try {
 							var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
 							self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
@@ -741,8 +713,7 @@ catch(ex) {
 					}
 
 					let callbackObject = new SaveAttachmentCallback(directory, true);
-					for (let i = 0; i < aMsgHdrs.length; i++)
-					{
+					for (let i = 0; i < aMsgHdrs.length; i++) {
 						try {
 							var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
 							self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
@@ -768,8 +739,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#javascriptAction",
       name: self.strings.GetStringFromName("filtaquilla.javascriptAction.name"),
-      apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
-      {
+      apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         return eval(actionValue);
       },
       isValidForType: function(type, scope) {return javascriptActionEnabled;},
@@ -782,8 +752,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#javascriptActionBody",
       name: self.strings.GetStringFromName("filtaquilla.javascriptActionBody.name"),
-      apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
-      {
+      apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         return eval(actionValue);
       },
       isValidForType: function(type, scope) {return javascriptActionBodyEnabled;},
@@ -796,13 +765,11 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
       name: self.strings.GetStringFromName("filtaquilla.saveMessageAsFile.name"),
-      apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow)
-      {
+      apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         // allow specifying directory with suffix of |htm
         let type = "eml";
         let path = actionValue;
-        if (/\|/.test(actionValue))
-        {
+        if (/\|/.test(actionValue)) {
           let matches = /(^[^\|]*)\|(.*$)/.exec(actionValue);
           path = matches[1];
           type = matches[2];
@@ -811,8 +778,7 @@ catch(ex) {
         let directory = Cc["@mozilla.org/file/local;1"]
                            .createInstance(Ci.nsILocalFile || Ci.nsIFile);
         directory.initWithPath(path);
-        for (let i = 0; i < msgHdrs.length; i++)
-        {
+        for (let i = 0; i < msgHdrs.length; i++) {
           var msgHdr = msgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
           _incrementMoveLaterCount(msgHdr);
           _saveAs(msgHdr, directory, type);
@@ -828,8 +794,7 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#moveLater",
       name: self.strings.GetStringFromName("filtaquilla.moveLater.name"),
-      apply: function(aMsgHdrs, aActionValue, copyListener, filterType, msgWindow)
-      {
+      apply: function(aMsgHdrs, aActionValue, copyListener, filterType, msgWindow) {
         let srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
         let dstFolder = MailUtils.getFolderForURI(aActionValue, false);
         // store the messages uris to use later
@@ -853,17 +818,14 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#folderName",
       name: self.strings.GetStringFromName("filtaquilla.folderName.name"),
-      getEnabled: function folderName_getEnabled(scope, op)
-      {
+      getEnabled: function folderName_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function folderName_getAvailable(scope, op)
-      {
+      getAvailable: function folderName_getAvailable(scope, op) {
         return _isLocalSearch(scope) && FolderNameEnabled;
       },
-      getAvailableOperators: function folderName_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function folderName_getAvailableOperators(scope, length) {
         if (!_isLocalSearch(scope))
         {
           length.value = 0;
@@ -872,10 +834,9 @@ catch(ex) {
         length.value = 6;
         return [Contains, DoesntContain, Is, Isnt, BeginsWith, EndsWith];
       },
-      match: function folderName_match(aMsgHdr, aSearchValue, aSearchOp)
-      {
-        let folderName = aMsgHdr.folder.name;
-        let matches = false;
+      match: function folderName_match(aMsgHdr, aSearchValue, aSearchOp) {
+        let folderName = aMsgHdr.folder.name,
+            matches = false;
 
         switch (aSearchOp) {
           case Contains:
@@ -915,17 +876,14 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#searchBcc",
       name: self.strings.GetStringFromName("filtaquilla.searchBcc.name"),
-      getEnabled: function searchBcc_getEnabled(scope, op)
-      {
+      getEnabled: function searchBcc_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function searchBcc_getAvailable(scope, op)
-      {
+      getAvailable: function searchBcc_getAvailable(scope, op) {
         return _isLocalSearch(scope) && SearchBccEnabled;
       },
-      getAvailableOperators: function searchBcc_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function searchBcc_getAvailableOperators(scope, length) {
         if (!_isLocalSearch(scope))
         {
           length.value = 0;
@@ -935,8 +893,7 @@ catch(ex) {
         return [Contains, DoesntContain, Is, Isnt, IsEmpty, IsntEmpty,
                 BeginsWith, EndsWith];
       },
-      match: function searchBcc_match(aMsgHdr, aSearchValue, aSearchOp)
-      {
+      match: function searchBcc_match(aMsgHdr, aSearchValue, aSearchOp) {
         let bccList = aMsgHdr.bccList;
         if (aSearchOp == IsEmpty)
           return (bccList.length == 0);
@@ -949,8 +906,7 @@ catch(ex) {
         names = names.value;
         addresses = addresses.value;
         let matches = false;
-        for (let i = 0; i < names.length; i++)
-        {
+        for (let i = 0; i < names.length; i++) {
           if (matches) {
             switch (aSearchOp) {
               case Contains:
@@ -1022,17 +978,14 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#subjectRegex",
       name: self.strings.GetStringFromName("filtaquilla.subjectregex.name"),
-      getEnabled: function subjectRegEx_getEnabled(scope, op)
-      {
+      getEnabled: function subjectRegEx_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function subjectRegEx_getAvailable(scope, op)
-      {
+      getAvailable: function subjectRegEx_getAvailable(scope, op) {
         return _isLocalSearch(scope) && SubjectRegexEnabled;
       },
-      getAvailableOperators: function subjectRegEx_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function subjectRegEx_getAvailableOperators(scope, length) {
         if (!_isLocalSearch(scope))
         {
           length.value = 0;
@@ -1041,8 +994,7 @@ catch(ex) {
         length.value = 2;
         return [Matches, DoesntMatch];
       },
-      match: function subjectRegEx_match(aMsgHdr, aSearchValue, aSearchOp)
-      {
+      match: function subjectRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
         var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
@@ -1078,12 +1030,12 @@ catch(ex) {
 					let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
 					{
 						if (this.attachments.length > 0) {
-							let msgURIs = [];
-							let contentTypes = [];
-							let urls = [];
-							let displayNames = [];
-							for (let j = 0; j < this.attachments.length; j++)
-							{
+							let msgURIs = [],
+							    contentTypes = [],
+							    urls = [],
+							    displayNames = [];
+                  
+							for (let j = 0; j < this.attachments.length; j++) {
 								let attachment = this.attachments[j];
 								msgURIs.push(this.msgURI);
 								contentTypes.push(attachment.contentType);
@@ -1113,16 +1065,13 @@ catch(ex) {
 		{
       id: "filtaquilla@mesquilla.com#attachmentRegex",
       name: self.strings.GetStringFromName("filtaquilla.attachmentregex.name"),
-      getEnabled: function attachRegEx_getEnabled(scope, op)
-      {
+      getEnabled: function attachRegEx_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
-      getAvailable: function attachRegEx_getAvailable(scope, op)
-      {
+      getAvailable: function attachRegEx_getAvailable(scope, op) {
         return _isLocalSearch(scope) && AttachmentRegexEnabled;
       },
-      getAvailableOperators: function attachRegEx_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function attachRegEx_getAvailableOperators(scope, length) {
         if (!_isLocalSearch(scope))
         {
           length.value = 0;
@@ -1131,8 +1080,7 @@ catch(ex) {
         length.value = 2;
         return [Matches, DoesntMatch];
       },
-      match: function attachRegEx_match(aMsgHdr, aSearchValue, aSearchOp)
-      {
+      match: function attachRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
 				// attach Regexp
         // var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags,
@@ -1148,8 +1096,8 @@ catch(ex) {
 				}
 				debugger;
 
-				let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);
-				let callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
+				let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr),
+				    callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
 				// message must be available offline!
 				try {
 					self._mimeMsg.MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, false /* allowDownload */);
@@ -1179,17 +1127,14 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#headerRegex",
       name: self.strings.GetStringFromName("filtaquilla.headerregex.name"),
-      getEnabled: function headerRegEx_getEnabled(scope, op)
-      {
+      getEnabled: function headerRegEx_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function headerRegEx_getAvailable(scope, op)
-      {
+      getAvailable: function headerRegEx_getAvailable(scope, op) {
         return _isLocalSearch(scope) && HeaderRegexEnabled;
       },
-      getAvailableOperators: function headerRegEx_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function headerRegEx_getAvailableOperators(scope, length) {
         if (!_isLocalSearch(scope))
         {
           length.value = 0;
@@ -1198,8 +1143,7 @@ catch(ex) {
         length.value = 2;
         return [Matches, DoesntMatch];
       },
-      match: function headerRegEx_match(aMsgHdr, aSearchValue, aSearchOp)
-      {
+      match: function headerRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
         // the header and its regex are separated by a ':' in aSearchValue
         let colonIndex = aSearchValue.indexOf(':');
         if (colonIndex == -1) // not found, default to does not match
@@ -1220,8 +1164,7 @@ catch(ex) {
         }
         /**/
         var headerValue = aMsgHdr.getStringProperty(headerName);
-        switch (aSearchOp)
-        {
+        switch (aSearchOp) {
           case Matches:
             return RegExp(searchValue, searchFlags).test(headerValue);
           case DoesntMatch:
@@ -1235,22 +1178,18 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#javascript",
       name: self.strings.GetStringFromName("filtaquilla.javascript.name"),
-      getEnabled: function javascript_getEnabled(scope, op)
-      {
+      getEnabled: function javascript_getEnabled(scope, op) {
         return true;
       },
       needsBody: false,
-      getAvailable: function javascript_getAvailable(scope, op)
-      {
+      getAvailable: function javascript_getAvailable(scope, op) {
         return JavascriptEnabled;
       },
-      getAvailableOperators: function javascript_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function javascript_getAvailableOperators(scope, length) {
         length.value = 2;
         return [Matches, DoesntMatch];
       },
-      match: function javascript_match(message, aSearchValue, aSearchOp)
-      {
+      match: function javascript_match(message, aSearchValue, aSearchOp) {
         // the javascript stored in aSearchValue should use "message" to
         // reference the nsIMsgDBHdr objst for the message
         switch (aSearchOp)
@@ -1267,22 +1206,18 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#threadheadtag",
       name: self.strings.GetStringFromName("filtaquilla.threadheadtag.name"),
-      getEnabled: function threadHeadTag_getEnabled(scope, op)
-      {
+      getEnabled: function threadHeadTag_getEnabled(scope, op) {
         return true;
       },
       needsBody: false,
-      getAvailable: function threadHeadTag_getAvailable(scope, op)
-      {
+      getAvailable: function threadHeadTag_getAvailable(scope, op) {
         return ThreadHeadTagEnabled;
       },
-      getAvailableOperators: function threadHeadTag_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function threadHeadTag_getAvailableOperators(scope, length) {
         length.value = 6;
         return [Is, Isnt, Contains, DoesntContain, IsEmpty, IsntEmpty];
       },
-      match: function threadHeadTag_matches(message, aSearchValue, aSearchOp)
-      {
+      match: function threadHeadTag_matches(message, aSearchValue, aSearchOp) {
         let thread = null;
         let rootHdr = null;
         try {
@@ -1307,11 +1242,9 @@ catch(ex) {
 
         // loop through all message keywords
         let matches = false;
-        for (let i = 0; i < msgKeyArray.length; i++)
-        {
+        for (let i = 0; i < msgKeyArray.length; i++) {
           let isValue = (aSearchValue == msgKeyArray[i]);
-          switch (aSearchOp)
-          {
+          switch (aSearchOp) {
             case Is:
               return isValue && msgKeyArray.length == 1;
             case Isnt:
@@ -1336,36 +1269,32 @@ catch(ex) {
     {
       id: "filtaquilla@mesquilla.com#threadanytag",
       name: self.strings.GetStringFromName("filtaquilla.threadanytag.name"),
-      getEnabled: function threadAnyTag_getEnabled(scope, op)
-      {
+      getEnabled: function threadAnyTag_getEnabled(scope, op) {
         return true;
       },
       needsBody: false,
-      getAvailable: function threadAnyTag_getAvailable(scope, op)
-      {
+      getAvailable: function threadAnyTag_getAvailable(scope, op) {
         return ThreadAnyTagEnabled;
       },
-      getAvailableOperators: function threadAnyTag_getAvailableOperators(scope, length)
-      {
+      getAvailableOperators: function threadAnyTag_getAvailableOperators(scope, length) {
         length.value = 3;
         return [Contains, DoesntContain, IsntEmpty];
       },
       match: function threadAnyTag_matches(message, aSearchValue, aSearchOp) {
-        var tagArray = tagService.getAllTags({});
-        var tagKeys = {};
+        let tagArray = tagService.getAllTags({}),
+            tagKeys = {};
         for (let tagInfo of tagArray) {
           if (tagInfo.tag)
             tagKeys[tagInfo.key] = true;
 				}
 
-        let thread = message.folder.msgDatabase.GetThreadContainingMsgHdr(message);
-
-        // we limit the number of thread items that we look at, but we always look at the thread root
-        let threadCount = Math.min(thread.numChildren, maxThreadScan);
-        let myKey = message.messageKey;
-        let threadStart = 0;
-        if (threadCount < thread.numChildren)
-        {
+        let thread = message.folder.msgDatabase.GetThreadContainingMsgHdr(message),
+            // we limit the number of thread items that we look at, but we always look at the thread root
+            threadCount = Math.min(thread.numChildren, maxThreadScan),
+            myKey = message.messageKey,
+            threadStart = 0;
+            
+        if (threadCount < thread.numChildren) {
           // find this message in the thread, and use that as the center of the search
           let threadIndex = 0;
           for (; threadIndex < thread.numChildren; threadIndex++)
@@ -1380,21 +1309,18 @@ catch(ex) {
             threadStart = 0;
         }
 
-        for (let index = 0; index < threadCount; index++)
-        {
+        for (let index = 0; index < threadCount; index++) {
           // always examine the thread head
-          let useIndex = (index == 0) ? 0 : threadStart + index;
-          let hdr = thread.getChildAt(useIndex);
+          let useIndex = (index == 0) ? 0 : threadStart + index,
+              hdr = thread.getChildAt(useIndex);
           //  -- Get and cleanup the list of message headers following code from
           //  -- msgHdrViewOverlay.js SetTagHeader()
 
           // extract the tag keys from the msgHdr
-          let msgKeyArray = hdr.getStringProperty("keywords").split(" ");
-
-          // attach legacy label to the front if not already there
-          let label = hdr.label;
-          if (label)
-          {
+          let msgKeyArray = hdr.getStringProperty("keywords").split(" "),
+              // attach legacy label to the front if not already there
+              label = hdr.label;
+          if (label) {
             let labelKey = "$label" + label;
             if (msgKeyArray.indexOf(labelKey) < 0)
               msgKeyArray.unshift(labelKey);
@@ -1403,9 +1329,10 @@ catch(ex) {
           // Rebuild the keywords string with just the keys that are actual tags or
           // legacy labels and not other keywords like Junk and NonJunk.
           // Retain their order, though, with the label as oldest element.
-          for (let i = msgKeyArray.length - 1; i >= 0; --i)
+          for (let i = msgKeyArray.length - 1; i >= 0; --i) {
             if (!(msgKeyArray[i] in tagKeys))
               msgKeyArray.splice(i, 1); // remove non-tag key
+          }
 
           // -- Now try to match the search term
 
@@ -1418,8 +1345,7 @@ catch(ex) {
             return true;
 
           // loop through all message keywords
-          for (let i = 0; i < msgKeyArray.length; i++)
-          {
+          for (let i = 0; i < msgKeyArray.length; i++) {
             if (aSearchValue == msgKeyArray[i]) {
               if (aSearchOp == Contains)
                 return true;
@@ -1445,8 +1371,7 @@ catch(ex) {
 
     // Determine enabled actions from preferences
 
-    var prefs = Cc["@mozilla.org/preferences-service;1"].
-                   getService(Ci.nsIPrefService);
+    let prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService);
     prefs = prefs.getBranch("extensions.filtaquilla.");
 
     try {
@@ -1628,8 +1553,7 @@ catch(ex) {
     //  move. For others, we move on the first callback after the delay.
     let moveLaterCount = -1;
     this.recallCount--;
-    for (let i = 0; i < this.messages.length; i++)
-    {
+    for (let i = 0; i < this.messages.length; i++) {
       let msgHdr = this.messages.queryElementAt(i, Ci.nsIMsgDBHdr);
       try {
         let localCount = msgHdr.getUint32Property("moveLaterCount");
@@ -1638,8 +1562,7 @@ catch(ex) {
       } catch(e) {}
     }
     //dl('moveLaterCount is ' + moveLaterCount + ' recallCount is ' + this.recallCount);
-    if ( (moveLaterCount <= 0) || (this.recallCount <= 0)) // do the move
-    {
+    if ( (moveLaterCount <= 0) || (this.recallCount <= 0)) { // execute move    
       const copyService = Cc["@mozilla.org/messenger/messagecopyservice;1"]
                             .getService(Ci.nsIMsgCopyService);
       copyService.CopyMessages(this.source, this.messages,
@@ -1664,16 +1587,16 @@ catch(ex) {
     }
   }
 
-//  take the text utf8Append and either prepend (direction == true)
-//    or suffix (direction == false) to the subject
+  //  take the text utf8Append and either prepend (direction == true)
+  //    or suffix (direction == false) to the subject
   function _mimeAppend(utf8Append, subject, direction) {
     // append a UTF8 string to a mime-encoded subject
-    var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"]
-             .getService(Ci.nsIMimeConverter);
-    var decodedSubject =  mimeConvert.decodeMimeHeader(subject, null, false, true);
+    var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+        decodedSubject =  mimeConvert.decodeMimeHeader(subject, null, false, true);
 
-    appendedSubject = direction ? utf8Append + decodedSubject :
-                                  decodedSubject + utf8Append;
+    appendedSubject = direction ? 
+                      utf8Append + decodedSubject :
+                      decodedSubject + utf8Append;
     recodedSubject = mimeConvert.encodeMimePartIIStr_UTF8(appendedSubject, false, "UTF-8", 0, 72);
     return recodedSubject;
   }
@@ -1702,9 +1625,8 @@ catch(ex) {
       // custom db header) is stored like @PROPERTY@X-SPAM@
       // You'll need to add the custom db header manually though.
       var matches = /(.*)@PROPERTY@(.+)@(.*)/.exec(parameter);
-      if (matches && matches.length == 4)
-      {
-        var property = matches[2];
+      if (matches && matches.length == 4) {
+        let property = matches[2];
         try {
           var value = hdr.getStringProperty(property.toLowerCase());
           return matches[1] + value + matches[3];
@@ -1731,8 +1653,7 @@ catch(ex) {
 
     // attach legacy label to the front if not already there
     let label = aMsgHdr.label;
-    if (label)
-    {
+    if (label) {
       let labelKey = "$label" + label;
       if (msgKeyArray.indexOf(labelKey) < 0)
         msgKeyArray.unshift(labelKey);
@@ -1741,9 +1662,10 @@ catch(ex) {
     // Rebuild the keywords string with just the keys that are actual tags or
     // legacy labels and not other keywords like Junk and NonJunk.
     // Retain their order, though, with the label as oldest element.
-    for (let i = msgKeyArray.length - 1; i >= 0; --i)
+    for (let i = msgKeyArray.length - 1; i >= 0; --i) {
       if (!(msgKeyArray[i] in tagKeys))
         msgKeyArray.splice(i, 1); // remove non-tag key
+    }
     return msgKeyArray;
   }
 
@@ -1752,24 +1674,22 @@ catch(ex) {
     if (!gJunkService)
       gJunkService = Cc["@mozilla.org/messenger/filter-plugin;1?name=bayesianfilter"]
                       .getService(Ci.nsIJunkMailPlugin);
-    for (var i = 0; i < aMsgHdrs.length; i++)
-    {
+    for (var i = 0; i < aMsgHdrs.length; i++) {
       hdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
       // get the old classification
-      var junkscore = hdr.getStringProperty("junkscore");
-      var junkscoreorigin = hdr.getStringProperty("junkscoreorigin");
-      var oldClassification = Ci.nsIJunkMailPlugin.UNCLASSIFIED;
-      if (junkscoreorigin == "user") // which is a proxy for "trained in bayes"
-      {
+      let junkscore = hdr.getStringProperty("junkscore"),
+          junkscoreorigin = hdr.getStringProperty("junkscoreorigin"),
+          oldClassification = Ci.nsIJunkMailPlugin.UNCLASSIFIED;
+      if (junkscoreorigin == "user") {  // which is a proxy for "trained in bayes"
         if (junkscore == "100")
           oldClassification = Ci.nsIJunkMailPlugin.JUNK;
         else if (junkscore == "0")
           oldClassification = Ci.nsIJunkMailPlugin.GOOD;
       }
-      var msgURI = hdr.folder.generateMessageURI(hdr.messageKey) + "?fetchCompleteMessage=true";
-      var newClassification = aIsJunk ? Ci.nsIJunkMailPlugin.JUNK : Ci.nsIJunkMailPlugin.GOOD;
+      let msgURI = hdr.folder.generateMessageURI(hdr.messageKey) + "?fetchCompleteMessage=true",
+          newClassification = aIsJunk ? Ci.nsIJunkMailPlugin.JUNK : Ci.nsIJunkMailPlugin.GOOD,
+          db = hdr.folder.msgDatabase;
       // Set the message classification and origin
-      var db = hdr.folder.msgDatabase;
       db.setStringPropertyByHdr(hdr, "junkscore", aIsJunk ? "100" : "0");
       db.setStringPropertyByHdr(hdr, "junkscoreorigin", "user");
       // We had to set origin to "user" so bayes will know to untrain if changed later. This
@@ -1785,12 +1705,10 @@ catch(ex) {
     // We'll assume this is a single folder
     hdr = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr);
     var folder = hdr.folder;
-    if (folder instanceof Ci.nsIMsgImapMailFolder) // need to update IMAP custom flags
-    {
-      if (aMsgHdrs.length)
-      {
-        var msgKeys = new Array();
-        for (var i = 0; i < aMsgHdrs.length; i++)
+    if (folder instanceof Ci.nsIMsgImapMailFolder) {  // need to update IMAP custom flags
+      if (aMsgHdrs.length) {
+        let msgKeys = new Array();
+        for (let i = 0; i < aMsgHdrs.length; i++)
           msgKeys[i] = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr).messageKey;
         folder.storeCustomKeywords(null,
           aIsJunk ? "Junk" : "NonJunk",
@@ -1806,10 +1724,9 @@ catch(ex) {
      * / delimiters. If we detect a / though, we will look for flags and
      * add them to the regex search. See bug m165.
      */
-    let searchValue = aSearchValue;
-    let searchFlags = "";
-    if (aSearchValue.charAt(0) == "/")
-    {
+    let searchValue = aSearchValue,
+        searchFlags = "";
+    if (aSearchValue.charAt(0) == "/") {
       let lastSlashIndex = aSearchValue.lastIndexOf("/");
       searchValue = aSearchValue.substring(1, lastSlashIndex);
       searchFlags = aSearchValue.substring(lastSlashIndex + 1);
@@ -1868,8 +1785,7 @@ catch(ex) {
 
   var _urlListener = {
     OnStartRunningUrl: function _onStartRunningUrl(aUrl) {},
-    OnStopRunningUrl: function _onStopRunningUrl(aUrl, aStatus)
-    {
+    OnStopRunningUrl: function _onStopRunningUrl(aUrl, aStatus) {
       let messageUri;
       if (aUrl instanceof Ci.nsIMsgMessageUrl)
         messageUri = aUrl.uri;

@@ -50,6 +50,8 @@
 <!ENTITY supportPage_desc "Denna sida beskriver de olika åtgärderna och villkoren du kan lägga till i e-postfilter med FiltaQuilla.">
 <!ENTITY quickFiltersPage "Hämta quickFilters!">
 <!ENTITY quickFiltersPage_desc "Ladda ned detta häftiga tillägg för att turboladda din filtrering. quickFilters förenklar filterdefinition och -hantering.">
+<!ENTITY supportFiltaquilla "Support FiltaQuilla">
+<!ENTITY supportFiltaquilla_desc "FiltaQuilla is free to download and use - the best way to support the development team is by buying a license for quickFilters Pro. It is the most awesome filter extensions for managing and creating filters in a super convenient way.">
 <!-- search terms -->
 <!ENTITY checkSearchBccEnabled.label "Hemlig kopia">
 <!ENTITY checkSearchBccEnabled.accesskey "H">
