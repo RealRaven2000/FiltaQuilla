@@ -102,12 +102,12 @@ FiltaQuilla.Util = {
   },
 
 	get tabmail() {
-		let doc = this.getMail3PaneWindow().document,
+		let doc = this.getMail3PaneWindow.document,
 		    tabmail = doc.getElementById("tabmail");
 		return tabmail;
 	} ,
 
-  getMail3PaneWindow: function getMail3PaneWindow() {
+  get getMail3PaneWindow() {
     let windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1']
         .getService(Components.interfaces.nsIWindowMediator),
         win3pane = windowManager.getMostRecentWindow("mail:3pane");
@@ -167,7 +167,7 @@ FiltaQuilla.Util = {
 	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
 		let f = (fragment ? "#" + fragment : ""),
 		    URL = "http://quickfilters.mozdev.org/filtaquilla.html" + f;
-		window.setTimeout(function() {
+		util.getMail3PaneWindow.window.setTimeout(function() {
 			FiltaQuilla.Util.openLinkInTab(URL);
 			});
 	} ,
@@ -185,7 +185,7 @@ FiltaQuilla.Util = {
 							tabmail = this.tabmail;
 					if (!tabmail) {
 						// Try opening new tabs in an existing 3pane window
-						let mail3PaneWindow = this.getMail3PaneWindow();
+						let mail3PaneWindow = this.getMail3PaneWindow;
 						if (mail3PaneWindow) {
 							tabmail = mail3PaneWindow.document.getElementById("tabmail");
 							mail3PaneWindow.setTimeout(function()
@@ -198,13 +198,13 @@ FiltaQuilla.Util = {
 					// note: findMailTab will activate the tab if it is already open
 					if (tabmail) {
 						if (!util.findMailTab(tabmail, URL)) {
-							sTabMode = (util.Application === "Thunderbird" && util.Appver >= 3) ? "contentTab" : "3pane";
+							sTabMode = (util.Application === "Thunderbird") ? "contentTab" : "3pane";
 							tabmail.openTab(sTabMode,
 							{ contentPage: URL}); // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);"
 						}
 					}
 					else {
-						window.openDialog("chrome://messenger/content/", "_blank",
+						util.getMail3PaneWindow.window.openDialog("chrome://messenger/content/", "_blank",
 											"chrome,dialog=no,all", null,
 							{ tabType: "contentTab",
 								tabParams: {contentPage: URL, id:"FiltaQuilla_Weblink"}   // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);",
@@ -239,7 +239,7 @@ FiltaQuilla.Util = {
 					}, 250);
         }
         else {
-          this.getMail3PaneWindow().window.openDialog(getBrowserURL(), "_blank", "all,dialog=no", linkURI, null, 'FiltaQuilla');
+          this.getMail3PaneWindow.window.openDialog(getBrowserURL(), "_blank", "all,dialog=no", linkURI, null, 'FiltaQuilla');
         }
 
         return;
@@ -314,7 +314,7 @@ FiltaQuilla.Util = {
 
 	isDebugOption: function isDebugOption(o) {
 		if(!this.isDebug) return false;
-		try {return this.prefs.getBoolPref("debug." + option);}
+		try {return this.prefs.getBoolPref("debug." + o);}
 		catch(e) {return false;}
 	},
 
@@ -434,16 +434,16 @@ FiltaQuilla.Util = {
           return;
         }
       }
+			util.logDebugOptional("firstrun", "Util.VersionProxy() started.\n mExtensionVer=" + util.mExtensionVer);
 			if (util.mExtensionVer // early exit, we got the version!
 				||
 			    util.VersionProxyRunning) // no recursion...
 				return;
 			util.VersionProxyRunning = true;
-			util.logDebugOptional("firstrun", "Util.VersionProxy() started.");
 			if (Cu.import) {
 				
 				let versionCallback = function(addon) {
-					let versionLabel = win.document.getElementById("qf-options-header-description");
+					let versionLabel = win.document.getElementById("fq-options-header-description");
 					if (versionLabel) versionLabel.setAttribute("value", addon.version);
 
 					util.mExtensionVer = addon.version;
@@ -526,18 +526,123 @@ FiltaQuilla.Util = {
     init: function init() {
       const prefBranchString = "extensions.filtaquilla.",
             svc = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
-            ssPrefs = svc.getBranch(prefBranchString);
+            ssPrefs = svc.getBranch(prefBranchString),
+            versionComparator = Cc["@mozilla.org/xpcom/version-comparator;1"].getService(Ci.nsIVersionComparator);
+
       let prev = -1, 
           firstrun = true, 
-          showFirsts = true, 
+          showFirsts = true,     // set false - use this to disable any filtaquilla tabs
           debugFirstRun = false;
           
-      try { debugFirstRun = Boolean(ssPrefs.getBoolPref("debug.firstrun")); } 
+      try { 
+        debugFirstRun = Boolean(ssPrefs.getBoolPref("debug.firstrun")); 
+      } 
       catch (e) { debugFirstRun = false; }
       
       util.logDebugOptional ("firstrun","Util.FirstRun.init()");
+      // Version: this gettetr will call VersionProxy to determine Add-on version asynchronously
       let current = util.Version;
       util.logDebugOptional("firstrun", "Current FiltaQuilla Version: " + current);
+      
+      
+      try {
+        util.logDebugOptional ("firstrun","try to get setting: getStringPref(version)");
+        try { prev = ssPrefs.getStringPref("version"); }
+        catch (e) {
+          prev = "?";
+          util.logDebugOptional ("firstrun","Could not determine previous version - " + e);
+        } ;
+
+        util.logDebugOptional ("firstrun","try to get setting: getBoolPref(firstrun)");
+        try { 
+          firstrun = ssPrefs.getBoolPref("firstRun"); 
+        } 
+        catch (e) { firstrun = true; }
+
+        util.logDebugOptional ("firstrun", "Settings retrieved:"
+            + "\nprevious version=" + prev
+            + "\ncurrent version=" + current
+            + "\nfirstrun=" + firstrun
+            + "\nshowfirstruns=" + showFirsts
+            + "\ndebugFirstRun=" + debugFirstRun);
+
+      }
+      catch(e) {
+        util.alert("FiltaQuilla exception in filtaquilla-util.js: " + e.message
+          + "\n\ncurrent: " + current
+          + "\nprev: " + prev
+          + "\nfirstrun: " + firstrun
+          + "\ndebugFirstRun: " + debugFirstRun);
+      }
+      finally {
+        util.logDebugOptional ("firstrun","finally - firstrun=" + firstrun);
+        let suppressVersionScreen = false,
+            // if this is a pre-release, cut off everything from "pre" on... e.g. 1.9pre11 => 1.9
+            pureVersion = util.VersionSanitized;
+        util.logDebugOptional ("firstrun","finally - pureVersion=" + pureVersion);
+        
+        // STORE CURRENT VERSION NUMBER!
+        if (prev!=pureVersion && current!='?' && (current.indexOf(util.HARDCODED_EXTENSION_TOKEN) < 0)) {
+          util.logDebugOptional ("firstrun","Store current version " + current);
+          ssPrefs.setStringPref("version", pureVersion); // store sanitized version! (no more alert on pre-Releases + betas!)
+        }
+        else {
+          util.logDebugOptional ("firstrun","Can't store current version: " + current
+            + "\nprevious: " + prev.toString()
+            + "\ncurrent!='?' = " + (current!='?').toString()
+            + "\nprev!=current = " + (prev!=current).toString()
+            + "\ncurrent.indexOf(" + util.HARDCODED_EXTENSION_TOKEN + ") = " + current.indexOf(util.HARDCODED_EXTENSION_TOKEN).toString());
+        }
+        // NOTE: showfirst-check is INSIDE both code-blocks, because prefs need to be set no matter what.
+        if (firstrun){  // FIRST TIME INSTALL
+          util.logDebugOptional ("firstrun","set firstrun=false");
+          ssPrefs.setBoolPref("firstRun",false);
+          // store first install date 
+          let date = new Date(),
+              dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+                            .toISOString()
+                            .split("T")[0];
+          ssPrefs.setStringPref("installDate", dateString);
+          
+          // 
+          if (showFirsts) {
+            // on very first run, we go to the index page - welcome blablabla
+            util.logDebugOptional ("firstrun","setTimeout for content tab (filtaquilla.html)");
+            util.getMail3PaneWindow.window.setTimeout(function() {
+              util.openLinkInTab("http://quickfilters.mozdev.org/filtaquilla.html");
+            }, 1500); 
+          }
+        }
+        else { 
+          /** minor version upgrades / sales  **/
+          // if (pureVersion.indexOf('2.1') == 0 && prev.indexOf("2.0") == 0) suppressVersionScreen = true;
+          let versionPage = util.makeUriPremium("http://quickfolders.org/fq-versions.html") + "#" + pureVersion;
+          
+          // SILENT UPDATES
+          // Check for Maintenance updates (no donation screen when updating to 3.12.1, 3.12.2, etc.)
+          //  same for 3.14.1, 3.14.2 etc - no donation screen
+          if (prev!=pureVersion && current.indexOf(util.HARDCODED_EXTENSION_TOKEN) < 0) {
+            util.logDebugOptional ("firstrun","prev!=current -> upgrade case.");
+            // upgrade case!!
+
+            if (showFirsts) {
+              // version is different => upgrade (or conceivably downgrade)
+              // VERSION HISTORY PAGE
+              // display version history - disable by right-clicking label above show history panel
+              if (!suppressVersionScreen) {
+                util.logDebugOptional ("firstrun","open tab for version history, FQ " + current);
+                util.getMail3PaneWindow.window.setTimeout(function(){ 
+                  util.openLinkInTab(versionPage); 
+                }, 2200);
+              }
+            }
+
+          }
+          
+          util.loadPlatformStylesheet(window);
+        }
+        util.logDebugOptional ("firstrun","finally { } ends.");
+      } // end finally      
 
       
     }
