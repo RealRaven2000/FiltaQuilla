@@ -27,6 +27,11 @@ var EXPORTED_SYMBOLS = ['FiltaQuilla'];
 FiltaQuilla.Util = {
   mAppName: null,
   mAppver: null,
+	mExtensionVer: null,
+  VersionProxyRunning: false,
+	HARDCODED_CURRENTVERSION : "2.0", // will later be overriden call to AddonManager
+	HARDCODED_EXTENSION_TOKEN : ".hc",
+	ADDON_ID: "filtaquilla@mesquilla.com",
 	_prefs: null,
 	_consoleService: null,
   _stringBundleSvc: null,
@@ -415,7 +420,130 @@ FiltaQuilla.Util = {
 		}
 		return s;
 	} ,
+  
+	VersionProxy: function VersionProxy(win) {
+    const util = FiltaQuilla.Util,
+          Cu = Components.utils;
+		try {
+      if (!win) {
+        try {
+          win = window;
+        }
+        catch(ex) {
+          util.logException("VersionProxy", ex);
+          return;
+        }
+      }
+			if (util.mExtensionVer // early exit, we got the version!
+				||
+			    util.VersionProxyRunning) // no recursion...
+				return;
+			util.VersionProxyRunning = true;
+			util.logDebugOptional("firstrun", "Util.VersionProxy() started.");
+			if (Cu.import) {
+				
+				let versionCallback = function(addon) {
+					let versionLabel = win.document.getElementById("qf-options-header-description");
+					if (versionLabel) versionLabel.setAttribute("value", addon.version);
 
+					util.mExtensionVer = addon.version;
+					util.logDebug("AddonManager: FiltaQuilla extension's version is " + addon.version);
+					util.logDebugOptional("firstrun", "FiltaQuilla.VersionProxy() - DETECTED FiltaQuilla Version " + util.mExtensionVer);
+					// make sure we are not in options window
+					if (!versionLabel)
+						util.FirstRun.init();
+				}
+				
+				Cu.import("resource://gre/modules/AddonManager.jsm");
+				const addonId = util.ADDON_ID;
+        AddonManager.getAddonByID(addonId).then(function(addonId) { versionCallback(addonId); } ); // this function is now a promise
+			}
+			util.logDebugOptional("firstrun", "AddonManager.getAddonByID .. added callback for setting extensionVer.");
+
+		}
+		catch(ex) {
+			util.logToConsole("FiltaQuilla VersionProxy failed - are you using an old version of " + util.Application + "?"
+				+ "\n" + ex);
+		}
+		finally {
+			util.VersionProxyRunning=false;
+		}
+	},
+
+	get Version() {
+    const util = FiltaQuilla.Util;
+		// returns the current FiltaQuilla (full) version number.
+		if (util.mExtensionVer)
+			return util.mExtensionVer; // set asynchronously
+		let current = util.HARDCODED_CURRENTVERSION + util.HARDCODED_EXTENSION_TOKEN;
+		// Addon Manager: use Proxy code to retrieve version asynchronously
+		util.VersionProxy(); // modern Mozilla builds.
+											// these will set mExtensionVer (eventually)
+											// also we will delay FirstRun.init() until we _know_ the version number
+		return current;
+
+	} ,
+
+	get VersionSanitized() {
+    const util = FiltaQuilla.Util;
+		function strip(version, token) {
+			let cutOff = version.indexOf(token);
+			if (cutOff > 0) { 	// make sure to strip of any pre release labels
+				return version.substring(0, cutOff);
+			}
+			return version;
+		}
+
+		let pureVersion = strip(util.Version, 'pre');
+		pureVersion = strip(pureVersion, 'beta');
+		pureVersion = strip(pureVersion, 'alpha');
+		return strip(pureVersion, '.hc');
+	},
+  
+	versionGreaterOrEqual: function(a, b) {
+		let versionComparator = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
+														.getService(Components.interfaces.nsIVersionComparator);
+		return (versionComparator.compare(a, b) >= 0);
+	} ,
+
+	versionSmaller: function(a, b) {
+		let versionComparator = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
+														.getService(Components.interfaces.nsIVersionComparator);
+		 return (versionComparator.compare(a, b) < 0);
+	} ,	
+
+
+} // Util
+
+// some scoping for globals
+//(function fq_firstRun()
+{
+  const util = FiltaQuilla.Util,
+        Ci = Components.interfaces,
+        Cc = Components.classes;
+        
+  FiltaQuilla.Util.FirstRun = {
+    init: function init() {
+      const prefBranchString = "extensions.filtaquilla.",
+            svc = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
+            ssPrefs = svc.getBranch(prefBranchString);
+      let prev = -1, 
+          firstrun = true, 
+          showFirsts = true, 
+          debugFirstRun = false;
+          
+      try { debugFirstRun = Boolean(ssPrefs.getBoolPref("debug.firstrun")); } 
+      catch (e) { debugFirstRun = false; }
+      
+      util.logDebugOptional ("firstrun","Util.FirstRun.init()");
+      let current = util.Version;
+      util.logDebugOptional("firstrun", "Current FiltaQuilla Version: " + current);
+
+      
+    }
+  }
 
 }
+//)();
+
 

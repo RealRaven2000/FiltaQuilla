@@ -31,4 +31,12 @@ pref("extensions.filtaquilla.SearchBccEnabled", true);
 pref("extensions.filtaquilla.FolderNameEnabled", false);
 pref("extensions.filtaquilla.ThreadHeadTagEnabled", false);
 pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
+
+// debug
 pref("extensions.filtaquilla.debug", false);
+pref("extensions.filtaquilla.debug.firstrun", false);
+
+// upgrade handling stuff
+pref("extensions.filtaquilla.installDate", "");
+pref("extensions.filtaquilla.firstRun", true);
+pref("extensions.filtaquilla.version", "?");

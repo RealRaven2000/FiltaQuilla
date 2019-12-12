@@ -66,6 +66,19 @@
 
   self.initialized = false;
   self.name = filtaQuilla;
+  
+  // (main window only) start version checker.
+  try {
+    let isCorrectWindow =
+      (document && document.getElementById('messengerWindow') &&
+       document.getElementById('messengerWindow').getAttribute('windowtype') === "mail:3pane");
+    if (isCorrectWindow)
+      window.addEventListener("load", 
+        function() { 
+          util.VersionProxy(window); 
+        }, true);
+  }
+  catch (ex) { util.logDebug("calling VersionProxy failed\n" + ex.message); }
 
   const filtaquillaStrings = Cc["@mozilla.org/intl/stringbundle;1"]
                                 .getService(Ci.nsIStringBundleService)
