@@ -42,6 +42,9 @@
   <script type="application/javascript" src="chrome://filtaquilla/content/options.js"/>
   <script type="application/javascript" src="chrome://filtaquilla/content/filtaquilla-util.js"/>
 
+  <hbox class="title">FiltaQuilla -<spacer flex="5" />
+    <label id="fq-options-header-version" tooltiptext="click for change log!" onclick="onVersionClick();"> </label>
+  </hbox>
   <prefpane id="pane1" label="&pane1.title;">
     <preferences>
       <preference id="subjectAppendEnabled" name="extensions.filtaquilla.subjectAppend.enabled" type="bool"/>
@@ -75,7 +78,6 @@
 			<preference id="debug" name="extensions.filtaquilla.debug" type="bool"/>
     </preferences>
     <vbox>
-		<label value="&optionsIntro;"/>
     <tabbox id="filtaquillatabbox" flex="1">
       <tabs class="icontabs">
         <tab label="&filterActions;" id="filterActionsTab"/>
@@ -86,6 +88,7 @@
       <tabpanels flex="1">
         <!-- Filter actions -->
         <tabpanel orient="vertical">
+          <label value="&optionsIntro;"/>
           <grid>
             <columns id="actionCols">
               <column flex="1"/>
@@ -246,6 +249,7 @@
           </grid>
         </tabpanel>
         <tabpanel orient="vertical">
+          <label value="&optionsIntro;"/>
           <grid>
             <columns>
               <column flex="1"/>

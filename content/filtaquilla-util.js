@@ -443,7 +443,7 @@ FiltaQuilla.Util = {
 			if (Cu.import) {
 				
 				let versionCallback = function(addon) {
-					let versionLabel = win.document.getElementById("fq-options-header-description");
+					let versionLabel = win.document.getElementById("fq-options-header-version");
 					if (versionLabel) versionLabel.setAttribute("value", addon.version);
 
 					util.mExtensionVer = addon.version;
@@ -616,7 +616,7 @@ FiltaQuilla.Util = {
         else { 
           /** minor version upgrades / sales  **/
           // if (pureVersion.indexOf('2.1') == 0 && prev.indexOf("2.0") == 0) suppressVersionScreen = true;
-          let versionPage = "http://quickfolders.org/fq-versions.html#" + pureVersion;
+          let versionPage = "http://quickfilters.mozdev.org/fq-versions.html#" + pureVersion;
           
           // SILENT UPDATES
           // Check for Maintenance updates (no donation screen when updating to 3.12.1, 3.12.2, etc.)

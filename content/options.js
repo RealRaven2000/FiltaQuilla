@@ -26,6 +26,9 @@
  *
  * ***** END LICENSE BLOCK *****
  */
+ 
+var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+const util = FiltaQuilla.Util;
 
 function onLoad() {
   // disable items that are not valid in current core version
@@ -34,7 +37,7 @@ function onLoad() {
         Cu = Components.utils,
         THUNDERBIRD_ID = "{3550f703-e582-4d05-9a08-453d09bdfdc6}",
         SEAMONKEY_ID = "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
-
+  
   let appInfo = Cc["@mozilla.org/xre/app-info;1"]
                   .getService(Ci.nsIXULAppInfo),
       versionChecker = Cc["@mozilla.org/xpcom/version-comparator;1"]
@@ -64,7 +67,16 @@ function onLoad() {
 
   let javascriptActionBody = document.getElementById("checkJavascriptActionBodyEnabled");
   javascriptActionBody.disabled = haveActionNeedsBody || javascriptActionBody.checked ? false : true;
+  let verPanel = document.getElementById("fq-options-header-version");
+  verPanel.textContent = util.Version;
 
+}
+
+function onVersionClick() {
+  let pureVersion = util.VersionSanitized,
+      versionPage = "http://quickfilters.mozdev.org/fq-versions.html#" + pureVersion;
+  util.openLinkInTab(versionPage);
+  window.close();
 }
 
 // vim: set expandtab tabstop=2 shiftwidth=2:

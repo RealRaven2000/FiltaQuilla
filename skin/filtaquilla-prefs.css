@@ -76,31 +76,51 @@
   background-image: url("chrome://filtaquilla/skin/fugue-question-disabled.png");
 }
 
+.title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.title spacer {
+  width: 1em;
+}
+
+#fq-options-header-version {
+  background-color: rgba(80,80,80,0.13);
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
+#fq-options-header-version:hover {
+  color: white;
+  background-color: rgba(80,80,80,0.5);
+}
+
 
 .linkBox {
 	border: 1px solid rgb(230,230,230);
 	margin: 0 20px 1em 20px !important;
 	max-width: 660px;
-	padding-bottom: 0.75em;
 	padding-top: 0.75em;
 	white-space: normal !important;
 }
 
-.linkDescriptionBox {
-	box-sizing: border-box;
-	width: 100%;
-}
-
-.linkDescriptionBox td {
-  vertical-align: middle;
+.linkDescriptionBox vbox {
+  vertical-align: top;
+  display: table-cell;
 }
 
 .linkDescriptionBox img {
 	position: relative;	
+	top: auto;
 }
 
 .linkBox hbox {
 	max-width: 55em;
+}
+
+.linkDescriptionBox {
+	display: table;
 }
 
 .linkDescription {
