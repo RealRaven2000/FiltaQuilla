@@ -348,6 +348,7 @@
             </rows>
           </grid>
         </tabpanel>
+        
         <tabpanel orient="vertical">
 				  <vbox class="linkBox">
 						<hbox>
@@ -360,14 +361,20 @@
 							</a>
 							<spacer flex="1" />
 						</hbox>
-						<hbox>
-							<img src="chrome://filtaquilla/skin/filtaquilla-32.png"
-									 class="customLogo"
-									 id="filtaquilla_img" />
-							<description class="linkDescription">
-                &supportPage_desc;
-              </description>
-						</hbox>
+						<table class="linkDescriptionBox">
+              <tr>
+                <td>
+                  <img src="chrome://filtaquilla/skin/filtaquilla-32.png"
+                       class="customLogo"
+                       id="filtaquilla_img" />
+                </td>
+                <td>
+                  <p class="linkDescription">
+                    &supportPage_desc;
+                  </p>
+                </td>
+              </tr>
+						</table>
 					</vbox>
 				  
           <vbox class="linkBox">
@@ -381,14 +388,20 @@
 							</a>
 							<spacer flex="1" />
 						</hbox>
-						<hbox>
-							<img src="chrome://filtaquilla/skin/quickfilters.png"
-									 class="customLogo"
-									 id="quickfilters_img" />
-							<description class="linkDescription">
-                &quickFiltersPage_desc;
-              </description>
-						</hbox>
+						<table class="linkDescriptionBox">
+              <tr>
+                <td>
+                  <img src="chrome://filtaquilla/skin/quickfilters.png"
+                       class="customLogo"
+                       id="quickfilters_img" />
+                </td>
+                <td>
+                  <p class="linkDescription">
+                    &quickFiltersPage_desc;
+                  </p>
+                </td>
+              </tr>
+						</table>
 					</vbox>
           
 				  <vbox class="linkBox">
@@ -402,14 +415,20 @@
 							</a>
 							<spacer flex="1" />
 						</hbox>
-						<hbox>
-							<img src="chrome://filtaquilla/skin/community.png"
-									 class="customLogo"
-									 id="community_img" />
-							<description class="linkDescription">
-                &supportFiltaquilla_desc;
-              </description>
-						</hbox>
+						<table class="linkDescriptionBox">
+              <tr>
+                <td>
+                  <img src="chrome://filtaquilla/skin/community.png"
+                       class="customLogo"
+                       id="community_img" />
+                </td>
+                <td>
+                  <p class="linkDescription">
+                    &supportFiltaquilla_desc;
+                  </p>
+                </td>
+              </tr>
+						</table>
 					</vbox>
           
           

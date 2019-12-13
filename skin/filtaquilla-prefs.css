@@ -77,15 +77,26 @@
 }
 
 
-
 .linkBox {
 	border: 1px solid rgb(230,230,230);
 	margin: 0 20px 1em 20px !important;
-	padding-top: 0.75em;
 	max-width: 660px;
-
-	/* width: 550px; */
+	padding-bottom: 0.75em;
+	padding-top: 0.75em;
 	white-space: normal !important;
+}
+
+.linkDescriptionBox {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.linkDescriptionBox td {
+  vertical-align: middle;
+}
+
+.linkDescriptionBox img {
+	position: relative;	
 }
 
 .linkBox hbox {
@@ -93,14 +104,15 @@
 }
 
 .linkDescription {
-	-moz-appearance: none;
-	white-space: wrap;
-	display: inline-block;
+	/* -moz-appearance: none; */
+	display: table-cell;
+	margin: 0 5px;
 	max-width: 50em !important;
-	width: 50em !important;
 	padding: 4px;
 	padding-bottom: 0.7em;
 	text-align: left;
+	width: 50em !important;
+	white-space: wrap;
 }
 
 .linkDescription * {

@@ -616,7 +616,7 @@ FiltaQuilla.Util = {
         else { 
           /** minor version upgrades / sales  **/
           // if (pureVersion.indexOf('2.1') == 0 && prev.indexOf("2.0") == 0) suppressVersionScreen = true;
-          let versionPage = util.makeUriPremium("http://quickfolders.org/fq-versions.html") + "#" + pureVersion;
+          let versionPage = "http://quickfolders.org/fq-versions.html#" + pureVersion;
           
           // SILENT UPDATES
           // Check for Maintenance updates (no donation screen when updating to 3.12.1, 3.12.2, etc.)
