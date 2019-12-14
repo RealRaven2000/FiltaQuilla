@@ -29,7 +29,7 @@ FiltaQuilla.Util = {
   mAppver: null,
 	mExtensionVer: null,
   VersionProxyRunning: false,
-	HARDCODED_CURRENTVERSION : "2.0", // will later be overriden call to AddonManager
+	HARDCODED_CURRENTVERSION : "2.1", // will later be overriden call to AddonManager
 	HARDCODED_EXTENSION_TOKEN : ".hc",
 	ADDON_ID: "filtaquilla@mesquilla.com",
 	_prefs: null,
@@ -639,7 +639,6 @@ FiltaQuilla.Util = {
 
           }
           
-          util.loadPlatformStylesheet(window);
         }
         util.logDebugOptional ("firstrun","finally { } ends.");
       } // end finally      

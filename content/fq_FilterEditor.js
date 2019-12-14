@@ -250,9 +250,9 @@
       `));
       // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
 
-      let menulist = this.getElementsByTagName("menulist")[0]; // document.getAnonymousNodes(this)[0],
-        value = menulist.value,
-        menupopup = menulist.menupopup;
+      let menulist = this.getElementsByTagName("menulist")[0], // document.getAnonymousNodes(this)[0],
+          value = menulist.value,
+          menupopup = menulist.menupopup;
 
       // set the default to the personal address book
       if (!value || !value.length)
