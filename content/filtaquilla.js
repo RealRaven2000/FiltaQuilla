@@ -1908,6 +1908,7 @@
 	*/
 })();
 
-window.addEventListener("load", function(e) { filtaquilla.onLoad(e); }, false);
+// moved to filtaquilla-messenger.js
+// window.addEventListener("load", function(e) { filtaquilla.onLoad(e); }, false);
 
 // vim: set expandtab tabstop=2 shiftwidth=2:

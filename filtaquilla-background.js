@@ -5,8 +5,9 @@
   // main background script for FiltaQuilla
   messenger.WindowListener.registerDefaultPrefs("defaults/preferences/filtaquilla.js");
   messenger.WindowListener.registerChromeUrl([ 
-      ["content",  "filtaquilla",           "chrome/content/"],
+      ["content",  "filtaquilla",           "content/"],
       ["resource", "filtaquilla",           "skin/"],
+      ["resource", "filtaquilla",           "content/"],
       ["locale",   "filtaquilla", "en-US",  "locale/en-US/"],
       ["locale",   "filtaquilla", "sv",     "locale/sv-SE/"],
       ["locale",   "filtaquilla", "de",     "locale/de/"],
