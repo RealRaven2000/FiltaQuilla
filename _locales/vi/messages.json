@@ -1,0 +1,198 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Nhanh chóng tạo các quy tắc lọc thư một cách nhanh chóng, bằng cách kéo và thả thư và phân tích các thuộc tính của chúng.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "Chào mừng bạn đến với $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ đã được cập nhật thành côngs",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "Đã cài đặt thành công $addonName$",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "Cảm ơn bạn đã cập nhật $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "Cảm ơn bạn đã cài đặt $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "Bạn hiện đang chạy phiên bản {boldStart} $addonVer$ {boldEnd} trên Thunderbird $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "Tiện ích bổ sung của tôi yêu cầu những thay đổi cơ bản để vẫn tương thích với nền tảng Mozilla. Nhóm phát triển của tôi tại Github (Realraven2000, opto và paenglab) đang làm việc siêng năng để khôi phục toàn bộ chức năng cho $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Chúng tôi đã dành nguồn lực đáng kể (hơn $hoursSpent$ giờ) cho dự án chuyển đổi - và còn rất nhiều việc phải làm trong việc khắc phục các sự cố hồi quy và các vấn đề do các thay đổi trong Thunderbird gây ra.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "Để $addonName$ vẫn hoạt động và tồn tại, hãy làm điều đó một cách quan trọng:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "Mua giấy phép."
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "Gia hạn giấy phép của bạn."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Xem xét gia hạn giấy phép của bạn thêm một năm."
+  },  
+      
+  "donate" : {
+    "message" : "Giúp đỡ với khoản đóng góp một lần."
+  },   
+   
+  "purchase-heading" : {
+    "message" : "Mua Giấy phép!"
+  }, 
+  
+  "support-preference" : {
+    "message": "Đây là cách ưa thích để hỗ trợ $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "Các thay đổi cần thiết để chuyển sang mô hình kế thừa mới (thử nghiệm thư) đã mất nhiều tuần và vẫn đang tiếp tục, trong khi một số chức năng có thể bị ảnh hưởng. Với một Add-on phức tạp như thế này, việc tốn kém trở thành điều tất yếu. Hãy giúp chúng tôi với điều này."
+  },
+  
+  "btn-want-a-license": {
+    "message" : "Tôi muốn mua giấy phép"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "Tôi muốn gia hạn giấy phép của mình thêm một năm"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "Tôi muốn gia hạn giấy phép của mình"
+  } ,
+
+  "donate-heading" : {
+    "message" : "Giúp đỡ bằng cách quyên góp!"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "Việc phát triển phần mềm tốn kém thời gian và tiền bạc - không giống như nhiều ứng dụng nền tảng, Tiện ích bổ sung không được viết bởi các tập đoàn lớn, cũng như không được Mozilla tài trợ theo bất kỳ hình thức nào."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozilla chỉ cung cấp một nền tảng cơ bản để cung cấp phần mềm của chúng tôi cho bạn, những người dùng cuối. Nếu chúng tôi cần yêu cầu người dùng thanh toán hoặc hỗ trợ, chúng tôi không thể thực hiện việc này từ addons.thunderbird.net - nó không phải là một 'cửa hàng ứng dụng' có tường trả phí tích hợp hoặc quản lý giấy phép như iTunes hoặc google play."
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "Để tiếp tục hữu ích, các nhà phát triển Tiện ích bổ sung của chúng tôi hiện cần tài trợ các tài nguyên cần thiết để sửa và viết lại để người dùng của chúng tôi có thể tiếp tục hưởng lợi từ chức năng mà chúng tôi cung cấp."
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "Tôi muốn giúp đỡ với khoản đóng góp một lần."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "bản dịch do google cung cấp",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "Nhắc lại tôi sau $countDays$ ngày.",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}

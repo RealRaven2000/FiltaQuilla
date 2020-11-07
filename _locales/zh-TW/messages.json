@@ -1,0 +1,198 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "通過拖放郵件並分析其屬性，快速動態生成郵件過濾器規則。",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "歡迎使用 $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ 已成功更新",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "$addonName$ 已成功安裝",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "感謝您更新 $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "感謝您安裝 $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "您現在在Thunderbird $appVer$ 上運行{boldStart}版本 $addonVer$ {boldEnd}。",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "我的附加組件需要進行基本更改，以保持與Mozilla平台的兼容性。 我在Github的開發團隊（Realraven2000，opto和paenglab）正在努力恢復$addonName$的全部功能。",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "我們已經在轉換項目上花費了大量資源（超過$hoursSpent$小時），並且還有很多工作可以解決由Thunderbird更改引起的回歸和問題。",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "為了使$addonName$保持功能性和活躍性，請務必這樣做：",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "購買許可證。"
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "續訂您的許可證。"
+  },  
+  
+  "extend-your-license" : {
+    "message" : "考慮將您的許可證延長一年。"
+  },  
+      
+  "donate" : {
+    "message" : "一次性捐款幫助。"
+  },   
+   
+  "purchase-heading" : {
+    "message" : "購買許可證！"
+  }, 
+  
+  "support-preference" : {
+    "message": "這是支持$addonName$的首選方式。",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "切換到新的無遺留模型的必要更改（郵件實驗）已經花費了數週時間，並且仍在進行中，同時某些功能可能會受到影響。 有了這樣複雜的附加組件，昂貴的工作就變得不可避免。 請幫助我們。"
+  },
+  
+  "btn-want-a-license": {
+    "message" : "我想購買許可證"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "我想將我的執照延長一年"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "我想續簽我的許可證"
+  } ,
+
+  "donate-heading" : {
+    "message" : "捐贈幫助！"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "軟件開發花費時間和金錢-與許多平台應用程序不同，附加組件不是由大公司編寫的，也不是由Mozilla以任何方式贊助的。"
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozilla僅提供一個基本平台，用於向您（最終用戶）交付我們的軟件。 如果我們需要向我們的用戶付款或提供支持，則不能通過addons.thunderbird.net進行操作-這不是內置付費界面或許可證管理（如iTunes或Google Play）的“應用商店”。"
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "為了繼續發揮作用，我們的附加組件開發人員現在需要資助修復和重寫所需的資源，以便我們的用戶可以繼續從我們提供的功能中受益。"
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "我想提供一次捐款。"
+  } ,
+  
+  "translated-by-google" : {
+    "message": "谷歌提供的翻譯",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "在$countDays$天后再次提醒我。",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}

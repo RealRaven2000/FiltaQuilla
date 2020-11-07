@@ -1,0 +1,198 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Generera snabbt e-postfilterregler direkt, genom att dra och släppa mejl och analysera deras attribut.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "Välkommen till $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ uppdaterades med framgång",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "$addonName$ installerades med framgång",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "Tack för att du uppdaterade $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "Tack för att du installerade $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "Du kör nu {boldStart} version $addonVer$ {boldEnd} på Thunderbird $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "Mina tillägg kräver grundläggande ändringar för att förbli kompatibla med Mozilla-plattformen. Mitt utvecklingsteam på Github (Realraven2000, opto och paenglab) arbetar flitigt med att återställa full funktionalitet för  $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Vi har redan spenderat betydande resurser (över $hoursSpent$ timmar) på konverteringsprojektet - och det finns mycket mer arbete med att fixa regressioner och problem som orsakas av förändringar i Thunderbird.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "Så att $addonName$ förblir funktionellt och vid liv, gör det en viktig tjänst:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "Köp en licens."
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "Förnya din licens."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Överväg att förlänga din licens med ett år."
+  },  
+      
+  "donate" : {
+    "message" : "Hjälp med en engångs donation."
+  },   
+   
+  "purchase-heading" : {
+    "message" : "Att köpa en licens!"
+  }, 
+  
+  "support-preference" : {
+    "message": "Detta är det föredragna sättet att stödja $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "De nödvändiga ändringarna för att byta till den nya arvslösa modellen (mailexperiment) tog redan flera veckor och pågår fortfarande, medan vissa funktioner kan påverkas. Med ett komplext tillägg som detta blir dyrt arbete oundvikligt. Snälla hjälp oss med detta."
+  },
+  
+  "btn-want-a-license": {
+    "message" : "Jag vill köpa en licens"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "Jag vill förlänga min licens med ett år"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "Jag vill förnya min licens"
+  } ,
+
+  "donate-heading" : {
+    "message" : "Hjälp genom att donera!"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "Mjukvaruutveckling kostar tid och pengar - till skillnad från många plattformsappar är tillägg inte skrivna av stora företag och de sponsras inte heller på något sätt av Mozilla."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozilla tillhandahåller bara en grundläggande plattform för att leverera vår programvara till dig, slutanvändarna. Om vi behöver be våra användare om betalning eller support kan vi inte göra detta från addons.thunderbird.net - det är inte en 'app store' med inbyggda betalväggar eller licenshantering som iTunes eller google play."
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "För att fortsätta vara användbar måste vi tilläggsutvecklare nu finansiera de resurser som behövs för att fixa och skriva om så att våra användare kan dra nytta av den funktionalitet vi tillhandahåller."
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "Jag vill hjälpa till med en engångs donation."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "översättningar från google",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "Påminn mig igen om $countDays$ dagar.",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}

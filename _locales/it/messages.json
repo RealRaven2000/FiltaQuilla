@@ -1,0 +1,199 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Genera rapidamente regole di filtro della posta al volo, trascinando e rilasciando i messaggi e analizzando i loro attributi.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "Benvenuto in $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ aggiornato con successo",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "$addonName$ installato con successo",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "Grazie per aver aggiornato $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "Grazie per aver installato $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "Stai ora eseguendo la {boldStart} versione $addonVer$ {boldEnd} su Thunderbird $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "I miei componenti aggiuntivi richiedono modifiche fondamentali per rimanere compatibili con la piattaforma Mozilla. Il mio team di sviluppo in Github (Realraven2000, opto e paenglab) sta lavorando diligentemente per ripristinare la piena funzionalità di $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Abbiamo già speso risorse significative (oltre $hoursSpent$ ore) sul progetto di conversione e c'è ancora molto lavoro da fare per correggere regressioni e problemi causati dalle modifiche in Thunderbird.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "Affinché $addonName$ rimanga funzionante e attivo, ti preghiamo di fare un favore fondamentale:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "Acquista una licenza."
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "Renouvelez votre licence."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Valuta di estendere la tua licenza di un anno."
+  },  
+      
+  "donate" : {
+    "message" : "Aiutaci con una donazione una tantum."
+  },   
+   
+  "purchase-heading" : {
+    "message" : "Acquisto di una licenza!"
+  }, 
+  
+  "support-preference" : {
+    "message": "Questo è il modo migliore per supportare $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "Le modifiche necessarie per passare al nuovo modello senza legacy (esperimento di posta) hanno già richiesto diverse settimane e sono ancora in corso, mentre alcune funzioni potrebbero risentirne. Con un add-on complesso come questo, il lavoro costoso diventa inevitabile. Per favore aiutaci con questo."
+  },
+  
+  "btn-want-a-license": {
+    "message" : "Voglio acquistare una licenza"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "Voglio estendere la mia licenza di un anno"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "Voglio rinnovare la mia licenza"
+  } ,
+
+  "donate-heading" : {
+    "message" : "Aiuta donando!"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "Lo sviluppo del software costa tempo e denaro: a differenza di molte app della piattaforma, i componenti aggiuntivi non sono scritti da grandi aziende, né sono sponsorizzati in alcun modo da Mozilla."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozilla fornisce solo una piattaforma di base per fornire il nostro software a voi, utenti finali. Se abbiamo bisogno di chiedere ai nostri utenti il pagamento o il supporto non possiamo farlo da addons.thunderbird.net - non è un 'app store' con paywall integrati o gestione delle licenze come iTunes o Google Play."
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "Per continuare ad essere utili, noi sviluppatori di componenti aggiuntivi dobbiamo ora finanziare le risorse necessarie per correggere e riscrivere in modo che i nostri utenti possano continuare a beneficiare delle funzionalità che forniamo."
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "Voglio aiutare con una donazione una tantum."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "traduzioni fornite da google",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "Ricordamelo di nuovo tra $countDays$ giorni.",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }  
+
+}

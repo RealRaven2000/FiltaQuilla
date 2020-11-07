@@ -1,27 +1,45 @@
 {
-    "manifest_version" : 2,
-    "name" : "FiltaQuilla",
-    "description" : "Mail filter custom actions and searches",
-    "version" : "2.0",
-    "author" : "R Kent James,Axel Grude",
-    "legacy" : {
-        "options" : {
-            "page" : "chrome://filtaquilla/content/options.xul",
-            "open_in_tab" : false
-        }
+  "manifest_version" : 2,
+  "name" : "FiltaQuilla",
+  "description" : "Mail filter custom actions and searches",
+  "version" : "3.0pre2",
+  "default_locale": "en",
+  "author" : "R Kent James,Axel Grude",
+  "developer" : {
+      "name" : "Axel Grude,Pawel Tomulik",
+      "url" : "http://quickfilters.mozdev.org/filtaquilla.html"
+  },
+  "applications" : {
+      "gecko" : {
+          "id" : "filtaquilla@mesquilla.com",
+          "strict_min_version" : "68.0"
+      }
+  },
+  "icons" : {
+      "32" : "skin/filtaquilla-32.png",
+      "64" : "skin/filtaquilla-64.png"
+  },
+  "background": {
+    "scripts": [
+      "filtaquilla-background.js"
+    ]
+  } ,
+  "experiment_apis": {
+    "WindowListener": {
+      "schema": "content/api/WindowListener/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "paths": [["WindowListener"]],
+        "script": "content/api/WindowListener/implementation.js"
+      }
     },
-    "developer" : {
-        "name" : "Axel Grude,Pawel Tomulik",
-        "url" : "http://quickfilters.mozdev.org/filtaquilla.html"
-    },
-    "applications" : {
-        "gecko" : {
-            "id" : "filtaquilla@mesquilla.com",
-            "strict_min_version" : "68.0"
-        }
-    },
-    "icons" : {
-        "32" : "skin/filtaquilla-32.png",
-        "64" : "skin/filtaquilla-64.png"
+    "LegacyPrefs": {
+      "schema": "content/api/LegacyPrefs/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "paths": [["LegacyPrefs"]],
+        "script": "content/api/LegacyPrefs/implementation.js"
+      }
     }
+  }    
 }

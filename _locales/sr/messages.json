@@ -1,0 +1,198 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Брзо генеришите правила филтрирања поште у лету, повлачењем и испуштањем поште и анализом њихових атрибута.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "Добродошли у $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ је успешно ажурирано",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "Успешно инсталиран $addonName$",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "Хвала вам што сте ажурирали $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "Хвала вам што сте инсталирали $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "Сада покрећете {boldStart} верзију $addonVer$ {boldEnd} на Thunderbird $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "Моји додаци захтевају темељне промене како би остали компатибилни са Мозилла платформом. Мој развојни тим у Гитхуб-у (Realraven2000, opto и paenglab) марљиво ради на обнављању пуне функционалности за $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Већ смо потрошили значајне ресурсе (више од {хоурсСпент} сати) на пројекту конверзије - а има још пуно посла у поправљању регресија и проблема узрокованих променама у Тхундербирду.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "Да би $ аддонНаме $ остао функционалан и жив, учините му виталну услугу:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "Купите лиценцу."
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "Обновите лиценцу."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Размислите о продужењу лиценце за годину дана."
+  },  
+      
+  "donate" : {
+    "message" : "Помозите једнократном донацијом."
+  },   
+   
+  "purchase-heading" : {
+    "message" : "Куповина лиценце!"
+  }, 
+  
+  "support-preference" : {
+    "message": "Ово је преферирани начин подршке $ аддонНаме $.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "Неопходне измене за прелазак на нови модел без наслеђа (експеримент поште) већ су трајале више недеља и још увек су у току, док би на неке функције то могло утицати. Са оваквим сложеним додатком, скуп посао постаје неизбежан. Молимо вас да нам помогнете око овога."
+  },
+  
+  "btn-want-a-license": {
+    "message" : "Желим да купим лиценцу"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "Желим да продужим лиценцу за годину дана"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "Желим да обновим лиценцу"
+  } ,
+
+  "donate-heading" : {
+    "message" : "Помоћ донацијом!"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "Развој софтвера кошта време и новац - за разлику од многих апликација на платформи, додатке не пишу велике корпорације, нити их Мозилла спонзорише на било који начин."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Мозилла пружа само основну платформу за испоруку нашег софтвера вама, крајњим корисницима. Ако треба да затражимо од наших корисника плаћање или подршку, не можемо то да урадимо са аддонс.тхундербирд.нет - то није „продавница апликација“ са уграђеним платним зидовима или управљањем лиценцама као што су иТунес или гоогле плаи."
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "Да би и даље били корисни, програмери додатака сада морамо да финансирамо ресурсе потребне за поправљање и преписивање како би наши корисници могли и даље имати користи од функционалности коју пружамо."
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "Желим да помогнем једнократном донацијом."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "преводи које пружа гоогле",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "Подсети ме поново за {цоунтДаис} дана.",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}

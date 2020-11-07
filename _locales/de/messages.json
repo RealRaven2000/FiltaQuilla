@@ -1,0 +1,200 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Auf die Schnelle neue Filter erzeugen, einfach während man Email in Verzeichnisse einordnet. Filter in weniger als 10 Sekunden erzeugen. Mehrere Filter zusammenführen, und auf andere Konten übertragen.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+ 
+  "window-title": {
+    "message": "Willkommen bei $addonName$",
+    "description": "Seitentitel. Der erste placeholder wird durch den Add-on Namen ersetzt",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ wurde erfolgreich aktualisiert",
+    "description": "Seitenheader. Der erste placeholder wird durch den Add-on Namen ersetzt",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "$addonName$ wurde erfolgreich installiert",
+    "description": "Seitenheader. Der erste placeholder wird durch den Add-on Namen ersetzt",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+ "thanks-for-updating-intro": {
+    "message": "Danke dass Sie $addonName$ aktualisiert haben.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+ "thanks-for-installing-intro": {
+    "message": "Danke dass Sie $addonName$ installiert haben.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+ "active-version-info" : {
+    "message":"Es läuft jetzt {boldStart} Version $addonVer$ {boldEnd} auf Thunderbird $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "5.0.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "Meine Add-Ons erfordern grundlegende Änderungen, um mit der Mozilla-Plattform kompatibel zu bleiben. Mein Entwicklungsteam auf Github (Realraven2000, opto und paenglab) arbeitet fleißig daran, die volle Funktionalität für $addonName$ wiederherzustellen.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Wir haben bereits erhebliche Ressourcen (über $hoursSpent$ Stunden) für das Konvertierungsprojekt aufgewendet - und es gibt mehr Arbeit bei der Behebung von Regressionen und Problemen, die durch Änderungen in Thunderbird verursacht werden.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }
+  },
+  
+  "support-suggestion" : {
+    "message": "Damit $addonName$ weiterhin funktionsfähig und lebendig bleiben kann, tun Sie ihm bitte einen entscheidenden Gefallen:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  } , 
+  
+  "purchase-a-license" : {
+    "message" : "Kaufen Sie eine Lizenz."
+  }, 
+  
+  "renew-your-license" : {
+    "message" : "Erneuern Sie Ihre Lizenz."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Verlängern Sie Ihre Lizenz um ein Jahr."
+  },    
+      
+  "donate" : {
+    "message" : "Helfen Sie mit einer einmaligen Spende."
+  },   
+
+  "purchase-heading" : {
+    "message" : "Lizenz erwerben!"
+  }, 
+  
+  "support-preference" : {
+    "message": "Dies ist die bevorzugte Methode zur Unterstützung von $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+  
+  "ongoing-work": {
+    "message": "Die notwendigen Änderungen, um auf das neue Modell ohne Legacy (Mail-Experiment) umzusteigen, dauerten bereits mehrere Wochen und dauern noch an, während einige Funktionen beeinträchtigt werden könnten. Mit einem komplexen Add-On wie diesem wird teure Arbeit unvermeidlich. Bitte helfen Sie uns dabei."
+  },
+
+  
+  "btn-want-a-license": {
+    "message" : "Ich möchte eine Lizenz kaufen"
+  } ,
+  
+  "btn-extend-license": {
+    "message" : "Ich möchte meine Lizenz um ein Jahr verlängern"
+  } ,
+  
+  "btn-renew-license": {
+    "message" : "Ich möchte meine Lizenz erneuern"
+  } ,
+  
+  
+  "donate-heading" : {
+    "message" : "Helfen durch Spenden!"
+  } ,
+  
+  "cost-of-independence" : {
+    "message" : "Softwareentwicklung kostet Zeit und Geld - im Gegensatz zu vielen Plattform-Apps werden Add-Ons weder von großen Unternehmen geschrieben noch in irgendeiner Weise von Mozilla gesponsert."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozilla bietet nur eine Basis-Plattform, um unsere Software für Sie als Endbenutzer weiterzuleiten. Wenn wir unsere Benutzer um Zahlung oder Support bitten müssen, können wir dies nicht über addons.thunderbird.net tun - es handelt sich nicht um einen App Store mit integrierten Paywalls oder Lizenzverwaltung wie iTunes oder Google Play."
+  } ,
+    
+  "addon-authors-struggle" : {
+    "message" : "Um weiterhin nützlich zu sein, müssen Add-On-Entwickler nun vermehrt die für die Reparatur und das Umschreiben erforderlichen Mittel aufbringen, damit unsere Benutzer weiterhin von den Funktionen profitieren können, die wir an den Tisch bringen."
+  } ,  
+      
+  "btn-want-to-donate" : {
+    "message" : "Ich möchte mit einer einmaligen Spende helfen."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "translations provided by google",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "Erinnern Sie mich noch einmal in $ countDays $ Tagen.",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Genere rápidamente reglas de filtrado de correo sobre la marcha, arrastrando y soltando correos y analizando sus atributos.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "Bienvenido a $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ actualizado con éxito",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "$addonName$ instalado correctamente",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "Gracias por actualizar $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "Gracias por instalar $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "Ahora está ejecutando la versión de {boldStart} $addonVer$ {boldEnd} en Thunderbird $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "Mis complementos requieren cambios fundamentales para seguir siendo compatibles con la plataforma Mozilla. Mi equipo de desarrollo en Github (Realraven2000, opto y paenglab) está trabajando diligentemente para restaurar la funcionalidad completa de $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Ya hemos gastado recursos importantes (más de $hoursSpent$ horas) en el proyecto de conversión, y hay mucho más trabajo para solucionar las regresiones y los problemas causados por los cambios en Thunderbird.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "Para que $addonName$ permanezca funcional y vivo, hágalo un favor vital:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "Compra una licencia."
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "Renueva tu licencia."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Considere extender su licencia por un año."
+  },  
+      
+  "donate" : {
+    "message" : "Ayude con una donación única."
+  },   
+   
+  "purchase-heading" : {
+    "message" : "Comprar una licencia"
+  }, 
+  
+  "support-preference" : {
+    "message": "Esta es la forma preferida de admitir $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "Las modificaciones necesarias para cambiar al nuevo modelo sin legado (experimento de correo) ya tomaron varias semanas y aún están en curso, mientras que algunas funciones podrían verse afectadas. Con un complemento complejo como este, el trabajo costoso se vuelve inevitable. Ayúdanos con esto."
+  },
+  
+  "btn-want-a-license": {
+    "message" : "Quiero comprar una licencia"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "Quiero extender mi licencia por un año"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "Quiero renovar mi licencia"
+  } ,
+
+  "donate-heading" : {
+    "message" : "¡Ayuda donando!"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "El desarrollo de software cuesta tiempo y dinero; a diferencia de muchas aplicaciones de plataforma, los complementos no están escritos por grandes corporaciones ni están patrocinados de ninguna manera por Mozilla."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozilla solo proporciona una plataforma básica para entregar nuestro software a ustedes, los usuarios finales. Si necesitamos pedir a nuestros usuarios un pago o asistencia, no podemos hacerlo desde addons.thunderbird.net; no es una 'tienda de aplicaciones' con muros de pago integrados o administración de licencias como iTunes o Google Play."
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "Para seguir siendo útiles, los desarrolladores de complementos ahora debemos financiar los recursos necesarios para corregir y reescribir, de modo que nuestros usuarios puedan seguir beneficiándose de la funcionalidad que ofrecemos."
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "Quiero ayudar con una donación única."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "traducciones proporcionadas por google",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "Recordármelo de nuevo en $countDays$ días.",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Rychle generujte pravidla pro filtrování pošty za chodu přetažením a přetažením e-mailů a analýzou jejich atributů.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "Vítejte v $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ Úspěšně aktualizováno",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "Úspěšně nainstalován $addonName$",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "Děkujeme za aktualizaci $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "Děkujeme, že jste nainstalovali $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "Nyní používáte {boldStart} verzi $addonVer$ {boldEnd} na Thunderbirdu $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "Moje doplňky vyžadují zásadní změny, aby zůstaly kompatibilní s platformou Mozilla. Můj vývojový tým v Githubu (Realraven2000, opto a paenglab) pilně pracuje na obnovení plné funkčnosti pro $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Na projekt převodu jsme již strávili značné prostředky (více než $hoursSpent$ hodin) - a je zde více práce s opravou regresí a problémů způsobených změnami v Thunderbirdu.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "Aby $addonName$ zůstalo funkční a živé, udělejte to zásadní laskavost:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "Kupte si licenci."
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "Obnovte si licenci."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Zvažte prodloužení licence o rok."
+  },  
+      
+  "donate" : {
+    "message" : "Pomozte s jednorázovým darem."
+  },   
+   
+  "purchase-heading" : {
+    "message" : "Nákup licence!"
+  }, 
+  
+  "support-preference" : {
+    "message": "Toto je upřednostňovaný způsob podpory $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "Nezbytné úpravy přechodu na nový starší model (experiment pošty) již trvaly několik týdnů a stále probíhají, zatímco některé funkce by mohly být ovlivněny. S komplexním doplňkem, jako je tento, se drahá práce stává nevyhnutelnou. Pomozte nám s tím."
+  },
+  
+  "btn-want-a-license": {
+    "message" : "Chci koupit licenci"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "Chci prodloužit licenci o jeden rok"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "Chci si obnovit licenci"
+  } ,
+
+  "donate-heading" : {
+    "message" : "Pomozte darováním!"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "Vývoj softwaru stojí čas a peníze - na rozdíl od mnoha aplikací na platformě nejsou doplňky napsány velkými korporacemi, ani nejsou žádným způsobem sponzorovány společností Mozilla."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozilla poskytuje pouze základní platformu pro doručování našeho softwaru vám, koncovým uživatelům. Pokud potřebujeme požádat naše uživatele o platbu nebo podporu, nemůžeme to udělat z addons.thunderbird.net - nejedná se o „obchod s aplikacemi“ s vestavěnými paywally nebo správou licencí, jako je iTunes nebo Google Play."
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "Abychom byli i nadále užiteční, musíme nyní vývojáři doplňků financovat prostředky potřebné k opravě a přepsání, aby naši uživatelé mohli nadále těžit z funkcí, které poskytujeme."
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "Chci pomoci s jednorázovým darem."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "překlady poskytované google",
+    "description": "disclaimer."
+  }
+  
+}

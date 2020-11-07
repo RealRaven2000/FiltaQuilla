@@ -1,0 +1,198 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Gere regras de filtro de e-mail rapidamente, arrastando e soltando e-mails e analisando seus atributos.",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "Bem-vindo a $addonName$",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ atualizado com sucesso",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "Instalado com sucesso $addonName$",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "Obrigado por atualizar $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "Obrigado por instalar $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "Agora você está executando a versão {boldStart} $addonVer$ {boldEnd} no Thunderbird $appVer$.",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "Meus add-ons requerem mudanças fundamentais para permanecerem compatíveis com a plataforma Mozilla. Minha equipe de desenvolvimento no Github (Realraven2000, opto e paenglab) está trabalhando diligentemente para restaurar a funcionalidade completa de $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "Já gastamos recursos significativos (mais de $hoursSpent$ horas) no projeto de conversão - e há muito mais trabalho para corrigir regressões e problemas causados por alterações no Thunderbird.",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "Para que $addonName$ permaneça funcional e vivo, faça um favor vital:",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "Compre uma licença."
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "Renove sua licença."
+  },  
+  
+  "extend-your-license" : {
+    "message" : "Considere estender sua licença por um ano."
+  },  
+      
+  "donate" : {
+    "message" : "Ajude com uma doação única."
+  },   
+   
+  "purchase-heading" : {
+    "message" : "Comprando uma licença!"
+  }, 
+  
+  "support-preference" : {
+    "message": "Esta é a forma preferida de oferecer suporte a $addonName$.",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "As alterações necessárias para mudar para o novo modelo sem legado (experiência de correio) já levaram várias semanas e ainda estão em andamento, enquanto algumas funções podem ser afetadas. Com um add-on complexo como este, o trabalho caro torna-se inevitável. Por favor nos ajude com isso."
+  },
+  
+  "btn-want-a-license": {
+    "message" : "Eu quero comprar uma licença"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "Eu quero estender minha licença por um ano"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "Eu quero renovar minha licença"
+  } ,
+
+  "donate-heading" : {
+    "message" : "Ajude doando!"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "O desenvolvimento de software custa tempo e dinheiro - ao contrário de muitos aplicativos de plataforma, add-ons não são escritos por grandes corporações, nem são patrocinados de forma alguma pela Mozilla."
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "A Mozilla fornece apenas uma plataforma básica para entregar nosso software a vocês, usuários finais. Se precisarmos pedir aos nossos usuários pagamento ou suporte, não podemos fazer isso em addons.thunderbird.net - não é uma 'loja de aplicativos' com paywalls integrados ou gerenciamento de licenças como iTunes ou Google Play."
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "Para continuar a ser útil, nós, desenvolvedores de add-ons, agora precisamos financiar os recursos necessários para consertar e reescrever para que nossos usuários possam continuar a se beneficiar da funcionalidade que oferecemos."
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "Eu quero ajudar com uma doação única."
+  } ,
+  
+  "translated-by-google" : {
+    "message": "traduções fornecidas pelo google",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "Lembre-me novamente em $countDays$ dias.",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}

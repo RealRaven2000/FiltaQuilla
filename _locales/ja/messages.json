@@ -1,0 +1,198 @@
+{
+  "extensionName": {
+    "message": "FiltaQuilla",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "メールをドラッグアンドドロップしてその属性を分析することにより、メールフィルタールールをその場ですばやく生成します。",
+    "description": "Description of the extension."
+  },
+
+  "notificationTitle": {
+    "message": "Click notification",
+    "description": "Title of the click notification."
+  },
+  
+  "window-title": {
+    "message": "$addonName$ へようこそ",
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+
+  "heading-updated": {
+    "message": "$addonName$ が正常に更新されました",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "heading-installed": {
+    "message": "$addonName$ が正常にインストールされました",
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  
+  "thanks-for-updating-intro": {
+    "message": "$addonName$ を更新していただきありがとうございます。",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "thanks-for-installing-intro": {
+    "message": "$addonName$ をインストールしていただきありがとうございます。",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },  
+  
+ "active-version-info" : {
+    "message": "これで、Thunderbird $appVer$ で{boldStart}バージョン $addonVer$ {boldEnd}を実行しています。",
+    "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "placeholders": {
+      "addonVer" : {
+        "content" : "$1", 
+        "example" : "Version 1.1"
+      },
+      "appVer" : {
+        "content" : "$2",
+        "example" : "78.0b4"
+      }
+      
+    }
+  },  
+  
+  "time-and-effort": { 
+    "message": "私のアドオンは、Mozillaプラットフォームとの互換性を維持するために、根本的な変更が必要です。 Githubの私の開発チーム（Realraven2000、opto、paenglab）は、$addonName$ の全機能を復元するために熱心に取り組んでいます。",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "hours-effort" : {
+    "message": "変換プロジェクトにはすでにかなりのリソース（$hoursSpent$時間以上）を費やしており、Thunderbirdの変更によって引き起こされるリグレッションや問題の修正にはさらに多くの作業があります。",
+    "placeholders": {
+      "hoursSpent" : {
+        "content" : "$1", 
+        "example" : "250"
+      }    
+    }    
+  },
+  
+  "support-suggestion" : {
+    "message": "$addonName$が機能し、存続するように、それを非常に重要なものにしてください。",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  },
+  
+  "purchase-a-license" : {
+    "message" : "ライセンスを購入します。"
+  }, 
+      
+  "renew-your-license" : {
+    "message" : "ライセンスを更新します。"
+  },  
+  
+  "extend-your-license" : {
+    "message" : "ライセンスを1年延長することを検討してください。"
+  },  
+      
+  "donate" : {
+    "message" : "一度の寄付を手伝ってください。"
+  },   
+   
+  "purchase-heading" : {
+    "message" : "ライセンスを購入する！"
+  }, 
+  
+  "support-preference" : {
+    "message": "これは、$addonName$をサポートするための推奨される方法です。",
+    "placeholders": {
+      "addonName" : {
+        "content" : "$1", 
+        "example" : "FiltaQuilla"
+      }    
+    }
+  }, 
+
+  "ongoing-work": {
+    "message": "新しいレガシーレスモデル（メール実験）に切り替えるために必要な変更は、すでに数週間かかり、現在も進行中ですが、一部の機能が影響を受ける可能性があります。 このような複雑なアドオンを使用すると、高価な作業が避けられなくなります。 これで私たちを助けてください。"
+  },
+  
+  "btn-want-a-license": {
+    "message" : "ライセンスを購入したい"
+  } ,
+
+  "btn-extend-license": {
+    "message" : "ライセンスを1年延長したい"
+  } ,
+
+
+  "btn-renew-license": {
+    "message" : "ライセンスを更新したい"
+  } ,
+
+  "donate-heading" : {
+    "message" : "寄付して助けてください！"
+  } ,
+
+  "cost-of-independence" : {
+    "message" : "ソフトウェア開発には時間とお金がかかります-多くのプラットフォームアプリとは異なり、アドオンは大企業によって作成されておらず、Mozillaによって後援されていません。"
+  } ,
+  
+  "mozillas-basic-platform" : {
+    "message" : "Mozillaは、エンドユーザーであるあなたにソフトウェアを提供するための基本的なプラットフォームのみを提供します。 ユーザーに支払いやサポートを依頼する必要がある場合、addons.thunderbird.netからこれを行うことはできません。これは、ペイウォールやiTunesやGooglePlayのようなライセンス管理が組み込まれた「アプリストア」ではありません。"
+  } ,
+  
+  "addon-authors-struggle" : {
+    "message" : "引き続き有用であるために、アドオン開発者は、ユーザーが提供する機能の恩恵を受け続けることができるように、修正と書き換えに必要なリソースに資金を提供する必要があります。"
+  } ,
+  
+  "btn-want-to-donate" : {
+    "message" : "一度の寄付を手伝いたいです。"
+  } ,
+  
+  "translated-by-google" : {
+    "message": "グーグルによって提供される翻訳",
+    "description": "disclaimer."
+  },
+  
+  "label-remind-me" : {
+    "message": "$countDays$日後にもう一度思い出してください。",
+    "placeholders": {
+      "countDays" : {
+        "content" : "$1", 
+        "example" : "10"
+      }    
+    }    
+  }
+}
