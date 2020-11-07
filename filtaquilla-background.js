@@ -8,14 +8,14 @@
       ["content",  "filtaquilla",           "content/"],
       ["resource", "filtaquilla",           "skin/"],
       ["resource", "filtaquilla",           "content/"],
-      ["locale",   "filtaquilla", "en-US",  "locale/en-US/"],
+      ["locale",   "filtaquilla", "en",     "locale/en-US/"],
       ["locale",   "filtaquilla", "sv",     "locale/sv-SE/"],
       ["locale",   "filtaquilla", "de",     "locale/de/"],
       ["locale",   "filtaquilla", "nl",     "locale/nl/"]
     ]
   );  
   
-  /* OVERLAY CONVERSIONMS */
+  /* OVERLAY CONVERSIONS */
   
   /* overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul */
   messenger.WindowListener.registerWindow("chrome://messenger/content/messenger.xhtml", "content/scripts/filtaquilla-messenger.js");

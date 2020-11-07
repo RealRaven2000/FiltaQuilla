@@ -80,9 +80,8 @@
   }
   catch (ex) { util.logDebug("calling VersionProxy failed\n" + ex.message); }
 
-  const filtaquillaStrings = Cc["@mozilla.org/intl/stringbundle;1"]
-                                .getService(Ci.nsIStringBundleService)
-                                .createBundle("chrome://filtaquilla/locale/filtaquilla.properties"),
+  const bundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService),
+        filtaquillaStrings = bundleService.createBundle("chrome://filtaquilla/locale/filtaquilla.properties"),
         headerParser = Cc["@mozilla.org/messenger/headerparser;1"].getService(Ci.nsIMsgHeaderParser),
         tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
         abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager),

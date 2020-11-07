@@ -2,7 +2,7 @@
   "manifest_version" : 2,
   "name" : "FiltaQuilla",
   "description" : "Mail filter custom actions and searches",
-  "version" : "3.0pre3",
+  "version" : "3.0pre4",
   "default_locale": "en",
   "author" : "R Kent James,Axel Grude",
   "developer" : {
