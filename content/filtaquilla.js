@@ -150,8 +150,10 @@
   };
 
   // javascript mime emitter functions
-  self._mimeMsg = {};
-  Cu.import("resource:///modules/gloda/mimemsg.js", self._mimeMsg);
+  //self._mimeMsg = {};
+  //Cu.import("resource:///modules/gloda/mimemsg.js", self._mimeMsg);
+  
+  self._mimeMsg = ChromeUtils.import("resource:///modules/gloda/MimeMessage.jsm"); // Tb78
 
   self._init = function() {
     self.strings = filtaquillaStrings;
