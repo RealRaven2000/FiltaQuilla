@@ -169,7 +169,11 @@
     }
   } // launch picker
 
-  customElements.define("filtaquilla-ruleactiontarget-launchpicker", FiltaQuillaRuleactiontargetLaunchPicker);
+  debugger;
+  if (!customElements.get("filtaquilla-ruleactiontarget-launchpicker"))
+    customElements.define("filtaquilla-ruleactiontarget-launchpicker", FiltaQuillaRuleactiontargetLaunchPicker);
+  else
+    console.log ("custom Element is already defined: filtaquilla-ruleactiontarget-launchpicker");
 
 
   class FiltaQuillaRuleactiontargetRunPicker extends FiltaQuillaRuleactiontargetBase {

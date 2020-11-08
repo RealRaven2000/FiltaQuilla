@@ -58,7 +58,7 @@
           let parent = this.parentNode;
           parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
           parent.__defineSetter__('opParentValue', function (aValue) {
-            let element = document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
+            let element = this.querySelectorAll(".search-value-custom");  // document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
             if (element)
             {
               // hide the value if not relevant
