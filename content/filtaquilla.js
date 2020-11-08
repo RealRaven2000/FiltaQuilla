@@ -35,15 +35,8 @@
 	debugger;
   
   Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
-  try {
-    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
-    var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
-  }
-  catch(ex) {
-    Components.utils.import("resource://gre/modules/Services.jsm");
-    Components.utils.import("resource:///modules/MailUtils.js");
-  }
-  
+  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
 	var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
 
   const Cc = Components.classes,
@@ -1000,13 +993,20 @@
         return _isLocalSearch(scope) && SubjectRegexEnabled;
       },
       getAvailableOperators: function subjectRegEx_getAvailableOperators(scope, length) {
-        if (!_isLocalSearch(scope))
-        {
-          length.value = 0;
-          return [];
+        try {
+          if (!_isLocalSearch(scope))
+          {
+            length.value = 0;
+            return [];
+          }
+          length.value = 2;
         }
-        length.value = 2;
-        return [Matches, DoesntMatch];
+        catch(ex) {
+          console.logException(ex);
+        }
+        finally {
+          return [Matches, DoesntMatch];
+        }
       },
       match: function subjectRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
         var subject = aMsgHdr.mime2DecodedSubject;

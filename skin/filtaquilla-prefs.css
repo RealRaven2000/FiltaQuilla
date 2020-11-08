@@ -44,18 +44,18 @@
 
 #filtaquilla_img {
 	/* just a hack as I don't appear to be able to use img url for a chrome address? */
-	background-image:url("chrome://filtaquilla/skin/filtaquilla-32.png");
+	background-image:url("resource://filtaquilla-skin/filtaquilla-32.png");
 	background-repeat: no-repeat;
 }
 
 #quickfilters_img {
 	/* just a hack as I don't appear to be able to use img url for a chrome address? */
-	background-image:url("chrome://filtaquilla/skin/quickfilters.png");
+	background-image:url("resource://filtaquilla-skin/quickfilters.png");
 	background-repeat: no-repeat;
 }
 
 #community_img {
-	background-image:url("chrome://filtaquilla/skin/community.png");
+	background-image:url("resource://filtaquilla-skin/community.png");
 	background-repeat: no-repeat;
 }
 
@@ -70,10 +70,10 @@
 }
 
 .helpLink {
-  background-image: url("chrome://filtaquilla/skin/fugue-question.png");
+  background-image: url("resource://filtaquilla-skin/fugue-question.png");
 }
 .helpLinkDisabled {
-  background-image: url("chrome://filtaquilla/skin/fugue-question-disabled.png");
+  background-image: url("resource://filtaquilla-skin/fugue-question-disabled.png");
 }
 
 .title {
@@ -153,15 +153,15 @@
 }
 
 #filterActionsTab {
-  list-style-image: url("chrome://filtaquilla/skin/fugue-arrow-curve.png") !important;
+  list-style-image: url("resource://filtaquilla-skin/fugue-arrow-curve.png") !important;
 }
 
 #conditionsTab {
-  list-style-image: url("chrome://filtaquilla/skin/script.png") !important;
+  list-style-image: url("resource://filtaquilla-skin/script.png") !important;
 }
 
 #supportTab {
-  list-style-image: url("chrome://filtaquilla/skin/fugue-question.png") !important;
+  list-style-image: url("resource://filtaquilla-skin/fugue-question.png") !important;
 }
 
 

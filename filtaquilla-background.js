@@ -4,10 +4,12 @@
 
   // main background script for FiltaQuilla
   messenger.WindowListener.registerDefaultPrefs("defaults/preferences/filtaquilla.js");
+  // dropped ["resource", "filtaquilla",           "skin/"],
+
   messenger.WindowListener.registerChromeUrl([ 
+      ["resource", "filtaquilla",           "content/"],  
+      ["resource", "filtaquilla-skin",      "skin/"],  // make a separate resource (we can't have 2 different resources mapped to to the same name)
       ["content",  "filtaquilla",           "content/"],
-      ["resource", "filtaquilla",           "skin/"],
-      ["resource", "filtaquilla",           "content/"],
       ["locale",   "filtaquilla", "en",     "locale/en-US/"],
       ["locale",   "filtaquilla", "sv",     "locale/sv-SE/"],
       ["locale",   "filtaquilla", "de",     "locale/de/"],
