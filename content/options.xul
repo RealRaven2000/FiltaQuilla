@@ -32,7 +32,7 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://messenger/skin/preferences/preferences.css" type="text/css" ?>
-<?xml-stylesheet href="chrome://filtaquilla/skin/filtaquilla-prefs.css" type="text/css" ?>
+<?xml-stylesheet href="resource://filtaquilla-skin/filtaquilla-prefs.css" type="text/css" ?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://filtaquilla/locale/prefwindow.dtd">
 <dialog id="filtaquillaPreferences"
@@ -368,7 +368,7 @@
 						<table class="linkDescriptionBox">
               <tr>
                 <td>
-                  <img src="chrome://filtaquilla/skin/filtaquilla-32.png"
+                  <img src="resource://filtaquilla-skin/filtaquilla-32.png"
                        class="customLogo"
                        id="filtaquilla_img" />
                 </td>
@@ -395,7 +395,7 @@
 						<table class="linkDescriptionBox">
               <tr>
                 <td>
-                  <img src="chrome://filtaquilla/skin/quickfilters.png"
+                  <img src="resource://filtaquilla-skin/quickfilters.png"
                        class="customLogo"
                        id="quickfilters_img" />
                 </td>
@@ -422,7 +422,7 @@
 						<table class="linkDescriptionBox">
               <tr>
                 <td>
-                  <img src="chrome://filtaquilla/skin/community.png"
+                  <img src="resource://filtaquilla-skin/community.png"
                        class="customLogo"
                        id="community_img" />
                 </td>

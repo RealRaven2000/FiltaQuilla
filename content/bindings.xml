@@ -41,7 +41,7 @@
 
   <binding id="textbox">
     <resources>
-      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+      <stylesheet src="resource://filtaquilla-skin/filtaquilla.css"/>
     </resources>
     <content>
       <xul:textbox flex="1" class="search-value-textbox" xbl:inherits="disabled"
@@ -78,10 +78,10 @@
 
   <binding id="javascript">
     <resources>
-      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+      <stylesheet src="resource://filtaquilla-skin/filtaquilla.css/filtaquilla.css"/>
     </resources>
     <content>
-      <xul:toolbarbutton image="chrome://filtaquilla/skin/script_edit.png"
+      <xul:toolbarbutton image="resource://filtaquilla-skin/filtaquilla.css/script_edit.png"
           class="focusbutton" tooltiptext="&editJavascript;" />
       <xul:textbox flex="1" class="search-value-textbox" xbl:inherits="disabled"
                    newlines="pasteintact"
@@ -110,7 +110,7 @@
 
   <binding id="tag">
     <resources>
-      <stylesheet src="chrome://filtaquilla/skin/filtaquilla.css"/>
+      <stylesheet src="resource://filtaquilla-skin/filtaquilla.css/filtaquilla.css"/>
     </resources>
     <content>
       <xul:filtaquilla-search-value-tag/>

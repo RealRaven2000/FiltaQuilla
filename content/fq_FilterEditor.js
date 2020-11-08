@@ -101,12 +101,12 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="chrome://filtaquilla/skin/folder.png"
+          <toolbarbutton image="resource://filtaquilla-skin/folder.png"
                          class="focusbutton"
                          tooltiptext="dummy"
                          oncommand="this.parentNode.parentNode.getURL()">
           </toolbarbutton>
-          <toolbarbutton image="chrome://filtaquilla/skin/folder_go.png"
+          <toolbarbutton image="resource://filtaquilla-skin/folder_go.png"
                          class="focusbutton"
                          tooltiptext="dummy"
                          oncommand="this.parentNode.parentNode.launch()"></toolbarbutton>
@@ -181,7 +181,7 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="chrome://filtaquilla/skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+          <toolbarbutton image="resource://filtaquilla-skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
         </hbox>
       `));
 
@@ -306,7 +306,7 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="chrome://filtaquilla/skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+          <toolbarbutton image="resource://filtaquilla-skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
         </hbox>
       `));
 
@@ -373,7 +373,7 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" newlines="pasteintact" anonid="thetextbox" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="chrome://filtaquilla/skin/script_edit.png" class="focusbutton" tooltiptext="dummy"></toolbarbutton>
+          <toolbarbutton image="resource://filtaquilla-skin/script_edit.png" class="focusbutton" tooltiptext="dummy"></toolbarbutton>
         </hbox>
       `));
 
@@ -534,7 +534,7 @@
 //        }
 //        this.textContent = "";
 //        this.appendChild(MozXULElement.parseXULToFragment(`
-//          <toolbarbutton image="chrome://filtaquilla/skin/script_edit.png" class="focusbutton" tooltiptext="FROM-DTD-editJavascript"></toolbarbutton>
+//          <toolbarbutton image="resource://filtaquilla-skin/script_edit.png" class="focusbutton" tooltiptext="FROM-DTD-editJavascript"></toolbarbutton>
 //          <textbox flex="1" class="search-value-textbox" inherits="disabled" newlines="pasteintact" onchange="this.parentNode.setAttribute('value', this.value);"></textbox>
 //        `));
 //        // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!

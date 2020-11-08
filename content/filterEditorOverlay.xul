@@ -30,7 +30,7 @@
  */
 -->
 
-<?xml-stylesheet href='chrome://filtaquilla/skin/filtaquilla.css' type='text/css'?>
+<?xml-stylesheet href='resource://filtaquilla-skin/filtaquilla.css' type='text/css'?>
 <overlay id='filtaquillaFilterEditorOverlay'
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://filtaquilla/content/fq_FilterEditor.js" />
