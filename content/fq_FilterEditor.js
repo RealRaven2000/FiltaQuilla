@@ -93,7 +93,6 @@
    * License, v. 2.0. If a copy of the MPL was not distributed with this
    * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-
   class FiltaQuillaRuleactiontargetLaunchPicker extends FiltaQuillaRuleactiontargetBase {
     connectedCallback() {
       if (this.delayConnectedCallback()) {
@@ -101,9 +100,9 @@
       }
       this.textContent = "";
       this.appendChild(MozXULElement.parseXULToFragment(`
-        <hbox>
-          <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="resource://filtaquilla-skin/folder.png"
+        <hbox flex="1" class="flexelementcontainer">
+          <html:input class="ruleactionitem flexinput" onchange="this.parentNode.value = this.value;"></html:input>
+          <toolbarbutton image="chrome://messenger/skin/icons/folder.svg"
                          class="focusbutton"
                          tooltiptext="dummy"
                          oncommand="this.parentNode.parentNode.getURL()">
@@ -187,7 +186,7 @@
       this.appendChild(MozXULElement.parseXULToFragment(`
         <hbox>
           <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="resource://filtaquilla-skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+          <toolbarbutton image="chrome://messenger/skin/icons/folder.svg" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
         </hbox>
       `));
 
@@ -310,9 +309,9 @@
       }
       this.textContent = "";
       this.appendChild(MozXULElement.parseXULToFragment(`
-        <hbox>
-          <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
-          <toolbarbutton image="resource://filtaquilla-skin/folder.png" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+        <hbox flex="1" class="flexelementcontainer">
+          <html:input class="ruleactionitem flexinput" onchange="this.parentNode.value = this.value;"></html:input>
+          <toolbarbutton image="chrome://messenger/skin/icons/folder.svg" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
         </hbox>
       `));
 
@@ -377,8 +376,8 @@
       }
       this.textContent = "";
       this.appendChild(MozXULElement.parseXULToFragment(`
-        <hbox>
-          <textbox class="ruleactionitem" newlines="pasteintact" anonid="thetextbox" onchange="this.parentNode.value = this.value;"></textbox>
+        <hbox flex="1" class="flexelementcontainer">
+          <html:input class="ruleactionitem flexinput" newlines="pasteintact" anonid="thetextbox" onchange="this.parentNode.value = this.value;"></html:input>
           <toolbarbutton image="resource://filtaquilla-skin/script_edit.png" class="focusbutton" tooltiptext="dummy"></toolbarbutton>
         </hbox>
       `));
