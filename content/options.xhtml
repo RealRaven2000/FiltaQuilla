@@ -31,14 +31,17 @@
 -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet type="text/css" href="chrome://messenger/skin/messenger.css" ?>
 <?xml-stylesheet href="chrome://messenger/skin/preferences/preferences.css" type="text/css" ?>
 <?xml-stylesheet href="resource://filtaquilla-skin/filtaquilla-prefs.css" type="text/css" ?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://filtaquilla/locale/prefwindow.dtd">
 <dialog id="filtaquillaPreferences"
-            xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-            title="&prefwindow.title;"
-            onload="onLoad();">
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        title="&prefwindow.title;"
+        >
+        
   <script type="application/javascript" src="chrome://filtaquilla/content/options.js"/>
   <script type="application/javascript" src="chrome://filtaquilla/content/filtaquilla-util.js"/>
 
@@ -453,7 +456,8 @@
   </prefpane>
 	<script type="application/javascript" src="chrome://global/content/preferencesBindings.js" />
 	<script>
-	  FiltaQuilla.Util.loadPreferences(); /* Tb 66 compatibility. Should be called _before_ DOMcontent Loaded event */
+	  /* FiltaQuilla.Util. */
+    loadPreferences(); /* Tb 66 compatibility. Should be called _before_ DOMcontent Loaded event */
 	</script>
 
 </dialog>

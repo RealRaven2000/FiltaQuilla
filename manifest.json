@@ -2,12 +2,12 @@
   "manifest_version" : 2,
   "name" : "FiltaQuilla",
   "description" : "Mail filter custom actions and searches",
-  "version" : "3.0pre8",
+  "version" : "3.0pre9",
   "default_locale": "en",
   "author" : "R Kent James,Axel Grude",
   "developer" : {
       "name" : "Axel Grude,Pawel Tomulik",
-      "url" : "http://quickfilters.mozdev.org/filtaquilla.html"
+      "url" : "https://quickfilters.quickfolders.org/filtaquilla.html"
   },
   "applications" : {
       "gecko" : {

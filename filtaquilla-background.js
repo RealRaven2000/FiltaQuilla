@@ -17,22 +17,28 @@
     ]
   );  
   
+  messenger.WindowListener.registerOptionsPage("chrome://filtaquilla/content/options.xhtml"); 
+    
+  
   /* OVERLAY CONVERSIONS */
   
-  /* overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul */
+  // overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul 
   messenger.WindowListener.registerWindow("chrome://messenger/content/messenger.xhtml", "content/scripts/filtaquilla-messenger.js");
   
   // overlay  chrome://messenger/content/FilterEditor.xul chrome://filtaquilla/content/filterEditorOverlay.xul
   messenger.WindowListener.registerWindow("chrome://messenger/content/FilterEditor.xhtml", "content/scripts/filtaquilla-filterEditor.js");
   
   // overlay  chrome://messenger/content/SearchDialog.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  // .. ??
+  messenger.WindowListener.registerWindow("chrome://messenger/content/SearchDialog.xhtml", "content/scripts/filtaquilla-filterEditor.js");
   
   // overlay  chrome://messenger/content/mailViewSetup.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  // .. ??
+  messenger.WindowListener.registerWindow("chrome://messenger/content/mailViewSetup.xhtml", "content/scripts/filtaquilla-filterEditor.js");
   
   // overlay  chrome://messenger/content/virtualFolderProperties.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  // .. ??
+  messenger.WindowListener.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "content/scripts/filtaquilla-filterEditor.js");
+  
+  
+  
   
   messenger.WindowListener.startListening();
 

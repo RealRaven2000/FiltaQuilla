@@ -28,55 +28,79 @@
  */
  
 var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+FiltaQuilla.setGlobals({window: window}); // pass in windows object
 const util = FiltaQuilla.Util;
 
-function onLoad() {
+
+async function onLoad() {
   // disable items that are not valid in current core version
   const Cc = Components.classes,
         Ci = Components.interfaces,
-        Cu = Components.utils,
-        THUNDERBIRD_ID = "{3550f703-e582-4d05-9a08-453d09bdfdc6}",
-        SEAMONKEY_ID = "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
+        Cu = Components.utils;
   
-  let appInfo = Cc["@mozilla.org/xre/app-info;1"]
-                  .getService(Ci.nsIXULAppInfo),
-      versionChecker = Cc["@mozilla.org/xpcom/version-comparator;1"]
-                         .getService(Ci.nsIVersionComparator),
-      version = appInfo.version;
-
-  let haveActionNeedsBody,
-      haveDetachToFile;
-  // Thunderbird version checks
-  if(appInfo.ID == THUNDERBIRD_ID) {
-    haveActionNeedsBody =
-      (versionChecker.compare(version, "3.1b2pre") >= 0)  ? true : false;
-    haveDetachToFile =
-      (versionChecker.compare(version, "3.1b2pre") >= 0)  ? true : false;
-  }
-
-  // SeaMonkey version checks
-  if(appInfo.ID == SEAMONKEY_ID) {
-    haveActionNeedsBody =
-      (versionChecker.compare(version, "2.1a1pre") >= 0)  ? true : false;
-    haveDetachToFile =
-      (versionChecker.compare(version, "2.1a1pre") >= 0)  ? true : false;
-  }
-
-  let detachElement = document.getElementById("checkDetachAttachmentsEnabled");
-  detachElement.disabled = haveDetachToFile || detachElement.checked ? false : true;
+  let haveActionNeedsBody = true,
+      haveDetachToFile = true,
+      detachElement = document.getElementById("checkDetachAttachmentsEnabled");
+      
+  detachElement.disabled = (haveDetachToFile || detachElement.checked) ? false : true;
 
   let javascriptActionBody = document.getElementById("checkJavascriptActionBodyEnabled");
   javascriptActionBody.disabled = haveActionNeedsBody || javascriptActionBody.checked ? false : true;
   let verPanel = document.getElementById("fq-options-header-version");
+  await util.VersionProxy();
   verPanel.textContent = util.Version;
-
+  
 }
 
 function onVersionClick() {
   let pureVersion = util.VersionSanitized,
-      versionPage = "http://quickfilters.mozdev.org/fq-versions.html#" + pureVersion;
+      versionPage = "https://quickfilters.quickfolders.org/fq-versions.html#" + pureVersion;
   util.openLinkInTab(versionPage);
   window.close();
 }
 
+function loadPreferences() {
+  if (typeof Preferences == 'undefined') {
+    util.logToConsole("Preferences is not defined - this shouldn't happen!");
+    return;
+  }	
+  util.logDebug("loadPreferences - start:");
+  
+  let myprefElements = document.querySelectorAll("[preference]");
+  let foundElements = {};
+  for (let myprefElement of myprefElements) {
+    let legacyPrefId = myprefElement.getAttribute("preference");
+    foundElements[legacyPrefId] = myprefElement;
+  }
+
+  let myprefs = document.getElementsByTagName("preference");
+  if (myprefs.length) {
+    let prefArray = [];
+    for (let it of myprefs) {
+      let p = new Object({ id: it.getAttribute('name'), 
+                name: it.getAttribute('name'),
+                type: it.getAttribute('type') });
+      // not supported
+      // if (it.getAttribute('instantApply') == "true") p.instantApply = true;
+      prefArray.push(p);
+        // manually change the shortname in the preference attribute to the actual
+      // preference "id" (as in the preference manager)
+      foundElements[it.id].setAttribute("preference", it.getAttribute("name"));
+    }
+    
+    
+    util.logDebug("Adding " + prefArray.length + " preferences to Preferences loader…")
+    if (Preferences)
+      Preferences.addAll(prefArray);
+  }
+  util.logDebug("loadPreferences - finished.");
+}
+
+window.addEventListener("load", async () => {
+  let val = await onLoad(); // If this pauses, then the onload handler will move onto the next item (it doesn't block).
+  // callMyAsyncFunction has been completed.
+}, { once: true });
+
+
 // vim: set expandtab tabstop=2 shiftwidth=2:
+

@@ -22,7 +22,11 @@
 
 var FiltaQuilla = {};
 var EXPORTED_SYMBOLS = ['FiltaQuilla'];
+var window;
 
+FiltaQuilla.setGlobals = function setGlobals(globals) {
+  window = globals.window;
+}
 
 FiltaQuilla.Util = {
   mAppName: null,
@@ -166,7 +170,7 @@ FiltaQuilla.Util = {
 
 	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
 		let f = (fragment ? "#" + fragment : ""),
-		    URL = "http://quickfilters.mozdev.org/filtaquilla.html" + f;
+		    URL = "https://quickfilters.quickfolders.org/filtaquilla.html" + f;
 		util.getMail3PaneWindow.window.setTimeout(function() {
 			FiltaQuilla.Util.openLinkInTab(URL);
 			});
@@ -176,42 +180,36 @@ FiltaQuilla.Util = {
 		const util = FiltaQuilla.Util;
 		// URL = util.makeUriPremium(URL);
 		try {
-			switch(util.Application) {
-				case "SeaMonkey":
-					util.openLinkInBrowserForced(URL);
-					return;
-				case "Thunderbird":
-					let sTabMode="",
-							tabmail = this.tabmail;
-					if (!tabmail) {
-						// Try opening new tabs in an existing 3pane window
-						let mail3PaneWindow = this.getMail3PaneWindow;
-						if (mail3PaneWindow) {
-							tabmail = mail3PaneWindow.document.getElementById("tabmail");
-							mail3PaneWindow.setTimeout(function()
-									{	mail3PaneWindow.focus();
-									},
-									250
-								);
-						}
-					}
-					// note: findMailTab will activate the tab if it is already open
-					if (tabmail) {
-						if (!util.findMailTab(tabmail, URL)) {
-							sTabMode = (util.Application === "Thunderbird") ? "contentTab" : "3pane";
-							tabmail.openTab(sTabMode,
-							{ contentPage: URL}); // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);"
-						}
-					}
-					else {
-						util.getMail3PaneWindow.window.openDialog("chrome://messenger/content/", "_blank",
-											"chrome,dialog=no,all", null,
-							{ tabType: "contentTab",
-								tabParams: {contentPage: URL, id:"FiltaQuilla_Weblink"}   // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);",
-							}
-						);
-					}
-			}
+      let sTabMode="",
+          tabmail = this.tabmail;
+      if (!tabmail) {
+        // Try opening new tabs in an existing 3pane window
+        let mail3PaneWindow = this.getMail3PaneWindow;
+        if (mail3PaneWindow) {
+          tabmail = mail3PaneWindow.document.getElementById("tabmail");
+          mail3PaneWindow.setTimeout(function()
+              {	mail3PaneWindow.focus();
+              },
+              250
+            );
+        }
+      }
+      // note: findMailTab will activate the tab if it is already open
+      if (tabmail) {
+        if (!util.findMailTab(tabmail, URL)) {
+          sTabMode = "contentTab";
+          tabmail.openTab(sTabMode,
+          { contentPage: URL}); // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);"
+        }
+      }
+      else {
+        util.getMail3PaneWindow.window.openDialog("chrome://messenger/content/", "_blank",
+                  "chrome,dialog=no,all", null,
+          { tabType: "contentTab",
+            tabParams: {contentPage: URL, id:"FiltaQuilla_Weblink"}   // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);",
+          }
+        );
+      }
 		}
 		catch(e) { return false; }
 		return true;
@@ -223,27 +221,6 @@ FiltaQuilla.Util = {
 					util = FiltaQuilla.Util;
     try {
       this.logDebug("openLinkInBrowserForced (" + linkURI + ")");
-      if (util.Application==='SeaMonkey') {
-        let windowManager = Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator),
-            browserWin = windowManager.getMostRecentWindow( "navigator:browser" );
-        if (browserWin) {
-          let URI = linkURI;
-          setTimeout(function() {
-						let tabBrowser = browserWin.getBrowser(),
-						    params = {"selected":true};
-					  browserWin.currentTab = tabBrowser.addTab(URI, params);
-						if (browserWin.currentTab.reload) browserWin.currentTab.reload();
-						// activate last tab
-						if (tabBrowser && tabBrowser.tabContainer)
-							tabBrowser.tabContainer.selectedIndex = tabBrowser.tabContainer.childNodes.length-1;
-					}, 250);
-        }
-        else {
-          this.getMail3PaneWindow.window.openDialog(getBrowserURL(), "_blank", "all,dialog=no", linkURI, null, 'FiltaQuilla');
-        }
-
-        return;
-      }
       let service = Cc["@mozilla.org/uriloader/external-protocol-service;1"]
                               .getService(Ci.nsIExternalProtocolService),
           ioservice = Cc["@mozilla.org/network/io-service;1"].
@@ -421,9 +398,14 @@ FiltaQuilla.Util = {
 		return s;
 	} ,
   
-	VersionProxy: function VersionProxy(win) {
+	VersionProxy: async function VersionProxy(win) {
     const util = FiltaQuilla.Util,
           Cu = Components.utils;
+    // new code, but it doesn't work because:
+    // 'await is only valid in async functions and async generators'
+    //const manifest = await messenger.runtime.getManifest(),
+    //      util.mExtensionVer = manifest.version;
+          
 		try {
       if (!win) {
         try {
@@ -477,7 +459,8 @@ FiltaQuilla.Util = {
 			return util.mExtensionVer; // set asynchronously
 		let current = util.HARDCODED_CURRENTVERSION + util.HARDCODED_EXTENSION_TOKEN;
 		// Addon Manager: use Proxy code to retrieve version asynchronously
-		util.VersionProxy(); // modern Mozilla builds.
+    // we need to call this beforehand, with await
+		// util.VersionProxy(); // modern Mozilla builds.
 											// these will set mExtensionVer (eventually)
 											// also we will delay FirstRun.init() until we _know_ the version number
 		return current;
@@ -523,7 +506,7 @@ FiltaQuilla.Util = {
         Cc = Components.classes;
         
   FiltaQuilla.Util.FirstRun = {
-    init: function init() {
+    init: async function init() {
       const prefBranchString = "extensions.filtaquilla.",
             svc = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
             ssPrefs = svc.getBranch(prefBranchString),
@@ -541,6 +524,7 @@ FiltaQuilla.Util = {
       
       util.logDebugOptional ("firstrun","Util.FirstRun.init()");
       // Version: this gettetr will call VersionProxy to determine Add-on version asynchronously
+      await util.VersionProxy();
       let current = util.Version;
       util.logDebugOptional("firstrun", "Current FiltaQuilla Version: " + current);
       
@@ -609,14 +593,14 @@ FiltaQuilla.Util = {
             // on very first run, we go to the index page - welcome blablabla
             util.logDebugOptional ("firstrun","setTimeout for content tab (filtaquilla.html)");
             util.getMail3PaneWindow.window.setTimeout(function() {
-              util.openLinkInTab("http://quickfilters.mozdev.org/filtaquilla.html");
+              util.openLinkInTab("https://quickfilters.quickfolders.org/filtaquilla.html");
             }, 1500); 
           }
         }
         else { 
           /** minor version upgrades / sales  **/
           // if (pureVersion.indexOf('2.1') == 0 && prev.indexOf("2.0") == 0) suppressVersionScreen = true;
-          let versionPage = "http://quickfilters.mozdev.org/fq-versions.html#" + pureVersion;
+          let versionPage = "https://quickfilters.quickfolders.org/fq-versions.html#" + pureVersion;
           
           // SILENT UPDATES
           // Check for Maintenance updates (no donation screen when updating to 3.12.1, 3.12.2, etc.)
