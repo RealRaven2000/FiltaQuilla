@@ -42,30 +42,38 @@ input.flexinput {
   flex-grow: 2 !important;
 }
 
-
+/* textboxes */
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#subjectRegex"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
+  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
+  -moz-box-flex: 1;
 }
 
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#attachmentRegex"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
+  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
+  -moz-box-flex: 1;
 }
 
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#headerRegex"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
+  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
+  -moz-box-flex: 1;
 }
 
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#searchBcc"] {
+  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
+  -moz-box-flex: 1;
+}
+
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#folderName"] {
+  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
+  -moz-box-flex: 1;
+}
+
+
+/* JavaScript editor */
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#javascript"] {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#javascript");
 }
 
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#searchBcc"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
-}
-
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#folderName"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox");
-}
 
 /*  converted to js, BUT AIN'T WORKING YET */
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadheadtag"] {

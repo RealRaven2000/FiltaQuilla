@@ -31,25 +31,25 @@
 
 
   function getChildNode(type) {
-      const elementMapping = {
-           // mappings to thunderbird's ruleactiontarget-* elements
-          "filtaquilla@mesquilla.com#subjectAppend": "ruleactiontarget-forwardto",
-          "filtaquilla@mesquilla.com#subjectSuffix": "ruleactiontarget-forwardto",
-          "filtaquilla@mesquilla.com#removeTag": "ruleactiontarget-tag",
-          "filtaquilla@mesquilla.com#copyAsRead": "ruleactiontarget-folder",
-          "filtaquilla@mesquilla.com#moveLater": "ruleactiontarget-folder",
-           // mappings to our ruleactiontarget-* custom elements
-          "filtaquilla@mesquilla.com#launchFile": "filtaquilla-ruleactiontarget-launchpicker",
-          "filtaquilla@mesquilla.com#runFile": "filtaquilla-ruleactiontarget-runpicker",
-          "filtaquilla@mesquilla.com#addSender": "filtaquilla-ruleactiontarget-abpicker",
-          "filtaquilla@mesquilla.com#saveAttachment": "filtaquilla-ruleactiontarget-directorypicker",
-          "filtaquilla@mesquilla.com#detachAttachments": "filtaquilla-ruleactiontarget-directorypicker",
-          "filtaquilla@mesquilla.com#javascriptAction": "filtaquilla-ruleactiontarget-javascriptaction",
-          "filtaquilla@mesquilla.com#javascriptActionBody": "filtaquilla-ruleactiontarget-javascriptaction",
-          "filtaquilla@mesquilla.com#saveMessageAsFile": "filtaquilla-ruleactiontarget-directorypicker",
-      };
-      const elementName = elementMapping[type];
-      return elementName ? document.createXULElement(elementName) : null;
+    const elementMapping = {
+       // mappings to thunderbird's ruleactiontarget-* elements
+      "filtaquilla@mesquilla.com#subjectAppend": "ruleactiontarget-forwardto",
+      "filtaquilla@mesquilla.com#subjectSuffix": "ruleactiontarget-forwardto",
+      "filtaquilla@mesquilla.com#removeTag": "ruleactiontarget-tag",
+      "filtaquilla@mesquilla.com#copyAsRead": "ruleactiontarget-folder",
+      "filtaquilla@mesquilla.com#moveLater": "ruleactiontarget-folder",
+       // mappings to our ruleactiontarget-* custom elements
+      "filtaquilla@mesquilla.com#launchFile": "filtaquilla-ruleactiontarget-launchpicker",
+      "filtaquilla@mesquilla.com#runFile": "filtaquilla-ruleactiontarget-runpicker",
+      "filtaquilla@mesquilla.com#addSender": "filtaquilla-ruleactiontarget-abpicker",
+      "filtaquilla@mesquilla.com#saveAttachment": "filtaquilla-ruleactiontarget-directorypicker",
+      "filtaquilla@mesquilla.com#detachAttachments": "filtaquilla-ruleactiontarget-directorypicker",
+      "filtaquilla@mesquilla.com#javascriptAction": "filtaquilla-ruleactiontarget-javascriptaction",
+      "filtaquilla@mesquilla.com#javascriptActionBody": "filtaquilla-ruleactiontarget-javascriptaction",
+      "filtaquilla@mesquilla.com#saveMessageAsFile": "filtaquilla-ruleactiontarget-directorypicker",
+    };
+    const elementName = elementMapping[type];
+    return elementName ? document.createXULElement(elementName) : null;
   }
 
   function patchRuleactiontargetWrapper() {
@@ -74,6 +74,7 @@
   }
 
   patchRuleactiontargetWrapper();
+  
 
   const updateParentNode = (parentNode) => {
     if (parentNode.hasAttribute("initialActionIndex")) {
@@ -83,6 +84,7 @@
     }
     parentNode.updateRemoveButton();
   };
+  
 
   class FiltaQuillaRuleactiontargetBase extends MozXULElement { }
 
@@ -405,12 +407,112 @@
 
 // ***********  CONDITIONS  ***********
 
+  
+  // I think for search custom elements, we need to patch MozSearchAttribute?
+  function getAttributeChildNode(type) {
+    const elementMapping = {
+      // search values - custom  elements
+      "filtaquilla@mesquilla.com#subjectRegex" : "filtaquilla-search-value-textbox",
+      "filtaquilla@mesquilla.com#attachmentRegex" : "filtaquilla-search-value-textbox",
+      "filtaquilla@mesquilla.com#headerRegex" : "filtaquilla-search-value-textbox",
+      "filtaquilla@mesquilla.com#searchBcc" : "filtaquilla-search-value-textbox",
+      "filtaquilla@mesquilla.com#folderName" : "filtaquilla-search-value-textbox",
+      
+    };
+    const elementName = elementMapping[type];
+    return elementName ? document.createXULElement(elementName) : null;
+  }
+  
+  // just some wild guesses, leading nowhere
+  /*
+  function patchSearchAttributes() {
+    // we need to add the child nodes above, but where?
+    // there is no "ruleactiontarget-wrapper" element we can add these to.
+    // however there is a hbox with class ".search-value-custom" at the end
+    let els = this.getElementsByClassName("search-value-custom")
+    // let wrapper = customElements.get("ruleactiontarget-wrapper");
+    if (els && els.length) {
+      for (let el of els) {
+        let alreadyPatched = el.prototype.hasOwnProperty("_patchedByFiltaQuillaExtension") ?
+                             el.prototype._patchedByFiltaQuillaExtension :
+                             false;
+        if (alreadyPatched) {
+          // already patched
+          continue;
+        }
+      
+        let prevMethod = el.prototype._getChildNode;
+        if (prevMethod) {
+          el.prototype._getChildNode = function(type) {
+            let element = getAttributeChildNode(type);
+            return element ? element : prevMethod(type);
+          };
+          el.prototype._patchedByFiltaQuillaExtension = true;
+        }
+      }
+    }
+  }
+  
+  patchSearchAttributes(); 
+  */
+  
+  debugger;
+  
+  if (!customElements.get("filtaquilla-search-value-textbox")) {
+    // #textbox binding  /  MozXULElement
+    class FiltaquillaTextbox extends MozXULElement {
+      /*
+      updateSearchValue(menulist) {
+        let target = this.closest(".search-value-custom");
+        target.setAttribute("value", menulist.value);
+        target.value = menulist.getAttribute('label');
+      }
+      */
+      
+      connectedCallback() {
+        if (this.delayConnectedCallback()) {
+          return;
+        }
+        this.textContent = "";
+        this.appendChild(MozXULElement.parseXULToFragment(`
+          <html:input flex="1" class="search-value-textbox" inherits="disabled" onchange="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value"></html:input>
+        `));
+        // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
+
+        let value = this.getAttribute("value");
+        let textbox = document.getAnonymousNodes(this)[0];
+        textbox.value = value;
+        this.value = value;
+        // override the opParentValue setter to detect ops needing no value
+        let parent = this.parentNode;
+        parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
+        parent.__defineSetter__('opParentValue', function(aValue) {
+          let element = this.querySelectorAll(".search-value-custom"); // document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
+          if (element) {
+            // hide the value if not relevant
+            if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
+              aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
+              element.setAttribute('hidden', 'true');
+            else
+              element.removeAttribute('hidden');
+          }
+          this.oldOpParentValueSetter(aValue);
+        });
+
+      }
+    }
+
+    customElements.define("filtaquilla-search-value-textbox", FiltaquillaTextbox);    
+  }
+
+
+  
+  
+
   class FiltaQuillaSearchValueTag extends MozXULElement {
     updateSearchValue(menulist) {
       let target = this.closest(".search-value-custom");
       target.setAttribute("value", menulist.value);
-      // The AssignMeaningfulName functions uses the item's js value, so set
-      // this to allow this to be shown correctly.
       target.value = menulist.getAttribute('label');
     }
 
@@ -474,6 +576,9 @@
   }
 
   customElements.define("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
+  
+  
+  
 
 
   util.logDebug("fq_FilterEditor.js - Finished.");

@@ -1,7 +1,8 @@
-chrome.manifest
+_locales
 components
 content
 defaults
+filtaquilla-background.js
 license.txt
 locale
 manifest.json

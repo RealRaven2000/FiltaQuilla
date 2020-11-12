@@ -834,13 +834,11 @@
       getAvailable: function folderName_getAvailable(scope, op) {
         return _isLocalSearch(scope) && FolderNameEnabled;
       },
-      getAvailableOperators: function folderName_getAvailableOperators(scope, length) {
+      getAvailableOperators: function folderName_getAvailableOperators(scope) {
         if (!_isLocalSearch(scope))
         {
-          length.value = 0;
           return [];
         }
-        length.value = 6;
         return [Contains, DoesntContain, Is, Isnt, BeginsWith, EndsWith];
       },
       match: function folderName_match(aMsgHdr, aSearchValue, aSearchOp) {
@@ -892,13 +890,11 @@
       getAvailable: function searchBcc_getAvailable(scope, op) {
         return _isLocalSearch(scope) && SearchBccEnabled;
       },
-      getAvailableOperators: function searchBcc_getAvailableOperators(scope, length) {
+      getAvailableOperators: function searchBcc_getAvailableOperators(scope) {
         if (!_isLocalSearch(scope))
         {
-          length.value = 0;
           return [];
         }
-        length.value = 8;
         return [Contains, DoesntContain, Is, Isnt, IsEmpty, IsntEmpty,
                 BeginsWith, EndsWith];
       },
@@ -994,14 +990,12 @@
       getAvailable: function subjectRegEx_getAvailable(scope, op) {
         return _isLocalSearch(scope) && SubjectRegexEnabled;
       },
-      getAvailableOperators: function subjectRegEx_getAvailableOperators(scope, length) {
+      getAvailableOperators: function subjectRegEx_getAvailableOperators(scope) {
         try {
           if (!_isLocalSearch(scope))
           {
-            length.value = 0;
             return [];
           }
-          length.value = 2;
         }
         catch(ex) {
           console.logException(ex);
@@ -1087,13 +1081,11 @@
       getAvailable: function attachRegEx_getAvailable(scope, op) {
         return _isLocalSearch(scope) && AttachmentRegexEnabled;
       },
-      getAvailableOperators: function attachRegEx_getAvailableOperators(scope, length) {
+      getAvailableOperators: function attachRegEx_getAvailableOperators(scope) {
         if (!_isLocalSearch(scope))
         {
-          length.value = 0;
           return [];
         }
-        length.value = 2;
         return [Matches, DoesntMatch];
       },
       match: function attachRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
@@ -1150,13 +1142,11 @@
       getAvailable: function headerRegEx_getAvailable(scope, op) {
         return _isLocalSearch(scope) && HeaderRegexEnabled;
       },
-      getAvailableOperators: function headerRegEx_getAvailableOperators(scope, length) {
+      getAvailableOperators: function headerRegEx_getAvailableOperators(scope) {
         if (!_isLocalSearch(scope))
         {
-          length.value = 0;
           return [];
         }
-        length.value = 2;
         return [Matches, DoesntMatch];
       },
       match: function headerRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
@@ -1201,8 +1191,7 @@
       getAvailable: function javascript_getAvailable(scope, op) {
         return JavascriptEnabled;
       },
-      getAvailableOperators: function javascript_getAvailableOperators(scope, length) {
-        length.value = 2;
+      getAvailableOperators: function javascript_getAvailableOperators(scope) {
         return [Matches, DoesntMatch];
       },
       match: function javascript_match(message, aSearchValue, aSearchOp) {
@@ -1229,8 +1218,7 @@
       getAvailable: function threadHeadTag_getAvailable(scope, op) {
         return ThreadHeadTagEnabled;
       },
-      getAvailableOperators: function threadHeadTag_getAvailableOperators(scope, length) {
-        length.value = 6;
+      getAvailableOperators: function threadHeadTag_getAvailableOperators(scope) {
         return [Is, Isnt, Contains, DoesntContain, IsEmpty, IsntEmpty];
       },
       match: function threadHeadTag_matches(message, aSearchValue, aSearchOp) {
@@ -1292,8 +1280,7 @@
       getAvailable: function threadAnyTag_getAvailable(scope, op) {
         return ThreadAnyTagEnabled;
       },
-      getAvailableOperators: function threadAnyTag_getAvailableOperators(scope, length) {
-        length.value = 3;
+      getAvailableOperators: function threadAnyTag_getAvailableOperators(scope) {
         return [Contains, DoesntContain, IsntEmpty];
       },
       match: function threadAnyTag_matches(message, aSearchValue, aSearchOp) {
