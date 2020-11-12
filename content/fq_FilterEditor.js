@@ -423,6 +423,8 @@
     return elementName ? document.createXULElement(elementName) : null;
   }
   
+  
+  
   // just some wild guesses, leading nowhere
   /*
   function patchSearchAttributes() {
@@ -505,6 +507,9 @@
     customElements.define("filtaquilla-search-value-textbox", FiltaquillaTextbox);    
   }
 
+  MozXULElement.implementCustomInterface(FiltaquillaTextbox, [
+    Ci.nsIObserver,
+  ]);
 
   
   

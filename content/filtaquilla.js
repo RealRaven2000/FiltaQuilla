@@ -32,7 +32,6 @@
 
 (function filtaQuilla()
 {
-	debugger;
   
   Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
   var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
@@ -1366,7 +1365,6 @@
   // extension initialization
 
   self.onLoad = function() {
-		debugger;
     if (self.initialized)
       return;
     self._init();
