@@ -490,11 +490,13 @@
                   // patch!
                   if (!es.getAttribute('fw-patched')) {
                     let textbox = window.MozXULElement.parseXULToFragment(
-                      ` <html:input flex="1" class="search-value-textbox" inherits="disabled" 
-                        onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value">
-                        </html:input>
-                      `);
+                      ` <html:input class="search-value-textbox flexinput" inherits="disabled" 
+                        value = "` + es.getAttribute("value") + `"
+                        onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value"> 
+                        </html:input>`
+                    );
                     es.appendChild(textbox);
+                    es.classList.add("flexelementcontainer");
                     es.setAttribute('fw-patched', "true");
                   }
                   
@@ -506,9 +508,6 @@
             }
           });
           break;
-        case 'attributes': // obsolete
-          let at = mutation.attributeName;
-          break;
       }
     });
   }
@@ -518,7 +517,7 @@
   
   const fq_observerOptions = {
     childList: true,
-    attributes: true,
+    attributes: false,
     // Omit (or set to false) to observe only changes to the parent node
     subtree: true
   }
