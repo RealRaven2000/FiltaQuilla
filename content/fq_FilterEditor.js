@@ -469,29 +469,41 @@
           // iterate nodelist of added nodes
           let nList = mutation.addedNodes;
           nList.forEach( (el) => {
-            let hbox = el.querySelectorAll("hbox.search-value-custom");
-            hbox.forEach ( (es) => {
-              let attType = es.getAttribute('searchAttribute'),
-                  isMatchTextbox = false;
-              switch(attType) {
-                case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
-                case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
-                case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
-                case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
-                case "filtaquilla@mesquilla.com#folderName" :      // fall-through
-                case "filtaquilla@mesquilla.com#folderName" :      // fall-through
-                  isMatchTextbox =true;
-                  break;
-                default:
-                  // irrelevant
-              }
-              if (isMatchTextbox) {
-                // patch!
-                console.log("mutation observer found match:");
-                console.log(es);
-              }
-              
-            });
+            if (el.querySelectorAll) {
+              let hbox = el.querySelectorAll("hbox.search-value-custom");
+              hbox.forEach ( (es) => {
+                let attType = es.getAttribute('searchAttribute'),
+                    isMatchTextbox = false;
+                switch(attType) {
+                  case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
+                  case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+                  case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
+                  case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
+                  case "filtaquilla@mesquilla.com#folderName" :      // fall-through
+                  case "filtaquilla@mesquilla.com#folderName" :      // fall-through
+                    isMatchTextbox =true;
+                    break;
+                  default:
+                    // irrelevant
+                }
+                if (isMatchTextbox) {
+                  // patch!
+                  if (!es.getAttribute('fw-patched')) {
+                    let textbox = window.MozXULElement.parseXULToFragment(
+                      ` <html:input flex="1" class="search-value-textbox" inherits="disabled" 
+                        onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value">
+                        </html:input>
+                      `);
+                    es.appendChild(textbox);
+                    es.setAttribute('fw-patched', "true");
+                  }
+                  
+                  console.log("mutation observer found match:");
+                  console.log(es);
+                }
+                
+              });
+            }
           });
           break;
         case 'attributes': // obsolete
