@@ -9,5 +9,5 @@ function onLoad(activatedWhileWindowOpen) {
 }
 
 function onUnload(isAddOnShutown) {
-  debugger;
+  // debugger;
 }

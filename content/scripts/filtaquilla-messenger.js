@@ -15,4 +15,16 @@ function onLoad(activatedWhileWindowOpen) {
 }
 
 function onUnload(isAddOnShutown) {
+  const Cc = Components.classes,
+        Ci = Components.interfaces,
+        Cu = Components.utils,
+        filterService = Cc["@mozilla.org/messenger/services/filters;1"].getService(Ci.nsIMsgFilterService);
+        
+  
+  // filterService
+  let ca = [];
+  ca = [...filterService.getCustomActions()];
+  
+
+
 }

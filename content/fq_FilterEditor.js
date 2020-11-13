@@ -172,12 +172,14 @@
     }
   } // launch picker
 
-  debugger;
-  if (!customElements.get("filtaquilla-ruleactiontarget-launchpicker"))
-    customElements.define("filtaquilla-ruleactiontarget-launchpicker", FiltaQuillaRuleactiontargetLaunchPicker);
-  else
-    console.log ("custom Element is already defined: filtaquilla-ruleactiontarget-launchpicker");
-
+  function defineIfNotPresent(element, elementClass) {
+    if (!customElements.get(element))
+      customElements.define(element, elementClass);
+    else
+      console.log ("custom Element is already defined: " + element);
+  }
+  
+  defineIfNotPresent("filtaquilla-ruleactiontarget-launchpicker", FiltaQuillaRuleactiontargetLaunchPicker);
 
   class FiltaQuillaRuleactiontargetRunPicker extends FiltaQuillaRuleactiontargetBase {
     connectedCallback() {
@@ -241,7 +243,7 @@
     }
   } // run picker
 
-  customElements.define("filtaquilla-ruleactiontarget-runpicker", FiltaQuillaRuleactiontargetRunPicker);
+  defineIfNotPresent("filtaquilla-ruleactiontarget-runpicker", FiltaQuillaRuleactiontargetRunPicker);
 
 
   class FiltaQuillaRuleactiontargetAbPicker extends FiltaQuillaRuleactiontargetBase {
@@ -301,7 +303,7 @@
     }
   }
 
-  customElements.define("filtaquilla-ruleactiontarget-abpicker", FiltaQuillaRuleactiontargetAbPicker);
+  defineIfNotPresent("filtaquilla-ruleactiontarget-abpicker", FiltaQuillaRuleactiontargetAbPicker);
 
 
   class FiltaQuillaRuleactiontargetDirectoryPicker extends FiltaQuillaRuleactiontargetBase {
@@ -368,8 +370,7 @@
     }
   } // directory picker
 
-  customElements.define("filtaquilla-ruleactiontarget-directorypicker", FiltaQuillaRuleactiontargetDirectoryPicker);
-
+  defineIfNotPresent("filtaquilla-ruleactiontarget-directorypicker", FiltaQuillaRuleactiontargetDirectoryPicker);
 
   class FiltaQuillaRuleactiontargetJavascriptAction extends FiltaQuillaRuleactiontargetBase {
     connectedCallback() {
@@ -403,7 +404,7 @@
     }
   }
 
-  customElements.define("filtaquilla-ruleactiontarget-javascriptaction", FiltaQuillaRuleactiontargetJavascriptAction);
+  defineIfNotPresent("filtaquilla-ruleactiontarget-javascriptaction", FiltaQuillaRuleactiontargetJavascriptAction);
 
 // ***********  CONDITIONS  ***********
 
@@ -458,7 +459,61 @@
   patchSearchAttributes(); 
   */
   
-  debugger;
+  function callbackFiltaquillaSearchCondition(mutationList, observer) {
+    mutationList.forEach( (mutation) => {
+      switch(mutation.type) {
+        case 'childList':
+          /* One or more children have been added to and/or removed
+             from the tree.
+             (See mutation.addedNodes and mutation.removedNodes.) */
+          // iterate nodelist of added nodes
+          let nList = mutation.addedNodes;
+          nList.forEach( (el) => {
+            let hbox = el.querySelectorAll("hbox.search-value-custom");
+            hbox.forEach ( (es) => {
+              let attType = es.getAttribute('searchAttribute'),
+                  isMatchTextbox = false;
+              switch(attType) {
+                case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
+                case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+                case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
+                case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
+                case "filtaquilla@mesquilla.com#folderName" :      // fall-through
+                case "filtaquilla@mesquilla.com#folderName" :      // fall-through
+                  isMatchTextbox =true;
+                  break;
+                default:
+                  // irrelevant
+              }
+              if (isMatchTextbox) {
+                // patch!
+                console.log("mutation observer found match:");
+                console.log(es);
+              }
+              
+            });
+          });
+          break;
+        case 'attributes': // obsolete
+          let at = mutation.attributeName;
+          break;
+      }
+    });
+  }
+  
+  
+  const fq_observer = new MutationObserver(callbackFiltaquillaSearchCondition);
+  
+  const fq_observerOptions = {
+    childList: true,
+    attributes: true,
+    // Omit (or set to false) to observe only changes to the parent node
+    subtree: true
+  }
+  
+  let termList = window.document.querySelector('#searchTermList')
+  fq_observer.observe(termList, fq_observerOptions);
+  
   
   if (!customElements.get("filtaquilla-search-value-textbox")) {
     // #textbox binding  /  MozXULElement
@@ -504,12 +559,13 @@
       }
     }
 
-    customElements.define("filtaquilla-search-value-textbox", FiltaquillaTextbox);    
-  }
+    defineIfNotPresent("filtaquilla-search-value-textbox", FiltaquillaTextbox);    
 
-  MozXULElement.implementCustomInterface(FiltaquillaTextbox, [
-    Ci.nsIObserver,
-  ]);
+/*
+    MozXULElement.implementCustomInterface(FiltaquillaTextbox, [
+      Ci.nsIObserver,
+    ]); */
+  }
 
   
   
@@ -580,11 +636,8 @@
     }
   }
 
-  customElements.define("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
+  defineIfNotPresent("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
   
-  
-  
-
 
   util.logDebug("fq_FilterEditor.js - Finished.");
 
