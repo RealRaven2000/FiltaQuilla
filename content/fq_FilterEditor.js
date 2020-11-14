@@ -426,6 +426,7 @@
   
   // this works when the element is added by the Filter Editor, but not 
   // if we change an existing row to this type...
+  // for this, let's watch changes to search-menulist
   function callbackFiltaquillaSearchCondition(mutationList, observer) {
     mutationList.forEach( (mutation) => {
       switch(mutation.type) {
@@ -480,7 +481,7 @@
               if (isTag) { // bindings.xml#tag: inject a tag selection element
                 // TODO
                 let menulist = window.MozXULElement.parseXULToFragment(`
-                  <menulist flex="1" class="search-value-menulist" inherits="disabled"
+                  <menulist flex="1" class="search-value-menulist flexinput" inherits="disabled"
                             oncommand="this.parentNode.updateSearchValue(this);">
                     <menupopup class="search-value-popup"></menupopup>
                   </menulist>
