@@ -424,41 +424,8 @@
     return elementName ? document.createXULElement(elementName) : null;
   }
   
-  
-  
-  // just some wild guesses, leading nowhere
-  /*
-  function patchSearchAttributes() {
-    // we need to add the child nodes above, but where?
-    // there is no "ruleactiontarget-wrapper" element we can add these to.
-    // however there is a hbox with class ".search-value-custom" at the end
-    let els = this.getElementsByClassName("search-value-custom")
-    // let wrapper = customElements.get("ruleactiontarget-wrapper");
-    if (els && els.length) {
-      for (let el of els) {
-        let alreadyPatched = el.prototype.hasOwnProperty("_patchedByFiltaQuillaExtension") ?
-                             el.prototype._patchedByFiltaQuillaExtension :
-                             false;
-        if (alreadyPatched) {
-          // already patched
-          continue;
-        }
-      
-        let prevMethod = el.prototype._getChildNode;
-        if (prevMethod) {
-          el.prototype._getChildNode = function(type) {
-            let element = getAttributeChildNode(type);
-            return element ? element : prevMethod(type);
-          };
-          el.prototype._patchedByFiltaQuillaExtension = true;
-        }
-      }
-    }
-  }
-  
-  patchSearchAttributes(); 
-  */
-  
+  // this works when the element is added by the Filter Editor, but not 
+  // if we change an existing row to this type...
   function callbackFiltaquillaSearchCondition(mutationList, observer) {
     mutationList.forEach( (mutation) => {
       switch(mutation.type) {
@@ -469,43 +436,71 @@
           // iterate nodelist of added nodes
           let nList = mutation.addedNodes;
           nList.forEach( (el) => {
-            if (el.querySelectorAll) {
-              let hbox = el.querySelectorAll("hbox.search-value-custom");
-              hbox.forEach ( (es) => {
-                let attType = es.getAttribute('searchAttribute'),
-                    isMatchTextbox = false;
-                switch(attType) {
-                  case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
-                  case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
-                  case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
-                  case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
-                  case "filtaquilla@mesquilla.com#folderName" :      // fall-through
-                  case "filtaquilla@mesquilla.com#folderName" :      // fall-through
-                    isMatchTextbox =true;
-                    break;
-                  default:
-                    // irrelevant
-                }
-                if (isMatchTextbox) {
-                  // patch!
-                  if (!es.getAttribute('fw-patched')) {
-                    let textbox = window.MozXULElement.parseXULToFragment(
-                      ` <html:input class="search-value-textbox flexinput" inherits="disabled" 
-                        value = "` + es.getAttribute("value") + `"
-                        onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value"> 
-                        </html:input>`
-                    );
-                    es.appendChild(textbox);
-                    es.classList.add("flexelementcontainer");
-                    es.setAttribute('fw-patched', "true");
-                  }
-                  
-                  console.log("mutation observer found match:");
-                  console.log(es);
-                }
+            if (!el.querySelectorAll) return; // leave the anonymous function, this continues with the next forEach
+            let hbox = el.querySelectorAll("hbox.search-value-custom");
+            hbox.forEach ( (es) => {
+              let attType = es.getAttribute('searchAttribute'),
+                  isMatchTextbox = false,
+                  isTag = false,
+                  isJS = false;
+              switch(attType) {
+                case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
+                case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+                case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
+                case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
+                case "filtaquilla@mesquilla.com#folderName" :      
+                  isMatchTextbox = true;
+                  break;
+                case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
+                case "filtaquilla@mesquilla.com#threadanytag":
+                  isTag = true;
+                  break;
+                case "filtaquilla@mesquilla.com#javascript":
+                  isJS = true;
+                  break;
+                default:
+                  // irrelevant
+              }
+              if (es.getAttribute('fw-patched')) return; //already patched this one
+              let isPatched = false;
+              
+              if (isMatchTextbox) { // bindings.xml#textbox: inject a html textbox
+                // patch!
+                let textbox = window.MozXULElement.parseXULToFragment(
+                  ` <html:input class="search-value-textbox flexinput" inherits="disabled" 
+                    value = "` + es.getAttribute("value") + `"
+                    onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value"> 
+                    </html:input>`
+                );
+                es.appendChild(textbox);
+                es.classList.add("flexelementcontainer");
+                isPatched = true;
+              }
+              
+              if (isTag) { // bindings.xml#tag: inject a tag selection element
+                // TODO
+                let menulist = window.MozXULElement.parseXULToFragment(`
+                  <menulist flex="1" class="search-value-menulist" inherits="disabled"
+                            oncommand="this.parentNode.updateSearchValue(this);">
+                    <menupopup class="search-value-popup"></menupopup>
+                  </menulist>
+                `);
+                es.appendChild(menulist);
+                es.classList.add("flexelementcontainer");
+                isPatched = true;
+              }
+              
+              if (isJS) { // bindings.xml#javascript: inject a JS editor. Script returns true or false
+                // TODO
+              }
+              if (isPatched) {
+                es.setAttribute('fw-patched', "true");
                 
-              });
-            }
+                console.log("mutation observer patched:");
+                console.log(es);
+              }
+              
+            });
           });
           break;
       }
@@ -525,17 +520,15 @@
   let termList = window.document.querySelector('#searchTermList')
   fq_observer.observe(termList, fq_observerOptions);
   
-  
+  /* OBSOLETE  
   if (!customElements.get("filtaquilla-search-value-textbox")) {
     // #textbox binding  /  MozXULElement
     class FiltaquillaTextbox extends MozXULElement {
-      /*
       updateSearchValue(menulist) {
         let target = this.closest(".search-value-custom");
         target.setAttribute("value", menulist.value);
         target.value = menulist.getAttribute('label');
       }
-      */
       
       connectedCallback() {
         if (this.delayConnectedCallback()) {
@@ -570,15 +563,12 @@
       }
     }
 
-    defineIfNotPresent("filtaquilla-search-value-textbox", FiltaquillaTextbox);    
-
-/*
+    defineIfNotPresent("filtaquilla-search-value-textbox", FiltaquillaTextbox); 
     MozXULElement.implementCustomInterface(FiltaquillaTextbox, [
       Ci.nsIObserver,
-    ]); */
+    ]); 
   }
-
-  
+  */
   
 
   class FiltaQuillaSearchValueTag extends MozXULElement {
