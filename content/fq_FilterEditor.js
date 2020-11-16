@@ -466,6 +466,9 @@
               if (es.getAttribute('fw-patched')) return; //already patched this one
               let isPatched = false;
               
+              /**********************|
+              |  TEXTBOX CONDITIONS  |
+              |**********************/
               if (isMatchTextbox) { // bindings.xml#textbox: inject a html textbox
                 // patch!
                 let textbox = window.MozXULElement.parseXULToFragment(
@@ -479,6 +482,9 @@
                 isPatched = true;
               }
               
+              /*********************|
+              |  TAG CONDITIONS     |
+              |*********************/
               if (isTag) { // bindings.xml#tag: inject a tag selection element
                 // TODO
                 function updateSearchValue(menulist) {
@@ -503,7 +509,7 @@
                 isPatched = true;
                 let value = es.getAttribute("value");
                 
-                //overwrite the xul fragment and get tht html element instead
+                //overwrite the variable for xul fragment and get tht html element instead (?)
                 menulist = es.getElementsByTagName("menulist")[0];
                 
                 
@@ -548,6 +554,9 @@
                 
               }
               
+              /*********************|
+              |  SCRIPT CONDITIONS  |
+              |*********************/
               if (isJS) { // bindings.xml#javascript: inject a JS editor. Script returns true or false
                 // TODO
               }
@@ -631,6 +640,8 @@
 
   // class FiltaQuillaSearchValueTag extends MozXULElement {
   // ???
+/* OBSOLETE !*/
+if (false) {
   class FiltaQuillaSearchValueTag extends MozSearchValue  {
     updateSearchValue(menulist) {
       let target = this.closest(".search-value-custom");
@@ -698,6 +709,8 @@
   }
 
   defineIfNotPresent("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
+} /* OBSOLETE !*/
+
   
 
   util.logDebug("fq_FilterEditor.js - Finished.");
