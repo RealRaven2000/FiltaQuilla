@@ -399,7 +399,7 @@
 
     onCommand() {
       let textbox = this.parentNode.firstChild;
-      window.openDialog("chrome://filtaquilla/content/jsEditor.xul", "",
+      window.openDialog("chrome://filtaquilla/content/jsEditor.xhtml", "",
         "chrome, dialog, modal, resizable=yes", textbox);
     }
   }
