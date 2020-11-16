@@ -20,6 +20,9 @@ toolbarbutton.focusbutton {
 hbox.flexelementcontainer {
   display: inline-flex !important;
 }
+hbox.flexelementcontainer[hidden] {
+  display: none !important;
+}
 
 input.flexinput,
 menulist.flexinput {
