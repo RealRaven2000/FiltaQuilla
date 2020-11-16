@@ -424,6 +424,108 @@
     return elementName ? document.createXULElement(elementName) : null;
   }
   
+  
+  function patchFiltaQuillaTextbox(es) {
+    if (es.getAttribute('fw-patched')) return true; // element is already patched
+    // patch!
+    try {
+      let textbox = window.MozXULElement.parseXULToFragment(
+        ` <html:input class="search-value-textbox flexinput" inherits="disabled" 
+          value = "` + es.getAttribute("value") + `"
+          onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value"> 
+          </html:input>`
+      );
+      es.appendChild(textbox);
+      es.classList.add("flexelementcontainer");
+      es.setAttribute('fw-patched', "true");
+      return true;
+    }
+    catch(ex) {
+      console.logException(ex);
+      return false;  
+    }
+  }
+  
+  function patchFiltaQuillaTagSelector(es) {
+    function updateSearchValue(menulist) {
+      let target = this.closest(".search-value-custom");
+      target.setAttribute("value", menulist.value);
+      // The AssignMeaningfulName functions uses the item's js value, so set
+      // this to allow this to be shown correctly.
+      target.value = menulist.getAttribute('label');
+    }
+    
+    if (es.getAttribute('fw-patched')) return true; // element is already patched
+    try {
+      let wrapper = es.closest("search-value"),
+          menulistFragment = window.MozXULElement.parseXULToFragment(`
+        <menulist flex="1" class="search-value-menulist flexinput" inherits="disabled"
+                  oncommand="this.parentNode.updateSearchValue(this);">
+          <menupopup class="search-value-popup"></menupopup>
+        </menulist>
+      `);
+      es.appendChild(menulistFragment);
+      es.classList.add("flexelementcontainer");
+      es.updateSearchValue = updateSearchValue;
+      
+      let value = es.getAttribute("value"),
+          menulist = es.getElementsByTagName("menulist")[0];
+      
+      
+      let menuPopup = es.lastChild.getElementsByTagName("menupopup")[0],
+          tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
+          tagArray = tagService.getAllTags({}),
+          selectedIndex = 0;
+
+      for (let i = 0; i < tagArray.length; ++i) {
+        let taginfo = tagArray[i],
+            newMenuItem = document.createXULElement('menuitem');
+        newMenuItem.setAttribute('label', taginfo.tag);
+        newMenuItem.setAttribute('value', taginfo.key);
+        menuPopup.appendChild(newMenuItem);
+        if (taginfo.key == value)
+          selectedIndex = i;
+      }
+
+      menulist.selectedIndex = selectedIndex;
+      es.updateSearchValue(menulist);
+      
+      // override the opParentValue setter to detect operators which need no value
+      // this => es ??
+      wrapper.oldOpParentValueSetter = wrapper.__lookupSetter__('opParentValue');
+      wrapper.__defineSetter__('opParentValue', function(aValue) {
+        let elements = this.getElementsByClassName('search-value-custom');
+        if (elements.length > 0) {
+          let element = elements[0];
+          // hide the value if not relevant
+          if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
+            aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
+            element.setAttribute('hidden', 'true');
+          else
+            element.removeAttribute('hidden');
+        }
+        return this.oldOpParentValueSetter(aValue);
+      });
+
+      let searchrow = wrapper.parentNode.parentNode,
+          searchop = searchrow.getElementsByTagName('search-operator')[0].value;
+      wrapper.opParentValue = searchop;
+      es.setAttribute('fw-patched', "true");
+      return true;
+    }
+    catch(ex) {
+      console.logException(ex);
+      return false;  
+    }
+       
+  }
+  
+  
+  function patchFiltaQuillaJavaScriptCondition(es) {
+    // bindings.xml#javascript: inject a JS editor. Script returns true or false
+    return false;
+  }
+  
   // this works when the element is added by the Filter Editor, but not 
   // if we change an existing row to this type...
   // for this, let's watch changes to search-menulist
@@ -440,129 +542,27 @@
             if (!el.querySelectorAll) return; // leave the anonymous function, this continues with the next forEach
             let hbox = el.querySelectorAll("hbox.search-value-custom");
             hbox.forEach ( (es) => {
-              let wrapper = es.closest("search-value"),
-                  attType = es.getAttribute('searchAttribute'),
-                  isMatchTextbox = false,
-                  isTag = false,
-                  isJS = false;
+              let attType = es.getAttribute('searchAttribute'),
+                  isPatched = false;
               switch(attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
                 case "filtaquilla@mesquilla.com#folderName" :      
-                  isMatchTextbox = true;
+                  isPatched = patchFiltaQuillaTextbox(es);
                   break;
                 case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
                 case "filtaquilla@mesquilla.com#threadanytag":
-                  isTag = true;
+                  isPatched = patchFiltaQuillaTagSelector(es)
                   break;
                 case "filtaquilla@mesquilla.com#javascript":
-                  isJS = true;
+                  isPatched = patchFiltaQuillaJavaScriptCondition(es)
                   break;
                 default:
                   // irrelevant for FiltaQuilla
               }
-              if (es.getAttribute('fw-patched')) return; //already patched this one
-              let isPatched = false;
-              
-              /**********************|
-              |  TEXTBOX CONDITIONS  |
-              |**********************/
-              if (isMatchTextbox) { // bindings.xml#textbox: inject a html textbox
-                // patch!
-                let textbox = window.MozXULElement.parseXULToFragment(
-                  ` <html:input class="search-value-textbox flexinput" inherits="disabled" 
-                    value = "` + es.getAttribute("value") + `"
-                    onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value"> 
-                    </html:input>`
-                );
-                es.appendChild(textbox);
-                es.classList.add("flexelementcontainer");
-                isPatched = true;
-              }
-              
-              /*********************|
-              |  TAG CONDITIONS     |
-              |*********************/
-              if (isTag) { // bindings.xml#tag: inject a tag selection element
-                // TODO
-                function updateSearchValue(menulist) {
-                  let target = this.closest(".search-value-custom");
-                  target.setAttribute("value", menulist.value);
-                  // The AssignMeaningfulName functions uses the item's js value, so set
-                  // this to allow this to be shown correctly.
-                  target.value = menulist.getAttribute('label');
-                }
-                
-                
-                let menulist = window.MozXULElement.parseXULToFragment(`
-                  <menulist flex="1" class="search-value-menulist flexinput" inherits="disabled"
-                            oncommand="this.parentNode.updateSearchValue(this);">
-                    <menupopup class="search-value-popup"></menupopup>
-                  </menulist>
-                `);
-                es.appendChild(menulist);
-                es.classList.add("flexelementcontainer");
-                es.updateSearchValue = updateSearchValue;
-                
-                isPatched = true;
-                let value = es.getAttribute("value");
-                
-                //overwrite the variable for xul fragment and get tht html element instead (?)
-                menulist = es.getElementsByTagName("menulist")[0];
-                
-                
-                let menuPopup = es.lastChild.getElementsByTagName("menupopup")[0],
-                    tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
-                    tagArray = tagService.getAllTags({}),
-                    selectedIndex = 0;
-
-                for (let i = 0; i < tagArray.length; ++i) {
-                  let taginfo = tagArray[i],
-                      newMenuItem = document.createXULElement('menuitem');
-                  newMenuItem.setAttribute('label', taginfo.tag);
-                  newMenuItem.setAttribute('value', taginfo.key);
-                  menuPopup.appendChild(newMenuItem);
-                  if (taginfo.key == value)
-                    selectedIndex = i;
-                }
-
-                menulist.selectedIndex = selectedIndex;
-                es.updateSearchValue(menulist);
-                
-                // override the opParentValue setter to detect operators which need no value
-                // this => es ??
-                wrapper.oldOpParentValueSetter = wrapper.__lookupSetter__('opParentValue');
-                wrapper.__defineSetter__('opParentValue', function(aValue) {
-                  let elements = this.getElementsByClassName('search-value-custom');
-                  if (elements.length > 0) {
-                    let element = elements[0];
-                    // hide the value if not relevant
-                    if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
-                      aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
-                      element.setAttribute('hidden', 'true');
-                    else
-                      element.removeAttribute('hidden');
-                  }
-                  return this.oldOpParentValueSetter(aValue);
-                });
-
-                let searchrow = wrapper.parentNode.parentNode,
-                    searchop = searchrow.getElementsByTagName('search-operator')[0].value;
-                wrapper.opParentValue = searchop;                
-                
-              }
-              
-              /*********************|
-              |  SCRIPT CONDITIONS  |
-              |*********************/
-              if (isJS) { // bindings.xml#javascript: inject a JS editor. Script returns true or false
-                // TODO
-              }
               if (isPatched) {
-                es.setAttribute('fw-patched', "true");
-                
                 console.log("mutation observer patched:");
                 console.log(es);
               }
