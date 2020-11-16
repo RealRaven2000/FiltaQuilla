@@ -95,6 +95,13 @@
    * License, v. 2.0. If a copy of the MPL was not distributed with this
    * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+  function defineIfNotPresent(element, elementClass) {
+    if (!customElements.get(element))
+      customElements.define(element, elementClass);
+    else
+      console.log ("custom Element is already defined: " + element);
+  }
+
   class FiltaQuillaRuleactiontargetLaunchPicker extends FiltaQuillaRuleactiontargetBase {
     connectedCallback() {
       if (this.delayConnectedCallback()) {
@@ -171,13 +178,6 @@
       file.launch();
     }
   } // launch picker
-
-  function defineIfNotPresent(element, elementClass) {
-    if (!customElements.get(element))
-      customElements.define(element, elementClass);
-    else
-      console.log ("custom Element is already defined: " + element);
-  }
   
   defineIfNotPresent("filtaquilla-ruleactiontarget-launchpicker", FiltaQuillaRuleactiontargetLaunchPicker);
 
@@ -188,8 +188,8 @@
       }
       this.textContent = "";
       this.appendChild(MozXULElement.parseXULToFragment(`
-        <hbox>
-          <textbox class="ruleactionitem" onchange="this.parentNode.value = this.value;"></textbox>
+        <hbox flex="1" class="flexelementcontainer">
+          <html:input class="ruleactionitem flexinput" onchange="this.parentNode.value = this.value;"></html:input>
           <toolbarbutton image="chrome://messenger/skin/icons/folder.svg" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
         </hbox>
       `));
@@ -400,7 +400,7 @@
     onCommand() {
       let textbox = this.parentNode.firstChild;
       window.openDialog("chrome://filtaquilla/content/jsEditor.xhtml", "",
-        "chrome, dialog, modal, resizable=yes", textbox);
+        "chrome,dependent,centerscreen,dialog,modal,resizable=yes", textbox);
     }
   }
 
