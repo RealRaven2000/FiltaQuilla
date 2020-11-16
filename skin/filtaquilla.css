@@ -7,8 +7,7 @@
 .ruleactiontarget[type="filtaquilla@mesquilla.com#detachAttachments"] ,
 .ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptAction"] ,
 .ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptActionBody"] ,
-.ruleactiontarget[type="filtaquilla@mesquilla.com#saveMessageAsFile"] ,
-{
+.ruleactiontarget[type="filtaquilla@mesquilla.com#saveMessageAsFile"] {
   -moz-box-flex: 1;
 }
 
@@ -30,44 +29,20 @@ menulist.flexinput {
 }
 
 /* textboxes */
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#subjectRegex"] {
-  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#attachmentRegex"],
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#headerRegex"],
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#searchBcc"],
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#folderName"],
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#subjectRegex"],
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadheadtag"],
+.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadanytag"] {
   -moz-box-flex: 1;
 }
 
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#attachmentRegex"] {
-  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
-  -moz-box-flex: 1;
-}
-
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#headerRegex"] {
-  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
-  -moz-box-flex: 1;
-}
-
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#searchBcc"] {
-  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
-  -moz-box-flex: 1;
-}
-
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#folderName"] {
-  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#textbox"); */
-  -moz-box-flex: 1;
-}
 
 
 /* JavaScript editor */
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#javascript"] {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#javascript");
-}
-
-
-/*  converted to js, BUT AIN'T WORKING YET */
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadheadtag"] {
-  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag"); */
-}
-
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadanytag"] {
-  /*  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag"); */
 }
 
