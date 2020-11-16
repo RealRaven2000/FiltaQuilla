@@ -1,32 +1,14 @@
-.ruleactiontarget[type="filtaquilla@mesquilla.com#launchFile"] {
-  -moz-box-flex: 1;
-}
+/* no more bindings! */
 
-.ruleactiontarget[type="filtaquilla@mesquilla.com#runFile"] {
-  -moz-box-flex: 1;
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#addSender"] {
-  -moz-box-flex: 1;
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#saveAttachment"] {
-  -moz-box-flex: 1;
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#detachAttachments"] {
-  -moz-box-flex: 1;
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptAction"] {
-  -moz-box-flex: 1;
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptActionBody"] {
-  -moz-box-flex: 1;
-}
-
-.ruleactiontarget[type="filtaquilla@mesquilla.com#saveMessageAsFile"] {
+.ruleactiontarget[type="filtaquilla@mesquilla.com#launchFile"],
+.ruleactiontarget[type="filtaquilla@mesquilla.com#runFile"],
+.ruleactiontarget[type="filtaquilla@mesquilla.com#addSender"],
+.ruleactiontarget[type="filtaquilla@mesquilla.com#saveAttachment"] ,
+.ruleactiontarget[type="filtaquilla@mesquilla.com#detachAttachments"] ,
+.ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptAction"] ,
+.ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptActionBody"] ,
+.ruleactiontarget[type="filtaquilla@mesquilla.com#saveMessageAsFile"] ,
+{
   -moz-box-flex: 1;
 }
 
@@ -34,7 +16,7 @@ toolbarbutton.focusbutton {
   -moz-user-focus: normal;
 }
 
-/* style the file picker so that the textbox stretches */
+/* style the file picker + textbox elements so that the textbox stretches */
 hbox.flexelementcontainer {
   display: inline-flex !important;
 }
@@ -79,10 +61,10 @@ menulist.flexinput {
 
 /*  converted to js, BUT AIN'T WORKING YET */
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadheadtag"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag");
+  /* -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag"); */
 }
 
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadanytag"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag");
+  /*  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#tag"); */
 }
 

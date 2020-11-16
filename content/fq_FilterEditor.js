@@ -440,7 +440,8 @@
             if (!el.querySelectorAll) return; // leave the anonymous function, this continues with the next forEach
             let hbox = el.querySelectorAll("hbox.search-value-custom");
             hbox.forEach ( (es) => {
-              let attType = es.getAttribute('searchAttribute'),
+              let wrapper = es.closest("search-value"),
+                  attType = es.getAttribute('searchAttribute'),
                   isMatchTextbox = false,
                   isTag = false,
                   isJS = false;
@@ -460,7 +461,7 @@
                   isJS = true;
                   break;
                 default:
-                  // irrelevant
+                  // irrelevant for FiltaQuilla
               }
               if (es.getAttribute('fw-patched')) return; //already patched this one
               let isPatched = false;
@@ -480,6 +481,15 @@
               
               if (isTag) { // bindings.xml#tag: inject a tag selection element
                 // TODO
+                function updateSearchValue(menulist) {
+                  let target = this.closest(".search-value-custom");
+                  target.setAttribute("value", menulist.value);
+                  // The AssignMeaningfulName functions uses the item's js value, so set
+                  // this to allow this to be shown correctly.
+                  target.value = menulist.getAttribute('label');
+                }
+                
+                
                 let menulist = window.MozXULElement.parseXULToFragment(`
                   <menulist flex="1" class="search-value-menulist flexinput" inherits="disabled"
                             oncommand="this.parentNode.updateSearchValue(this);">
@@ -488,7 +498,54 @@
                 `);
                 es.appendChild(menulist);
                 es.classList.add("flexelementcontainer");
+                es.updateSearchValue = updateSearchValue;
+                
                 isPatched = true;
+                let value = es.getAttribute("value");
+                
+                //overwrite the xul fragment and get tht html element instead
+                menulist = es.getElementsByTagName("menulist")[0];
+                
+                
+                let menuPopup = es.lastChild.getElementsByTagName("menupopup")[0],
+                    tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
+                    tagArray = tagService.getAllTags({}),
+                    selectedIndex = 0;
+
+                for (let i = 0; i < tagArray.length; ++i) {
+                  let taginfo = tagArray[i],
+                      newMenuItem = document.createXULElement('menuitem');
+                  newMenuItem.setAttribute('label', taginfo.tag);
+                  newMenuItem.setAttribute('value', taginfo.key);
+                  menuPopup.appendChild(newMenuItem);
+                  if (taginfo.key == value)
+                    selectedIndex = i;
+                }
+
+                menulist.selectedIndex = selectedIndex;
+                es.updateSearchValue(menulist);
+                
+                // override the opParentValue setter to detect operators which need no value
+                // this => es ??
+                wrapper.oldOpParentValueSetter = wrapper.__lookupSetter__('opParentValue');
+                wrapper.__defineSetter__('opParentValue', function(aValue) {
+                  let elements = this.getElementsByClassName('search-value-custom');
+                  if (elements.length > 0) {
+                    let element = elements[0];
+                    // hide the value if not relevant
+                    if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
+                      aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
+                      element.setAttribute('hidden', 'true');
+                    else
+                      element.removeAttribute('hidden');
+                  }
+                  return this.oldOpParentValueSetter(aValue);
+                });
+
+                let searchrow = wrapper.parentNode.parentNode,
+                    searchop = searchrow.getElementsByTagName('search-operator')[0].value;
+                wrapper.opParentValue = searchop;                
+                
               }
               
               if (isJS) { // bindings.xml#javascript: inject a JS editor. Script returns true or false
@@ -572,7 +629,9 @@
   */
   
 
-  class FiltaQuillaSearchValueTag extends MozXULElement {
+  // class FiltaQuillaSearchValueTag extends MozXULElement {
+  // ???
+  class FiltaQuillaSearchValueTag extends MozSearchValue  {
     updateSearchValue(menulist) {
       let target = this.closest(".search-value-custom");
       target.setAttribute("value", menulist.value);
