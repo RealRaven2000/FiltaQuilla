@@ -28,6 +28,27 @@ menulist.flexinput {
   flex-grow: 2 !important;
 }
 
+
+.ruleactionitem.filtaquillaAB menuitem {
+  list-style-image: url("chrome://messenger/skin/icons/address.svg");
+  opacity: 0.75 !important;
+}
+
+.ruleactionitem.filtaquillaAB menuitem.mailing-list {
+  list-style-image: url("chrome://messenger/skin/icons/ablist.svg");
+  opacity: 1.0;
+}
+
+.ruleactionitem.filtaquillaAB menuitem.is-remote {
+  list-style-image: url("chrome://messenger/skin/icons/globe.svg");
+  opacity: 1.0;
+}
+
+.ruleactionitem.filtaquillaAB menuitem.is-remote.is-secure {
+  list-style-image: url("chrome://messenger/skin/icons/globe-secure.svg");
+  opacity: 1.0;
+}
+
 /* textboxes */
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#attachmentRegex"],
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#headerRegex"],

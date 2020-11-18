@@ -252,26 +252,45 @@
         return;
       }
       this.textContent = "";
+      /*  Removed Code:
+          onchange="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value" */
       this.appendChild(MozXULElement.parseXULToFragment(`
-        <menulist flex="1" class="ruleactionitem" inherits="disabled" onchange="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value">
-          <menupopup></menupopup>
-        </menulist>
+        <hbox flex="1" class="flexelementcontainer">
+          <menulist flex="1" class="ruleactionitem filtaquillaAB flexinput" inherits="disabled">
+            <menupopup></menupopup>
+          </menulist>
+        </hbox>
       `));
       // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
-
+      this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
+      
       let menulist = this.getElementsByTagName("menulist")[0], // document.getAnonymousNodes(this)[0],
-          value = menulist.value,
           menupopup = menulist.menupopup;
-
-      // set the default to the personal address book
-      if (!value || !value.length)
-        value = "moz-abmdbdirectory://abook.mab";
+          
+      //propagate value up to container element
+      menulist.addEventListener('command', function (evt) { 
+        let me = evt.target, // use me as stand in for this
+            p = me.parentElement;
+        // stop propagation on container
+        while (p && !p.classList.contains('flexelementcontainer')) {
+          p = p.parentNode;
+        }
+        if (p) {
+          p.value=me.value; 
+          p.setAttribute('value', me.value); 
+        }
+      });
 
       // recursively add all address books and email lists
       let abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager);
       this.addDirectories(abManager.directories, menupopup);
 
       updateParentNode(this.closest(".ruleaction"));
+      let value = typeof(this.hbox.value) != 'undefined' ? this.hbox.value : ""
+      // set the default to the personal address book
+      if (!value || !value.length)
+        value = "moz-abmdbdirectory://abook.mab";    
+      
       // scan all menupopup items to find the uri for the selection
       let valueElements = menupopup.getElementsByAttribute('value', value);
       if (valueElements && valueElements.length)
@@ -287,12 +306,13 @@
         let dir = aDirEnum.getNext();
         if (dir instanceof Ci.nsIAbDirectory) {
           // get children
-          let newMenuItem = document.createElement('menuitem');
-          let displayLabel = dir.dirName;
-          if (dir.isMailList)
-            displayLabel = "  " + displayLabel;
+          let newMenuItem = document.createXULElement('menuitem'),
+              displayLabel = dir.dirName;
           newMenuItem.setAttribute('label', displayLabel);
           newMenuItem.setAttribute('value', dir.URI);
+          newMenuItem.classList.add('menuitem-iconic');
+          if (dir.isMailList)
+            newMenuItem.classList.add('mailing-list');
           aMenupopup.appendChild(newMenuItem);
           // recursive add of child mailing lists
           let childNodes = dir.childNodes;

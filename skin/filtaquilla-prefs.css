@@ -76,13 +76,15 @@
   background-image: url("resource://filtaquilla-skin/fugue-question-disabled.png");
 }
 
-.title {
+hbox.title {
+  display: inline-flex; /* make child elements flex */
   font-size: 20px;
   font-weight: 500;
 }
 
-.title spacer {
-  width: 1em;
+hbox.title spacer {
+  display: inline-block;
+  flex-grow: 5;
 }
 
 #fq-options-header-version {
