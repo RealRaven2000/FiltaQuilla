@@ -74,9 +74,12 @@
   }
   catch (ex) { util.logDebug("calling VersionProxy failed\n" + ex.message); }
 
+  var { MailServices } = ChromeUtils.import(
+    "resource:///modules/MailServices.jsm"
+  );
   const bundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService),
         filtaquillaStrings = bundleService.createBundle("chrome://filtaquilla/locale/filtaquilla.properties"),
-        headerParser = Cc["@mozilla.org/messenger/headerparser;1"].getService(Ci.nsIMsgHeaderParser),
+        headerParser = MailServices.headerParser,
         tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
         abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager),
         // cache the values of commonly used search operators
@@ -565,6 +568,30 @@
       id: "filtaquilla@mesquilla.com#addSender",
       name: self.strings.GetStringFromName("filtaquilla.addSender.name"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        
+        // Helper function, removed in Tb78
+        function parseHeadersWithArray(aHeader, aAddrs, aNames, aFullNames) {
+          let addrs = [],
+            names = [],
+            fullNames = [];
+          let allAddresses = headerParser.parseEncodedHeader(aHeader, undefined, false);
+
+          // Don't index the dummy empty address.
+          if (aHeader.trim() == "") {
+            allAddresses = [];
+          }
+          for (let address of allAddresses) {
+            addrs.push(address.email);
+            names.push(address.name || null);
+            fullNames.push(address.toString());
+          }
+
+          aAddrs.value = addrs;
+          aNames.value = names;
+          aFullNames.value = fullNames;
+          return allAddresses.length;
+        }
+        
         let dir = abManager.getDirectory(aActionValue);
         if (!dir) {
           Cu.reportError("During filter action, can't find directory: " + aActionValue);
@@ -575,7 +602,7 @@
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
           let addresses = {}, names = {};
-          headerParser.parseHeadersWithArray(hdr.mime2DecodedAuthor, addresses, names, {});
+          parseHeadersWithArray(hdr.mime2DecodedAuthor, addresses, names, {});
           names = names.value;
           addresses = addresses.value;
           if (addresses.length)
