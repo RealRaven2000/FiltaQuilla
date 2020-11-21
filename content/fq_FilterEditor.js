@@ -269,7 +269,7 @@
           
       //propagate value up to container element
       menulist.addEventListener('command', function (evt) { 
-        let me = evt.target, // use me as stand in for this
+        let me = evt.target, // use me as stand in for 'this' - the menulist item
             p = me.parentElement;
         // stop propagation on container
         while (p && !p.classList.contains('flexelementcontainer')) {
@@ -446,22 +446,22 @@
   
   
   function patchFiltaQuillaTextbox(es) {
-    if (es.getAttribute('fw-patched')) return true; // element is already patched
+    if (es.getAttribute('fq-patched')) return true; // element is already patched
     // patch!
     try {
       let textbox = window.MozXULElement.parseXULToFragment(
-        ` <html:input class="search-value-textbox flexinput" inherits="disabled" 
+        ` <html:input class="search-value-textbox flexinput fq-textbox" inherits="disabled" 
           value = "` + es.getAttribute("value") + `"
           onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value"> 
           </html:input>`
       );
       es.appendChild(textbox);
       es.classList.add("flexelementcontainer");
-      es.setAttribute('fw-patched', "true");
+      es.setAttribute('fq-patched', "true");
       return true;
     }
     catch(ex) {
-      console.logException(ex);
+      console.log(ex);
       return false;  
     }
   }
@@ -469,21 +469,31 @@
   function patchFiltaQuillaTagSelector(es) {
     function updateSearchValue(menulist) {
       let target = this.closest(".search-value-custom");
-      target.setAttribute("value", menulist.value);
-      // The AssignMeaningfulName functions uses the item's js value, so set
-      // this to allow this to be shown correctly.
-      target.value = menulist.getAttribute('label');
+      if (target) {
+        target.setAttribute("value", menulist.value);
+        // The AssignMeaningfulName functions uses the item's js value, so set
+        // this to allow this to be shown correctly.
+        target.value = menulist.getAttribute('label');
+      }
+      else {
+        console.log("cannot update search value for menulist:")
+        console.log(menulist);
+      }
     }
     
-    if (es.getAttribute('fw-patched')) return true; // element is already patched
+    console.log("patchFiltaQuillaTagSelector()");
+    
+    if (es.getAttribute('fq-patched')) return true; // element is already patched
     try {
       let wrapper = es.closest("search-value"),
           menulistFragment = window.MozXULElement.parseXULToFragment(`
-        <menulist flex="1" class="search-value-menulist flexinput" inherits="disabled"
+        <menulist flex="1" class="search-value-menulist flexinput fq-tag" inherits="disabled"
                   oncommand="this.parentNode.updateSearchValue(this);">
           <menupopup class="search-value-popup"></menupopup>
         </menulist>
       `);
+      // dropdown selected, then we haven't got the container <hbox class="search-value-custom" />
+
       es.appendChild(menulistFragment);
       es.classList.add("flexelementcontainer");
       es.updateSearchValue = updateSearchValue;
@@ -530,11 +540,11 @@
       let searchrow = wrapper.parentNode.parentNode,
           searchop = searchrow.getElementsByTagName('search-operator')[0].value;
       wrapper.opParentValue = searchop;
-      es.setAttribute('fw-patched', "true");
+      es.setAttribute('fq-patched', "true");
       return true;
     }
     catch(ex) {
-      console.logException(ex);
+      console.log(ex);
       return false;  
     }
        
@@ -543,12 +553,10 @@
   
   function patchFiltaQuillaJavaScriptCondition(es) {
     // bindings.xml#javascript: inject a JS editor. Script returns true or false
+    // add a class fq-js to the container element!
     return false;
   }
   
-  // this works when the element is added by the Filter Editor, but not 
-  // if we change an existing row to this type...
-  // for this, let's watch changes to search-menulist
   function callbackFiltaquillaSearchCondition(mutationList, observer) {
     mutationList.forEach( (mutation) => {
       switch(mutation.type) {
@@ -564,6 +572,11 @@
             hbox.forEach ( (es) => {
               let attType = es.getAttribute('searchAttribute'),
                   isPatched = false;
+              if (!attType.startsWith("filtaquilla@")) return;
+              
+              util.logDebug("Mutation observer (childList), check for patching:");
+              console.log(es);
+              
               switch(attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
@@ -590,16 +603,33 @@
             });
           });
           break;
+          case "attributes":
+          {
+            let es = mutation.target;
+            if (es.classList.contains("search-value-custom")) {
+              let attType = es.getAttribute('searchAttribute'),
+                  isPatched = false;
+              if (!attType.startsWith("filtaquilla@")) return;
+              
+              util.logDebug("Mutation observer (attribute), check for patching:");
+              console.log(es);
+            }
+          }
+          break;          
       }
     });
   }
   
   
+  // watch out for custom conditions being added to the top list.
+  // this works when the element is added by the Filter Editor, but not 
+  // if we change an existing row to this type...
+  // for this, let's watch changes to search-menulist
   const fq_observer = new MutationObserver(callbackFiltaquillaSearchCondition);
   
   const fq_observerOptions = {
     childList: true,
-    attributes: false,
+    attributes: true,
     // Omit (or set to false) to observe only changes to the parent node
     subtree: true
   }
@@ -607,55 +637,83 @@
   let termList = window.document.querySelector('#searchTermList')
   fq_observer.observe(termList, fq_observerOptions);
   
-  /* OBSOLETE  
-  if (!customElements.get("filtaquilla-search-value-textbox")) {
-    // #textbox binding  /  MozXULElement
-    class FiltaquillaTextbox extends MozXULElement {
-      updateSearchValue(menulist) {
-        let target = this.closest(".search-value-custom");
-        target.setAttribute("value", menulist.value);
-        target.value = menulist.getAttribute('label');
-      }
-      
-      connectedCallback() {
-        if (this.delayConnectedCallback()) {
-          return;
-        }
-        this.textContent = "";
-        this.appendChild(MozXULElement.parseXULToFragment(`
-          <html:input flex="1" class="search-value-textbox" inherits="disabled" onchange="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value"></html:input>
-        `));
-        // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
-
-        let value = this.getAttribute("value");
-        let textbox = document.getAnonymousNodes(this)[0];
-        textbox.value = value;
-        this.value = value;
-        // override the opParentValue setter to detect ops needing no value
-        let parent = this.parentNode;
-        parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
-        parent.__defineSetter__('opParentValue', function(aValue) {
-          let element = this.querySelectorAll(".search-value-custom"); // document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
-          if (element) {
-            // hide the value if not relevant
-            if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
-              aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
-              element.setAttribute('hidden', 'true');
-            else
-              element.removeAttribute('hidden');
+  function selectCustomCondition(event) {
+    debugger;
+    let target = event.target,
+        attType = event.originalTarget.getAttribute('value'),
+        p = target.parentElement; // find the richlistitem
+    while (p && p.tagName!='richlistitem') {
+      p = p.parentNode;
+    }
+    console.log("selectCustomCondition");
+    if (p) { 
+      // found the richtlistitem, now we need to find the third child element(search value)
+      // <search-value> element
+      let searchValueItem = p.getElementsByTagName('search-value')[0],
+          isPatched = false;
+      if (searchValueItem) {
+  
+        let wrapper = searchValueItem; // es.closest("search-value"); // test code!
+        
+        let ce = wrapper.querySelectorAll('.search-value-custom'),
+            foundEL = null; // does this already exist?
+        ce.forEach( (el) => {
+          // find out whether type still matches.
+          if (["filtaquilla@mesquilla.com#threadheadtag","filtaquilla@mesquilla.com#threadanytag"].includes(attType)) {
+            // it is a tag, but is it?
+            if (el.firstChild.classList.contains("fq-tag"))
+              foundEL = el; // reuse!
           }
-          this.oldOpParentValueSetter(aValue);
-        });
+          else if (["filtaquilla@mesquilla.com#subjectRegex",
+               "filtaquilla@mesquilla.com#attachmentRegex",
+               "filtaquilla@mesquilla.com#headerRegex",
+               "filtaquilla@mesquilla.com#searchBcc",
+               "filtaquilla@mesquilla.com#folderName"].includes(attType)) {
+            if (el.firstChild.classList.contains("fq-textbox"))
+              foundEL = el; // reuse!
+          }
+          if (foundEL) {
+            //
+            console.log("reusing custom element - " + attType);
+          }
 
+        });
+        if (!foundEL)  { // unpatch
+          debugger;                  // we need to create a new search-value-custom item?
+          // possible delete an existing one beforehand?
+          if (ce.length) {
+            // delete existing element
+            ce[0].removeChild(ce[0].firstChild);
+          }
+          wrapper.removeAttribute("fq-patched");
+        }
+      }        
+        
+      switch(attType) {
+        case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
+        case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+        case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
+        case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
+        case "filtaquilla@mesquilla.com#folderName" :      
+          isPatched = patchFiltaQuillaTextbox(searchValueItem);
+          break;
+        case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
+        case "filtaquilla@mesquilla.com#threadanytag":
+          isPatched = patchFiltaQuillaTagSelector(searchValueItem);
+          break;
+        case "filtaquilla@mesquilla.com#javascript":
+          isPatched = patchFiltaQuillaJavaScriptCondition(searchValueItem);
+          break;
+        default:
+          // irrelevant for FiltaQuilla
+      }
+      if(isPatched) {
+        console.log(searchValueItem);
       }
     }
-
-    defineIfNotPresent("filtaquilla-search-value-textbox", FiltaquillaTextbox); 
-    MozXULElement.implementCustomInterface(FiltaquillaTextbox, [
-      Ci.nsIObserver,
-    ]); 
+    
   }
-  */
+  // termList.addEventListener("command", selectCustomCondition);
   
 
   // class FiltaQuillaSearchValueTag extends MozXULElement {
