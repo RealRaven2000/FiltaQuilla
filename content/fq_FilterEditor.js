@@ -610,10 +610,36 @@
               let attType = es.getAttribute('searchAttribute'),
                   isPatched = false;
               if (!attType.startsWith("filtaquilla@")) return;
+              if (es.getAttribute('fq-patched')) return;
               
               util.logDebug("Mutation observer (attribute), check for patching:");
               console.log(es);
+              
+              switch(attType) {
+                case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
+                case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+                case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
+                case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
+                case "filtaquilla@mesquilla.com#folderName" :      
+                  isPatched = patchFiltaQuillaTextbox(es);
+                  break;
+                case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
+                case "filtaquilla@mesquilla.com#threadanytag":
+                  isPatched = patchFiltaQuillaTagSelector(es)
+                  break;
+                case "filtaquilla@mesquilla.com#javascript":
+                  isPatched = patchFiltaQuillaJavaScriptCondition(es)
+                  break;
+                default:
+                  // irrelevant for FiltaQuilla
+              }
+              if (isPatched) {
+                console.log("mutation observer patched:");
+                console.log(es);
+              }               
             }
+            
+           
           }
           break;          
       }
