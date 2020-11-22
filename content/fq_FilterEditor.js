@@ -482,7 +482,7 @@
       }
     }
     
-    console.log("patchFiltaQuillaTagSelector()");
+    util.logDebug("patchFiltaQuillaTagSelector()");
     
     if (es.firstChild && es.firstChild.classList.contains("fq-tag")) return true;
     if (es.firstChild) es.removeChild(es.firstChild);
@@ -576,8 +576,7 @@
                   isPatched = false;
               if (!attType.startsWith("filtaquilla@")) return;
               
-              util.logDebug("Mutation observer (childList), check for patching:");
-              console.log(es);
+              util.logDebug("Mutation observer (childList), check for patching: " + es);
               
               switch(attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
@@ -598,8 +597,7 @@
                   // irrelevant for FiltaQuilla
               }
               if (isPatched) {
-                console.log("mutation observer patched:");
-                console.log(es);
+                console.log("mutation observer patched: " + es);
               }
               
             });
@@ -615,8 +613,8 @@
               if (!attType.startsWith("filtaquilla@")) return;
               
               
-              util.logDebug("Mutation observer (attribute), check for patching:");
-              console.log(es);
+              util.logDebug("Mutation observer (attribute), check for patching: " + es);
+              // console.log(es);
               
               switch(attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
@@ -645,12 +643,10 @@
                   // irrelevant for FiltaQuilla
               }
               if (isPatched) {
-                console.log("mutation observer patched:");
-                console.log(es);
+                console.log("mutation observer patched: "  + es);
+                // console.log(es);
               }               
             }
-            
-           
           }
           break;          
       }
@@ -682,7 +678,7 @@
     while (p && p.tagName!='richlistitem') {
       p = p.parentNode;
     }
-    console.log("selectCustomCondition");
+    util.logDebug("selectCustomCondition");
     if (p) { 
       // found the richtlistitem, now we need to find the third child element(search value)
       // <search-value> element
@@ -711,7 +707,7 @@
           }
           if (foundEL) {
             //
-            console.log("reusing custom element - " + attType);
+            util.logDebug("reusing custom element - " + attType);
           }
 
         });
@@ -745,7 +741,7 @@
           // irrelevant for FiltaQuilla
       }
       if(isPatched) {
-        console.log(searchValueItem);
+        util.logDebug(searchValueItem);
       }
     }
     
