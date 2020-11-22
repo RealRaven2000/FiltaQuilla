@@ -446,7 +446,8 @@
   
   
   function patchFiltaQuillaTextbox(es) {
-    if (es.getAttribute('fq-patched')) return true; // element is already patched
+    if (es.firstChild && es.firstChild.classList.contains("fq-textbox")) return true;
+    if (es.firstChild) es.removeChild(es.firstChild);
     // patch!
     try {
       let textbox = window.MozXULElement.parseXULToFragment(
@@ -483,7 +484,8 @@
     
     console.log("patchFiltaQuillaTagSelector()");
     
-    if (es.getAttribute('fq-patched')) return true; // element is already patched
+    if (es.firstChild && es.firstChild.classList.contains("fq-tag")) return true;
+    if (es.firstChild) es.removeChild(es.firstChild);
     try {
       let wrapper = es.closest("search-value"),
           menulistFragment = window.MozXULElement.parseXULToFragment(`
@@ -609,8 +611,9 @@
             if (es.classList.contains("search-value-custom")) {
               let attType = es.getAttribute('searchAttribute'),
                   isPatched = false;
+              util.logDebug("attribute changed: " + attType);
               if (!attType.startsWith("filtaquilla@")) return;
-              if (es.getAttribute('fq-patched')) return;
+              
               
               util.logDebug("Mutation observer (attribute), check for patching:");
               console.log(es);
@@ -621,10 +624,18 @@
                 case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
                 case "filtaquilla@mesquilla.com#folderName" :      
+                  if (es.firstChild) {
+                    if (es.firstChild.classList.contains("fq-textbox")) return;
+                    es.removeChild(es.firstChild);
+                  }
                   isPatched = patchFiltaQuillaTextbox(es);
                   break;
                 case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
                 case "filtaquilla@mesquilla.com#threadanytag":
+                  if (es.firstChild) {
+                    if (es.firstChild.classList.contains("fq-tag")) return;
+                    es.removeChild(es.firstChild);
+                  }
                   isPatched = patchFiltaQuillaTagSelector(es)
                   break;
                 case "filtaquilla@mesquilla.com#javascript":
