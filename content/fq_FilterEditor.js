@@ -89,8 +89,7 @@
   class FiltaQuillaRuleactiontargetBase extends MozXULElement { }
 
 
-  /* CODE CONVERTED USING https://bgrins.github.io/xbl-analysis/converter/ */
-
+  /* BINDINGS CODE CONVERTED USING https://bgrins.github.io/xbl-analysis/converter/ */
   /* This Source Code Form is subject to the terms of the Mozilla Public
    * License, v. 2.0. If a copy of the MPL was not distributed with this
    * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -325,7 +324,6 @@
 
   defineIfNotPresent("filtaquilla-ruleactiontarget-abpicker", FiltaQuillaRuleactiontargetAbPicker);
 
-
   class FiltaQuillaRuleactiontargetDirectoryPicker extends FiltaQuillaRuleactiontargetBase {
     connectedCallback() {
       if (this.delayConnectedCallback()) {
@@ -409,8 +407,7 @@
       this.textbox = this.hbox.firstChild;              // document.getAnonymousNodes(this)[0].childNodes[0];
       this.toolbarbutton = this.getElementsByTagName("toolbarbutton")[0]; // document.getAnonymousNodes(this)[0].childNodes[1];
       this.toolbarbutton.addEventListener("command", this.onCommand, false);
-      this.toolbarbutton.setAttribute('tooltiptext',
-        util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
+      this.toolbarbutton.setAttribute('tooltiptext', util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
 
       updateParentNode(this.closest(".ruleaction"));
       this.textbox.value = this.hbox.value;
@@ -444,7 +441,43 @@
     return elementName ? document.createXULElement(elementName) : null;
   }
   
-  
+  function patchFiltaQuillaJavaScriptCondition(es) {
+    // bindings.xml#javascript: inject a JS editor. Script returns true or false
+    // add a class fq-js to the container element!
+    if (es.firstChild && es.firstChild.classList.contains("fq-javascript")) return true;
+    if (es.firstChild) es.removeChild(es.firstChild);
+    
+    
+    try {
+      es.onCommand = function() {
+        let textbox = es.children[1]; // document.getAnonymousNodes(es)[1];
+        window.openDialog("chrome://filtaquilla/content/jsEditor.xhtml", "", "chrome,dialog,centerscreen,modal,resizable=yes", textbox);
+      }
+      
+      
+      es.textContent = "";
+      es.appendChild(MozXULElement.parseXULToFragment(`
+        <toolbarbutton image="resource://filtaquilla-skin/script_edit.png" class="focusbutton fq-javascript"></toolbarbutton>
+        <html:input flex="1" class="search-value-textbox flexinput" inherits="disabled" newlines="pasteintact" 
+        value = "` + es.getAttribute("value") + `"
+         onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;"></html:input>
+      `));
+      // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
+
+      let hbox = es, // es.parentNode.getElementsByTagName("hbox")[0], // document.getAnonymousNodes(this)[0];
+          textbox = hbox.children[1], // document.getAnonymousNodes(es)[1];
+          toolbarbutton = hbox.children[0]; // document.getAnonymousNodes(es)[0];
+      toolbarbutton.addEventListener("command", es.onCommand, false);
+      toolbarbutton.setAttribute('tooltiptext', util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
+      hbox.classList.add("flexelementcontainer");
+      return true;
+    }
+    catch(ex) {
+      console.log(ex);
+      return false;  
+    }
+  }
+   
   function patchFiltaQuillaTextbox(es) {
     if (es.firstChild && es.firstChild.classList.contains("fq-textbox")) return true;
     if (es.firstChild) es.removeChild(es.firstChild);
@@ -453,7 +486,7 @@
       let textbox = window.MozXULElement.parseXULToFragment(
         ` <html:input class="search-value-textbox flexinput fq-textbox" inherits="disabled" 
           value = "` + es.getAttribute("value") + `"
-          onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value"> 
+          onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;"> 
           </html:input>`
       );
       es.appendChild(textbox);
@@ -553,12 +586,6 @@
   }
   
   
-  function patchFiltaQuillaJavaScriptCondition(es) {
-    // bindings.xml#javascript: inject a JS editor. Script returns true or false
-    // add a class fq-js to the container element!
-    return false;
-  }
-  
   function callbackFiltaquillaSearchCondition(mutationList, observer) {
     mutationList.forEach( (mutation) => {
       switch(mutation.type) {
@@ -637,6 +664,10 @@
                   isPatched = patchFiltaQuillaTagSelector(es)
                   break;
                 case "filtaquilla@mesquilla.com#javascript":
+                  if (es.firstChild) {
+                    if (es.firstChild.classList.contains("fq-javascript")) return;
+                    es.removeChild(es.firstChild);
+                  }
                   isPatched = patchFiltaQuillaJavaScriptCondition(es)
                   break;
                 default:
@@ -655,16 +686,13 @@
   
   
   // watch out for custom conditions being added to the top list.
-  // this works when the element is added by the Filter Editor, but not 
-  // if we change an existing row to this type...
-  // for this, let's watch changes to search-menulist
+  // or the searchAttribute changing to something that matches
   const fq_observer = new MutationObserver(callbackFiltaquillaSearchCondition);
   
   const fq_observerOptions = {
     childList: true,
     attributes: true,
-    // Omit (or set to false) to observe only changes to the parent node
-    subtree: true
+    subtree: true // Omit (or set to false) to observe only changes to the parent node
   }
   
   let termList = window.document.querySelector('#searchTermList')
@@ -746,169 +774,11 @@
     }
     
   }
-  // termList.addEventListener("command", selectCustomCondition);
-  
-
-  // class FiltaQuillaSearchValueTag extends MozXULElement {
-  // ???
-/* OBSOLETE !*/
-if (false) {
-  class FiltaQuillaSearchValueTag extends MozSearchValue  {
-    updateSearchValue(menulist) {
-      let target = this.closest(".search-value-custom");
-      target.setAttribute("value", menulist.value);
-      target.value = menulist.getAttribute('label');
-    }
-
-    connectedCallback() {
-      if (this.delayConnectedCallback()) {
-        return;
-      }
-      this.textContent = "";
-      this.appendChild(MozXULElement.parseXULToFragment(`
-        <menulist flex="1" class="search-value-menulist" inherits="disabled"
-                           oncommand="this.parentNode.updateSearchValue(this);">
-          <menupopup class="search-value-popup"></menupopup>
-        </menulist>
-      `));
-      // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
-
-      let target = this.closest(".search-value-custom"),
-          wrapper = target.closest("search-value");
-      let value = target.getAttribute("value"),
-          menulist = this.getElementsByTagName("menulist")[0];
-
-      let menuPopup = menulist.getElementsByTagName("menupopup")[0],
-          tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
-          tagArray = tagService.getAllTags({}),
-          selectedIndex = 0;
-
-      for (let i = 0; i < tagArray.length; ++i) {
-        let taginfo = tagArray[i],
-            newMenuItem = document.createXULElement('menuitem');
-        newMenuItem.setAttribute('label', taginfo.tag);
-        newMenuItem.setAttribute('value', taginfo.key);
-        menuPopup.appendChild(newMenuItem);
-        if (taginfo.key == value)
-          selectedIndex = i;
-      }
-
-      menulist.selectedIndex = selectedIndex;
-      this.updateSearchValue(menulist);
-
-      // override the opParentValue setter to detect ops needing no value
-      wrapper.oldOpParentValueSetter = wrapper.__lookupSetter__('opParentValue');
-      wrapper.__defineSetter__('opParentValue', function(aValue) {
-        let elements = this.getElementsByClassName('search-value-custom');
-        if (elements.length > 0) {
-          let element = elements[0];
-          // hide the value if not relevant
-          if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
-            aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
-            element.setAttribute('hidden', 'true');
-          else
-            element.removeAttribute('hidden');
-        }
-        return this.oldOpParentValueSetter(aValue);
-      });
-
-      let searchrow = wrapper.parentNode.parentNode;
-      let searchop = searchrow.getElementsByTagName('search-operator')[0].value;
-      wrapper.opParentValue = searchop;
-
-    }
-  }
-
-  defineIfNotPresent("filtaquilla-search-value-tag", FiltaQuillaSearchValueTag);
-} /* OBSOLETE !*/
-
-  
 
   util.logDebug("fq_FilterEditor.js - Finished.");
 
-
 } // javascript action
 
-// // XXX: As long as CSS "-moz-binding" works, the following code doesn't have
-// //      to be used, but once mozilla disables bindings at all, the following
-// //      custom elements have to be introduced somehow to filter editor (at
-// //      the moment, I have no idea of how to do it).
-//
-///* This Source Code Form is subject to the terms of the Mozilla Public
-//  * License, v. 2.0. If a copy of the MPL was not distributed with this
-//  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-//
-//"use strict";
-//
-//// This is loaded into all XUL windows. Wrap in a block to prevent
-//// leaking to window scope.
-//{
-//
-//    class FiltaQuillaSearchValueTextbox extends MozXULElement {
-//      connectedCallback() {
-//        if (this.delayConnectedCallback()) {
-//          return;
-//        }
-//        this.textContent = "";
-//        this.appendChild(MozXULElement.parseXULToFragment(`
-//          <textbox flex="1" class="search-value-textbox" inherits="disabled" onchange="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value"></textbox>
-//        `));
-//        // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
-//
-//        let value = this.getAttribute("value");
-//        let textbox = document.getAnonymousNodes(this)[0];
-//        textbox.value = value;
-//        this.value = value;
-//        // override the opParentValue setter to detect ops needing no value
-//        let parent = this.parentNode;
-//        parent.oldOpParentValueSetter = parent.__lookupSetter__('opParentValue');
-//        parent.__defineSetter__('opParentValue', function(aValue) {
-//          let element = document.getAnonymousElementByAttribute(this, 'class', 'search-value-custom');
-//          if (element) {
-//            // hide the value if not relevant
-//            if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
-//              aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
-//              element.setAttribute('hidden', 'true');
-//            else
-//              element.removeAttribute('hidden');
-//          }
-//          this.oldOpParentValueSetter(aValue);
-//        });
-//
-//      }
-//    }
-//
-//    customElements.define("filtaquilla-search-value-textbox", FiltaQuillaSearchValueTextbox);
-//
-//    class FiltaQuillaSearchValueJavascript extends MozXULElement {
-//      connectedCallback() {
-//        if (this.delayConnectedCallback()) {
-//          return;
-//        }
-//        this.textContent = "";
-//        this.appendChild(MozXULElement.parseXULToFragment(`
-//          <toolbarbutton image="resource://filtaquilla-skin/script_edit.png" class="focusbutton" tooltiptext="FROM-DTD-editJavascript"></toolbarbutton>
-//          <textbox flex="1" class="search-value-textbox" inherits="disabled" newlines="pasteintact" onchange="this.parentNode.setAttribute('value', this.value);"></textbox>
-//        `));
-//        // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
-//
-//        let textbox = document.getAnonymousNodes(this)[1];
-//        let toolbarbutton = document.getAnonymousNodes(this)[0];
-//        textbox.value = this.getAttribute("value");
-//        toolbarbutton.addEventListener("command", this.onCommand, false);
-//
-//      }
-//
-//      onCommand() {
-//        let textbox = document.getAnonymousNodes(document.getBindingParent(this))[1];
-//        window.openDialog("chrome://filtaquilla/content/jsEditor.xul", "",
-//          "chrome, dialog, modal, resizable=yes", textbox);
-//      }
-//    }
-//
-//    customElements.define("filtaquilla-search-value-javascript", FiltaQuillaSearchValueJavascript);
-//
-//}
-//
+
 
 // vim: set expandtab tabstop=2 shiftwidth=2:
