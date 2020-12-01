@@ -297,7 +297,7 @@
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
           _aListener = aListener;
           var srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
-          _dstFolder = MailUtils.getFolderForURI(aActionValue, false);
+          _dstFolder = MailUtils.getExistingFolder(aActionValue, false);
           // store the messages Ids to use post-copy
           _messageIds = [];
           for (var i = 0; i < aMsgHdrs.length; i++)
@@ -312,7 +312,7 @@
         },
         isValidForType: function(type, scope) { return type == Ci.nsMsgFilterType.Manual && copyAsReadEnabled;},
         validateActionValue: function(aActionValue, aFilterFolder, type) {
-          var msgFolder = MailUtils.getFolderForURI(aActionValue, false);
+          var msgFolder = MailUtils.getExistingFolder(aActionValue, false);
           if (!msgFolder || !msgFolder.canFileMessages)
           {
             return self.strings.GetStringFromName("filtaquilla.mustSelectFolder");
@@ -535,7 +535,7 @@
             let uri = hdr.folder.generateMessageURI(hdr.messageKey);
             Services.console.logStringMessage("Queue filter request to print message: " + hdr.subject);
             let printDialog =
-              window.openDialog("chrome://messenger/content/msgPrintEngine.xul", "",
+              window.openDialog("chrome://messenger/content/msgPrintEngine.xhtml", "",
                                 "chrome,dialog=no,all,centerscreen",
                                 1, [uri], statusFeedback,
                                 false, Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG, window);
@@ -831,11 +831,14 @@
       name: self.strings.GetStringFromName("filtaquilla.moveLater.name"),
       apply: function(aMsgHdrs, aActionValue, copyListener, filterType, msgWindow) {
         let srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
-        let dstFolder = MailUtils.getFolderForURI(aActionValue, false);
+        let dstFolder = MailUtils.getExistingFolder(aActionValue, false);
         // store the messages uris to use later
         let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
         let currentIndex = moveLaterIndex++;
         moveLaterTimers[currentIndex] = timer;
+        // the message headers array gets cleared by Thunderbird 78! we need to save it elswhere
+        
+        
         let callback = new MoveLaterNotify(aMsgHdrs, srcFolder, dstFolder, currentIndex);
         timer.initWithCallback(callback, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
       },
@@ -1565,9 +1568,14 @@
   };
 
   // local private functions
-
+  // constructor for the MoveLaterNotify object
   function MoveLaterNotify(aMessages, aSource, aDestination, aTimerIndex)  {
-    this.messages = aMessages;
+    // thunderbird 78 tidies up the aMessages array during apply, so we need to make a copy:
+    this.messages = Cc["@mozilla.org/array;1"].createInstance(Ci.nsIMutableArray)
+    // clone the messages array
+    for (let i=0; i<aMessages.length; i++) {
+      this.messages.appendElement(aMessages.queryElementAt(i, Ci.nsIMsgDBHdr), false);
+    }
     this.source = aSource;
     this.destination = aDestination;
     this.timerIndex = aTimerIndex;
@@ -1578,6 +1586,7 @@
     // Check the moveLater values for the headers. If this is set by a routine
     //  with a reliable finish listener, then we will wait until that is done to
     //  move. For others, we move on the first callback after the delay.
+    const isMove = true, allowUndo = false;
     let moveLaterCount = -1;
     this.recallCount--;
     for (let i = 0; i < this.messages.length; i++) {
@@ -1588,14 +1597,18 @@
           moveLaterCount = localCount;
       } catch(e) {}
     }
-    //dl('moveLaterCount is ' + moveLaterCount + ' recallCount is ' + this.recallCount);
     if ( (moveLaterCount <= 0) || (this.recallCount <= 0)) { // execute move    
       const copyService = Cc["@mozilla.org/messenger/messagecopyservice;1"]
                             .getService(Ci.nsIMsgCopyService);
-      copyService.CopyMessages(this.source, this.messages,
-                               this.destination, true,
-                               null, null, false);
+      copyService.CopyMessages(this.source, 
+                               this.messages,
+                               this.destination, 
+                               isMove,
+                               null, 
+                               null, 
+                               allowUndo);
       moveLaterTimers[this.timerIndex] = null;
+      this.messages.clear(); // release all objects, just in case.
     }
     else // reschedule another check
       moveLaterTimers[this.timerIndex].initWithCallback(this, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);

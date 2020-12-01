@@ -425,22 +425,7 @@
 
 // ***********  CONDITIONS  ***********
 
-  
-  // I think for search custom elements, we need to patch MozSearchAttribute?
-  function getAttributeChildNode(type) {
-    const elementMapping = {
-      // search values - custom  elements
-      "filtaquilla@mesquilla.com#subjectRegex" : "filtaquilla-search-value-textbox",
-      "filtaquilla@mesquilla.com#attachmentRegex" : "filtaquilla-search-value-textbox",
-      "filtaquilla@mesquilla.com#headerRegex" : "filtaquilla-search-value-textbox",
-      "filtaquilla@mesquilla.com#searchBcc" : "filtaquilla-search-value-textbox",
-      "filtaquilla@mesquilla.com#folderName" : "filtaquilla-search-value-textbox",
-      
-    };
-    const elementName = elementMapping[type];
-    return elementName ? document.createXULElement(elementName) : null;
-  }
-  
+    
   function patchFiltaQuillaJavaScriptCondition(es) {
     // bindings.xml#javascript: inject a JS editor. Script returns true or false
     // add a class fq-js to the container element!

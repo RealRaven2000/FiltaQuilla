@@ -62,8 +62,9 @@ menulist.flexinput {
 
 
 
-/* JavaScript editor */
+/* JavaScript editor
+  OBSOLETE!
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#javascript"] {
   -moz-binding: url("chrome://filtaquilla/content/bindings.xml#javascript");
 }
-
+ */

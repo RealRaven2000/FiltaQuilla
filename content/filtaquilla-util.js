@@ -331,7 +331,7 @@ FiltaQuilla.Util = {
   showAboutConfig: function(clickedElement, filter, readOnly) {
     const name = "Preferences:ConfigManager",
 		      util = FiltaQuilla.Util;
-    let uri = "chrome://global/content/config.xul";
+    let uri = "chrome://global/content/config.xhtml";
 		if (util.Application)
 			uri += "?debug";
 
