@@ -1,3 +1,21 @@
+
+
+.ruleactionitem.filtaquillaAB menuitem {
+  list-style-image: url("chrome://messenger/skin/addressbook/icons/addrbook.png");
+  opacity: 0.85;
+}
+
+.ruleactionitem.filtaquillaAB menuitem.mailing-list {
+  list-style-image: url("chrome://messenger/skin/addressbook/icons/ablist.png");
+}
+
+.ruleactionitem.filtaquillaAB menuitem.is-remote.is-secure {
+  list-style-image: url("chrome://messenger/skin/addressbook/icons/secure-remote-addrbook.png");
+}
+
+
+
+
 .ruleactiontarget[type="filtaquilla@mesquilla.com#launchFile"] {
   -moz-box-flex: 1;
 }

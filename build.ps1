@@ -36,6 +36,8 @@ If (!([System.IO.File]::Exists($build_manifest))) {
 $versionLineRe = '^ *"version" *: *"([0-9\.]+(-?\w+)?)" *, *$';
 $line = (Get-Content -en UTF8 $manifest_json) | Select-String -Pattern $versionLineRe
 
+
+
 If ($line) {
   $version = $line.Matches.Groups[1].Value
 } Else {
@@ -50,6 +52,7 @@ If ($IncrementRevision.IsPresent) {
 
   # increment revision number in manifest.json
   $preVersionRe = '^[0-9\.]+-?pre(\d+)$'
+  
   $preMatch = ([regex]::Match($version, $preVersionRe))
   if ($preMatch) {
     $oldRev = [int]($preMatch.Groups[1].Value)

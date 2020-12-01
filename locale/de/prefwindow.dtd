@@ -24,7 +24,7 @@
 <!ENTITY checkAddSenderEnabled.accesskey "L">
 <!ENTITY checkMarkUnreadEnabled.label "Als ungelesen markieren">
 <!ENTITY checkMarkUnreadEnabled.accesskey "U">
-<!ENTITY checkNoBiffEnabled.label "Nicht ändern">
+<!ENTITY checkNoBiffEnabled.label "Nicht benachrichtigen">
 <!ENTITY checkNoBiffEnabled.accesskey "N">
 <!ENTITY checkRemoveKeywordEnabled.label "Schlagwort entfernen">
 <!ENTITY checkRemoveKeywordEnabled.accesskey "w">
