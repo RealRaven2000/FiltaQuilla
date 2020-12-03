@@ -444,14 +444,15 @@
       es.appendChild(MozXULElement.parseXULToFragment(`
         <toolbarbutton image="resource://filtaquilla-skin/script_edit.png" class="focusbutton fq-javascript"></toolbarbutton>
         <html:input flex="1" class="search-value-textbox flexinput" inherits="disabled" newlines="pasteintact" 
-        value = "` + es.getAttribute("value") + `"
          onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;"></html:input>
-      `));
+      `)); 
+
       // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
 
       let hbox = es, // es.parentNode.getElementsByTagName("hbox")[0], // document.getAnonymousNodes(this)[0];
           textbox = hbox.children[1], // document.getAnonymousNodes(es)[1];
           toolbarbutton = hbox.children[0]; // document.getAnonymousNodes(es)[0];
+      textbox.value = es.getAttribute("value");
       toolbarbutton.addEventListener("command", es.onCommand, false);
       toolbarbutton.setAttribute('tooltiptext', util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
       hbox.classList.add("flexelementcontainer");
@@ -470,11 +471,11 @@
     try {
       let textbox = window.MozXULElement.parseXULToFragment(
         ` <html:input class="search-value-textbox flexinput fq-textbox" inherits="disabled" 
-          value = "` + es.getAttribute("value") + `"
           onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;"> 
           </html:input>`
       );
       es.appendChild(textbox);
+      es.lastChild.value = es.getAttribute("value");
       es.classList.add("flexelementcontainer");
       es.setAttribute('fq-patched', "true");
       return true;

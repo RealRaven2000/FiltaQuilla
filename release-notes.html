@@ -1,17 +1,21 @@
-<b>Version 2.0</b>
+<b>Version 3.0</b>
 
-Made Compatible with THunderbird 68. FiltaQuilla had to be largely rewritten for Thunderbird 68, with substantial help from <a href="https://github.com/ptomulik" target="_blank">Paweł Tomulik</a>.
+Made Compatible with THunderbird 68. Again, FiltaQuilla had to be largely rewritten for Thunderbird 78, because support for some key technologies was deprecated by Mozilla (bindings was central to making the filter editor work, so there was numerous days of work and guessing necessary to get it back on track.</a>.
 
-Going forward most bugfixes / new features will be exclusively available for Thunderbird 68. The reason for this is that through architectural changes on the Mozilla code platform the code for Thunderbird 60 and earlier is substantially different.
+Going forward most bugfixes / new features will be exclusively available for Thunderbird 78 - but there may be some minor backports for Thunderbird 68. The reason for this is that through architectural changes on the Mozilla code platform the code for Thunderbird 68 and earlier is substantially different.
 
 <ul>
 <li> Check the new <a href="https://github.com/RealRaven2000/FiltaQuilla/issues">Issue Tracker</a> for open problems and to add feature requests.</li>
-<li> Added links to the quickFilters page for supporting the development team. </li>
+<li> <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/14">[issue 14]</a> Make quickFilters compatible with Thunderbird 78 ESR. The gruelling detail on all the necessary work can be read there.</li>
+<li> All bindings were replaced with pure JavaScript. This affected editing <i>all</i> conditions that FiltaQuilla adds to the Filter Editor.</li>
+<li> Printing didn't work anymore </p>
+<li> <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/45">[issue 45]</a> Fixed "Move later" / "Copy as Read" For Thunderbird versions > 64 </li>
+
 </ul>
 
 <strong>Support My Work</strong>
 
-As I am often asked about added features for filter conditions and actions for my Add-on <a href="https://addons.thunderbird.net/addon/quickfilters/">quickFilters</a> this is a good location for extending Filter behavior. 
+As I am often asked about added features for filter conditions and actions for my Add-on <a href="https://addons.thunderbird.net/addon/quickfilters/">quickFilters</a> - FiltaQuilla is a better location for extending Filter behavior - specifically adding new types of Actions and Conditions. 
 
 If you want to <b>support the FiltaQuilla project</b>, please install quickFilters and 
 <strong>purchase a <a href="https://quickfilters.quickfolders.org/premium.html">quickFilters Pro</a> license.</strong>
