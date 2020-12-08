@@ -674,30 +674,47 @@
 
     SaveAttachmentCallback.prototype = {
       callback: function saveAttachmentCallback_callback(aMsgHdr, aMimeMessage) {
-				if (util.isDebug) {
-					util.logDebug('saveAttachmentCallback_callback');
-					debugger;
-				}
 				let txtStackedDump = "";
         this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
         this.attachments = aMimeMessage.allAttachments;
         let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
 				try {
+          let ds = aMsgHdr.date / 1000,
+              msgDate = new Date(ds),  // this is cast to string for some stupid reason, so it's not useful.
+              msgSubject = aMsgHdr.subject;
+          if (util.isDebug) {
+            util.logDebug('saveAttachmentCallback_callback');
+            debugger;
+          }
+          // note: for some reason I could not use msgDate as it is treated here as a string not a Date object...
+          // the only workaround was to create new date objects at each step and call its functions directly:
+          let nicedate = " " + (new Date(ds)).getFullYear() + "-" + ((new Date(ds)).getMonth()+1) + "-" + (new Date(ds)).getDate()  + " " +  (new Date(ds)).getHours() + ":" + (new Date(ds)).getMinutes();
 					if (!this.detach) {
 						for (let j = 0; j < this.attachments.length; j++) {
-							let attachment = this.attachments[j],
-							// create a unique file for this attachment
-							    uniqueFile = this.directory.clone();
-							uniqueFile.append(attachment.name);
-							let txt = "Save attachment [" + j + "] to " + uniqueFile.path +
-									"...\n msgURI=" + this.msgURI +
-									"\n att.url=" + attachment.url +
-									"\n att.ncontentType=" + attachment.contentType;
-							util.logDebug(txt);
-							txtStackedDump += txtStackedDump + txt + "\n";
-							uniqueFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
-							messenger.saveAttachmentToFile(uniqueFile, attachment.url, this.msgURI,
-																						 attachment.contentType, null);
+              try {
+                let attachment = this.attachments[j];
+                if (attachment.url.startsWith("file:")) {
+                  util.logToConsole("Attachment for '" + msgSubject + "' from " 
+                    + nicedate + " was already removed from mail - last seen at this location:\n" 
+                    + attachment.url);
+                  continue;
+                }
+                // create a unique file for this attachment
+                let uniqueFile = this.directory.clone();
+                uniqueFile.append(attachment.name);
+                let txt = "Save attachment [" + j + "] to " + uniqueFile.path +
+                    "...\n msgURI=" + this.msgURI +
+                    "\n att.url=" + attachment.url +
+                    "\n att.ncontentType=" + attachment.contentType;
+                util.logDebug(txt);
+                txtStackedDump += txtStackedDump + txt + "\n";
+                uniqueFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
+                messenger.saveAttachmentToFile(uniqueFile, attachment.url, this.msgURI,
+                                               attachment.contentType, null);
+              }
+              catch (ex) {
+                util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
+              }
 						}
 					}
 					else
@@ -709,11 +726,18 @@
 							    displayNames = [];
 							for (let j = 0; j < this.attachments.length; j++) {
 								let attachment = this.attachments[j];
+                if (attachment.url.startsWith("file:")) {
+                  util.logToConsole("Attachment for '" + msgSubject + "' from " + nicedate 
+                    + " was already removed from mail - last seen at this location:\n" 
+                    + attachment.url);
+                  continue;
+                }
+                
 								msgURIs.push(this.msgURI);
 								contentTypes.push(attachment.contentType);
 								urls.push(attachment.url);
 								displayNames.push(attachment.name);
-								let txt = "Detach attachment [" + j + "] to " + uniqueFile.path +
+								let txt = "Detach attachment [" + j + "] to " + this.directory.path +
 										"...\n msgURI=" + this.msgURI +
 										"\n att.url=" + attachment.url +
 										"\n att.ncontentType=" + attachment.contentType;
@@ -721,7 +745,7 @@
 								txtStackedDump += txtStackedDump + txt + "\n";
 
 							}
-							messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length,
+							messenger.detachAttachmentsWOPrompts(this.directory,
 																			contentTypes, urls, displayNames, msgURIs, null);
 						}
 					}

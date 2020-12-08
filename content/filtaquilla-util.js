@@ -28,6 +28,15 @@ FiltaQuilla.setGlobals = function setGlobals(globals) {
   window = globals.window;
 }
 
+
+FiltaQuilla.TabURIregexp = {
+  get _thunderbirdRegExp() {
+    delete this._thunderbirdRegExp;
+    return this._thunderbirdRegExp = new RegExp("^https://quickfilters.quickfolders.org/");
+  }
+};
+
+
 FiltaQuilla.Util = {
   mAppName: null,
   mAppver: null,
@@ -150,6 +159,7 @@ FiltaQuilla.Util = {
 
 	findMailTab: function findMailTab(tabmail, URL) {
 		const util = FiltaQuilla.Util;
+    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 		// mail: tabmail.tabInfo[n].browser
 		let baseURL = util.getBaseURI(URL),
 				numTabs = util.getTabInfoLength(tabmail);
@@ -160,7 +170,15 @@ FiltaQuilla.Util = {
 				let tabUri = util.getBaseURI(info.browser.currentURI.spec);
 				if (tabUri == baseURL) {
 					tabmail.switchToTab(i);
-					info.browser.loadURI(URL);
+          try {
+            let params = {
+              triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
+            }
+            info.browser.loadURI(URL, params);
+          }
+          catch(ex) {
+            util.logException(ex);
+          }
 					return true;
 				}
 			}
@@ -198,15 +216,24 @@ FiltaQuilla.Util = {
       if (tabmail) {
         if (!util.findMailTab(tabmail, URL)) {
           sTabMode = "contentTab";
-          tabmail.openTab(sTabMode,
-          { contentPage: URL}); // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);"
+          tabmail.openTab(
+            sTabMode,
+            { 
+              contentPage: URL, 
+              clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla.TabURIregexp._thunderbirdRegExp);"
+            }
+          )
         }
       }
       else {
         util.getMail3PaneWindow.window.openDialog("chrome://messenger/content/", "_blank",
                   "chrome,dialog=no,all", null,
           { tabType: "contentTab",
-            tabParams: {contentPage: URL, id:"FiltaQuilla_Weblink"}   // , clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla_TabURIregexp._thunderbirdRegExp);",
+            tabParams: {
+              contentPage: URL, 
+              id:"FiltaQuilla_Weblink",
+              clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla.TabURIregexp._thunderbirdRegExp);"
+            }   
           }
         );
       }
