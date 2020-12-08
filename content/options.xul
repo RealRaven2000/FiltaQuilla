@@ -411,10 +411,10 @@
 				  <vbox class="linkBox">
 						<hbox>
 							<spacer flex="1" />
-							<a href="http://quickfilters.mozdev.org/donate.html"
+							<a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate"
 								 id="licenseLink"
 								 class="buttonLink"
-								 onclick="FiltaQuilla.Util.openLinkInTab('http://quickfilters.mozdev.org/donate.html');window.close();">
+								 onclick="FiltaQuilla.Util.openLinkInTab('https://quickfilters.quickfolders.org/filtaquilla.html#donate');window.close();">
                  &supportFiltaquilla;
 							</a>
 							<spacer flex="1" />

@@ -691,7 +691,7 @@
 								contentTypes.push(attachment.contentType);
 								urls.push(attachment.url);
 								displayNames.push(attachment.name);
-								let txt = "Detach attachment [" + j + "] to " + uniqueFile.path +
+								let txt = "Detach attachment [" + j + "] to " + this.directory +
 										"...\n msgURI=" + this.msgURI +
 										"\n att.url=" + attachment.url +
 										"\n att.ncontentType=" + attachment.contentType;
