@@ -2,6 +2,12 @@
  * This file is provided by the addon-developer-support repository at
  * https://github.com/thundernest/addon-developer-support
  *
+ * Version: 1.29
+ * - fix position of options window
+ *
+ * Version: 1.28
+ * - do not crash on missing icon
+ *
  * Version: 1.27
  * - add openOptionsDialog()
  *
@@ -257,7 +263,12 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
 
         openOptionsDialog(windowId) {
           let window = context.extension.windowManager.get(windowId, context).window
-          window.openDialog(self.pathToOptionsPage, "AddonOptions");
+          let WL = {}
+          WL.extension = self.extension;
+          WL.messenger = Array.from(self.extension.views).find(
+            view => view.viewType === "background").xulBrowser.contentWindow
+            .wrappedJSObject.browser;
+          window.openDialog(self.pathToOptionsPage, "AddonOptions", "chrome,resizable,centerscreen", WL);
         },
 
         async startListening() {
@@ -332,21 +343,27 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                       let id = self.menu_addonPrefs_id + "_" + self.uniqueRandomID;
 
                       // Get the best size of the icon (16px or bigger)
-                      let iconSizes = Object.keys(self.extension.manifest.icons);
+                      let iconSizes = self.extension.manifest.icons 
+                        ? Object.keys(self.extension.manifest.icons)
+                        : [];
                       iconSizes.sort((a,b)=>a-b);
                       let bestSize = iconSizes.filter(e => parseInt(e) >= 16).shift();
                       let icon = bestSize ? self.extension.manifest.icons[bestSize] : "";
 
                       let name = self.extension.manifest.name;
-                      let entry = window.MozXULElement.parseXULToFragment(
-                        `<menuitem class="menuitem-iconic" id="${id}" image="${icon}" label="${name}" />`);
+                      let entry = icon
+                        ? window.MozXULElement.parseXULToFragment(
+                            `<menuitem class="menuitem-iconic" id="${id}" image="${icon}" label="${name}" />`)
+                        :  window.MozXULElement.parseXULToFragment(
+                            `<menuitem id="${id}" label="${name}" />`);
+                      
                       element_addonPrefs.appendChild(entry);
                       let WL = {}
                       WL.extension = self.extension;
                       WL.messenger = Array.from(self.extension.views).find(
                         view => view.viewType === "background").xulBrowser.contentWindow
                         .wrappedJSObject.browser;
-                      window.document.getElementById(id).addEventListener("command", function() {window.openDialog(self.pathToOptionsPage, "AddonOptions", null, WL)});
+                      window.document.getElementById(id).addEventListener("command", function() {window.openDialog(self.pathToOptionsPage, "AddonOptions", "chrome,resizable,centerscreen", WL)});
                     } catch (e) {
                       Components.utils.reportError(e)
                     }
