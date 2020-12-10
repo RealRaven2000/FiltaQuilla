@@ -36,8 +36,7 @@
   Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
   var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
   var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
-	var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
-  FiltaQuilla.setGlobals({window: window}); // pass in windows object
+  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
 
 
   const Cc = Components.classes,

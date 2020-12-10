@@ -20,8 +20,8 @@
  */
 
 {
-  var {FiltaQuilla} = Components.utils.import("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
-  FiltaQuilla.setGlobals({window: window}); // pass in windows object
+  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
 
   const util = FiltaQuilla.Util,
         Ci = Components.interfaces,

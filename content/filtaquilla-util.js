@@ -21,13 +21,6 @@
  */
 
 var FiltaQuilla = {};
-var EXPORTED_SYMBOLS = ['FiltaQuilla'];
-var window;
-
-FiltaQuilla.setGlobals = function setGlobals(globals) {
-  window = globals.window;
-}
-
 
 FiltaQuilla.TabURIregexp = {
   get _thunderbirdRegExp() {
