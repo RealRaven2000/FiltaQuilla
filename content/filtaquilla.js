@@ -60,19 +60,6 @@
   self.initialized = false;
   self.name = filtaQuilla;
   
-  // (main window only) start version checker.
-  try {
-    let isCorrectWindow =
-      (document && document.getElementById('messengerWindow') &&
-       document.getElementById('messengerWindow').getAttribute('windowtype') === "mail:3pane");
-    if (isCorrectWindow)
-      window.addEventListener("load", 
-        function() { 
-          util.VersionProxy(window); 
-        }, true);
-  }
-  catch (ex) { util.logDebug("calling VersionProxy failed\n" + ex.message); }
-
   var { MailServices } = ChromeUtils.import(
     "resource:///modules/MailServices.jsm"
   );
@@ -1420,6 +1407,19 @@
   self.onLoad = function() {
     if (self.initialized)
       return;
+      
+    try {
+      let isCorrectWindow =
+        (document && document.getElementById('messengerWindow') &&
+         document.getElementById('messengerWindow').getAttribute('windowtype') === "mail:3pane");
+      if (isCorrectWindow) {
+        util.VersionProxy(window); 
+      }
+    }
+    catch (ex) { 
+      util.logDebug("calling VersionProxy failed\n" + ex.message); 
+    }
+      
     self._init();
 
     // Determine enabled actions from preferences
