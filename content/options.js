@@ -102,5 +102,11 @@ window.addEventListener("load", async () => {
 }, { once: true });
 
 
+window.addEventListener("unload", async () => {
+  let observerService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+  observerService.notifyObservers(null, "filtaquilla-options-changed", null);
+}, { once: true });
+
+
 // vim: set expandtab tabstop=2 shiftwidth=2:
 

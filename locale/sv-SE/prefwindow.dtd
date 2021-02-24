@@ -42,6 +42,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "s">
 <!ENTITY checkJavascriptActionBodyEnabled.label "JavaScript-åtgärd med innehållstext">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "c">
+<!ENTITY checkTonequillaEnabled.label "Spela ljud (Tonequilla)">
 <!ENTITY optionsIntro "Aktivera alla elemet du vill ha tillgängliga i dialogruan &quot;Filtreringsregler&quot;. Starta om efter ändringar.">
 <!ENTITY filterActions "Filtreringsåtgärder">
 <!ENTITY searchTerms "Söktermer">

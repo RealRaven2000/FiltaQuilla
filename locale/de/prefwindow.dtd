@@ -24,7 +24,7 @@
 <!ENTITY checkAddSenderEnabled.accesskey "L">
 <!ENTITY checkMarkUnreadEnabled.label "Als ungelesen markieren">
 <!ENTITY checkMarkUnreadEnabled.accesskey "U">
-<!ENTITY checkNoBiffEnabled.label "Nicht ändern">
+<!ENTITY checkNoBiffEnabled.label "Nicht benachrichtigen">
 <!ENTITY checkNoBiffEnabled.accesskey "N">
 <!ENTITY checkRemoveKeywordEnabled.label "Schlagwort entfernen">
 <!ENTITY checkRemoveKeywordEnabled.accesskey "w">
@@ -42,6 +42,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "O">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Aktion (mit body)">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkTonequillaEnabled.label "Klang abspielen (Tonequilla)">
 <!ENTITY optionsIntro "Aktivieren Sie alle Einträge die im 'Filter bearbeiten' Dialog angeboten werden sollen. Neustart erforderlich.">
 <!ENTITY filterActions "Filter Aktionen">
 <!ENTITY searchTerms "Suchbegriffe">

@@ -21,6 +21,7 @@ pref("extensions.filtaquilla.saveAttachment.enabled", false);
 pref("extensions.filtaquilla.detachAttachments.enabled", false);
 pref("extensions.filtaquilla.javascriptAction.enabled", false);
 pref("extensions.filtaquilla.javascriptActionBody.enabled", false);
+pref("extensions.filtaquilla.tonequilla.enabled", false);
 pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
 pref("extensions.filtaquilla.moveLater.enabled", false);
 // search terms

@@ -42,6 +42,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "X">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Action with Body">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkTonequillaEnabled.label "Play Sound (Tonequilla)">
 <!ENTITY optionsIntro "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes.">
 <!ENTITY filterActions "Filter Actions">
 <!ENTITY searchTerms "Search Terms">

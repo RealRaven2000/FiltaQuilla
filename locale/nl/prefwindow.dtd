@@ -42,6 +42,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "G">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript-actie met body">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkTonequillaEnabled.label "Geluid afspelen (Tonequilla)">
 <!ENTITY optionsIntro "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen.">
 <!ENTITY filterActions "Filteracties">
 <!ENTITY searchTerms "Zoekwoorden">

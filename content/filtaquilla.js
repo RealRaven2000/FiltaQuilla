@@ -102,6 +102,7 @@
       detachAttachmentsEnabled = false,
       javascriptActionEnabled = false,
       javascriptActionBodyEnabled = false,
+      tonequillaEnabled = false,
       saveMessageAsFileEnabled = false,
       moveLaterEnabled = false;
 
@@ -509,7 +510,6 @@
         let rootprefs = Cc["@mozilla.org/preferences-service;1"]
                            .getService(Ci.nsIPrefService)
                            .getBranch("");
-        rootprefs.setBoolPref("print.always_print_silent", true);
 
         function printNextMessage() {
           if (printingMessage || !printQueue.length)
@@ -520,6 +520,8 @@
             let hdr = printQueue.shift();
             let uri = hdr.folder.generateMessageURI(hdr.messageKey);
             Services.console.logStringMessage("Queue filter request to print message: " + hdr.subject);
+            let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
+            rootprefs.setBoolPref("print.always_print_silent", true);
             let printDialog =
               window.openDialog("chrome://messenger/content/msgPrintEngine.xhtml", "",
                                 "chrome,dialog=no,all,centerscreen",
@@ -528,6 +530,9 @@
             printDialog.addEventListener("DOMWindowClose", function (e) {
               Services.console.logStringMessage("Finished printing message: " + hdr.subject);
               printingMessage = false;
+              // [issue 97] try to restore the setting
+              rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
+              
               printNextMessage();
             }, true);
           }, 10, Ci.nsITimer.TYPE_ONE_SHOT);
@@ -1400,33 +1405,37 @@
       },
     };
 
-  };
+    
+    Components.utils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
+    ToneQuillaPlay.init();
+    ToneQuillaPlay.window = window;
+    let tonequilla_name = filtaquillaStrings.GetStringFromName("filtaquilla.playSound");
+    self.playSound = 
+    {
+        id: "tonequilla@mesquilla.com#playSound",
+        name: tonequilla_name, 
+        apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+        {
+          ToneQuillaPlay.queueToPlay(aActionValue);
+        },
 
-  // extension initialization
+        isValidForType: function(type, scope) {return tonequillaEnabled;},
 
-  self.onLoad = function() {
-    if (self.initialized)
-      return;
-      
-    try {
-      let isCorrectWindow =
-        (document && document.getElementById('messengerWindow') &&
-         document.getElementById('messengerWindow').getAttribute('windowtype') === "mail:3pane");
-      if (isCorrectWindow) {
-        util.VersionProxy(window); 
-      }
+        validateActionValue: function(value, folder, type) { return null;},
+
+        allowDuplicates: true
     }
-    catch (ex) { 
-      util.logDebug("calling VersionProxy failed\n" + ex.message); 
-    }
-      
-    self._init();
+    
 
-    // Determine enabled actions from preferences
+ };
+ 
+ 
+  self.setOptions = function () {
+    // enable features from acbout:config    
+    const prefserv = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
+          prefs = prefserv.getBranch("extensions.filtaquilla.");
 
-    let prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService);
-    prefs = prefs.getBranch("extensions.filtaquilla.");
-
+    // 1. Enable Actions      
     try {
       maxThreadScan = prefs.getIntPref("maxthreadscan");
     } catch (e) { maxThreadScan = 20;}
@@ -1502,6 +1511,10 @@
     try {
       javascriptActionBodyEnabled = prefs.getBoolPref("javascriptActionBody.enabled");
     } catch (e) {}
+       
+    try {
+      tonequillaEnabled = prefs.getBoolPref("tonequilla.enabled");
+    } catch (e) {}
 
     try {
       saveMessageAsFileEnabled = prefs.getBoolPref("saveMessageAsFile.enabled");
@@ -1510,6 +1523,61 @@
     try {
       moveLaterEnabled = prefs.getBoolPref("moveLater.enabled");
     } catch(e) {}
+    
+    // 2. Enable conditions
+    try {
+      SubjectRegexEnabled = prefs.getBoolPref("SubjectRegexEnabled");
+    } catch(e) {}
+
+    try {
+      HeaderRegexEnabled = prefs.getBoolPref("HeaderRegexEnabled");
+    } catch(e) {}
+    
+    try {
+      JavascriptEnabled = prefs.getBoolPref("JavascriptEnabled");
+    } catch(e) {}
+    
+    try {
+      SearchBccEnabled = prefs.getBoolPref("SearchBccEnabled");
+    } catch(e) {}
+    try {
+      ThreadHeadTagEnabled = prefs.getBoolPref("ThreadHeadTagEnabled");
+    } catch(e) {}
+    try {
+      ThreadAnyTagEnabled = prefs.getBoolPref("ThreadAnyTagEnabled");
+    } catch(e) {}
+
+    try {
+      FolderNameEnabled = prefs.getBoolPref("FolderNameEnabled");
+    } catch(e) {}
+    
+		try {
+			AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
+		} catch(e) {}
+
+  }
+
+  // extension initialization
+  self.onLoad = function() {
+    if (self.initialized)
+      return;
+      
+    try {
+      let isCorrectWindow =
+        (document && document.getElementById('messengerWindow') &&
+         document.getElementById('messengerWindow').getAttribute('windowtype') === "mail:3pane");
+      if (isCorrectWindow) {
+        util.VersionProxy(window); 
+      }
+    }
+    catch (ex) { 
+      util.logDebug("calling VersionProxy failed\n" + ex.message); 
+    }
+      
+    self._init();
+    
+    self.setOptions();
+
 
     var filterService = Cc["@mozilla.org/messenger/services/filters;1"]
                         .getService(Ci.nsIMsgFilterService);
@@ -1533,47 +1601,17 @@
     filterService.addCustomAction(self.javascriptActionBody);
     filterService.addCustomAction(self.saveMessageAsFile);
     filterService.addCustomAction(self.moveLater);
+    filterService.addCustomAction(self.playSound);
 
-    // search terms enabling
-
-    try {
-      SubjectRegexEnabled = prefs.getBoolPref("SubjectRegexEnabled");
-    } catch(e) {}
+    // search terms 
     filterService.addCustomTerm(self.subjectRegex);
-
-    try {
-      HeaderRegexEnabled = prefs.getBoolPref("HeaderRegexEnabled");
-    } catch(e) {}
     filterService.addCustomTerm(self.headerRegex);
-
-    try {
-      JavascriptEnabled = prefs.getBoolPref("JavascriptEnabled");
-    } catch(e) {}
     filterService.addCustomTerm(self.javascript);
-
-    try {
-      SearchBccEnabled = prefs.getBoolPref("SearchBccEnabled");
-    } catch(e) {}
     filterService.addCustomTerm(self.searchBcc);
-
-    try {
-      ThreadHeadTagEnabled = prefs.getBoolPref("ThreadHeadTagEnabled");
-    } catch(e) {}
     filterService.addCustomTerm(self.threadHeadTag);
-
-    try {
-      ThreadAnyTagEnabled = prefs.getBoolPref("ThreadAnyTagEnabled");
-    } catch(e) {}
     filterService.addCustomTerm(self.threadAnyTag);
-
-    try {
-      FolderNameEnabled = prefs.getBoolPref("FolderNameEnabled");
-    } catch(e) {}
     filterService.addCustomTerm(self.folderName);
 
-		try {
-			AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
-		} catch(e) {}
 		if (AttachmentRegexEnabled) {
 			debugger;
 			filterService.addCustomTerm(self.attachmentRegex);
@@ -1873,90 +1911,14 @@
     msgHdr.setUint32Property("moveLaterCount", moveLaterCount);
   }
 
-  // This was used in the addressInThread search which I removed for
-  // performance reasons, but it still might be useful someday
-  /*
-  function _matchRfc822Address(aAddressList, aSearchValue, aSearchOp)
-  {
-    if (aSearchOp == IsEmpty)
-      return (aAddressList.length == 0);
-    if (aSearchOp == IsntEmpty)
-      return (aAddressList.length != 0);
-
-    let addresses = {}, names = {}, fullAddresses = {};
-    headerParser.parseHeadersWithArray(aAddressList, addresses,
-                                       names, fullAddresses);
-    names = names.value;
-    addresses = addresses.value;
-
-    let matches = false;
-    for (let i = 0; i < names.length; i++)
-    {
-      switch (aSearchOp) {
-        case Contains:
-        case DoesntContain:
-          if (names[i].indexOf(aSearchValue) != -1) {
-            matches = true;
-            break;
-          }
-          if (addresses[i].indexOf(aSearchValue) != -1)
-            matches = true;
-          break;
-
-        case Is:
-        case Isnt:
-          if (names[i] == aSearchValue) {
-            matches = true;
-            break;
-          }
-          if (addresses[i] == aSearchValue)
-            matches = true;
-          break;
-
-        case BeginsWith:
-          if (names[i].indexOf(aSearchValue) == 0) {
-            matches = true;
-            break;
-          }
-          if (addresses[i].indexOf(aSearchValue) == 0)
-            matches = true;
-          break;
-
-        case EndsWith:
-          let index = names[i].lastIndexOf(aSearchValue);
-          if (index != -1 && index == (names[i].length - aSearchValue.length)) {
-            matches = true;
-            break;
-          }
-          index = addresses[i].lastIndexOf(aSearchValue);
-          if (index != -1 && index == (addresses[i].length - aSearchValue.length))
-            matches = true;
-          break;
-
-          default:
-            Cu.reportError("invalid search operator in custom address search term");
-      }
-      if (matches) {
-        switch (aSearchOp) {
-          case Contains:
-          case Is:
-          case BeginsWith:
-          case EndsWith:
-            return true;
-          case DoesntContain:
-          case Isnt:
-            return false;
-          default:
-            Cu.reportError("invalid search operator in custom address search term");
-        }
-      }
+  // use this for instant feedback after configuring through the options window
+  let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
+  observerService.addObserver({
+    observe: function() {
+      self.setOptions();
     }
+  },"filtaquilla-options-changed", false);
 
-    if (aSearchOp == DoesntContain || aSearchOp == Isnt)
-      return true;
-    return false;
-  }
-	*/
 })();
 
 // moved to filtaquilla-messenger.js

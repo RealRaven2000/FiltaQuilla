@@ -47,6 +47,8 @@
       "filtaquilla@mesquilla.com#javascriptAction": "filtaquilla-ruleactiontarget-javascriptaction",
       "filtaquilla@mesquilla.com#javascriptActionBody": "filtaquilla-ruleactiontarget-javascriptaction",
       "filtaquilla@mesquilla.com#saveMessageAsFile": "filtaquilla-ruleactiontarget-directorypicker",
+      // ToneQuilla
+      "tonequilla@mesquilla.com#playSound": "filtaquilla-ruleactiontarget-tonequillapicker",
     };
     const elementName = elementMapping[type];
     return elementName ? document.createXULElement(elementName) : null;
@@ -223,8 +225,8 @@
 
       //closured stuff:
       let pathBox = this.textbox,
-        hBox = this.hbox;
-
+          hBox = this.hbox;
+      
       let fpCallback = function fpCallback_done(aResult) {
         if (aResult == nsIFilePicker.returnOK) {
           // We will setup a default using the subject
@@ -422,6 +424,91 @@
   }
 
   defineIfNotPresent("filtaquilla-ruleactiontarget-javascriptaction", FiltaQuillaRuleactiontargetJavascriptAction);
+  
+  // [issue 94] Add ToneQuilla functionality to FiltaQuilla
+  class FiltaQuillaRuleactiontargetTonePicker extends FiltaQuillaRuleactiontargetBase {
+    connectedCallback() {
+      if (this.delayConnectedCallback()) {
+        return;
+      }
+      this.textContent = "";
+      this.appendChild(MozXULElement.parseXULToFragment(`
+        <hbox flex="1" class="flexelementcontainer">
+          <html:input class="ruleactionitem flexinput" onchange="this.parentNode.value = this.value;"></html:input>
+          <toolbarbutton image="chrome://messenger/skin/icons/folder.svg" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+        </hbox>
+      `));
+
+      this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
+      this.textbox =  this.hbox.firstChild;             // document.getAnonymousNodes(this)[0].firstChild;
+
+      let btn = this.getElementsByTagName("toolbarbutton")[0],
+          ttext = util.getBundleString('filtaquilla.tone.select', "Select a Sound File…");
+      btn.setAttribute('tooltiptext', ttext);
+      this.launchtitle = ttext; // util.getBundleString('filtaquilla.runProgram.title', "Select a Program to run");
+
+      updateParentNode(this.closest(".ruleaction"));
+      this.textbox.setAttribute('value', this.hbox.value || "");
+
+    }
+
+    getURL() {
+      const nsIFilePicker = Ci.nsIFilePicker,
+            wildmat = "*.wav; *.ogg; *.mp3; *.aiff",
+            label = ".wav, .ogg, .mp3; .aiff";
+      var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+      fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+      fp.appendFilter(label, wildmat);
+      fp.appendFilters(nsIFilePicker.filterAll);
+
+      //closured stuff:
+      let pathBox = this.textbox,
+          hBox = this.hbox;
+          
+      
+      if (pathBox.value)  {
+        try {
+          var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+          var filePath = pathBox.value;
+          file.initWithPath(filePath);
+          fp.displayDirectory = file.parent;
+          fp.defaultString = file.leafName;
+        } 
+        catch (e) {;}
+      }
+      else  // if (!this.hBox.value)
+      // if there is an empty box initialize and use default directory.
+      {
+        Components.utils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
+        if (!ToneQuillaPlay.window || !ToneQuillaPlay.soundsDirectory) {
+          ToneQuillaPlay.init();
+        }
+        if (ToneQuillaPlay.soundsDirectory)
+          fp.displayDirectory =
+            ToneQuillaPlay.soundsDirectory.QueryInterface(Ci.nsIFile);
+      }
+
+      let fpCallback = function fpCallback_done(aResult) {
+        if (aResult == nsIFilePicker.returnOK) {
+          // We will setup a default using the subject
+          pathBox.value = fp.file.path;
+          hBox.value = pathBox.value;
+        }
+      }
+
+      fp.open(fpCallback);
+    }
+    
+    play() {
+      Components.utils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
+      // ToneQuillaPlay.logDebug("Calling play() method from binding 'soundPicker'.");
+      ToneQuillaPlay.play(this.hbox.value);
+    }
+    
+  } // tonequilla picker
+
+  defineIfNotPresent("filtaquilla-ruleactiontarget-tonequillapicker", FiltaQuillaRuleactiontargetTonePicker);
+  
 
 // ***********  CONDITIONS  ***********
 
