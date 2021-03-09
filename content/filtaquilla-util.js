@@ -213,6 +213,7 @@ FiltaQuilla.Util = {
             sTabMode,
             { 
               contentPage: URL, 
+              url: URL,
               clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla.TabURIregexp._thunderbirdRegExp);"
             }
           )

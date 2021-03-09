@@ -167,3 +167,16 @@ hbox.title spacer {
 }
 
 
+
+/* grid replacement */
+.grid-container {
+  align-content: start;
+  display: grid;
+  grid-row-gap: 5px;
+  grid-column-gap: 5px;
+}
+
+#actionsGrid,
+#conditionsGrid {
+  grid-template-columns: auto auto auto auto; /* widths of columns */
+}

@@ -546,12 +546,15 @@
     }; // end print messages
     // reset the always_print_silent value at startup
     // XXX to do : add a hook to base so that this is not needed
+/*    
+    // [issue 97] do not reset this setting generally!!!
     let rootprefs = Cc["@mozilla.org/preferences-service;1"]
                       .getService(Ci.nsIPrefService)
                       .getBranch("");
     try {
       rootprefs.clearUserPref("print.always_print_silent");
     } catch (e) {}
+    */
 
     // add sender to a specific address book
     self.addSender =
