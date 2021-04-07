@@ -10,10 +10,11 @@
       ["resource", "filtaquilla",           "content/"],  
       ["resource", "filtaquilla-skin",      "skin/"],  // make a separate resource (we can't have 2 different resources mapped to to the same name)
       ["content",  "filtaquilla",           "content/"],
-      ["locale",   "filtaquilla", "en",     "locale/en-US/"],
-      ["locale",   "filtaquilla", "sv",     "locale/sv-SE/"],
       ["locale",   "filtaquilla", "de",     "locale/de/"],
-      ["locale",   "filtaquilla", "nl",     "locale/nl/"]
+      ["locale",   "filtaquilla", "en",     "locale/en-US/"],
+      ["locale",   "filtaquilla", "nl",     "locale/nl/"],
+      ["locale",   "filtaquilla", "ru",     "locale/ru/"],
+      ["locale",   "filtaquilla", "sv",     "locale/sv-SE/"]
     ]
   );  
   

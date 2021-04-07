@@ -1,0 +1,4 @@
+<!ENTITY enabled "Включено">
+<!ENTITY default "Использовать умолчания">
+<!ENTITY inheritedProperties "Унаследованные свойства">
+<!ENTITY indexInGlobalDatabase "Индекс в глобальной базе данных">

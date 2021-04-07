@@ -1,0 +1,72 @@
+<!ENTITY prefwindow.title "FiltaQuilla настройки">
+<!ENTITY pane1.title "FiltaQuilla Настройки">
+<!-- filter actions -->
+<!ENTITY checkMoveLaterEnabled.label "Переместить позже">
+<!ENTITY checkMoveLaterEnabled.accesskey "A">
+<!ENTITY checkCopyAsReadEnabled.label "Копировать как прочитаннное">
+<!ENTITY checkCopyAsReadEnabled.accesskey "C">
+<!ENTITY checkDetachAttachmentsEnabled.label "Отсоединить вложения в">
+<!ENTITY checkDetachAttachmentsEnabled.accesskey "D">
+<!ENTITY checkMarkRepliedEnabled.label "Пометить как отвеченное">
+<!ENTITY checkMarkRepliedEnabled.accesskey "E">
+<!ENTITY checkLaunchFileEnabled.label "Запустить файл">
+<!ENTITY checkLaunchFileEnabled.accesskey "F">
+<!ENTITY checkTrainAsGoodEnabled.label "Предположительно хорошее">
+<!ENTITY checkTrainAsGoodEnabled.accesskey "G">
+<!ENTITY checkSaveAttachmentEnabled.label "Сохранить вложения в">
+<!ENTITY checkSaveAttachmentEnabled.accesskey "H">
+<!ENTITY checkAttachmentRegexEnabled.label "Совпадение с регэкспом имени вложения">
+<!ENTITY checkSaveMessageAsFileEnabled.label "Сох">
+<!ENTITY checkSaveMessageAsFileEnabled.accesskey "I">
+<!ENTITY checkTrainAsJunkEnabled.label "Предположительно спам">
+<!ENTITY checkTrainAsJunkEnabled.accesskey "J">
+<!ENTITY checkAddSenderEnabled.label "Добавить отправителя в список адресов">
+<!ENTITY checkAddSenderEnabled.accesskey "L">
+<!ENTITY checkMarkUnreadEnabled.label "Отметить как непрочитанное">
+<!ENTITY checkMarkUnreadEnabled.accesskey "M">
+<!ENTITY checkNoBiffEnabled.label "Не уведомлять">
+<!ENTITY checkNoBiffEnabled.accesskey "N">
+<!ENTITY checkRemoveKeywordEnabled.label "Удалить тег">
+<!ENTITY checkRemoveKeywordEnabled.accesskey "O">
+<!ENTITY checkPrintEnabled.label "Печать">
+<!ENTITY checkPrintEnabled.accesskey "P">
+<!ENTITY checkRunFileEnabled.label "Запустить программу">
+<!ENTITY checkRunFileEnabled.accesskey "R">
+<!ENTITY checkRemoveFlaggedEnabled.label "Удалить звездочку">
+<!ENTITY checkRemoveFlaggedEnabled.accesskey "S">
+<!ENTITY checkSubjectAppendEnabled.label "Приставка темы">
+<!ENTITY checkSubjectAppendEnabled.accesskey "U">
+<!ENTITY checkJavascriptActionEnabled.label "Javascript Действие">
+<!ENTITY checkJavascriptActionEnabled.accesskey "V">
+<!ENTITY checkSubjectSuffixEnabled.label "Суффикс темы">
+<!ENTITY checkSubjectSuffixEnabled.accesskey "X">
+<!ENTITY checkJavascriptActionBodyEnabled.label "Javascript действие с телом письма">
+<!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkTonequillaEnabled.label "Play Sound (Tonequilla)">
+<!ENTITY optionsIntro "Включите желаемые пункты для диалогового окна «Правила фильтра». Перезапустите после изменения.">
+<!ENTITY filterActions "Действия фильтра">
+<!ENTITY searchTerms "Темины поиска">
+<!ENTITY aboutAndSupport "О FiltaQuilla / Помощь">
+<!ENTITY supportPage "Посетить страницу поддержки">
+<!ENTITY supportPage_desc "Эта страница описывает различные действия и условия, которые вы можете добавить к почтовым фильтрам с FiltaQuilla.">
+<!ENTITY quickFiltersPage "Получить quickFilters!">
+<!ENTITY quickFiltersPage_desc "Загрузите это дополнение - турбо-зарядка фильтрации. Quickfilters делают управление фильтрацией невероятно лёгким.">
+<!ENTITY supportFiltaquilla "Поддержать FiltaQuilla">
+<!ENTITY supportFiltaquilla_desc "FiltaQuilla БЕСПЛАТНО для скачивания и использования - лучший способ поддержать команду разработки, купить лицензию на QuickFilters Pro. Это удивительно удобные расширения для управления фильтрацией.">
+<!-- search terms -->
+<!ENTITY checkSearchBccEnabled.label "Bcc">
+<!ENTITY checkSearchBccEnabled.accesskey "B">
+<!ENTITY checkFolderNameEnabled.label "Имя папки">
+<!ENTITY checkFolderNameEnabled.accesskey "F">
+<!ENTITY checkThreadHeadTagEnabled.label "Тег - Заголовок нити">
+<!ENTITY checkThreadHeadTagEnabled.accesskey "D">
+<!ENTITY checkHeaderRegexEnabled.label "Совпадение с регэкспом заголовка">
+<!ENTITY checkHeaderRegexEnabled.accesskey "H">
+<!ENTITY checkJavascriptEnabled.label "Javascript">
+<!ENTITY checkJavascriptEnabled.accesskey "J">
+<!ENTITY checkSubjectRegexEnabled.label "Совпадение с регэкспом темы">
+<!ENTITY checkSubjectRegexEnabled.accesskey "S">
+<!ENTITY checkThreadAnyTagEnabled.label  "Тег - Сообщения нити">
+<!ENTITY checkThreadAnyTagEnabled.accesskey "T">
+<!ENTITY helpFeatureTip "Показать детали этой фичи">
+
