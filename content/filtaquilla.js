@@ -105,7 +105,8 @@
       javascriptActionBodyEnabled = false,
       tonequillaEnabled = false,
       saveMessageAsFileEnabled = false,
-      
+      moveLaterEnabled = false,
+ 
       regexpCaseInsensitiveEnabled = false;
 
   // Enabling of search terms.

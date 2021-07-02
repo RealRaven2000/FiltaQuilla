@@ -13,7 +13,8 @@
       ["locale",   "filtaquilla", "en",     "locale/en-US/"],
       ["locale",   "filtaquilla", "sv",     "locale/sv-SE/"],
       ["locale",   "filtaquilla", "de",     "locale/de/"],
-      ["locale",   "filtaquilla", "nl",     "locale/nl/"]
+      ["locale",   "filtaquilla", "nl",     "locale/nl/"],
+      ["locale",   "filtaquilla", "ru",     "locale/ru/"]
     ]
   );  
   
