@@ -25,3 +25,4 @@ XPI="`pwd`/${XPI}";
     echo "failed."
   fi
 )
+

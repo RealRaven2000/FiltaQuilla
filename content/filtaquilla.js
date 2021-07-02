@@ -36,6 +36,7 @@
   Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
   var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
   var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
+  
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
 
 
@@ -104,11 +105,14 @@
       javascriptActionBodyEnabled = false,
       tonequillaEnabled = false,
       saveMessageAsFileEnabled = false,
-      moveLaterEnabled = false;
+      moveLaterEnabled = false,
+      
+      regexpCaseInsensitiveEnabled = false;
 
   // Enabling of search terms.
   let SubjectRegexEnabled = false,
       HeaderRegexEnabled = false,
+      BodyRegexEnabled = false,
       JavascriptEnabled = false,
       SearchBccEnabled = false,
       ThreadHeadTagEnabled = false,
@@ -1055,6 +1059,7 @@
         var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
+            
         switch (aSearchOp)
         {
           case Matches:
@@ -1225,6 +1230,81 @@
         }
       }
     };
+    
+    self.bodyRegex =
+    {
+      id: "filtaquilla@mesquilla.com#bodyRegex",
+      name: self.strings.GetStringFromName("filtaquilla.bodyregex.name"),
+      getEnabled: function bodyRegEx_getEnabled(scope, op) {
+        return _isLocalSearch(scope);
+      },
+      needsBody: true,
+      getAvailable: function bodyRegEx_getAvailable(scope, op) {
+        return _isLocalSearch(scope) && BodyRegexEnabled;
+      },
+      getAvailableOperators: function bodyRegEx_getAvailableOperators(scope) {
+        if (!_isLocalSearch(scope))
+        {
+          return [];
+        }
+        return [Matches, DoesntMatch];
+      },
+      match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
+      //(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+    
+        //console.log("aMsgHdrs:", aMsgHdrs);
+        //console.log("messageId: ", aMsgHdrs.messageId);
+        //console.log("aActionValue: ", aActionValue);
+        //console.log("aListener: ", aListener);
+        //console.log("aType: ", aType);
+        //console.log("aMsgWindow: ", aMsgWindow);
+        
+        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+        decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
+        console.log("decoded: ", decodedMessageId);
+        
+        //  msgAdded: function(aMsgHdr) {
+        // if( !aMsgHdr.isRead ){
+        //Get folder in case it's not a plaintext
+        //@see https://stackoverflow.com/questions/27265271/how-to-intercept-incoming-email-and-retrieve-message-body-in-thunderbird
+        let folder = aMsgHdr.folder;
+        let msgBody;
+        let result = MsgHdrToMimeMessage(aMsgHdr, null, function (_aMsgHdr, aMimeMessage) {
+            // do something with aMimeMessage:
+            //alert("the message body : " + aMimeMessage.coerceBodyToPlaintext(folder));
+            msgBody = aMimeMessage.coerceBodyToPlaintext(folder);
+            //alert(aMimeMessage.allUserAttachments.length);
+            //alert(aMimeMessage.size);
+            let searchValue, searchFlags;
+            [searchValue, searchFlags] = _getRegEx(aSearchValue);
+            
+            let r = RegExp(searchValue, searchFlags).test(msgBody);
+            console.log("body matches: ", r);
+            if(r === true){
+             alert(msgBody);
+            }
+            return r;
+        }, true);
+        //  }
+        //}
+        console.log("result: ", result);
+        console.log("body: ", msgBody);
+        let searchValue, searchFlags;
+        [searchValue, searchFlags] = _getRegEx(aSearchValue);
+            
+            console.log("body matches: ", RegExp(searchValue, searchFlags).test(msgBody));
+        switch (aSearchOp)
+        {
+          case Matches:
+            //return RegExp(searchValue, searchFlags).test(subject);
+          case DoesntMatch:
+            //return !RegExp(searchValue, searchFlags).test(subject);
+        }
+        
+        return false;//not implemented yet
+      }
+    };
+
 
     // search using arbitrary javascript
     self.javascript =
@@ -1514,6 +1594,10 @@
     try {
       javascriptActionBodyEnabled = prefs.getBoolPref("javascriptActionBody.enabled");
     } catch (e) {}
+    
+    try {
+      regexpCaseInsensitiveEnabled = prefs.getBoolPref("regexpCaseInsensitive.enabled");
+    } catch (e) {}
        
     try {
       tonequillaEnabled = prefs.getBoolPref("tonequilla.enabled");
@@ -1556,6 +1640,10 @@
     
 		try {
 			AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
+		} catch(e) {}
+ 
+		try {
+			BodyRegexEnabled = prefs.getBoolPref("BodyRegexEnabled");
 		} catch(e) {}
 
   }
@@ -1609,6 +1697,7 @@
     // search terms 
     filterService.addCustomTerm(self.subjectRegex);
     filterService.addCustomTerm(self.headerRegex);
+    filterService.addCustomTerm(self.bodyRegex);
     filterService.addCustomTerm(self.javascript);
     filterService.addCustomTerm(self.searchBcc);
     filterService.addCustomTerm(self.threadHeadTag);
@@ -1828,13 +1917,16 @@
      * / delimiters. If we detect a / though, we will look for flags and
      * add them to the regex search. See bug m165.
      */
-    let searchValue = aSearchValue,
-        searchFlags = "";
+    let searchValue = aSearchValue, searchFlags = "";
     if (aSearchValue.charAt(0) == "/") {
       let lastSlashIndex = aSearchValue.lastIndexOf("/");
       searchValue = aSearchValue.substring(1, lastSlashIndex);
       searchFlags = aSearchValue.substring(lastSlashIndex + 1);
     }
+    if(regexpCaseInsensitiveEnabled && !searchFlags.includes("i")){
+      searchFlags+="i";
+    }
+    
     return [searchValue, searchFlags];
   }
 

@@ -52,6 +52,7 @@
   <prefpane id="pane1" label="&pane1.title;">
     <preferences>
       <preference id="subjectAppendEnabled" name="extensions.filtaquilla.subjectAppend.enabled" type="bool"/>
+      <preference id="regexpCaseInsensitiveEnabled" name="extensions.filtaquilla.regexpCaseInsensitive.enabled" type="bool"/>
       <preference id="subjectSuffixEnabled" name="extensions.filtaquilla.subjectSuffix.enabled" type="bool"/>
       <preference id="removeKeywordEnabled" name="extensions.filtaquilla.removeKeyword.enabled" type="bool"/>
       <preference id="removeFlaggedEnabled" name="extensions.filtaquilla.removeFlagged.enabled" type="bool"/>
@@ -67,6 +68,7 @@
       <preference id="addSenderEnabled" name="extensions.filtaquilla.addSender.enabled" type="bool"/>
       <preference id="saveAttachmentEnabled" name="extensions.filtaquilla.saveAttachment.enabled" type="bool"/>
       <preference id="AttachmentRegexEnabled" name="extensions.filtaquilla.AttachmentRegexEnabled" type="bool"/>
+      <preference id="BodyRegexEnabled" name="extensions.filtaquilla.BodyRegexEnabled" type="bool"/>
       <preference id="detachAttachmentsEnabled" name="extensions.filtaquilla.detachAttachments.enabled" type="bool"/>
       <preference id="javascriptActionEnabled" name="extensions.filtaquilla.javascriptAction.enabled" type="bool"/>
       <preference id="javascriptActionBodyEnabled" name="extensions.filtaquilla.javascriptActionBody.enabled" type="bool"/>
@@ -321,7 +323,7 @@
             </div>
               
               
-            <span style="grid-column: 1 / span 2;">
+            <span>
               <checkbox id="checkAttachRegexEnabled"
                         preference="AttachmentRegexEnabled"
                         label="&checkAttachmentRegexEnabled.label;"
@@ -332,6 +334,20 @@
                   onclick="FiltaQuilla.Util.openHelpTab('match_attachmentname');"
                   tooltiptext="&helpFeatureTip;"
                   />
+            </span>
+               <span>
+              <checkbox id="checkRegexpCaseInsensitiveEnabled" preference="regexpCaseInsensitiveEnabled"
+                        label="&checkRegexpCaseInsensitiveEnabled.label;"/>
+             
+            </span>
+               <span>
+              <checkbox id="checkBodyRegexEnabled" preference="BodyRegexEnabled"
+                        label="&checkBodyRegexEnabled.label;"
+                        accesskey="&checkBodyRegexEnabled.accesskey;"/>
+              <toolbarbutton
+                class="helpLink"
+                onclick="FiltaQuilla.Util.openHelpTab('body_regex');"
+                />
             </span>
 
 
