@@ -1417,7 +1417,8 @@
         debugger;
         let isMatched = false;
 
-        var decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
+        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+          decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
         var subject = aMsgHdr.mime2DecodedSubject;
 
         let searchValue, searchFlags;
