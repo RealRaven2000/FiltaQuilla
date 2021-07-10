@@ -2,7 +2,7 @@
   "manifest_version" : 2,
   "name" : "FiltaQuilla",
   "description" : "Mail filter custom actions and searches",
-  "version" : "3.2pre8",
+  "version" : "3.2pre11",
   "default_locale": "en",
   "author" : "R Kent James,Axel Grude",
   "developer" : {
@@ -31,7 +31,8 @@
       "parent": {
         "scopes": ["addon_parent"],
         "paths": [["WindowListener"]],
-        "script": "content/api/WindowListener/implementation.js"
+        "script": "content/api/WindowListener/implementation.js",
+        "events": ["startup"]
       }
     },
     "LegacyPrefs": {
