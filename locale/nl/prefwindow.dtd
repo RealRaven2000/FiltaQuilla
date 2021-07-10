@@ -16,6 +16,7 @@
 <!ENTITY checkSaveAttachmentEnabled.label "Bijlagen opslaan in">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "J">
 <!ENTITY checkAttachmentRegexEnabled.label "RegEx-overeenkomst bijlagenaam">
+<!ENTITY checkRegexpCaseInsensitiveEnabled.label "Regex hoofdletterongevoelige Match">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Bericht als bestand opslaan">
 <!ENTITY checkSaveMessageAsFileEnabled.accesskey "I">
 <!ENTITY checkTrainAsJunkEnabled.label "Als Ongewenst trainen">
@@ -42,6 +43,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "G">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript-actie met body">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkBodyRegexEnabled.label "Body Regexp-wedstrijd">
 <!ENTITY checkTonequillaEnabled.label "Geluid afspelen (Tonequilla)">
 <!ENTITY optionsIntro "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen.">
 <!ENTITY filterActions "Filteracties">

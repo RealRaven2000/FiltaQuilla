@@ -16,6 +16,7 @@
 <!ENTITY checkSaveAttachmentEnabled.label "Spara bifogade filer till">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "p">
 <!ENTITY checkAttachmentRegexEnabled.label "Regexmatchning i bilagans namn">
+<!ENTITY checkRegexpCaseInsensitiveEnabled.label "Regex skiftlägeskänslig Match">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Spara meddelande som fil">
 <!ENTITY checkSaveMessageAsFileEnabled.accesskey "m">
 <!ENTITY checkTrainAsJunkEnabled.label "Träna som skräp">
@@ -42,6 +43,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "s">
 <!ENTITY checkJavascriptActionBodyEnabled.label "JavaScript-åtgärd med innehållstext">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "c">
+<!ENTITY checkBodyRegexEnabled.label "Body Regexp-matchning">
 <!ENTITY checkTonequillaEnabled.label "Spela ljud (Tonequilla)">
 <!ENTITY optionsIntro "Aktivera alla elemet du vill ha tillgängliga i dialogruan &quot;Filtreringsregler&quot;. Starta om efter ändringar.">
 <!ENTITY filterActions "Filtreringsåtgärder">
