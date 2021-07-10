@@ -2,102 +2,7 @@
  * This file is provided by the addon-developer-support repository at
  * https://github.com/thundernest/addon-developer-support
  *
- * Version: 1.50
- * - use built-in CSS rules to fix options button for dark themes (thanks to Thunder)
- * - fix some occasions where options button was not added
- *
- * Version: 1.49
- * - fixed missing eventListener for Beta + Daily
- *
- * Version: 1.48
- * - moved notifyTools into its own NotifyTools API.
- *
- * Version: 1.39
- * - fix for 68
- *
- * Version: 1.36
- * - fix for beta 87
- *
- * Version: 1.35
- * - add support for options button/menu in add-on manager and fix 68 double menu entry
- *
- * Version: 1.34
- * - fix error in unload
- *
- * Version: 1.33
- * - fix for e10s
- *
- * Version: 1.30
- * - replace setCharPref by setStringPref to cope with URTF-8 encoding
- *
- * Version: 1.29
- * - open options window centered
- *
- * Version: 1.28
- * - do not crash on missing icon
- *
- * Version: 1.27
- * - add openOptionsDialog()
- *
- * Version: 1.26
- * - pass WL object to legacy preference window
- *
- * Version: 1.25
- * - adding waitForMasterPassword
- *
- * Version: 1.24
- * - automatically localize i18n locale strings in injectElements()
- *
- * Version: 1.22
- * - to reduce confusions, only check built-in URLs as add-on URLs cannot
- *   be resolved if a temp installed add-on has bin zipped
- *
- * Version: 1.21
- * - print debug messages only if add-ons are installed temporarily from
- *   the add-on debug page
- * - add checks to registered windows and scripts, if they actually exists
- *
- * Version: 1.20
- * - fix long delay before customize window opens
- * - fix non working removal of palette items
- *
- * Version: 1.19
- * - add support for ToolbarPalette
- *
- * Version: 1.18
- * - execute shutdown script also during global app shutdown (fixed)
- *
- * Version: 1.17
- * - execute shutdown script also during global app shutdown
- *
- * Version: 1.16
- * - support for persist
- *
- * Version: 1.15
- * - make (undocumented) startup() async
- *
- * Version: 1.14
- * - support resource urls
- *
- * Version: 1.12
- * - no longer allow to enforce custom "namespace"
- * - no longer call it namespace but uniqueRandomID / scopeName
- * - expose special objects as the global WL object
- * - autoremove injected elements after onUnload has ben executed
- *
- * Version: 1.9
- * - automatically remove all entries added by injectElements
- *
- * Version: 1.8
- * - add injectElements
- *
- * Version: 1.7
- * - add injectCSS
- * - add optional enforced namespace
- *
- * Version: 1.6
- * - added mutation observer to be able to inject into browser elements
- * - use larger icons as fallback
+ * Version: 1.56
  *
  * Author: John Bieling (john@thunderbird.net)
  *
@@ -120,8 +25,13 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     if (this.debug) console.log("WindowListener API: " + msg);
   }
 
-  getThunderbirdMajorVersion() {
-    return parseInt(Services.appinfo.version.split(".").shift());
+  getThunderbirdVersion() {
+    let parts = Services.appinfo.version.split(".");
+    return {
+      major: parseInt(parts[0]),
+      minor: parseInt(parts[1]),
+      revision: parts.length > 2 ? parseInt(parts[2]) : 0,
+    }
   }
 
   getCards(e) {
@@ -130,10 +40,10 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     let doc;
 
     // 78,86, and 87+ need special handholding. *Yeah*.
-    if (this.getThunderbirdMajorVersion() < 86) {
+    if (this.getThunderbirdVersion().major < 86) {
       let ownerDoc = e.document || e.target.ownerDocument;
       doc = ownerDoc.getElementById("html-view-browser").contentDocument;
-    } else if (this.getThunderbirdMajorVersion() < 87) {
+    } else if (this.getThunderbirdVersion().major < 87) {
       let ownerDoc = e.document || e.target;
       doc = ownerDoc.getElementById("html-view-browser").contentDocument;
     } else {
@@ -223,8 +133,12 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
           // Setup either the options entry in the menu or the button
           //window.document.getElementById(id).addEventListener("command", function() {window.openDialog(self.pathToOptionsPage, "AddonOptions", "chrome,resizable,centerscreen", WL)});
           if (card.addon.id == this.extension.id) {
-            if (this.getThunderbirdMajorVersion() < 88) {
-              // Options menu in 78-87
+            let optionsMenu = 
+              (this.getThunderbirdVersion().major > 78 && this.getThunderbirdVersion().major < 88) ||
+              (this.getThunderbirdVersion().major == 78 && this.getThunderbirdVersion().minor < 10) ||
+              (this.getThunderbirdVersion().major == 78 && this.getThunderbirdVersion().minor == 10 && this.getThunderbirdVersion().revision < 2);
+            if (optionsMenu) {
+              // Options menu in 78.0-78.10 and 79-87
               let addonOptionsLegacyEntry = card.querySelector(
                 ".extension-options-legacy"
               );
@@ -286,9 +200,11 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
   // returns the outer browser, not the nested browser of the add-on manager
   // events must be attached to the outer browser
   getAddonManagerFromTab(tab) {
-    let win = tab.browser.contentWindow;
-    if (win && win.location.href == "about:addons") {
-      return win;
+    if (tab.browser) {
+      let win = tab.browser.contentWindow;
+      if (win && win.location.href == "about:addons") {
+        return win;
+      }
     }
   }
 
@@ -302,7 +218,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     }
   }
 
-  setupAddonManager(managerWindow) {
+  setupAddonManager(managerWindow, forceLoad = false) {
     if (!managerWindow) {
       return;
     }
@@ -317,7 +233,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
       managerWindow[this.uniqueRandomID] = {};
       managerWindow[this.uniqueRandomID].hasAddonManagerEventListeners = true;
     }
-    this.handleEvent(managerWindow);
+    if (forceLoad) this.handleEvent(managerWindow);
   }
 
   getMessenger(context) {
@@ -418,35 +334,37 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
       onTabPersist(aTab) {},
       onTabRestored(aTab) {},
       onTabSwitched(aNewTab, aOldTab) {
-        self.setupAddonManager(self.getAddonManagerFromTab(aNewTab));
+        //self.setupAddonManager(self.getAddonManagerFromTab(aNewTab));
       },
       async onTabOpened(aTab) {
-        if (!aTab.pageLoaded) {
-          // await a location change if browser is not loaded yet
-          await new Promise((resolve) => {
-            let reporterListener = {
-              QueryInterface: ChromeUtils.generateQI([
-                "nsIWebProgressListener",
-                "nsISupportsWeakReference",
-              ]),
-              onStateChange() {},
-              onProgressChange() {},
-              onLocationChange(
-                /* in nsIWebProgress*/ aWebProgress,
-                /* in nsIRequest*/ aRequest,
-                /* in nsIURI*/ aLocation
-              ) {
-                aTab.browser.removeProgressListener(reporterListener);
-                resolve();
-              },
-              onStatusChange() {},
-              onSecurityChange() {},
-              onContentBlockingEvent() {},
-            };
-            aTab.browser.addProgressListener(reporterListener);
-          });
+        if (aTab.browser) {
+          if (!aTab.pageLoaded) {
+            // await a location change if browser is not loaded yet
+            await new Promise((resolve) => {
+              let reporterListener = {
+                QueryInterface: ChromeUtils.generateQI([
+                  "nsIWebProgressListener",
+                  "nsISupportsWeakReference",
+                ]),
+                onStateChange() {},
+                onProgressChange() {},
+                onLocationChange(
+                  /* in nsIWebProgress*/ aWebProgress,
+                  /* in nsIRequest*/ aRequest,
+                  /* in nsIURI*/ aLocation
+                ) {
+                  aTab.browser.removeProgressListener(reporterListener);
+                  resolve();
+                },
+                onStatusChange() {},
+                onSecurityChange() {},
+                onContentBlockingEvent() {},
+              };
+              aTab.browser.addProgressListener(reporterListener);
+            });
+          }
+          self.setupAddonManager(self.getAddonManagerFromTab(aTab));
         }
-        self.setupAddonManager(self.getAddonManagerFromTab(aTab));
       },
     };
 
@@ -667,7 +585,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                       "chrome://messenger/content/messenger.xhtml"
                   ) {
                     if (self.pathToOptionsPage) {
-                      if (self.getThunderbirdMajorVersion() < 78) {
+                      if (self.getThunderbirdVersion().major < 78) {
                         let element_addonPrefs = window.document.getElementById(
                           self.menu_addonPrefs_id
                         );
@@ -678,7 +596,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                       } else {
                         // Setup the options button/menu in the add-on manager, if it is already open.
                         self.setupAddonManager(
-                          self.getAddonManagerFromWindow(window)
+                          self.getAddonManagerFromWindow(window),
+                          true
                         );
                         // Add a tabmonitor, to be able to setup the options button/menu in the add-on manager.
                         self
@@ -1124,6 +1043,10 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
   }
 
   onShutdown(isAppShutdown) {
+    if (isAppShutdown) {
+      return; // the application gets unloaded anyway
+    }
+    
     // Unload from all still open windows
     let urls = Object.keys(this.registeredWindows);
     if (urls.length > 0) {
@@ -1135,7 +1058,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
             window.location.href ==
               "chrome://messenger/content/messenger.xhtml")
         ) {
-          if (this.getThunderbirdMajorVersion() < 78) {
+          if (this.getThunderbirdVersion().major < 78) {
             let element_addonPrefs = window.document.getElementById(
               this.menu_addonPrefs_id
             );
@@ -1165,7 +1088,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
               managerWindow.document.removeEventListener("update", this);
 
               let cards = this.getCards(managerWindow);
-              if (this.getThunderbirdMajorVersion() < 88) {
+              if (this.getThunderbirdVersion().major < 88) {
                 // Remove options menu in 78-87
                 for (let card of cards) {
                   let addonOptionsLegacyEntry = card.querySelector(
