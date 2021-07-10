@@ -24,8 +24,10 @@ pref("extensions.filtaquilla.javascriptActionBody.enabled", false);
 pref("extensions.filtaquilla.tonequilla.enabled", false);
 pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
 pref("extensions.filtaquilla.moveLater.enabled", false);
+pref("extensions.filtaquilla.regexpCaseInsensitive.enabled", true);
 // search terms
 pref("extensions.filtaquilla.SubjectRegexEnabled", true);
+pref("extensions.filtaquilla.BodyRegexEnabled", true);
 pref("extensions.filtaquilla.HeaderRegexEnabled", false);
 pref("extensions.filtaquilla.JavascriptEnabled", false);
 pref("extensions.filtaquilla.SearchBccEnabled", true);

@@ -16,6 +16,7 @@
 <!ENTITY checkSaveAttachmentEnabled.label "Save Attachments To">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "H">
 <!ENTITY checkAttachmentRegexEnabled.label "Attachment Name Regex Match">
+<!ENTITY checkRegexpCaseInsensitiveEnabled.label "Regex case-insensitive Match">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Save Message as File">
 <!ENTITY checkSaveMessageAsFileEnabled.accesskey "I">
 <!ENTITY checkTrainAsJunkEnabled.label "Train as Junk">
@@ -42,6 +43,8 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "X">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Action with Body">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkBodyRegexEnabled.label "Body Regexp match">
+<!ENTITY checkBodyRegexEnabled.accesskey "B">
 <!ENTITY checkTonequillaEnabled.label "Play Sound (Tonequilla)">
 <!ENTITY optionsIntro "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes.">
 <!ENTITY filterActions "Filter Actions">
