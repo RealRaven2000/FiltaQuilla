@@ -682,6 +682,7 @@
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
+                case "filtaquilla@mesquilla.com#bodyRegex":        // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
                 case "filtaquilla@mesquilla.com#folderName" :      
                   isPatched = patchFiltaQuillaTextbox(es);
@@ -720,6 +721,7 @@
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
+                case "filtaquilla@mesquilla.com#bodyRegex" :       // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
                 case "filtaquilla@mesquilla.com#folderName" :      
                   if (es.firstChild) {
@@ -801,6 +803,7 @@
           else if (["filtaquilla@mesquilla.com#subjectRegex",
                "filtaquilla@mesquilla.com#attachmentRegex",
                "filtaquilla@mesquilla.com#headerRegex",
+               "filtaquilla@mesquilla.com#bodyRegex",
                "filtaquilla@mesquilla.com#searchBcc",
                "filtaquilla@mesquilla.com#folderName"].includes(attType)) {
             if (el.firstChild.classList.contains("fq-textbox"))
@@ -826,9 +829,10 @@
       switch(attType) {
         case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
         case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
-        case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
-        case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
-        case "filtaquilla@mesquilla.com#folderName" :      
+        case "filtaquilla@mesquilla.com#headerRegex":      // fall-through
+        case "filtaquilla@mesquilla.com#bodyRegex":        // fall-through
+        case "filtaquilla@mesquilla.com#searchBcc":        // fall-through
+        case "filtaquilla@mesquilla.com#folderName":      
           isPatched = patchFiltaQuillaTextbox(searchValueItem);
           break;
         case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
