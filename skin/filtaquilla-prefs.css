@@ -35,6 +35,10 @@
   background: linear-gradient(to bottom, #fdd8b3 0%,#fea546 31%,#f47e00 61%,#fdc589 100%);
 }
 
+div.lineSpacer {
+  display: block;
+  border-bottom: 1px solid gray;
+}
 
 .customLogo {
   margin-left: 5px;

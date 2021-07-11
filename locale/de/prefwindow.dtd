@@ -16,6 +16,7 @@
 <!ENTITY checkSaveAttachmentEnabled.label "Anhänge abspeichern in">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "A">
 <!ENTITY checkAttachmentRegexEnabled.label "Anhangs-Namen vergleichen (Regulärer Ausdruck)">
+<!ENTITY checkRegexpCaseInsensitiveEnabled.label "Regulärer Ausdruck ohne Beachtung der Groß-/Kleinschreibung">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Mail als Datei abspeichern">
 <!ENTITY checkSaveMessageAsFileEnabled.accesskey "D">
 <!ENTITY checkTrainAsJunkEnabled.label "Als Junk markieren">
@@ -42,6 +43,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "O">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Aktion (mit body)">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkBodyRegexEnabled.label "Body Regulärer Ausdruck">
 <!ENTITY checkTonequillaEnabled.label "Klang abspielen (Tonequilla)">
 <!ENTITY optionsIntro "Aktivieren Sie alle Einträge die im 'Filter bearbeiten' Dialog angeboten werden sollen. Neustart erforderlich.">
 <!ENTITY filterActions "Filter Aktionen">

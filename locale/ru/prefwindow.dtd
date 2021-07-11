@@ -16,6 +16,7 @@
 <!ENTITY checkSaveAttachmentEnabled.label "Сохранить вложения в">
 <!ENTITY checkSaveAttachmentEnabled.accesskey "H">
 <!ENTITY checkAttachmentRegexEnabled.label "Совпадение с регэкспом имени вложения">
+<!ENTITY checkRegexpCaseInsensitiveEnabled.label "Regex без учета регистра Match">
 <!ENTITY checkSaveMessageAsFileEnabled.label "Сох">
 <!ENTITY checkSaveMessageAsFileEnabled.accesskey "I">
 <!ENTITY checkTrainAsJunkEnabled.label "Предположительно спам">
@@ -42,6 +43,7 @@
 <!ENTITY checkSubjectSuffixEnabled.accesskey "X">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript действие с телом письма">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
+<!ENTITY checkBodyRegexEnabled.label "Соответствие Body Regexp">
 <!ENTITY checkTonequillaEnabled.label "Проиграть звук (Tonequilla)">
 <!ENTITY optionsIntro "Включите желаемые пункты для диалогового окна «Правила фильтра». Перезапустите после изменения.">
 <!ENTITY filterActions "Действия фильтра">

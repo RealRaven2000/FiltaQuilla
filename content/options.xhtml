@@ -342,17 +342,25 @@
              
             </span>
             <span>
-              <checkbox id="checkBodyRegexEnabled" preference="BodyRegexEnabled" label="&checkBodyRegexEnabled.label;"
-                accesskey="&checkBodyRegexEnabled.accesskey;" />
-              <toolbarbutton class="helpLink" onclick="FiltaQuilla.Util.openHelpTab('body_regex');" />
-            </span>
-            <span>
-              <checkbox id="checkSubjectBodyRegexEnabled" preference="SubjectBodyRegexEnabled" label="&checkSubjectBodyRegexEnabled.label;"
-                accesskey="&checkSubjectBodyRegexEnabled.accesskey;" />
+              <checkbox id="checkSubjectBodyRegexEnabled" preference="SubjectBodyRegexEnabled" label="&checkSubjectBodyRegexEnabled.label;" />
               <toolbarbutton class="helpLink" onclick="FiltaQuilla.Util.openHelpTab('subjectbody_regex');" />
+            <span>
+              <checkbox id="checkBodyRegexEnabled" 
+                        preference="BodyRegexEnabled"
+                        label="&checkBodyRegexEnabled.label;"/>
+              <toolbarbutton
+                class="helpLink"
+                onclick="FiltaQuilla.Util.openHelpTab('body_regex');"
+                />
             </span>
 
 
+          </div>
+          <div height="10px" class="lineSpacer"/>
+          <div>
+            <checkbox id="checkRegexpCaseInsensitiveEnabled" 
+                      preference="regexpCaseInsensitiveEnabled"
+                      label="&checkRegexpCaseInsensitiveEnabled.label;"/>
           </div>
         </tabpanel>
         
