@@ -96,10 +96,20 @@ function loadPreferences() {
   util.logDebug("loadPreferences - finished.");
 }
 
+function onl10n() {
+  // [mx-l10n]
+  util.localize(window); // , {extra2: 'qf.label.donate'}
+}
+
 window.addEventListener("load", async () => {
   let val = await onLoad(); // If this pauses, then the onload handler will move onto the next item (it doesn't block).
   // callMyAsyncFunction has been completed.
 }, { once: true });
+
+window.document.addEventListener('DOMContentLoaded', 
+  async () => {
+  onl10n(); // If this pauses, then the onload handler will move onto the next item (it doesn't block).
+},  { once: true });
 
 
 window.addEventListener("unload", async () => {

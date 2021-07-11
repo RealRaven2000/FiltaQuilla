@@ -35,11 +35,10 @@
 <?xml-stylesheet href="chrome://messenger/skin/preferences/preferences.css" type="text/css" ?>
 <?xml-stylesheet href="resource://filtaquilla-skin/filtaquilla-prefs.css" type="text/css" ?>
 
-<!DOCTYPE prefwindow SYSTEM "chrome://filtaquilla/locale/prefwindow.dtd">
 <dialog id="filtaquillaPreferences"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         xmlns:html="http://www.w3.org/1999/xhtml"
-        title="&prefwindow.title;"
+        title="__MSG_prefwindow.title__"
         >
         
   <script type="application/javascript" src="chrome://filtaquilla/content/options.js"/>
@@ -49,7 +48,7 @@
     <spacer flex="5" />
     <label id="fq-options-header-version" tooltiptext="click for change log!" onclick="onVersionClick();"> </label>
   </hbox>
-  <prefpane id="pane1" label="&pane1.title;">
+  <prefpane id="pane1" label="__MSG_pane1.title__">
     <preferences>
       <preference id="subjectAppendEnabled" name="extensions.filtaquilla.subjectAppend.enabled" type="bool"/>
       <preference id="regexpCaseInsensitiveEnabled" name="extensions.filtaquilla.regexpCaseInsensitive.enabled" type="bool"/>
@@ -88,173 +87,178 @@
     <vbox>
     <tabbox id="filtaquillatabbox" flex="1">
       <tabs class="icontabs">
-        <tab label="&filterActions;" id="filterActionsTab"/>
-        <tab label="&searchTerms;" id="conditionsTab"/>
-        <tab label="&aboutAndSupport;" id="supportTab"/>
+        <tab label="__MSG_filterActions__" id="filterActionsTab"/>
+        <tab label="__MSG_searchTerms__" id="conditionsTab"/>
+        <tab label="__MSG_aboutAndSupport__" id="supportTab"/>
       </tabs>
 
       <tabpanels flex="1">
         <!-- Filter actions -->
         <tabpanel orient="vertical">
-          <label value="&optionsIntro;"/>
+          <label value="__MSG_optionsIntro__"/>
           <div id="actionsGrid" class="grid-container">
           
             <span>
               <checkbox id="checkSubjectAppendEnabled" preference="subjectAppendEnabled"
-                        label="&fq.subjectprepend;" accesskey="&fq.subjectprepend.access;"/>
+                        label="__MSG_fq.subjectprepend__" 
+                        accesskey="__MSG_fq.subjectprepend.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('prepend_subject');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
             <checkbox id="checkRemoveKeywordEnabled" preference="removeKeywordEnabled"
-                      label="&fq.removekeyword;" accesskey="&fq.removekeyword.access;"/>
+                      label="__MSG_fq.removekeyword__" 
+                      accesskey="__MSG_fq.removekeyword.access__"/>
             <checkbox id="checkRemoveFlaggedEnabled" preference="removeFlaggedEnabled"
-                      label="&fq.removeflagged;" accesskey="&fq.removeflagged.access;"/>
+                      label="__MSG_fq.removeflagged__"
+                      accesskey="__MSG_fq.removeflagged.access__"/>
             <span>
               <checkbox id="checknoBiffEnabled" preference="noBiffEnabled"
-                        label="&fq.nobiff;" accesskey="&fq.nobiff.access;"/>
+                        label="__MSG_fq.nobiff__" 
+                        accesskey="__MSG_fq.nobiff.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('do_not_notify');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
             <span>
               <checkbox id="checkCopyAsReadEnabled" preference="copyAsReadEnabled"
-                        label="&fq.copyAsRead;"
-                        accesskey="&fq.copyAsRead.access;"/>
+                        label="__MSG_fq.copyAsRead__"
+                        accesskey="__MSG_fq.copyAsRead.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('copy_as_read');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
             <checkbox id="checkMarkUnreadEnabled" preference="markUnreadEnabled"
-                      label="&fq.markUnread;"
-                      accesskey="&fq.markUnread.access;"/>
+                      label="__MSG_fq.markUnread__"
+                      accesskey="__MSG_fq.markUnread.access__"/>
             <checkbox id="checkMarkRepliedEnabled" preference="markRepliedEnabled"
-                      label="&fq.markReplied;"
-                      accesskey="&fq.markReplied.access;"/>
+                      label="__MSG_fq.markReplied__"
+                      accesskey="__MSG_fq.markReplied.access__"/>
             <span>
               <checkbox id="checkLaunchFileEnabled" preference="launchFileEnabled"
-                        label="&fq.launchFile;"
-                        accesskey="&fq.launchFile.access;"/>
+                        label="__MSG_fq.launchFile__"
+                        accesskey="__MSG_fq.launchFile.access__"/>
               <toolbarbutton
                 class="helpLink"
                 onclick="FiltaQuilla.Util.openHelpTab('launch_file');"
-                tooltiptext="&helpFeatureTip;"
+                tooltiptext="__MSG_helpFeatureTip__"
                 />
             </span>
 
             <span>
               <checkbox id="checkRunFileEnabled" preference="runFileEnabled"
-                        label="&fq.runFile;"
-                        accesskey="&fq.runFile.access;"/>
+                        label="__MSG_fq.runFile__"
+                        accesskey="__MSG_fq.runFile.access__"/>
               <toolbarbutton
                 class="helpLink"
                 onclick="FiltaQuilla.Util.openHelpTab('run_file');"
-                tooltiptext="&helpFeatureTip;"
+                tooltiptext="__MSG_helpFeatureTip__"
                 />
             </span>
             <span>
               <checkbox id="checkTrainAsJunkEnabled" preference="trainAsJunkEnabled"
-                        label="&fq.trainJunk;"
-                        accesskey="&fq.trainJunk.access;"/>
+                        label="__MSG_fq.trainJunk__"
+                        accesskey="__MSG_fq.trainJunk.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('train_as_junk');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
             <checkbox id="checkTrainAsGoodEnabled" preference="trainAsGoodEnabled"
-                      label="&fq.trainGood;"
-                      accesskey="&fq.trainGood.access;"/>
+                      label="__MSG_fq.trainGood__"
+                      accesskey="__MSG_fq.trainGood.access__"/>
             <checkbox id="checkPrintEnabled" preference="printEnabled"
-                      label="&fq.print;"
-                      accesskey="&fq.print.access;"/>
+                      label="__MSG_fq.print__"
+                      accesskey="__MSG_fq.print.access__"/>
 
             <span>
               <checkbox id="checkSubjectSuffixEnabled" preference="subjectSuffixEnabled"
-                        label="&fq.subjectappend;" accesskey="&fq.subjectappend.access;"/>
+                        label="__MSG_fq.subjectappend__" 
+                        accesskey="__MSG_fq.subjectappend.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('prepend_subject');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
             <span>
               <checkbox id="checkDetachAttachmentsEnabled" preference="detachAttachmentsEnabled"
-                        label="&fq.detachAttachments;"
-                        accesskey="&fq.detachAttachments.access;"/>
+                        label="__MSG_fq.detachAttachments__"
+                        accesskey="__MSG_fq.detachAttachments.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('detach_attachment');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
             <checkbox id="checkSaveMessageAsFileEnabled" preference="saveMessageAsFileEnabled"
-                      label="&fq.saveMsgAsFile;"
-                      accesskey="&fq.saveMsgAsFile.access;"/>
+                      label="__MSG_fq.saveMsgAsFile__"
+                      accesskey="__MSG_fq.saveMsgAsFile.access__"/>
             <span>
               <checkbox id="checkMoveLaterEnabled" preference="moveLaterEnabled"
-                        label="&fq.moveLater;"
-                        accesskey="&fq.moveLater.access;"/>
+                        label="__MSG_fq.moveLater__"
+                        accesskey="__MSG_fq.moveLater.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('move_later');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
             <checkbox id="checkAddSenderEnabled" preference="addSenderEnabled"
-                      label="&fq.addSender;"
-                      accesskey="&fq.addSender.access;"/>
+                      label="__MSG_fq.addSender__"
+                      accesskey="__MSG_fq.addSender.access__"/>
             <span>
               <checkbox id="checkSaveAttachmentEnabled" preference="saveAttachmentEnabled"
-                        label="&fq.saveAttachment;"
-                        accesskey="&fq.saveAttachment.access;"/>
+                        label="__MSG_fq.saveAttachment__"
+                        accesskey="__MSG_fq.saveAttachment.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('save_attachment');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
             <checkbox id="checkJavascriptActionEnabled" preference="javascriptActionEnabled"
-                      label="&fq.javascriptAction;"
-                      accesskey="&fq.javascriptAction.access;"/>
+                      label="__MSG_fq.javascriptAction__"
+                      accesskey="__MSG_fq.javascriptAction.access__"/>
             <span>
               <checkbox id="checkJavascriptActionBodyEnabled" preference="javascriptActionBodyEnabled"
-                        label="&checkJavascriptActionBodyEnabled.label;"
-                        accesskey="&checkJavascriptActionBodyEnabled.accesskey;"/>
+                        label="__MSG_checkJavascriptActionBodyEnabled.label__"
+                        accesskey="__MSG_checkJavascriptActionBodyEnabled.accesskey__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('javascript_action');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
 
             <checkbox id="checkTonequillaEnabled" 
                       preference="tonequillaEnabled"
-                      label="&fq.toneQuilla;"/>
+                      label="__MSG_fq.toneQuilla__"/>
           
           <!-- dummy row because I have complaints about size ? -->
             <spacer height="20px" />
           </div>
         </tabpanel>
         <tabpanel orient="vertical">
-          <label value="&optionsIntro;"/>
+          <label value="__MSG_optionsIntro__"/>
           <div id="conditionsGrid" class="grid-container">
 
             <span>
               <checkbox id="checkSubjectRegexEnabled" preference="SubjectRegexEnabled"
-                        label="&fq.subjectRegex;"
-                        accesskey="&fq.subjectRegex.access;"/>
+                        label="__MSG_fq.subjectRegex__"
+                        accesskey="__MSG_fq.subjectRegex.access__"/>
               <toolbarbutton
                 class="helpLink"
                 onclick="FiltaQuilla.Util.openHelpTab('subject_regex');"
@@ -262,57 +266,57 @@
             </span>
             <span>
               <checkbox id="checkHeaderRegexEnabled" preference="HeaderRegexEnabled"
-                        label="&fq.hdrRegex;"
-                        accesskey="&fq.hdrRegex.access;"/>
+                        label="__MSG_fq.hdrRegex__"
+                        accesskey="__MSG_fq.hdrRegex.access__"/>
               <toolbarbutton
                 class="helpLink"
                 onclick="FiltaQuilla.Util.openHelpTab('header_regex');"
-                tooltiptext="&helpFeatureTip;"
+                tooltiptext="__MSG_helpFeatureTip__"
                 />
             </span>
             <checkbox id="fq.Bcc" preference="SearchBccEnabled"
-                      label="&fq.Bcc;"
-                      accesskey="&fq.Bcc.access;"/>
+                      label="__MSG_fq.Bcc__"
+                      accesskey="__MSG_fq.Bcc.access__"/>
             <span>
               <checkbox id="checkJavascriptEnabled" preference="JavascriptEnabled"
-                        label="&checkJavascriptEnabled.label;"
-                        accesskey="&checkJavascriptEnabled.accesskey;"/>
+                        label="__MSG_checkJavascriptEnabled.label__"
+                        accesskey="__MSG_checkJavascriptEnabled.accesskey__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('match_javascript');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
 
             <span>
               <checkbox id="checkThreadHeadTagEnabled" preference="ThreadHeadTagEnabled"
-                        label="&fq.threadHeadTag;"
-                        accesskey="&fq.threadHeadTag.access;"/>
+                        label="__MSG_fq.threadHeadTag__"
+                        accesskey="__MSG_fq.threadHeadTag.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('tag_thread_head');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
             <span>
               <checkbox id="checkThreadAnyTagEnabled" preference="ThreadAnyTagEnabled"
-                        label="&fq.threadAnyTag;"
-                        accesskey="&fq.threadAnyTag.access;"/>
+                        label="__MSG_fq.threadAnyTag__"
+                        accesskey="__MSG_fq.threadAnyTag.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('tag_thread_msg');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
             <span style="grid-column: 3 / span 2;">
               <checkbox id="checkFolderNameEnabled" preference="FolderNameEnabled"
-                        label="&fq.folderName;"
-                        accesskey="&fq.folderName.access;"/>
+                        label="__MSG_fq.folderName__"
+                        accesskey="__MSG_fq.folderName.access__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('match_folder_name');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
@@ -326,19 +330,19 @@
             <span>
               <checkbox id="checkAttachRegexEnabled"
                         preference="AttachmentRegexEnabled"
-                        label="&fq.attachmentRegex;"
+                        label="__MSG_fq.attachmentRegex__"
                         tooltip="As long as the filter mechanims in Thunderbird is synchronous, we cannot read attachmeent info during filtering."
                         disabled="true"/>
               <toolbarbutton
                   class="helpLinkDisabled"
                   onclick="FiltaQuilla.Util.openHelpTab('match_attachmentname');"
-                  tooltiptext="&helpFeatureTip;"
+                  tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
             <span>
               <checkbox id="checkBodyRegexEnabled" 
                         preference="BodyRegexEnabled"
-                        label="&fq.bodyRegex;"/>
+                        label="__MSG_fq.bodyRegex__"/>
               <toolbarbutton
                 class="helpLink"
                 onclick="FiltaQuilla.Util.openHelpTab('body_regex');"
@@ -351,7 +355,7 @@
           <div>
             <checkbox id="checkRegexpCaseInsensitiveEnabled" 
                       preference="regexpCaseInsensitiveEnabled"
-                      label="&fq.regex.caseInsensitive;"/>
+                      label="__MSG_fq.regex.caseInsensitive__"/>
           </div>
         </tabpanel>
         
@@ -363,7 +367,7 @@
 								 id="mesquillaLink"
 								 class="buttonLink"
 								 onclick="FiltaQuilla.Util.openHelpTab();window.close();">
-								 &supportPage;
+								 __MSG_supportPage__
 							</a>
 							<spacer flex="1" />
 						</hbox>
@@ -376,7 +380,7 @@
                 </td>
                 <td>
                   <p class="linkDescription">
-                    &supportPage_desc;
+                    __MSG_supportPage_desc__
                   </p>
                 </td>
               </tr>
@@ -390,7 +394,7 @@
 								 id="quickFiltersLink"
 								 class="buttonLink"
 								 onclick="FiltaQuilla.Util.openLinkInTab('https://addons.thunderbird.net/addon/quickfilters/');window.close();">
-								 &quickFiltersPage;
+								 __MSG_quickFiltersPage__
 							</a>
 							<spacer flex="1" />
 						</hbox>
@@ -403,7 +407,7 @@
                 </td>
                 <td>
                   <p class="linkDescription">
-                    &quickFiltersPage_desc;
+                    __MSG_quickFiltersPage_desc__
                   </p>
                 </td>
               </tr>
@@ -417,7 +421,7 @@
 								 id="licenseLink"
 								 class="buttonLink"
 								 onclick="FiltaQuilla.Util.openLinkInTab('https://quickfilters.quickfolders.org/filtaquilla.html#donate');window.close();">
-                 &supportFiltaquilla;
+                 __MSG_supportFiltaquilla__
 							</a>
 							<spacer flex="1" />
 						</hbox>
@@ -430,7 +434,7 @@
                 </td>
                 <td>
                   <p class="linkDescription">
-                    &supportFiltaquilla_desc;
+                    __MSG_supportFiltaquilla_desc__
                   </p>
                 </td>
               </tr>

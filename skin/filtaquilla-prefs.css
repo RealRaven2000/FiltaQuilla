@@ -181,8 +181,9 @@ hbox.title spacer {
 .grid-container {
   align-content: start;
   display: grid;
-  grid-row-gap: 5px;
+  grid-row-gap: 1px;
   grid-column-gap: 5px;
+  padding-top: 12px;
 }
 
 #actionsGrid,

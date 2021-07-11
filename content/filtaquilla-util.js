@@ -406,7 +406,6 @@ FiltaQuilla.Util = {
 	},
   
   // l10n
-
   getBundleString: function getBundleString(id, defaultText) { 
 		let s="";
 		try {
@@ -418,6 +417,24 @@ FiltaQuilla.Util = {
 		}
 		return s;
 	} ,
+  
+  localize: function(window, buttons = null) {
+    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+    var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+    
+    let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
+    Services.scriptloader.loadSubScript(
+      extension.rootURI.resolve("content/i18n.js"),
+      window,
+      "UTF-8"
+    );
+    window.i18n.updateDocument({extension: extension});
+    if (buttons) {
+      for (let [name, label] of Object.entries(buttons)) {
+        window.document.documentElement.getButton(name).label =  extension.localeData.localizeMessage(label); // apply
+      }
+    }
+  } ,  
   
 	VersionProxy: async function VersionProxy(win) {
     const util = FiltaQuilla.Util,
@@ -515,7 +532,6 @@ FiltaQuilla.Util = {
 														.getService(Components.interfaces.nsIVersionComparator);
 		 return (versionComparator.compare(a, b) < 0);
 	} ,	
-
 
 } // Util
 

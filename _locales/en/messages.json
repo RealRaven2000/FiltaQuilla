@@ -1,199 +1,461 @@
 {
-  "extensionName": {
-    "message": "FiltaQuilla",
-    "description": "Name of the extension."
+  "_l10nstatus": {
+    "message": "SPLASH+UI"
   },
-
-  "extensionDescription": {
-    "message": "Quickly generate mail filters on the fly, by dragging and dropping mails and analyzing their attributes.",
-    "description": "Description of the extension."
+  "aboutAndSupport": {
+    "message": "About FiltaQuilla / Help"
   },
-
-  "notificationTitle": {
-    "message": "Click notification",
-    "description": "Title of the click notification."
-  },
-  
-  "window-title": {
-    "message": "Welcome to $addonName$",
-    "description": "page title. first placeholder will be replaced with Add-on name",
-    "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
-    }
-  },
-
-  "heading-updated": {
-    "message": "$addonName$ Updated Successfully",
-    "description": "page heading. first placeholder will be replaced with Add-on name",
-    "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
-    }
-  },
-  
-  "heading-installed": {
-    "message": "Successfully installed $addonName$",
-    "description": "page heading. first placeholder will be replaced with Add-on name",
-    "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
-    }
-  },
-  
-  
-  "thanks-for-updating-intro": {
-    "message": "Thank you for updating $addonName$.",
-    "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
-    }
-  },
-  
-  "thanks-for-installing-intro": {
-    "message": "Thank you for installing $addonName$.",
-    "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
-    }
-  },  
-  
- "active-version-info" : {
-    "message": "You are now running {boldStart} version $addonVer$ {boldEnd} on Thunderbird $appVer$.",
+  "active-version-info": {
     "description": "The boldStart and boldEnd parts will be replaced with html tags",
+    "message": "You are now running {boldStart} version $addonVer$ {boldEnd} on Thunderbird $appVer$.",
     "placeholders": {
-      "addonVer" : {
-        "content" : "$1", 
-        "example" : "Version 1.1"
+      "addonVer": {
+        "content": "$1",
+        "example": "Version 1.1"
       },
-      "appVer" : {
-        "content" : "$2",
-        "example" : "78.0b4"
+      "appVer": {
+        "content": "$2",
+        "example": "78.0b4"
       }
-      
-    }
-  },  
-  
-  "time-and-effort": { 
-    "message": "My Add-ons require fundamental changes in order to remain compatible with the Mozilla platform. My development team at Github (Realraven2000, opto and paenglab) is working diligently to restore full functionality for $addonName$ .",
-    "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
     }
   },
-  
-  "hours-effort" : {
+  "addon-authors-struggle": {
+    "message": "To continue to be useful, Add-on developers now need to fund the resources needed to fix and rewrite so that our users can keep benefiting from the functionality we bring to the table."
+  },
+  "btn-extend-license": {
+    "message": "I want to extend my license by one year"
+  },
+  "btn-renew-license": {
+    "message": "I want to renew my license"
+  },
+  "btn-want-a-license": {
+    "message": "I want to buy a license"
+  },
+  "btn-want-to-donate": {
+    "message": "I want to help with a one time donation."
+  },
+  "checkJavascriptActionBodyEnabled.accesskey": {
+    "message": "Y"
+  },
+  "checkJavascriptActionBodyEnabled.label": {
+    "message": "Javascript Action with Body"
+  },
+  "checkJavascriptEnabled.accesskey": {
+    "message": "J"
+  },
+  "checkJavascriptEnabled.label": {
+    "message": "Javascript"
+  },
+  "cost-of-independence": {
+    "message": "Software development costs time and money - unlike many platform apps, Add-ons are not written by large corporations, nor are they sponsored in any way by Mozilla."
+  },
+  "default": {
+    "message": "Use default"
+  },
+  "donate": {
+    "message": "Help out with a one time donation."
+  },
+  "donate-heading": {
+    "message": "Help by Donating!"
+  },
+  "editJavascript": {
+    "message": "Edit Javascript"
+  },
+  "enabled": {
+    "message": "Enabled"
+  },
+  "extend-your-license": {
+    "message": "Consider extending your license by a year."
+  },
+  "extensionDescription": {
+    "description": "Description of the extension.",
+    "message": "Quickly generate mail filters on the fly, by dragging and dropping mails and analyzing their attributes."
+  },
+  "extensionName": {
+    "description": "Name of the extension.",
+    "message": "FiltaQuilla"
+  },
+  "extensions.filtaquilla.description": {
+    "message": "Mail filter custom actions"
+  },
+  "filtaquilla.applyIncomingFilters": {
+    "message": "Apply Incoming Filters"
+  },
+  "filtaquilla.applyIncomingFilters.accesskey": {
+    "message": "F"
+  },
+  "filtaquilla.editJavascript": {
+    "message": "Edit JavaScript…"
+  },
+  "filtaquilla.enabled": {
+    "message": "Enabled"
+  },
+  "filtaquilla.filters": {
+    "message": "Filters"
+  },
+  "filtaquilla.inherit": {
+    "message": "Inherit"
+  },
+  "filtaquilla.javascriptAction.name": {
+    "message": "Javascript Action"
+  },
+  "filtaquilla.javascriptActionBody.name": {
+    "message": "Javascript Action with Body"
+  },
+  "filtaquilla.launcher.launch": {
+    "message": "Launch the File!"
+  },
+  "filtaquilla.launcher.select": {
+    "message": "Select a File…"
+  },
+  "filtaquilla.playSound": {
+    "message": "Play Sound"
+  },
+  "filtaquilla.runProgram.select": {
+    "message": "Select a Program…"
+  },
+  "filtaquilla.runProgram.title": {
+    "message": "Select a Program to run"
+  },
+  "filtaquilla.selectFolder.btn": {
+    "message": "Pick Folder…"
+  },
+  "filtaquilla.selectFolder.title": {
+    "message": "Select a Folder"
+  },
+  "filtaquilla.tone.select": {
+    "message": "Select a Sound File…"
+  },
+  "filterActions": {
+    "message": "Filter Actions"
+  },
+  "fq.Bcc": {
+    "message": "Bcc"
+  },
+  "fq.Bcc.access": {
+    "message": "B"
+  },
+  "fq.addSender": {
+    "message": "Add Sender to Address List"
+  },
+  "fq.addSender.access": {
+    "message": "L"
+  },
+  "fq.attachmentRegex": {
+    "message": "Attachment Name Regex Match"
+  },
+  "fq.bodyRegex": {
+    "message": "Body Regexp match"
+  },
+  "fq.copyAsRead": {
+    "message": "Copy As Read"
+  },
+  "fq.copyAsRead.access": {
+    "message": "C"
+  },
+  "fq.detachAttachments": {
+    "message": "Detach Attachments To"
+  },
+  "fq.detachAttachments.access": {
+    "message": "D"
+  },
+  "fq.filtaquilla.mustSelectFolder": {
+    "message": "You must select a target folder"
+  },
+  "fq.folderName": {
+    "message": "Folder Name"
+  },
+  "fq.folderName.access": {
+    "message": "F"
+  },
+  "fq.hdrRegex": {
+    "message": "Header Regex Match"
+  },
+  "fq.hdrRegex.access": {
+    "message": "H"
+  },
+  "fq.javascript": {
+    "message": "Javascript"
+  },
+  "fq.javascriptAction": {
+    "message": "Javascript Action"
+  },
+  "fq.javascriptAction.access": {
+    "message": "V"
+  },
+  "fq.launchFile": {
+    "message": "Launch File"
+  },
+  "fq.launchFile.access": {
+    "message": "F"
+  },
+  "fq.markReplied": {
+    "message": "Mark Replied"
+  },
+  "fq.markReplied.access": {
+    "message": "E"
+  },
+  "fq.markUnread": {
+    "message": "Mark As Unread"
+  },
+  "fq.markUnread.access": {
+    "message": "M"
+  },
+  "fq.moveLater": {
+    "message": "Move Later"
+  },
+  "fq.moveLater.access": {
+    "message": "A"
+  },
+  "fq.nobiff": {
+    "message": "Do Not Notify"
+  },
+  "fq.nobiff.access": {
+    "message": "N"
+  },
+  "fq.print": {
+    "message": "Print"
+  },
+  "fq.print.access": {
+    "message": "P"
+  },
+  "fq.regex.caseInsensitive": {
+    "message": "Regex case-insensitive Match"
+  },
+  "fq.removeflagged": {
+    "message": "Remove Star"
+  },
+  "fq.removeflagged.access": {
+    "message": "S"
+  },
+  "fq.removekeyword": {
+    "message": "Remove Tag"
+  },
+  "fq.removekeyword.access": {
+    "message": "O"
+  },
+  "fq.runFile": {
+    "message": "Run Program"
+  },
+  "fq.runFile.access": {
+    "message": "R"
+  },
+  "fq.saveAttachment": {
+    "message": "Save Attachments To"
+  },
+  "fq.saveAttachment.access": {
+    "message": "H"
+  },
+  "fq.saveMsgAsFile": {
+    "message": "Save Message as File"
+  },
+  "fq.saveMsgAsFile.access": {
+    "message": "I"
+  },
+  "fq.subjectRegex": {
+    "message": "Subject Regex Match"
+  },
+  "fq.subjectRegex.access": {
+    "message": "S"
+  },
+  "fq.subjectappend": {
+    "message": "Append to Subject"
+  },
+  "fq.subjectappend.access": {
+    "message": "A"
+  },
+  "fq.subjectprepend": {
+    "message": "Prepend to Subject"
+  },
+  "fq.subjectprepend.access": {
+    "message": "U"
+  },
+  "fq.threadAnyTag": {
+    "message": "Tag of Thread Messages"
+  },
+  "fq.threadAnyTag.access": {
+    "message": "T"
+  },
+  "fq.threadHeadTag": {
+    "message": "Tag of Thread Head"
+  },
+  "fq.threadHeadTag.access": {
+    "message": "H"
+  },
+  "fq.toneQuilla": {
+    "message": "Play Sound (Tonequilla)"
+  },
+  "fq.trainGood": {
+    "message": "Train As Good"
+  },
+  "fq.trainGood.access": {
+    "message": "G"
+  },
+  "fq.trainJunk": {
+    "message": "Train as Junk"
+  },
+  "fq.trainJunk.access": {
+    "message": "J"
+  },
+  "heading-installed": {
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "message": "Successfully installed $addonName$",
+    "placeholders": {
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
+  },
+  "heading-updated": {
+    "description": "page heading. first placeholder will be replaced with Add-on name",
+    "message": "$addonName$ Updated Successfully",
+    "placeholders": {
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
+  },
+  "helpFeatureTip": {
+    "message": "Show Details on this feature"
+  },
+  "hours-effort": {
     "message": "We have already spent significant resources (over $hoursSpent$ hours) on the conversion project - and there is more work in fixing regressions and issues caused by changes in Thunderbird.",
     "placeholders": {
-      "hoursSpent" : {
-        "content" : "$1", 
-        "example" : "250"
-      }    
-    }    
-  },
-  
-  "support-suggestion" : {
-    "message": "So that $addonName$ stays functional and alive, please do it a vital favor:",
-    "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
+      "hoursSpent": {
+        "content": "$1",
+        "example": "250"
+      }
     }
   },
-  
-  "purchase-a-license" : {
-    "message" : "Purchase a license."
-  }, 
-      
-  "renew-your-license" : {
-    "message" : "Renew your license."
-  },  
-  
-  "extend-your-license" : {
-    "message" : "Consider extending your license by a year."
-  },  
-  
-  "donate" : {
-    "message" : "Help out with a one time donation."
-  },   
-   
-  "purchase-heading" : {
-    "message" : "Buying a License!"
-  }, 
-  
-  "support-preference" : {
-    "message": "This is the preferred way of supporting $addonName$.",
+  "indexInGlobalDatabase": {
+    "message": "Index in Global Database"
+  },
+  "inherit": {
+    "message": "Inherit"
+  },
+  "inheritedProperties": {
+    "message": "Inherited Properties"
+  },
+  "label-remind-me": {
+    "message": "Remind me again in $countDays$ days.",
     "placeholders": {
-      "addonName" : {
-        "content" : "$1", 
-        "example" : "FiltaQuilla"
-      }    
+      "countDays": {
+        "content": "$1",
+        "example": "10"
+      }
     }
-  }, 
-
+  },
+  "mozillas-basic-platform": {
+    "message": "Mozilla only provides a basic platform for delivering our software to you, the end users. If we need to ask our users for payment or support we cannot do this from addons.thunderbird.net - it is not an 'app store' with built in paywalls or license management like iTunes or google play."
+  },
+  "notificationTitle": {
+    "description": "Title of the click notification.",
+    "message": "Click notification"
+  },
   "ongoing-work": {
     "message": "The necessary alterations to switch to the new legacy-less model (mail experiment) already took multiple weeks and are still ongoing, while some functions could be impacted. With a complex Add-on like this, expensive work becomes inevitable. Please help us with this."
   },
-  
-  "btn-want-a-license": {
-    "message" : "I want to buy a license"
-  } ,
-
-  "btn-extend-license": {
-    "message" : "I want to extend my license by one year"
-  } ,
-
-
-  "btn-renew-license": {
-    "message" : "I want to renew my license"
-  } ,
-
-
-  "donate-heading" : {
-    "message" : "Help by Donating!"
-  } ,
-
-  "cost-of-independence" : {
-    "message" : "Software development costs time and money - unlike many platform apps, Add-ons are not written by large corporations, nor are they sponsored in any way by Mozilla."
-  } ,
-  
-  "mozillas-basic-platform" : {
-    "message" : "Mozilla only provides a basic platform for delivering our software to you, the end users. If we need to ask our users for payment or support we cannot do this from addons.thunderbird.net - it is not an 'app store' with built in paywalls or license management like iTunes or google play."
-  } ,
-  
-  "addon-authors-struggle" : {
-    "message" : "To continue to be useful, Add-on developers now need to fund the resources needed to fix and rewrite so that our users can keep benefiting from the functionality we bring to the table."
-  } ,
-  
-  "btn-want-to-donate" : {
-    "message" : "I want to help with a one time donation."
-  } ,
-  
-  "translated-by-google" : {
-    "message": "translations provided by google",
-    "description": "disclaimer."
+  "optionsIntro": {
+    "message": "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes."
   },
-  
-  "label-remind-me" : {
-    "message": "Remind me again in $countDays$ days.",
+  "pane1.title": {
+    "message": "FiltaQuilla Preferences"
+  },
+  "prefPanel-inheritPane": {
+    "message": "Inherited Properties"
+  },
+  "prefwindow.title": {
+    "message": "FiltaQuilla preferences"
+  },
+  "purchase-a-license": {
+    "message": "Purchase a license."
+  },
+  "purchase-heading": {
+    "message": "Buying a License!"
+  },
+  "quickFiltersPage": {
+    "message": "Get quickFilters!"
+  },
+  "quickFiltersPage_desc": {
+    "message": "Download this awesome Add-on to turbo-charge your filtering. quickFilters makes filter definition and management a breeze."
+  },
+  "renew-your-license": {
+    "message": "Renew your license."
+  },
+  "searchTerms": {
+    "message": "Search Terms"
+  },
+  "support-preference": {
+    "message": "This is the preferred way of supporting $addonName$.",
     "placeholders": {
-      "countDays" : {
-        "content" : "$1", 
-        "example" : "10"
-      }    
-    }    
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
+  },
+  "support-suggestion": {
+    "message": "So that $addonName$ stays functional and alive, please do it a vital favor:",
+    "placeholders": {
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
+  },
+  "supportFiltaquilla": {
+    "message": "Support FiltaQuilla"
+  },
+  "supportFiltaquilla_desc": {
+    "message": "FiltaQuilla is free to download and use - the best way to support the development team is by buying a license for quickFilters Pro. It is the most awesome filter extensions for managing and creating filters in a super convenient way."
+  },
+  "supportPage": {
+    "message": "Visit Support Page"
+  },
+  "supportPage_desc": {
+    "message": "This Page describes the different actions and conditions you can add to mail filters with FiltaQuilla."
+  },
+  "thanks-for-installing-intro": {
+    "message": "Thank you for installing $addonName$.",
+    "placeholders": {
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
+  },
+  "thanks-for-updating-intro": {
+    "message": "Thank you for updating $addonName$.",
+    "placeholders": {
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
+  },
+  "time-and-effort": {
+    "message": "My Add-ons require fundamental changes in order to remain compatible with the Mozilla platform. My development team at Github (Realraven2000, opto and paenglab) is working diligently to restore full functionality for $addonName$ .",
+    "placeholders": {
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
+  },
+  "translated-by-google": {
+    "description": "disclaimer.",
+    "message": "translations provided by google"
+  },
+  "window-title": {
+    "description": "page title. first placeholder will be replaced with Add-on name",
+    "message": "Welcome to $addonName$",
+    "placeholders": {
+      "addonName": {
+        "content": "$1",
+        "example": "FiltaQuilla"
+      }
+    }
   }
 }
