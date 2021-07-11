@@ -50,13 +50,6 @@ FiltaQuilla.Util = {
     return this._stringBundleSvc;
   },
   
-  get Properties() {
-    if (!this._properties)
-      this._properties = this.StringBundleSvc.createBundle("chrome://filtaquilla/locale/filtaquilla.properties")
-        .QueryInterface(Components.interfaces.nsIStringBundle);
-    return this._properties;
-  },
-  
   
 	get prefs () {
     const Ci = Components.interfaces,
@@ -406,22 +399,25 @@ FiltaQuilla.Util = {
 	},
   
   // l10n
-  getBundleString: function getBundleString(id, defaultText) { 
-		let s="";
-		try {
-			s= this.Properties.GetStringFromName(id);
-		}
-		catch(e) {
-			s = defaultText;
-			this.logToConsole ("Could not retrieve bundle string: " + id + "");
-		}
+  getBundleString: function getBundleString(id, defaultText, substitions = []) { 
+    var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+    let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
+    let localized = extension.localeData.localizeMessage(id, substitions);
+    
+    let s = "";
+    if (localized) {
+      s = localized;
+    }
+    else {
+      s = defaultText;
+      this.logToConsole ("Could not retrieve bundle string: " + id + "");
+    }
 		return s;
 	} ,
   
   localize: function(window, buttons = null) {
     var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
     var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
-    
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     Services.scriptloader.loadSubScript(
       extension.rootURI.resolve("content/i18n.js"),

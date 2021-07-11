@@ -4,13 +4,6 @@ Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-ut
 Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla.js", window, "UTF-8");
 
 function onLoad(activatedWhileWindowOpen) {
-  //from filtaquilla.xul
-  WL.injectElements(`
-    <stringbundleset id="stringbundleset">
-    <stringbundle id="filtaquilla_strings" src="chrome://filtaquilla/locale/filtaquilla.properties"/>
-    </stringbundleset>
-  `); 
-  
   window.filtaquilla.onLoad(); // do we get an event to pass?
 }
 
