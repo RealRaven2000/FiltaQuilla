@@ -8,6 +8,11 @@
 	box-shadow: 4px 4px 3px rgba(80,80,80,0.3);
 }
 
+#actionsGrid checkbox,
+#conditionsGrid checkbox {
+  white-space: nowrap;
+}
+
 #mesquillaLink {
 	background: linear-gradient(to bottom, #67b6ce 0%,#316c8c 31%,#066dab 100%);
 	color: #FFF;

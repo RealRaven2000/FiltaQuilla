@@ -1,50 +1,50 @@
 <!ENTITY prefwindow.title "FiltaQuilla preferences">
 <!ENTITY pane1.title "FiltaQuilla Preferences">
 <!-- filter actions -->
-<!ENTITY checkMoveLaterEnabled.label "Move Later">
-<!ENTITY checkMoveLaterEnabled.accesskey "A">
-<!ENTITY checkCopyAsReadEnabled.label "Copy As Read">
-<!ENTITY checkCopyAsReadEnabled.accesskey "C">
-<!ENTITY checkDetachAttachmentsEnabled.label "Detach Attachments To">
-<!ENTITY checkDetachAttachmentsEnabled.accesskey "D">
-<!ENTITY checkMarkRepliedEnabled.label "Mark Replied">
-<!ENTITY checkMarkRepliedEnabled.accesskey "E">
-<!ENTITY checkLaunchFileEnabled.label "Launch File">
-<!ENTITY checkLaunchFileEnabled.accesskey "F">
-<!ENTITY checkTrainAsGoodEnabled.label "Train As Good">
-<!ENTITY checkTrainAsGoodEnabled.accesskey "G">
-<!ENTITY checkSaveAttachmentEnabled.label "Save Attachments To">
-<!ENTITY checkSaveAttachmentEnabled.accesskey "H">
-<!ENTITY checkAttachmentRegexEnabled.label "Attachment Name Regex Match">
-<!ENTITY checkRegexpCaseInsensitiveEnabled.label "Regex case-insensitive Match">
-<!ENTITY checkSaveMessageAsFileEnabled.label "Save Message as File">
-<!ENTITY checkSaveMessageAsFileEnabled.accesskey "I">
-<!ENTITY checkTrainAsJunkEnabled.label "Train as Junk">
-<!ENTITY checkTrainAsJunkEnabled.accesskey "J">
-<!ENTITY checkAddSenderEnabled.label "Add Sender to Address List">
-<!ENTITY checkAddSenderEnabled.accesskey "L">
-<!ENTITY checkMarkUnreadEnabled.label "Mark As Unread">
-<!ENTITY checkMarkUnreadEnabled.accesskey "M">
-<!ENTITY checkNoBiffEnabled.label "Do Not Notify">
-<!ENTITY checkNoBiffEnabled.accesskey "N">
-<!ENTITY checkRemoveKeywordEnabled.label "Remove Tag">
-<!ENTITY checkRemoveKeywordEnabled.accesskey "O">
-<!ENTITY checkPrintEnabled.label "Print">
-<!ENTITY checkPrintEnabled.accesskey "P">
-<!ENTITY checkRunFileEnabled.label "Run Program">
-<!ENTITY checkRunFileEnabled.accesskey "R">
-<!ENTITY checkRemoveFlaggedEnabled.label "Remove Star">
-<!ENTITY checkRemoveFlaggedEnabled.accesskey "S">
-<!ENTITY checkSubjectAppendEnabled.label "Prepend to Subject">
-<!ENTITY checkSubjectAppendEnabled.accesskey "U">
-<!ENTITY checkJavascriptActionEnabled.label "Javascript Action">
-<!ENTITY checkJavascriptActionEnabled.accesskey "V">
-<!ENTITY checkSubjectSuffixEnabled.label "Suffix to Subject">
-<!ENTITY checkSubjectSuffixEnabled.accesskey "X">
+<!ENTITY fq.moveLater "Move Later">
+<!ENTITY fq.moveLater.access "A">
+<!ENTITY fq.copyAsRead "Copy As Read">
+<!ENTITY fq.copyAsRead.access "C">
+<!ENTITY fq.detachAttachments "Detach Attachments To">
+<!ENTITY fq.detachAttachments.access "D">
+<!ENTITY fq.markReplied "Mark Replied">
+<!ENTITY fq.markReplied.access "E">
+<!ENTITY fq.launchFile "Launch File">
+<!ENTITY fq.launchFile.access "F">
+<!ENTITY fq.trainGood "Train As Good">
+<!ENTITY fq.trainGood.access "G">
+<!ENTITY fq.saveAttachment "Save Attachments To">
+<!ENTITY fq.saveAttachment.access "H">
+<!ENTITY fq.attachmentRegex "Attachment Name Regex Match">
+<!ENTITY fq.regex.caseInsensitive "Regex case-insensitive Match">
+<!ENTITY fq.saveMsgAsFile "Save Message as File">
+<!ENTITY fq.saveMsgAsFile.access "I">
+<!ENTITY fq.trainJunk "Train as Junk">
+<!ENTITY fq.trainJunk.access "J">
+<!ENTITY fq.addSender "Add Sender to Address List">
+<!ENTITY fq.addSender.access "L">
+<!ENTITY fq.markUnread "Mark As Unread">
+<!ENTITY fq.markUnread.access "M">
+<!ENTITY fq.nobiff "Do Not Notify">
+<!ENTITY fq.nobiff.access "N">
+<!ENTITY fq.removekeyword "Remove Tag">
+<!ENTITY fq.removekeyword.access "O">
+<!ENTITY fq.print "Print">
+<!ENTITY fq.print.access "P">
+<!ENTITY fq.runFile "Run Program">
+<!ENTITY fq.runFile.access "R">
+<!ENTITY fq.removeflagged "Remove Star">
+<!ENTITY fq.removeflagged.access "S">
+<!ENTITY fq.subjectprepend "Prepend to Subject">
+<!ENTITY fq.subjectprepend.access "U">
+<!ENTITY fq.javascriptAction "Javascript Action">
+<!ENTITY fq.javascriptAction.access "V">
+<!ENTITY fq.subjectappend "Append to Subject">
+<!ENTITY fq.subjectappend.access "A">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Action with Body">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
-<!ENTITY checkBodyRegexEnabled.label "Body Regexp match">
-<!ENTITY checkTonequillaEnabled.label "Play Sound (Tonequilla)">
+<!ENTITY fq.bodyRegex "Body Regexp match">
+<!ENTITY fq.toneQuilla "Play Sound (Tonequilla)">
 <!ENTITY optionsIntro "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes.">
 <!ENTITY filterActions "Filter Actions">
 <!ENTITY searchTerms "Search Terms">
@@ -56,19 +56,19 @@
 <!ENTITY supportFiltaquilla "Support FiltaQuilla">
 <!ENTITY supportFiltaquilla_desc "FiltaQuilla is free to download and use - the best way to support the development team is by buying a license for quickFilters Pro. It is the most awesome filter extensions for managing and creating filters in a super convenient way.">
 <!-- search terms -->
-<!ENTITY checkSearchBccEnabled.label "Bcc">
-<!ENTITY checkSearchBccEnabled.accesskey "B">
-<!ENTITY checkFolderNameEnabled.label "Folder Name">
-<!ENTITY checkFolderNameEnabled.accesskey "F">
-<!ENTITY checkThreadHeadTagEnabled.label "Tag of Thread Head">
-<!ENTITY checkThreadHeadTagEnabled.accesskey "D">
-<!ENTITY checkHeaderRegexEnabled.label "Header Regex Match">
-<!ENTITY checkHeaderRegexEnabled.accesskey "H">
+<!ENTITY fq.Bcc "Bcc">
+<!ENTITY fq.Bcc.access "B">
+<!ENTITY fq.folderName "Folder Name">
+<!ENTITY fq.folderName.access "F">
+<!ENTITY fq.threadHeadTag "Tag of Thread Head">
+<!ENTITY fq.threadHeadTag.access "H">
+<!ENTITY fq.hdrRegex "Header Regex Match">
+<!ENTITY fq.hdrRegex.access "H">
 <!ENTITY checkJavascriptEnabled.label "Javascript">
 <!ENTITY checkJavascriptEnabled.accesskey "J">
-<!ENTITY checkSubjectRegexEnabled.label "Subject Regex Match">
-<!ENTITY checkSubjectRegexEnabled.accesskey "S">
-<!ENTITY checkThreadAnyTagEnabled.label  "Tag of Thread Messages">
-<!ENTITY checkThreadAnyTagEnabled.accesskey "T">
+<!ENTITY fq.subjectRegex "Subject Regex Match">
+<!ENTITY fq.subjectRegex.access "S">
+<!ENTITY fq.threadAnyTag  "Tag of Thread Messages">
+<!ENTITY fq.threadAnyTag.access "T">
 <!ENTITY helpFeatureTip "Show Details on this feature">
 

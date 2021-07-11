@@ -1,50 +1,50 @@
 <!ENTITY prefwindow.title "Einstellungen für FiltaQuilla">
 <!ENTITY pane1.title "Einstellungen für FiltaQuilla">
 <!-- search terms -->
-<!ENTITY checkMoveLaterEnabled.label "Später verschieben">
-<!ENTITY checkMoveLaterEnabled.accesskey "S">
-<!ENTITY checkCopyAsReadEnabled.label "Gelesene Kopie erstellen">
-<!ENTITY checkCopyAsReadEnabled.accesskey "K">
-<!ENTITY checkDetachAttachmentsEnabled.label "Anhänge abtrennen nach">
-<!ENTITY checkDetachAttachmentsEnabled.accesskey "B">
-<!ENTITY checkMarkRepliedEnabled.label "Als gelesen markieren">
-<!ENTITY checkMarkRepliedEnabled.accesskey "M">
-<!ENTITY checkLaunchFileEnabled.label "Datei ausführen">
-<!ENTITY checkLaunchFileEnabled.accesskey "F">
-<!ENTITY checkTrainAsGoodEnabled.label "Als kein Junk kategorisieren">
-<!ENTITY checkTrainAsGoodEnabled.accesskey "N">
-<!ENTITY checkSaveAttachmentEnabled.label "Anhänge abspeichern in">
-<!ENTITY checkSaveAttachmentEnabled.accesskey "A">
-<!ENTITY checkAttachmentRegexEnabled.label "Anhangs-Namen vergleichen (Regulärer Ausdruck)">
-<!ENTITY checkRegexpCaseInsensitiveEnabled.label "Regulärer Ausdruck ohne Beachtung der Groß-/Kleinschreibung">
-<!ENTITY checkSaveMessageAsFileEnabled.label "Mail als Datei abspeichern">
-<!ENTITY checkSaveMessageAsFileEnabled.accesskey "D">
-<!ENTITY checkTrainAsJunkEnabled.label "Als Junk markieren">
-<!ENTITY checkTrainAsJunkEnabled.accesskey "J">
-<!ENTITY checkAddSenderEnabled.label "Absender zu Liste hinzufügen">
-<!ENTITY checkAddSenderEnabled.accesskey "L">
-<!ENTITY checkMarkUnreadEnabled.label "Als ungelesen markieren">
-<!ENTITY checkMarkUnreadEnabled.accesskey "U">
-<!ENTITY checkNoBiffEnabled.label "Nicht benachrichtigen">
-<!ENTITY checkNoBiffEnabled.accesskey "N">
-<!ENTITY checkRemoveKeywordEnabled.label "Schlagwort entfernen">
-<!ENTITY checkRemoveKeywordEnabled.accesskey "w">
-<!ENTITY checkPrintEnabled.label "Ausdrucken">
-<!ENTITY checkPrintEnabled.accesskey "K">
-<!ENTITY checkRunFileEnabled.label "Programm ausführen">
-<!ENTITY checkRunFileEnabled.accesskey "R">
-<!ENTITY checkRemoveFlaggedEnabled.label "Stern entfernen">
-<!ENTITY checkRemoveFlaggedEnabled.accesskey "S">
-<!ENTITY checkSubjectAppendEnabled.label "Betreff Präfix">
-<!ENTITY checkSubjectAppendEnabled.accesskey "X">
-<!ENTITY checkJavascriptActionEnabled.label "Javascript Aktion">
-<!ENTITY checkJavascriptActionEnabled.accesskey "J">
-<!ENTITY checkSubjectSuffixEnabled.label "Betreff Postfix">
-<!ENTITY checkSubjectSuffixEnabled.accesskey "O">
+<!ENTITY fq.moveLater "Später verschieben">
+<!ENTITY fq.moveLater.access "S">
+<!ENTITY fq.copyAsRead "Gelesene Kopie erstellen">
+<!ENTITY fq.copyAsRead.access "K">
+<!ENTITY fq.detachAttachments "Anhänge abtrennen nach">
+<!ENTITY fq.detachAttachments.access "B">
+<!ENTITY fq.markReplied "Als gelesen markieren">
+<!ENTITY fq.markReplied.access "M">
+<!ENTITY fq.launchFile "Datei ausführen">
+<!ENTITY fq.launchFile.access "F">
+<!ENTITY fq.trainGood "Als kein Junk kategorisieren">
+<!ENTITY fq.trainGood.access "N">
+<!ENTITY fq.saveAttachment "Anhänge abspeichern in">
+<!ENTITY fq.saveAttachment.access "A">
+<!ENTITY fq.attachmentRegex "Anhangs-Namen vergleichen (Regulärer Ausdruck)">
+<!ENTITY fq.regex.caseInsensitive "Regulärer Ausdruck ohne Beachtung der Groß-/Kleinschreibung">
+<!ENTITY fq.saveMsgAsFile "Mail als Datei abspeichern">
+<!ENTITY fq.saveMsgAsFile.access "D">
+<!ENTITY fq.trainJunk "Als Junk markieren">
+<!ENTITY fq.trainJunk.access "J">
+<!ENTITY fq.addSender "Absender zu Liste hinzufügen">
+<!ENTITY fq.addSender.access "L">
+<!ENTITY fq.markUnread "Als ungelesen markieren">
+<!ENTITY fq.markUnread.access "U">
+<!ENTITY fq.nobiff "Nicht benachrichtigen">
+<!ENTITY fq.nobiff.access "N">
+<!ENTITY fq.removekeyword "Schlagwort entfernen">
+<!ENTITY fq.removekeyword.access "w">
+<!ENTITY fq.print "Ausdrucken">
+<!ENTITY fq.print.access "K">
+<!ENTITY fq.runFile "Programm ausführen">
+<!ENTITY fq.runFile.access "R">
+<!ENTITY fq.removeflagged "Stern entfernen">
+<!ENTITY fq.removeflagged.access "S">
+<!ENTITY fq.subjectprepend "Betreff Präfix">
+<!ENTITY fq.subjectprepend.access "X">
+<!ENTITY fq.javascriptAction "Javascript Aktion">
+<!ENTITY fq.javascriptAction.access "J">
+<!ENTITY fq.subjectappend "Betreff Postfix">
+<!ENTITY fq.subjectappend.access "O">
 <!ENTITY checkJavascriptActionBodyEnabled.label "Javascript Aktion (mit body)">
 <!ENTITY checkJavascriptActionBodyEnabled.accesskey "Y">
-<!ENTITY checkBodyRegexEnabled.label "Body Regulärer Ausdruck">
-<!ENTITY checkTonequillaEnabled.label "Klang abspielen (Tonequilla)">
+<!ENTITY fq.bodyRegex "Body Regulärer Ausdruck">
+<!ENTITY fq.toneQuilla "Klang abspielen (Tonequilla)">
 <!ENTITY optionsIntro "Aktivieren Sie alle Einträge die im 'Filter bearbeiten' Dialog angeboten werden sollen. Neustart erforderlich.">
 <!ENTITY filterActions "Filter Aktionen">
 <!ENTITY searchTerms "Suchbegriffe">
@@ -56,18 +56,18 @@
 <!ENTITY supportFiltaquilla "FiltaQuilla Unterstützen">
 <!ENTITY supportFiltaquilla_desc "FiltaQuilla kann kostenlos heruntergeladen und verwendet werden. Der beste Weg, das Entwicklungsteam zu unterstützen, ist der Kauf einer Lizenz für quickFilters Pro. Es ist die beeindruckendste Filtererweiterung für die Verwaltung und Erstellung von Filtern auf äußerst praktische Weise.">
 <!-- search terms -->
-<!ENTITY checkSearchBccEnabled.label "Blindkopie (Bcc)">
-<!ENTITY checkSearchBccEnabled.accesskey "B">
-<!ENTITY checkFolderNameEnabled.label "Verzeichnisname">
-<!ENTITY checkFolderNameEnabled.accesskey "V">
-<!ENTITY checkThreadHeadTagEnabled.label "Schlagwort der Ersten Mail der Unterhaltung">
-<!ENTITY checkThreadHeadTagEnabled.accesskey "U">
-<!ENTITY checkHeaderRegexEnabled.label "Header vergleichen (Regulärer Ausdruck)">
-<!ENTITY checkHeaderRegexEnabled.accesskey "R">
+<!ENTITY fq.Bcc "Blindkopie (Bcc)">
+<!ENTITY fq.Bcc.access "B">
+<!ENTITY fq.folderName "Verzeichnisname">
+<!ENTITY fq.folderName.access "V">
+<!ENTITY fq.threadHeadTag "Schlagwort der Ersten Mail der Unterhaltung">
+<!ENTITY fq.threadHeadTag.access "U">
+<!ENTITY fq.hdrRegex "Header vergleichen (Regulärer Ausdruck)">
+<!ENTITY fq.hdrRegex.access "R">
 <!ENTITY checkJavascriptEnabled.label "JavaScript">
 <!ENTITY checkJavascriptEnabled.accesskey "J">
-<!ENTITY checkSubjectRegexEnabled.label "Betreff vergleichen (Regulärer Ausdruck)">
-<!ENTITY checkSubjectRegexEnabled.accesskey "V">
-<!ENTITY checkThreadAnyTagEnabled.label "Schlagwort aller Mails der Unterhaltung">
-<!ENTITY checkThreadAnyTagEnabled.accesskey "T">
+<!ENTITY fq.subjectRegex "Betreff vergleichen (Regulärer Ausdruck)">
+<!ENTITY fq.subjectRegex.access "V">
+<!ENTITY fq.threadAnyTag "Schlagwort aller Mails der Unterhaltung">
+<!ENTITY fq.threadAnyTag.access "T">
 <!ENTITY helpFeatureTip "Mehr Informationen über diese Funktion">

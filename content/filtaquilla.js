@@ -155,7 +155,7 @@
     self.subjectAppend =
     {
       id: "filtaquilla@mesquilla.com#subjectAppend",
-      name: self.strings.GetStringFromName("filtaquilla.subjectappend.name"),
+      name: self.strings.GetStringFromName("fq.subjectprepend"),
 
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -179,7 +179,7 @@
     self.subjectSuffix =
     {
       id: "filtaquilla@mesquilla.com#subjectSuffix",
-      name: self.strings.GetStringFromName("filtaquilla.subjectsuffix.name"),
+      name: self.strings.GetStringFromName("fq.subjectappend"),
 
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -203,7 +203,7 @@
     self.removeKeyword =
     {
       id: "filtaquilla@mesquilla.com#removeTag",
-      name: self.strings.GetStringFromName("filtaquilla.removekeyword.name"),
+      name: self.strings.GetStringFromName("fq.removekeyword"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
                 .folder.removeKeywordsFromMessages(aMsgHdrs, aActionValue);
@@ -219,7 +219,7 @@
     self.removeFlagged =
     {
       id: "filtaquilla@mesquilla.com#removeStar",
-      name: self.strings.GetStringFromName("filtaquilla.removeflagged.name"),
+      name: self.strings.GetStringFromName("fq.removeflagged"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
                 .folder.markMessagesFlagged(aMsgHdrs, false);
@@ -233,7 +233,7 @@
     self.markUnread =
     {
       id: "filtaquilla@mesquilla.com#markUnread",
-      name: self.strings.GetStringFromName("filtaquilla.markunread.name"),
+      name: self.strings.GetStringFromName("fq.markUnread"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr)
                 .folder.markMessagesRead(aMsgHdrs, false);
@@ -247,7 +247,7 @@
     self.markReplied =
     {
       id: "filtaquilla@mesquilla.com#markReplied",
-      name: self.strings.GetStringFromName("filtaquilla.markreplied.name"),
+      name: self.strings.GetStringFromName("fq.markReplied"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // what a pain, the folder function does not take an array like all others!
         for (var index = 0; index < aMsgHdrs.length; index++)
@@ -265,7 +265,7 @@
     self.noBiff =
     {
       id: "filtaquilla@mesquilla.com#noBiff",
-      name: self.strings.GetStringFromName("filtaquilla.nobiff.name"),
+      name: self.strings.GetStringFromName("fq.nobiff"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var folder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
         var numNewMessages = folder.getNumNewMessages(false);
@@ -284,7 +284,7 @@
       self.copyAsRead =
       {
         id: "filtaquilla@mesquilla.com#copyAsRead",
-        name: self.strings.GetStringFromName("filtaquilla.copyasread.name"),
+        name: self.strings.GetStringFromName("fq.copyAsRead"),
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
           _aListener = aListener;
           var srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
@@ -306,7 +306,7 @@
           var msgFolder = MailUtils.getExistingFolder(aActionValue, false);
           if (!msgFolder || !msgFolder.canFileMessages)
           {
-            return self.strings.GetStringFromName("filtaquilla.mustSelectFolder");
+            return self.strings.GetStringFromName("fq.filtaquilla.mustSelectFolder");
           }
           return null;
         },
@@ -402,7 +402,7 @@
     self.launchFile =
     {
       id: "filtaquilla@mesquilla.com#launchFile",
-      name: self.strings.GetStringFromName("filtaquilla.launchfile.name"),
+      name: self.strings.GetStringFromName("fq.launchFile"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         var file = Cc["@mozilla.org/file/local;1"]
@@ -421,7 +421,7 @@
     self.runFile =
     {
       id: "filtaquilla@mesquilla.com#runFile",
-      name: self.strings.GetStringFromName("filtaquilla.runfile.name"),
+      name: self.strings.GetStringFromName("fq.runFile"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"]
                      .createInstance(Ci.nsILocalFile || Ci.nsIFile);
@@ -465,7 +465,7 @@
     self.trainAsJunk =
     {
       id: "filtaquilla@mesquilla.com#trainAsJunk",
-      name: self.strings.GetStringFromName("filtaquilla.trainasjunk.name"),
+      name: self.strings.GetStringFromName("fq.trainJunk"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         _trainJunkFilter(true, aMsgHdrs, aMsgWindow);
       },
@@ -480,7 +480,7 @@
     self.trainAsGood =
     {
       id: "filtaquilla@mesquilla.com#trainAsGood",
-      name: self.strings.GetStringFromName("filtaquilla.trainasgood.name"),
+      name: self.strings.GetStringFromName("fq.trainGood"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         _trainJunkFilter(false, aMsgHdrs, aMsgWindow);
       },
@@ -495,7 +495,7 @@
     self.print =
     {
       id: "filtaquilla@mesquilla.com#print",
-      name: self.strings.GetStringFromName("filtaquilla.print.name"),
+      name: self.strings.GetStringFromName("fq.print"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // print me
         let count = aMsgHdrs.length;
@@ -564,7 +564,7 @@
     self.addSender =
     {
       id: "filtaquilla@mesquilla.com#addSender",
-      name: self.strings.GetStringFromName("filtaquilla.addSender.name"),
+      name: self.strings.GetStringFromName("fq.addSender"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         
         // Helper function, removed in Tb78
@@ -628,7 +628,7 @@
     self.saveAttachment =
     {
       id: "filtaquilla@mesquilla.com#saveAttachment",
-      name: self.strings.GetStringFromName("filtaquilla.saveAttachment.name"),
+      name: self.strings.GetStringFromName("fq.saveAttachment"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
@@ -758,7 +758,7 @@
     self.detachAttachments =
     {
       id: "filtaquilla@mesquilla.com#detachAttachments",
-      name: self.strings.GetStringFromName("filtaquilla.detachAttachments.name"),
+      name: self.strings.GetStringFromName("fq.detachAttachments"),
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let directory = Cc["@mozilla.org/file/local;1"]
@@ -821,7 +821,7 @@
     self.saveMessageAsFile =
     {
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
-      name: self.strings.GetStringFromName("filtaquilla.saveMessageAsFile.name"),
+      name: self.strings.GetStringFromName("fq.saveMsgAsFile"),
       apply: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         // allow specifying directory with suffix of |htm
         let type = "eml";
@@ -850,7 +850,7 @@
     self.moveLater =
     {
       id: "filtaquilla@mesquilla.com#moveLater",
-      name: self.strings.GetStringFromName("filtaquilla.moveLater.name"),
+      name: self.strings.GetStringFromName("fq.moveLater"),
       apply: function(aMsgHdrs, aActionValue, copyListener, filterType, msgWindow) {
         let srcFolder = aMsgHdrs.queryElementAt(0, Ci.nsIMsgDBHdr).folder;
         let dstFolder = MailUtils.getExistingFolder(aActionValue, false);
@@ -877,7 +877,7 @@
     self.folderName =
     {
       id: "filtaquilla@mesquilla.com#folderName",
-      name: self.strings.GetStringFromName("filtaquilla.folderName.name"),
+      name: self.strings.GetStringFromName("fq.folderName"),
       getEnabled: function folderName_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
@@ -933,7 +933,7 @@
     self.searchBcc =
     {
       id: "filtaquilla@mesquilla.com#searchBcc",
-      name: self.strings.GetStringFromName("filtaquilla.searchBcc.name"),
+      name: self.strings.GetStringFromName("fq.Bcc"),
       getEnabled: function searchBcc_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
@@ -1033,7 +1033,7 @@
     self.subjectRegex =
     {
       id: "filtaquilla@mesquilla.com#subjectRegex",
-      name: self.strings.GetStringFromName("filtaquilla.subjectregex.name"),
+      name: self.strings.GetStringFromName("fq.subjectRegex"),
       getEnabled: function subjectRegEx_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
@@ -1126,7 +1126,7 @@
 		self.attachmentRegex =
 		{
       id: "filtaquilla@mesquilla.com#attachmentRegex",
-      name: self.strings.GetStringFromName("filtaquilla.attachmentregex.name"),
+      name: self.strings.GetStringFromName("fq.attachmentRegex"),
       getEnabled: function attachRegEx_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
@@ -1186,7 +1186,7 @@
     self.headerRegex =
     {
       id: "filtaquilla@mesquilla.com#headerRegex",
-      name: self.strings.GetStringFromName("filtaquilla.headerregex.name"),
+      name: self.strings.GetStringFromName("fq.hdrRegex"),
       getEnabled: function headerRegEx_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
@@ -1234,7 +1234,7 @@
     self.bodyRegex =
     {
       id: "filtaquilla@mesquilla.com#bodyRegex",
-      name: self.strings.GetStringFromName("filtaquilla.bodyregex.name"),
+      name: self.strings.GetStringFromName("fq.bodyRegex"),
       getEnabled: function bodyRegEx_getEnabled(scope, op) {
         return _isLocalSearch(scope);
       },
@@ -1310,7 +1310,7 @@
     self.javascript =
     {
       id: "filtaquilla@mesquilla.com#javascript",
-      name: self.strings.GetStringFromName("filtaquilla.javascript.name"),
+      name: self.strings.GetStringFromName("fq.javascript"),
       getEnabled: function javascript_getEnabled(scope, op) {
         return true;
       },
@@ -1337,7 +1337,7 @@
     self.threadHeadTag =
     {
       id: "filtaquilla@mesquilla.com#threadheadtag",
-      name: self.strings.GetStringFromName("filtaquilla.threadheadtag.name"),
+      name: self.strings.GetStringFromName("fq.threadHeadTag"),
       getEnabled: function threadHeadTag_getEnabled(scope, op) {
         return true;
       },
@@ -1399,7 +1399,7 @@
     self.threadAnyTag =
     {
       id: "filtaquilla@mesquilla.com#threadanytag",
-      name: self.strings.GetStringFromName("filtaquilla.threadanytag.name"),
+      name: self.strings.GetStringFromName("fq.threadAnyTag"),
       getEnabled: function threadAnyTag_getEnabled(scope, op) {
         return true;
       },
