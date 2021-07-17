@@ -66,8 +66,6 @@
       <preference id="printEnabled" name="extensions.filtaquilla.print.enabled" type="bool"/>
       <preference id="addSenderEnabled" name="extensions.filtaquilla.addSender.enabled" type="bool"/>
       <preference id="saveAttachmentEnabled" name="extensions.filtaquilla.saveAttachment.enabled" type="bool"/>
-      <preference id="AttachmentRegexEnabled" name="extensions.filtaquilla.AttachmentRegexEnabled" type="bool"/>
-      <preference id="BodyRegexEnabled" name="extensions.filtaquilla.BodyRegexEnabled" type="bool"/>
       <preference id="detachAttachmentsEnabled" name="extensions.filtaquilla.detachAttachments.enabled" type="bool"/>
       <preference id="javascriptActionEnabled" name="extensions.filtaquilla.javascriptAction.enabled" type="bool"/>
       <preference id="javascriptActionBodyEnabled" name="extensions.filtaquilla.javascriptActionBody.enabled" type="bool"/>
@@ -77,6 +75,9 @@
       <preference id="moveLaterEnabled" name="extensions.filtaquilla.moveLater.enabled" type="bool"/>
       <preference id="SubjectRegexEnabled" name="extensions.filtaquilla.SubjectRegexEnabled" type="bool"/>
       <preference id="HeaderRegexEnabled" name="extensions.filtaquilla.HeaderRegexEnabled" type="bool"/>
+      <preference id="AttachmentRegexEnabled" name="extensions.filtaquilla.AttachmentRegexEnabled" type="bool"/>
+      <preference id="BodyRegexEnabled" name="extensions.filtaquilla.BodyRegexEnabled" type="bool"/>
+      <preference id="SubjectBodyRegexEnabled" name="extensions.filtaquilla.SubjectBodyRegexEnabled" type="bool"/>
       <preference id="JavascriptEnabled" name="extensions.filtaquilla.JavascriptEnabled" type="bool"/>
       <preference id="SearchBccEnabled" name="extensions.filtaquilla.SearchBccEnabled" type="bool"/>
       <preference id="FolderNameEnabled" name="extensions.filtaquilla.FolderNameEnabled" type="bool"/>
@@ -338,6 +339,11 @@
                   onclick="FiltaQuilla.Util.openHelpTab('match_attachmentname');"
                   tooltiptext="__MSG_helpFeatureTip__"
                   />
+            </span>
+            <span>
+              <checkbox id="checkSubjectBodyRegexEnabled" preference="SubjectBodyRegexEnabled" label="__MSG_fq.subjectBodyRegex__" />
+              <toolbarbutton class="helpLink" onclick="FiltaQuilla.Util.openHelpTab('subjectbody_regex');" />
+
             </span>
             <span>
               <checkbox id="checkBodyRegexEnabled" 

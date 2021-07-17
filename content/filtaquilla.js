@@ -43,7 +43,9 @@
   const Cc = Components.classes,
         Ci = Components.interfaces,
         Cu = Components.utils,
-				util = FiltaQuilla.Util;
+				util = FiltaQuilla.Util,
+        regexUtil = FiltaQuilla.RegexUtil
+        ;
 
 
   // parameters for MoveLater
@@ -80,6 +82,11 @@
 				Matches = nsMsgSearchOp.Matches,
 				DoesntMatch = nsMsgSearchOp.DoesntMatch;
 
+  const REGEX_CASE_SENSITIVE_FLAG = "c", //use this to override global case insensitive flag 
+                                         //(js doesnt have that, but tcl does)
+        REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
+        ;
+        
   let maxThreadScan = 20; // the largest number of thread messages that we will examine
   
   // Enabling of filter actions.
@@ -110,12 +117,18 @@
   // Enabling of search terms.
   let SubjectRegexEnabled = false,
       HeaderRegexEnabled = false,
-      BodyRegexEnabled = false,
       JavascriptEnabled = false,
       SearchBccEnabled = false,
       ThreadHeadTagEnabled = false,
       ThreadAnyTagEnabled = false,
       FolderNameEnabled = false;
+      
+  let 
+      BodyRegexEnabled = false,
+      SubjectBodyRegexEnabled = false,
+      regexShowAlertSuccessValueEnabled = false
+  ;
+  
 	// [#5] AG new condition - attachment name regex
 	let AttachmentRegexEnabled = false,
       moveLaterTimers = {}, // references to timers used in moveLater action
@@ -1053,16 +1066,18 @@
         }
       },
       match: function subjectRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-        var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
-            
-        switch (aSearchOp)
-        {
+        let subjectRegexCallback = new regexUtil.RegexCallback(RegExp(searchValue, searchFlags));
+        subjectRegexCallback.handleSubject(aMsgHdr);
+
+        util.logDebug(_getRegEx(aSearchValue));
+        util.logDebug(RegExp(_getRegEx(aSearchValue)));
+        switch (aSearchOp){
           case Matches:
-            return RegExp(searchValue, searchFlags).test(subject);
+            return subjectRegexCallback.foundSubject;
           case DoesntMatch:
-            return !RegExp(searchValue, searchFlags).test(subject);
+            return !subjectRegexCallback.foundSubject;
         }
       },
     };
@@ -1228,6 +1243,18 @@
       }
     };
     
+
+    function ReadBodyCallback(matchRegex) {
+      regexUtil.RegexCallback.apply(this, arguments);
+      this.callback = regexUtil.RegexCallback.prototype.parseBody;
+      this.found = function found(){
+        return this.foundBody;
+      }
+    }
+
+    ReadBodyCallback.prototype = regexUtil.RegexCallback.prototype;
+    ReadBodyCallback.prototype.constructor = ReadBodyCallback;
+
     self.bodyRegex =
     {
       id: "filtaquilla@mesquilla.com#bodyRegex",
@@ -1246,7 +1273,7 @@
         }
         return [Matches, DoesntMatch];
       },
-      match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: /*async*/ function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
       //(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
     
         //console.log("aMsgHdrs:", aMsgHdrs);
@@ -1258,49 +1285,236 @@
         
         var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
         decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
-        console.log("decoded: ", decodedMessageId);
+        //console.log("decoded: ", decodedMessageId);
         
-        //  msgAdded: function(aMsgHdr) {
-        // if( !aMsgHdr.isRead ){
+        //  msgAdded: function(aMsgHdr) { is it necessary here, purpose of that?
+        // if( !aMsgHdr.isRead ){ //uncomment to check only unread msgs, i.e. 
         //Get folder in case it's not a plaintext
         //@see https://stackoverflow.com/questions/27265271/how-to-intercept-incoming-email-and-retrieve-message-body-in-thunderbird
         let folder = aMsgHdr.folder;
-        let msgBody;
-        let result = MsgHdrToMimeMessage(aMsgHdr, null, function (_aMsgHdr, aMimeMessage) {
-            // do something with aMimeMessage:
-            //alert("the message body : " + aMimeMessage.coerceBodyToPlaintext(folder));
+        let msgBody, result;
+        var subject = aMsgHdr.mime2DecodedSubject;
+        /**
+       * Starts retrieval of a MimeMessage instance for the given message header.
+       *  Your callback will be called with the message header you provide and the
+       *
+       * @param aMsgHdr The message header to retrieve the body for and build a MIME
+       *     representation of the message.
+       * @param aCallbackThis The (optional) 'this' to use for your callback function.
+       * @param aCallback The callback function to invoke on completion of message
+       *     parsing or failure.  The first argument passed will be the nsIMsgDBHdr
+       *     you passed to this function.  The second argument will be the MimeMessage
+       *     instance resulting from the processing on success, and null on failure.
+       * @param [aAllowDownload=false] Should we allow the message to be downloaded
+       *     for this streaming request?  The default is false, which means that we
+       *     require that the message be available offline.  If false is passed and
+       *     the message is not available offline, we will propagate an exception
+       *     thrown by the underlying code.
+       */
+       //@see https://hg.mozilla.org/comm-central/file/d2d158a8c71e45f3da486e2252886a489f0f85d5/mailnews/db/gloda/modules/MimeMessage.jsm
+        /*let result = MsgHdrToMimeMessage(aMsgHdr, 
+          null
+          , 
+          function (_aMsgHdr, aMimeMessage) {
             msgBody = aMimeMessage.coerceBodyToPlaintext(folder);
-            //alert(aMimeMessage.allUserAttachments.length);
-            //alert(aMimeMessage.size);
             let searchValue, searchFlags;
             [searchValue, searchFlags] = _getRegEx(aSearchValue);
             
             let r = RegExp(searchValue, searchFlags).test(msgBody);
+              
             console.log("body matches: ", r);
-            if(r === true){
-             alert(msgBody);
+              if((r === true && aSearchOp == Matches) || (r === false && aSearchOp == DoesntMatch) ){
+                 triggerAlertControl(msgBody,decodedMessageId);
             }
+              
             return r;
-        }, true);
+          }, 
+          true
+        );
+        */
+        //#todo add regex option for alert
+          
         //  }
         //}
-        console.log("result: ", result);
-        console.log("body: ", msgBody);
+        //////
+        debugger;
+
+
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
             
-            console.log("body matches: ", RegExp(searchValue, searchFlags).test(msgBody));
-        switch (aSearchOp)
-        {
-          case Matches:
-            //return RegExp(searchValue, searchFlags).test(subject);
-          case DoesntMatch:
-            //return !RegExp(searchValue, searchFlags).test(subject);
-        }
+        console.log("aSearchOp: ", aSearchOp == Matches, "; searchValue: ",searchValue,"; searchFlags: ",searchFlags,regexShowAlertSuccessValueEnabled ? "a" : "");
+				
+				let callbackObject = new ReadBodyCallback(new RegExp(searchValue, searchFlags));
+				    callbackObject.alert = regexShowAlertSuccessValueEnabled;
+				    
+				// message must be available offline!
+				let isMatched = false;
+				try {
+          let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);
+				
+					/*self._mimeMsg.*/MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, true );
+
+					if (!callbackObject.processed){ 
+					  //if(!callbackObject.alert){
+              //workaround, to give time to retrieve data
+						  alert("subject: "+subject+" <br> messageId: " + decodedMessageId);
+              //sorry, we cannot read body without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."+callbackObject.alert);
+					  //}else{alert("");}
+					  
+						//let ress = /*await*/ pollCallbackResult(callbackObject); //poll is working, but not returning here as main function exits before
+					}
+
+					console.log("found: ", /*await*/ callbackObject);
+					isMatched = callbackObject.found();
+					  
+					if(IsMatched(aSearchOp, isMatched)){
+            if(callbackObject.alert){
+              triggerAlertControl(callbackObject.body, decodedMessageId);
+            }
+            console.log("Body matched: ", callbackObject);
+            return true;
+          }
+				}
+				catch (ex) {
+          util.logException("could not bodyRegEx_match" ,ex);
+				}
+				
+        console.log("!found: ", callbackObject);
         
-        return false;//not implemented yet
+        return false;//not matched or failed
       }
     };
+
+    /**
+     * Normalize match status. 
+     * 
+     * @param {*} aSearchOp 
+     * @param {*} isMatched 
+     * @returns 
+     */
+    function IsMatched(aSearchOp, isMatched){
+      if(((aSearchOp == Matches) && isMatched) || ((aSearchOp == DoesntMatch) && !isMatched)){
+        return true;
+      }
+      return false;
+    }
+
+    self.subjectBodyRegex =
+        {
+      id: "filtaquilla@mesquilla.com#subjectBodyRegex",
+      name: util.getBundleString("fq.subjectBodyRegex"),
+      getEnabled: function subjectBodyRegex_getEnabled(scope, op) {
+        return _isLocalSearch(scope);
+      },
+      needsBody: true,
+      getAvailable: function subjectBodyRegex_getAvailable(scope, op) {
+        return _isLocalSearch(scope) && SubjectBodyRegexEnabled;
+      },
+      getAvailableOperators: function subjectBodyRegex_getAvailableOperators(scope) {
+        if (!_isLocalSearch(scope)){  return [];  }
+        return [Matches, DoesntMatch];
+      },
+      match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
+        debugger;
+        let isMatched = false;
+
+        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+          decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
+        var subject = aMsgHdr.mime2DecodedSubject;
+
+        let searchValue, searchFlags;
+        [searchValue, searchFlags] = _getRegEx(aSearchValue);
+              
+        let subjectRegexCallback = new regexUtil.RegexCallback(RegExp(searchValue, searchFlags));
+          subjectRegexCallback.alert = regexShowAlertSuccessValueEnabled;
+          subjectRegexCallback.handleSubject(aMsgHdr);
+
+        isMatched = subjectRegexCallback.foundSubject;
+
+        if(IsMatched(aSearchOp, isMatched)){
+          if(subjectRegexCallback.alert){
+            triggerAlertControl(subject, decodedMessageId);
+          }
+          console.log("(Subject)Body matched: ", subjectRegexCallback);
+          return true;
+        }
+        
+        console.log("aSearchOp: ", aSearchOp == Matches, "; searchValue: ",searchValue,"; searchFlags: ",searchFlags,regexShowAlertSuccessValueEnabled ? "a" : "");
+				
+				let  callbackObject = new ReadBodyCallback("");
+          callbackObject.regex = subjectRegexCallback.regex;
+          callbackObject.alert = subjectRegexCallback.alert;
+				    
+				// message must be available offline!?
+				try {
+          let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);
+				
+				  /*self._mimeMsg.*/MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, true );
+
+					if (!callbackObject.processed){ 
+            //workaround, to give time to retrieve data
+            //alert("sorry, we cannot read body without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."+callbackObject.alert);
+            alert("subject: "+subject+" <br> messageId: " + decodedMessageId);
+          }
+
+          //at this point it must be processed already!
+					console.log("found: ", callbackObject);
+					isMatched = callbackObject.found();
+					  
+					if(IsMatched(aSearchOp, isMatched)){
+            if(callbackObject.alert){
+              triggerAlertControl(callbackObject.body, decodedMessageId);
+            }
+            console.log("Subject(Body) matched: ", callbackObject);
+            return true;
+          }
+				}
+				catch (ex) {
+          util.logException("could not subjectBodyRegEx_match" ,ex);
+        }
+        console.log("!found: ", callbackObject);
+        
+        return false;//not matched or failed
+      }
+    };
+
+    //locks everything, so mesage doesnt get process
+    /*
+    function sleep(milliseconds) {
+      const date = Date.now();
+      let currentDate = null;
+      do {
+        currentDate = Date.now();
+      } while (currentDate - date < milliseconds);
+    }*/
+    
+    //doesnt acts like alert...
+   /*async*//* function pollCallbackResult (callbackObject) {
+      console.log("poll: ",callbackObject);
+
+      if (callbackObject && callbackObject.processed) {
+        return callbackObject.found();
+      } else {
+      
+        //return new Promise(resolve => setTimeout(pollCallbackResult.bind(resolve, callbackObject), 300));
+        setTimeout(pollCallbackResult.bind(null, callbackObject), 300); // try again in 300 milliseconds
+      }
+    }*/
+    
+    function triggerAlertControl(msgBody, messageId) {
+       let msg = msgBody+"\n"+messageId;
+       var retVal = confirm(msg);
+       //var notification = new Notification("", {body: msg});
+					  //setTimeout(function() {notification.close()}, 1000);
+					  
+       regexShowAlertSuccessValueEnabled = false;
+       /*if( retVal == true ) {
+          //do nothing
+       } else {
+          //#todo delete message
+       }*/
+    }
 
 
     // search using arbitrary javascript
@@ -1643,6 +1857,9 @@
 			BodyRegexEnabled = prefs.getBoolPref("BodyRegexEnabled");
 		} catch(e) {}
 
+    try {
+			SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
+		} catch(e) {}
   }
 
   // extension initialization
@@ -1695,6 +1912,8 @@
     filterService.addCustomTerm(self.subjectRegex);
     filterService.addCustomTerm(self.headerRegex);
     filterService.addCustomTerm(self.bodyRegex);
+    filterService.addCustomTerm(self.subjectBodyRegex);
+    
     filterService.addCustomTerm(self.javascript);
     filterService.addCustomTerm(self.searchBcc);
     filterService.addCustomTerm(self.threadHeadTag);
@@ -1920,8 +2139,16 @@
       searchValue = aSearchValue.substring(1, lastSlashIndex);
       searchFlags = aSearchValue.substring(lastSlashIndex + 1);
     }
-    if(regexpCaseInsensitiveEnabled && !searchFlags.includes("i")){
-      searchFlags+="i";
+
+    if(regexpCaseInsensitiveEnabled && !searchFlags.includes("i") && !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)){
+      searchFlags += "i";
+    }
+
+    if(searchFlags.includes(REGEX_SHOW_ALERT_SUCCESS_VALUE)){
+      searchFlags = searchFlags.replace(REGEX_SHOW_ALERT_SUCCESS_VALUE,"");
+      regexShowAlertSuccessValueEnabled = true;
+    }else{
+      regexShowAlertSuccessValueEnabled = false;
     }
     
     return [searchValue, searchFlags];

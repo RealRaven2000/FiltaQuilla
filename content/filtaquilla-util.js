@@ -529,7 +529,78 @@ FiltaQuilla.Util = {
 		 return (versionComparator.compare(a, b) < 0);
 	} ,	
 
+
 } // Util
+
+
+FiltaQuilla.RegexUtil = {
+  RegexCallback: function RegexCallback(matchRegex) {
+    this.regex = matchRegex;
+    this.foundBody = false;
+    this.foundSubject = false;
+    this.processed = false;
+    this.msgURI = null;
+    this.body = null;
+    this.subject = null;
+    this.alert = false;
+    this.error = null;
+
+    
+    this.found = function found(){
+      return this.foundBody || this.foundSubject;
+    }
+  }
+}
+
+FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody = function parseBody(aMsgHdr, aMimeMessage){
+  const util = FiltaQuilla.Util;
+  debugger;
+
+  if (aMimeMessage == null) {
+    this.processed = true;
+    this.error = "failure parsing during MsgHdrToMimeMessage";
+    return false;
+  }
+  
+  try {
+    this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
+    util.logDebug("amimemsg: "+aMimeMessage);
+    
+    this.body = /*await*/ aMimeMessage.coerceBodyToPlaintext(aMsgHdr.folder)
+    let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
+      
+    if (this.regex.test(this.body)) {
+      this.foundBody = true;
+      //if(this.alert){
+        //alert(this.body+"\n"+aMsgHdr.messageId);
+      //}
+    }
+    
+    this.processed = true;
+
+  } catch(ex) {
+    Services.console.logStringMessage("ReadBodyCallback_callback failed: " + ex.toString());
+    util.logException("ReadBodyCallback_callback failed",ex);
+    this.processed = true;
+    this.error = ex.getLocalizedMessage();
+  }
+  
+  return this.foundBody;
+}
+
+FiltaQuilla.RegexUtil.RegexCallback.prototype.handleSubject = function handleSubject(aMsgHdr){
+  const util = FiltaQuilla.Util;
+  debugger;
+
+  this.subject = aMsgHdr.mime2DecodedSubject;
+  if (this.regex.test(this.subject)) {
+    this.foundSubject = true; 
+  }
+  util.logDebug("subjectCalback: "+JSON.stringify(this));
+
+  return this.foundSubject; 
+}
+
 
 // some scoping for globals
 //(function fq_firstRun()
