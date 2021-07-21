@@ -155,22 +155,32 @@
       id: "filtaquilla@mesquilla.com#subjectAppend",
       name: util.getBundleString("fq.subjectprepend"),
 
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         for (var i = 0; i < aMsgHdrs.length; i++)
         {
-          var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
+          var msgHdr = aMsgHdrs[i];
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, true);
           msgHdr.subject = appSubject;
         }
       },
-
+      
+/*       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      {
+        let msgHdrs = [];
+        for (var i = 0; i < aMsgHdrs.length; i++) {
+          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
+        }
+        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
+      },
+ */
       isValidForType: function(type, scope) {return subjectAppendEnabled;},
 
       validateActionValue: function(value, folder, type) { return null;},
 
       allowDuplicates: false,
-      needsBody: false
+      needsBody: false,
+      isAsync: false
     };
 
     // Suffix to subject
@@ -179,7 +189,7 @@
       id: "filtaquilla@mesquilla.com#subjectSuffix",
       name: util.getBundleString("fq.subjectappend"),
 
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         for (var i = 0; i < aMsgHdrs.length; i++)
         {
@@ -188,13 +198,23 @@
           msgHdr.subject = appSubject;
         }
       },
-
+      
+/*       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      {
+        let msgHdrs = [];
+        for (var i = 0; i < aMsgHdrs.length; i++) {
+          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
+        }
+        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
+      },
+ */      
       isValidForType: function(type, scope) {return subjectSuffixEnabled;},
 
       validateActionValue: function(value, folder, type) { return null;},
 
       allowDuplicates: false,
-      needsBody: false
+      needsBody: false,
+      isAsync: false
     };
 
     // remove keyword
@@ -1554,6 +1574,7 @@
         name: tonequilla_name, 
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
         {
+          util.logDebug("ToneQuillaPlay.queueToPlay", aActionValue);
           ToneQuillaPlay.queueToPlay(aActionValue);
         },
 
