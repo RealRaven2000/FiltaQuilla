@@ -157,15 +157,14 @@
 
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
-        for (var i = 0; i < aMsgHdrs.length; i++)
+        for (let msgHdr of aMsgHdrs)
         {
-          var msgHdr = aMsgHdrs[i];
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, true);
           msgHdr.subject = appSubject;
         }
       },
       
-/*       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let msgHdrs = [];
         for (var i = 0; i < aMsgHdrs.length; i++) {
@@ -173,7 +172,7 @@
         }
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
- */
+
       isValidForType: function(type, scope) {return subjectAppendEnabled;},
 
       validateActionValue: function(value, folder, type) { return null;},
@@ -191,15 +190,14 @@
 
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
-        for (var i = 0; i < aMsgHdrs.length; i++)
+        for (let msgHdr of aMsgHdrs)
         {
-          var msgHdr = aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr);
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, false);
           msgHdr.subject = appSubject;
         }
       },
       
-/*       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
         let msgHdrs = [];
         for (var i = 0; i < aMsgHdrs.length; i++) {
@@ -207,7 +205,7 @@
         }
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
- */      
+ 
       isValidForType: function(type, scope) {return subjectSuffixEnabled;},
 
       validateActionValue: function(value, folder, type) { return null;},
