@@ -1273,7 +1273,7 @@
         }
         return [Matches, DoesntMatch];
       },
-      match: /*async*/ function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
         
         var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
         decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
@@ -1282,53 +1282,26 @@
 
         let [searchValue, searchFlags] = _getRegEx(aSearchValue);
             
-        console.log("aSearchOp: ", aSearchOp == Matches, "; searchValue: ",searchValue,"; searchFlags: ",searchFlags,regexShowAlertSuccessValueEnabled ? "a" : "");
+        util.logDebug("aSearchOp: "+ (aSearchOp == Matches)+ "; searchValue: "+searchValue+"; searchFlags: "+searchFlags+(regexShowAlertSuccessValueEnabled ? "a" : ""));
 				
 				let callbackObject = new ReadBodyCallback(new RegExp(searchValue, searchFlags));
 				    callbackObject.alert = regexShowAlertSuccessValueEnabled;
 				    
 				// message must be available offline!
 				let isMatched = false;
-        //callbackObject.parseBody_new(aMsgHdr);
-        //isMatched = callbackObject.found();
-        //first try a new solution -> doesnt work
+        callbackObject.parseBody_new(aMsgHdr);
+        isMatched = callbackObject.found();
+        //first try a new solution -> undecodeable garbage
 
-        // if(IsMatched(aSearchOp, isMatched)){
-				// 	console.log("found_new: ", callbackObject);
-        //   if(callbackObject.alert){
-        //     triggerAlertControl(callbackObject.body, decodedMessageId);
-        //   }
-        //   return true;
-        // }
-
-				try {
-          let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);
+        if(IsMatched(aSearchOp, isMatched)){
+				 	//console.log("found_new: ", callbackObject);
+           if(callbackObject.alert){
+             triggerAlertControl(callbackObject.body, decodedMessageId);
+           }
+           return true;
+         }
 				
-					/*self._mimeMsg.*/MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, true );
-
-					if (!callbackObject.processed){ 
-					  //if(!callbackObject.alert){
-              //workaround, to give time to retrieve data
-						  alert("subject: "+aMsgHdr.mime2DecodedSubject+"<br> body:"+callbackObject.body+" <br> messageId: " + decodedMessageId);
-              //sorry, we cannot read body without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."+callbackObject.alert);
-					  //}else{alert("");}
-					}
-
-					//console.log("found: ", callbackObject);
-					isMatched = callbackObject.found();
-					  
-					if(IsMatched(aSearchOp, isMatched)){
-            if(callbackObject.alert){
-              triggerAlertControl(callbackObject.body, decodedMessageId);
-            }
-            return true;
-          }
-				}
-				catch (ex) {
-          util.logException("could not bodyRegEx_match" ,ex);
-				}
-				
-        console.log("!found: ", callbackObject);
+         util.logDebug("!found: "+ callbackObject);
         
         return false;//not matched or failed
       }
@@ -1384,71 +1357,28 @@
           if(subjectRegexCallback.alert){
             triggerAlertControl(subject, decodedMessageId);
           }
-          console.log("(Subject)Body matched: ", subjectRegexCallback);
           return true;
         }
         
-        console.log("aSearchOp: ", aSearchOp == Matches, "; searchValue: ",searchValue,"; searchFlags: ",searchFlags,regexShowAlertSuccessValueEnabled ? "a" : "");
-				
 				let  callbackObject = new ReadBodyCallback("");
           callbackObject.regex = subjectRegexCallback.regex;
           callbackObject.alert = subjectRegexCallback.alert;
-				    
-				// message must be available offline!?
-				try {
-          let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);
+
+        callbackObject.parseBody_new(aMsgHdr);
+        isMatched = callbackObject.found();
+
+        if(IsMatched(aSearchOp, isMatched)){
+           if(callbackObject.alert){
+             triggerAlertControl(callbackObject.body, decodedMessageId);
+           }
+           return true;
+         }
 				
-				  /*self._mimeMsg.*/MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, true );
-
-					if (!callbackObject.processed){ 
-            //workaround, to give time to retrieve data
-            //alert("sorry, we cannot read body without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."+callbackObject.alert);
-            alert("subject: "+subject+" <br> body: " + callbackObject.body+" <br> messageId: " + decodedMessageId);
-          }
-
-          //at this point it must be processed already!
-				  //console.log("found: ", callbackObject);
-					isMatched = callbackObject.found();
-					  
-					if(IsMatched(aSearchOp, isMatched)){
-            if(callbackObject.alert){
-              triggerAlertControl(callbackObject.body, decodedMessageId);
-            }
-            //console.log("Subject(Body) matched: ", callbackObject);
-            return true;
-          }
-				}
-				catch (ex) {
-          util.logException("could not subjectBodyRegEx_match" ,ex);
-        }
-        console.log("!found: ", callbackObject);
+         util.logDebug("!found: "+ callbackObject);
         
         return false;//not matched or failed
       }
     };
-
-    //locks everything, so mesage doesnt get process
-    /*
-    function sleep(milliseconds) {
-      const date = Date.now();
-      let currentDate = null;
-      do {
-        currentDate = Date.now();
-      } while (currentDate - date < milliseconds);
-    }*/
-    
-    //doesnt acts like alert...
-   /*async*//* function pollCallbackResult (callbackObject) {
-      console.log("poll: ",callbackObject);
-
-      if (callbackObject && callbackObject.processed) {
-        return callbackObject.found();
-      } else {
-      
-        //return new Promise(resolve => setTimeout(pollCallbackResult.bind(resolve, callbackObject), 300));
-        setTimeout(pollCallbackResult.bind(null, callbackObject), 300); // try again in 300 milliseconds
-      }
-    }*/
     
     function triggerAlertControl(msgBody, messageId) {
        let msg = msgBody+"\n"+messageId;
