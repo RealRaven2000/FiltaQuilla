@@ -564,17 +564,34 @@ FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody = function parseBody(aMs
   
   try {
     this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
-    util.logDebug("amimemsg: "+aMimeMessage);
+    util.logDebug("amimemsg: "+JSON.stringify(aMimeMessage));
     
-    this.body = /*await*/ aMimeMessage.coerceBodyToPlaintext(aMsgHdr.folder)
-    let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
+    this.body = /*await*/ decodeURIComponent(aMimeMessage.coerceBodyToPlaintext(aMsgHdr.folder));
+    //let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
       
     if (this.regex.test(this.body)) {
       this.foundBody = true;
       //if(this.alert){
         //alert(this.body+"\n"+aMsgHdr.messageId);
       //}
+
     }
+    /*else{//possibly body wasn't decoded, do it now
+      try{
+        let decoded = decodeURIComponent(this.body);
+        util.logDebug("decoded:"+decoded);
+        if (this.regex.test(decoded)) {
+          this.body = decoded;
+          this.foundBody = true;
+        }
+
+      }catch(e){
+        //util.logException("failed to decode", e);
+        this.processed = true;
+        this.error = "Failed to decode: "+e.message;
+        return false;
+      }
+    }*/
     
     this.processed = true;
 
@@ -582,9 +599,61 @@ FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody = function parseBody(aMs
     Services.console.logStringMessage("ReadBodyCallback_callback failed: " + ex.toString());
     util.logException("ReadBodyCallback_callback failed",ex);
     this.processed = true;
-    this.error = ex.getLocalizedMessage();
+    this.error = ex.message;
+  }
+
+  return this.foundBody;
+}
+
+FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody_new = function parseBody_new(aMsgHdr){
+  const util = FiltaQuilla.Util;
+  const { MimeParser } = ChromeUtils.import("resource:///modules/mimeParser.jsm");
+
+  debugger;
+
+  let folder = aMsgHdr.folder;
+  
+   // see https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/filters.jsm#276-296
+        
+  var stream = folder.getMsgInputStream(aMsgHdr, {});
+  var messageSize = folder.hasMsgOffline(aMsgHdr.messageKey) ? aMsgHdr.offlineMessageSize : aMsgHdr.messageSize;
+  var data;
+  try {
+    data = NetUtil.readInputStreamToString(stream, messageSize);
+  } 
+  catch (ex) {
+    util.logDebug(ex);
+    this.error = ex.message;
+    this.processed = true;
+
+    return false; // If we don't know, better to return false.
+
+  }finally{
+    stream.close();
   }
   
+  let [headers, body] = MimeParser.extractHeadersAndBody(data);
+  util.logDebug("body_new headers: ", headers);
+  util.logDebug("body_new body: ", body);
+
+  this.body = body; // this is only the raw mime crap!
+
+  let r = this.regex.test(this.body);
+  debugger; 
+
+  if(r === true){
+    this.foundBody = true;
+
+    util.logDebug("body_new matches: ", r);
+    let results = this.regex.exec(this.body);
+    if (results.length) {
+      util.logDebug("new_Matches: ", results[0]);
+    }
+    util.logDebug("Thunderbird 78 gives the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
+    util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
+  } 
+  
+  this.processed = true;
   return this.foundBody;
 }
 

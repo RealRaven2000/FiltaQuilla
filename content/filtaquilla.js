@@ -1274,74 +1274,13 @@
         return [Matches, DoesntMatch];
       },
       match: /*async*/ function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-      //(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-    
-        //console.log("aMsgHdrs:", aMsgHdrs);
-        //console.log("messageId: ", aMsgHdrs.messageId);
-        //console.log("aActionValue: ", aActionValue);
-        //console.log("aListener: ", aListener);
-        //console.log("aType: ", aType);
-        //console.log("aMsgWindow: ", aMsgWindow);
         
         var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
         decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
-        //console.log("decoded: ", decodedMessageId);
-        
-        //  msgAdded: function(aMsgHdr) { is it necessary here, purpose of that?
-        // if( !aMsgHdr.isRead ){ //uncomment to check only unread msgs, i.e. 
-        //Get folder in case it's not a plaintext
-        //@see https://stackoverflow.com/questions/27265271/how-to-intercept-incoming-email-and-retrieve-message-body-in-thunderbird
-        let folder = aMsgHdr.folder;
-        let msgBody, result;
-        var subject = aMsgHdr.mime2DecodedSubject;
-        /**
-       * Starts retrieval of a MimeMessage instance for the given message header.
-       *  Your callback will be called with the message header you provide and the
-       *
-       * @param aMsgHdr The message header to retrieve the body for and build a MIME
-       *     representation of the message.
-       * @param aCallbackThis The (optional) 'this' to use for your callback function.
-       * @param aCallback The callback function to invoke on completion of message
-       *     parsing or failure.  The first argument passed will be the nsIMsgDBHdr
-       *     you passed to this function.  The second argument will be the MimeMessage
-       *     instance resulting from the processing on success, and null on failure.
-       * @param [aAllowDownload=false] Should we allow the message to be downloaded
-       *     for this streaming request?  The default is false, which means that we
-       *     require that the message be available offline.  If false is passed and
-       *     the message is not available offline, we will propagate an exception
-       *     thrown by the underlying code.
-       */
-       //@see https://hg.mozilla.org/comm-central/file/d2d158a8c71e45f3da486e2252886a489f0f85d5/mailnews/db/gloda/modules/MimeMessage.jsm
-        /*let result = MsgHdrToMimeMessage(aMsgHdr, 
-          null
-          , 
-          function (_aMsgHdr, aMimeMessage) {
-            msgBody = aMimeMessage.coerceBodyToPlaintext(folder);
-            let searchValue, searchFlags;
-            [searchValue, searchFlags] = _getRegEx(aSearchValue);
-            
-            let r = RegExp(searchValue, searchFlags).test(msgBody);
-              
-            console.log("body matches: ", r);
-              if((r === true && aSearchOp == Matches) || (r === false && aSearchOp == DoesntMatch) ){
-                 triggerAlertControl(msgBody,decodedMessageId);
-            }
-              
-            return r;
-          }, 
-          true
-        );
-        */
-        //#todo add regex option for alert
-          
-        //  }
-        //}
-        //////
+       
         debugger;
 
-
-        let searchValue, searchFlags;
-        [searchValue, searchFlags] = _getRegEx(aSearchValue);
+        let [searchValue, searchFlags] = _getRegEx(aSearchValue);
             
         console.log("aSearchOp: ", aSearchOp == Matches, "; searchValue: ",searchValue,"; searchFlags: ",searchFlags,regexShowAlertSuccessValueEnabled ? "a" : "");
 				
@@ -1350,6 +1289,18 @@
 				    
 				// message must be available offline!
 				let isMatched = false;
+        //callbackObject.parseBody_new(aMsgHdr);
+        //isMatched = callbackObject.found();
+        //first try a new solution -> doesnt work
+
+        // if(IsMatched(aSearchOp, isMatched)){
+				// 	console.log("found_new: ", callbackObject);
+        //   if(callbackObject.alert){
+        //     triggerAlertControl(callbackObject.body, decodedMessageId);
+        //   }
+        //   return true;
+        // }
+
 				try {
           let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr);
 				
@@ -1358,21 +1309,18 @@
 					if (!callbackObject.processed){ 
 					  //if(!callbackObject.alert){
               //workaround, to give time to retrieve data
-						  alert("subject: "+subject+" <br> messageId: " + decodedMessageId);
+						  alert("subject: "+aMsgHdr.mime2DecodedSubject+"<br> body:"+callbackObject.body+" <br> messageId: " + decodedMessageId);
               //sorry, we cannot read body without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."+callbackObject.alert);
 					  //}else{alert("");}
-					  
-						//let ress = /*await*/ pollCallbackResult(callbackObject); //poll is working, but not returning here as main function exits before
 					}
 
-					console.log("found: ", /*await*/ callbackObject);
+					//console.log("found: ", callbackObject);
 					isMatched = callbackObject.found();
 					  
 					if(IsMatched(aSearchOp, isMatched)){
             if(callbackObject.alert){
               triggerAlertControl(callbackObject.body, decodedMessageId);
             }
-            console.log("Body matched: ", callbackObject);
             return true;
           }
 				}
@@ -1455,18 +1403,18 @@
 					if (!callbackObject.processed){ 
             //workaround, to give time to retrieve data
             //alert("sorry, we cannot read body without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."+callbackObject.alert);
-            alert("subject: "+subject+" <br> messageId: " + decodedMessageId);
+            alert("subject: "+subject+" <br> body: " + callbackObject.body+" <br> messageId: " + decodedMessageId);
           }
 
           //at this point it must be processed already!
-					console.log("found: ", callbackObject);
+				  //console.log("found: ", callbackObject);
 					isMatched = callbackObject.found();
 					  
 					if(IsMatched(aSearchOp, isMatched)){
             if(callbackObject.alert){
               triggerAlertControl(callbackObject.body, decodedMessageId);
             }
-            console.log("Subject(Body) matched: ", callbackObject);
+            //console.log("Subject(Body) matched: ", callbackObject);
             return true;
           }
 				}
