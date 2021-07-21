@@ -13,7 +13,7 @@
       "gecko" : {
           "id" : "filtaquilla@mesquilla.com",
           "strict_min_version" : "74.0",
-          "strict_max_version" : "91.*"
+          "strict_max_version" : "92.*"
       }
   },
   "icons" : {

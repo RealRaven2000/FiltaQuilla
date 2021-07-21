@@ -100,12 +100,14 @@ var ToneQuillaPlay = {
       try {
         let uri = Services.io.newURI(aURL),
             newChannelFun = Services.io.newChannelFromURI.bind(Services.io);
+        let securityFlags = Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_INHERITS  // Tb78
+          || Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_INHERITS_SEC_CONTEXT;  // Tb91 + SEC_ALLOW_CHROME ?
         step = 1;
         let channel = newChannelFun(uri,
                       null,
                       Services.scriptSecurityManager.getSystemPrincipal(),
                       null,
-                      Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_INHERITS,
+                      securityFlags,
                       Ci.nsIContentPolicy.TYPE_OTHER);      
         
         step = 2;
