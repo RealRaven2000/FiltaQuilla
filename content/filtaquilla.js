@@ -32,9 +32,10 @@
 
 (function filtaQuilla()
 {
-  
+ 
   Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
   var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  var { MimeParser } = ChromeUtils.import("resource:///modules/mimeParser.jsm");
   var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
   
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
@@ -1208,16 +1209,6 @@
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(regex);
 
-        /*
-        // test of eval
-        var context = {};
-        //context.aMsgHdr = aMsgHdr;
-        //with (context)
-        {
-          var z = "var subject = aMsgHdr.subject; (subject == 'test');";
-          context.theReturn = eval(z);
-        }
-        /**/
         var headerValue = aMsgHdr.getStringProperty(headerName);
         switch (aSearchOp) {
           case Matches:
@@ -1247,61 +1238,128 @@
         return [Matches, DoesntMatch];
       },
       match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-      //(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-    
-        //console.log("aMsgHdrs:", aMsgHdrs);
-        //console.log("messageId: ", aMsgHdrs.messageId);
-        //console.log("aActionValue: ", aActionValue);
-        //console.log("aListener: ", aListener);
-        //console.log("aType: ", aType);
-        //console.log("aMsgWindow: ", aMsgWindow);
-        
-        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
-        decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
-        console.log("decoded: ", decodedMessageId);
-        
-        //  msgAdded: function(aMsgHdr) {
-        // if( !aMsgHdr.isRead ){
-        //Get folder in case it's not a plaintext
-        //@see https://stackoverflow.com/questions/27265271/how-to-intercept-incoming-email-and-retrieve-message-body-in-thunderbird
         let folder = aMsgHdr.folder;
         let msgBody;
-        let result = MsgHdrToMimeMessage(aMsgHdr, null, function (_aMsgHdr, aMimeMessage) {
-            // do something with aMimeMessage:
-            //alert("the message body : " + aMimeMessage.coerceBodyToPlaintext(folder));
-            msgBody = aMimeMessage.coerceBodyToPlaintext(folder);
-            //alert(aMimeMessage.allUserAttachments.length);
-            //alert(aMimeMessage.size);
-            let searchValue, searchFlags;
-            [searchValue, searchFlags] = _getRegEx(aSearchValue);
+        
+        
+        /* NOT WORKING AS IT IS ASYNC !!!
+        function convertAttachment(attachment) {
+          return {
+            contentType: attachment.contentType,
+            name: attachment.name,
+            size: attachment.size,
+            partName: attachment.partName,
+          };
+        }        
+        
+        //Get folder in case it's not a plaintext
+        //@see https://stackoverflow.com/questions/27265271/how-to-intercept-incoming-email-and-retrieve-message-body-in-thunderbird
+        
+        let p = 
+          new Promise(resolve => {
+            MsgHdrToMimeMessage(
+              aMsgHdr,
+              null,
+              (_msgHdr, mimeMsg) => {
+                resolve(mimeMsg.allAttachments.map(convertAttachment));
+              },
+              true,
+              { examineEncryptedParts: true, partsOnDemand: true }
+            );
+          });
+          
+        let msgBody = await p;
+        */
+        
+        // see https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/filters.jsm#276-296
+        
+        var stream = folder.getMsgInputStream(aMsgHdr, {});
+        var messageSize = folder.hasMsgOffline(aMsgHdr.messageKey)
+          ? aMsgHdr.offlineMessageSize
+          : aMsgHdr.messageSize;
+        var data;
+        try {
+          data = NetUtil.readInputStreamToString(stream, messageSize);
+        } 
+        catch (ex) {
+          util.logDebug(ex);
+          stream.close(); // If we don't know better to return false.
+          return false;
+        }
+        
+        stream.close();
+        let r = false,
+            isTested = false;
             
-            let r = RegExp(searchValue, searchFlags).test(msgBody);
-            console.log("body matches: ", r);
-            if(r === true){
-             alert(msgBody);
+        if (MimeParser.extractMimeMsg) {
+          // Tb 91
+          let mimeMsg = MimeParser.extractMimeMsg(data, {
+            includeAttachments: false  // ,getMimePart: partName
+          });
+          if (!mimeMsg.parts || !mimeMsg.parts.length) {
+            isTested=true;
+            msgBody = "";
+          }
+          else {
+            if (mimeMsg.body) {
+              msgBody = mimeMsg.body; // just in case this exists too
             }
-            return r;
-        }, true);
-        //  }
-        //}
-        console.log("result: ", result);
-        console.log("body: ", msgBody);
-        let searchValue, searchFlags;
+            else if (mimeMsg.parts && mimeMsg.parts.length) {
+              origPart = mimeMsg.parts[0];
+              if (origPart.body) {
+                msgBody = origPart.body;
+                util.logDebug("found body element in parts[0]");
+                
+              }
+              else if (origPart.parts) {
+                for (let p = 0; p<origPart.parts.length; p++)  {
+                  let o = origPart.parts[p];
+                  if (o.body) {
+                    util.logDebug("found body element in parts[0].parts[" + p + "]", );
+                    msgBody = o.body;
+                    break;
+                  }
+                }
+              }
+            }
+            if (!msgBody) isTested=true; // no regex, as it failed.
+              
+          }
+           
+        }
+        else {
+          let [headers, body] = MimeParser.extractHeadersAndBody(data);
+
+          msgBody = body; // this is only the raw mime crap!
+        }
+        
+        let searchValue, searchFlags, reg;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
-            
-            console.log("body matches: ", RegExp(searchValue, searchFlags).test(msgBody));
+        
+        if (!isTested && msgBody && searchValue) {
+          reg = RegExp(searchValue, searchFlags);
+          r = reg.test(msgBody);
+        }
+        if(r === true){
+          util.logDebug("body matches: ", r);
+          let results = reg.exec(msgBody);
+          if (results.length) {
+            util.logDebug("Matches: ", results[0]);
+          }
+          util.logDebug("Thunderbird 78 gives the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
+          util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
+          
+        }
+        
         switch (aSearchOp)
         {
           case Matches:
-            //return RegExp(searchValue, searchFlags).test(subject);
+            return r;//return RegExp(searchValue, searchFlags).test(subject);
           case DoesntMatch:
-            //return !RegExp(searchValue, searchFlags).test(subject);
+            return !r;//return !RegExp(searchValue, searchFlags).test(subject);
         }
-        
-        return false;//not implemented yet
       }
     };
-
 
     // search using arbitrary javascript
     self.javascript =

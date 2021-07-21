@@ -262,11 +262,9 @@ FiltaQuilla.Util = {
     return end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds() + '.' + end.getMilliseconds() + '  ' + timePassed;
   },
 
-  logToConsole: function logToConsole(msg, optionTag) {
-    let consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
-    consoleService.logStringMessage("FiltaQuilla "
-			+ (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '')
-			+ this.logTime() + "\n"+ msg);
+  logToConsole: function logToConsole(a) {
+    let msg = "FiltaQuilla " + this.logTime() + "\n"; // (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '') + 
+    console.log (msg, ...arguments);
   },
 
   // flags
@@ -296,7 +294,7 @@ FiltaQuilla.Util = {
 
   logDebug: function logDebug(msg) {
     if (this.isDebug)
-      this.logToConsole(msg);
+      this.logToConsole(...arguments);
   },
 
   isDebug: function isDebug() {
@@ -309,6 +307,14 @@ FiltaQuilla.Util = {
 		catch(e) {return false;}
 	},
 
+
+  logWithOption: function logWithOption(a) {
+    arguments[0] =  "FiltaQuilla "
+      +  '{' + arguments[0].toUpperCase() + '} ' 
+      + QuickFolders.Util.logTime() + "\n";
+    console.log(...arguments);
+  },
+  
   /**
 	* only logs if debug mode is set and specific debug option are active
 	*
@@ -321,7 +327,7 @@ FiltaQuilla.Util = {
 			for (let i=0; i<options.length; i++) {
 				let option = options[i];
 				if (this.isDebugOption(option)) {
-					this.logToConsole(msg, option);
+					this.logWithOption(msg, option);
 					break; // only log once, in case multiple log switches are on
 				}
 			}
