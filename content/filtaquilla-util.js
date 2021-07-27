@@ -537,6 +537,218 @@ FiltaQuilla.Util = {
 
 } // Util
 
+
+FiltaQuilla.RegexUtil = {		
+  RegexCallback: function RegexCallback(matchRegex) {		
+    this.regex = matchRegex;		
+    this.foundBody = false;		
+    this.foundSubject = false;		
+    this.processed = false;		
+    this.msgURI = null;		
+    this.body = null;		
+    this.subject = null;		
+    this.alert = false;		
+    this.error = null;		
+
+
+    this.found = function found(){		
+      return this.foundBody || this.foundSubject;		
+    }		
+  }		
+}		
+
+FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody = function parseBody(aMsgHdr, aMimeMessage){		
+  const util = FiltaQuilla.Util;		
+  debugger;		
+
+  if (aMimeMessage == null) {		
+    this.processed = true;		
+    this.error = "failure parsing during MsgHdrToMimeMessage";		
+    return false;		
+  }		
+
+  try {		
+    this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);		
+   // util.logDebug("amimemsg: "+JSON.stringify(aMimeMessage));		
+
+    let msgBody;		
+    if (aMimeMessage.body) {		
+      msgBody = aMimeMessage.body; // just in case this exists too		
+
+    } else if (aMimeMessage.parts && aMimeMessage.parts.length) {		
+      let origPart = aMimeMessage.parts[0];		
+
+      if (origPart.body) {		
+        msgBody = origPart.body;		
+       // util.logDebug("found body element in parts[0]: "+JSON.stringify(origPart));		
+
+      }  else if (origPart.parts) {		
+        for (let p = 0; p<origPart.parts.length; p++)  {		
+          let o = origPart.parts[p];		
+          if (o.body) {		
+            //util.logDebug("found body element in parts[0].parts[" + p + "]");		
+            msgBody = o.body;		
+            break;		
+          }		
+        }		
+      }		
+
+      if(msgBody){		
+        this.body = msgBody.replace(/<\/?[^>]+(>|$)/g,"");		
+        //util.logDebug("parsed: " + this.body);		
+      }		
+
+    }else{		
+      this.body = /*await*/ decodeURIComponent(aMimeMessage.coerceBodyToPlaintext(aMsgHdr.folder));		
+    }		
+
+    //let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);		
+
+    if (this.regex.test(this.body)) {		
+      this.foundBody = true;		
+    }		
+
+    this.processed = true;		
+
+  } catch(ex) {		
+    util.logException("ReadBodyCallback_callback failed",ex);		
+    this.processed = true;		
+    this.error = ex.message;		
+  }		
+
+  return this.foundBody;		
+}		
+
+FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody_new = function parseBody_new(aMsgHdr){		
+  const util = FiltaQuilla.Util;		
+  const { MimeParser } = ChromeUtils.import("resource:///modules/mimeParser.jsm");		
+
+  debugger;		
+
+  let folder = aMsgHdr.folder;		
+
+   // see https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/filters.jsm#276-296		
+
+  var stream;		
+  var messageSize;		
+  var data;		
+  try {		
+    stream = folder.getMsgInputStream(aMsgHdr, {});		
+    messageSize = folder.hasMsgOffline(aMsgHdr.messageKey) ? aMsgHdr.offlineMessageSize : aMsgHdr.messageSize;		
+   
+    data = NetUtil.readInputStreamToString(stream, messageSize);		
+  } 		
+  catch (ex) {		
+    util.logDebug(ex);		
+    this.error = ex.message;		
+    this.processed = true;		
+
+    return false; // If we don't know, better to return false.		
+
+  }finally{		
+    if(stream != null) {stream.close();}		
+  }		
+
+  let msgBody,origPart,		
+        isTested = false;		
+
+  if (MimeParser.extractMimeMsg) {		
+    // Tb 91		
+    let mimeMsg = MimeParser.extractMimeMsg(data, {		
+      includeAttachments: false  // ,getMimePart: partName		
+    });		
+    if (!mimeMsg.parts || !mimeMsg.parts.length) {		
+      isTested=true;		
+      msgBody = "";		
+
+    }  else {		
+      if (mimeMsg.body) {		
+        msgBody = mimeMsg.body; // just in case this exists too		
+
+      } else if (mimeMsg.parts && mimeMsg.parts.length) {		
+        origPart = mimeMsg.parts[0];		
+
+        if (origPart.body) {		
+          msgBody = origPart.body;		
+          // util.logDebug("found body element in parts[0]");		
+
+        }  else if (origPart.parts) {		
+          for (let p = 0; p<origPart.parts.length; p++)  {		
+            let o = origPart.parts[p];		
+            if (o.body) {		
+              // util.logDebug("found body element in parts[0].parts[" + p + "]");		
+              msgBody = o.body;		
+              break;		
+            }		
+          }		
+        }		
+      }		
+      if (!msgBody) {		
+        isTested=true; // no regex, as it failed.		
+      }else {		
+        msgBody = msgBody.replace(/<\/?[^>]+(>|$)/g,"");		
+      }		
+
+    }		
+
+  } else {		
+    let [headers, body] = MimeParser.extractHeadersAndBody(data);		
+
+    // util.logDebug("body_new headers: "+ headers);		
+    // util.logDebug("body_new UNDECbody: "+ body);		
+
+    msgBody = body; // this is only the raw mime crap!		
+    try{		
+      msgBody = decodeURIComponent(body);		
+      // util.logDebug("body_new bodydec: "+msgBody);		
+    }catch(ex){		
+      util.logException("Failed to decode.",e);		
+      this.error = ex.message;		
+
+      //return false;		
+    } 		
+
+    util.logDebug("Thunderbird 78 gives the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")		
+    util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")		
+
+  }		
+
+  this.body = msgBody;		
+  this.processed = true;		
+
+  if(this.body == null || isTested){		
+    return false;		
+  }		
+
+  let r = this.regex.test(this.body);		
+  debugger; 		
+
+  if(r === true){		
+    this.foundBody = true;		
+
+    util.logDebug("body_new matches: "+r);		
+    let results = this.regex.exec(this.body);		
+    if (results.length) {		
+      util.logDebug("new_Matches: "+ results[0]);		
+    }		
+  } 		
+
+  return this.foundBody;		
+}		
+
+FiltaQuilla.RegexUtil.RegexCallback.prototype.handleSubject = function handleSubject(aMsgHdr){		
+  const util = FiltaQuilla.Util;		
+  debugger;		
+
+  this.subject = aMsgHdr.mime2DecodedSubject;		
+  if (this.regex.test(this.subject)) {		
+    this.foundSubject = true; 		
+  }		
+  // util.logDebug("subjectCalback: "+JSON.stringify(this));		
+
+  return this.foundSubject; 		
+}		
+
 // some scoping for globals
 //(function fq_firstRun()
 {
