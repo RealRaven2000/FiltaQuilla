@@ -649,57 +649,62 @@ FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody_new = function parseBody
     if(stream != null) {stream.close();}		
   }		
 
-  let msgBody,origPart,		
-        isTested = false;		
+  let origPart,		
+      isTested = false;	
+  let BodyParts = [], BodyType = []; // if we need multiple bodys (e.g. plain text + html mixed)
 
-  if (MimeParser.extractMimeMsg) {		
+   if (MimeParser.extractMimeMsg) {		
     // Tb 91		
     let mimeMsg = MimeParser.extractMimeMsg(data, {		
       includeAttachments: false  // ,getMimePart: partName		
     });		
     if (!mimeMsg.parts || !mimeMsg.parts.length) {		
       isTested=true;		
-      msgBody = "";		
 
     }  else {		
-      if (mimeMsg.body) {		
-        msgBody = mimeMsg.body; // just in case this exists too		
+      if (mimeMsg.body) {
+        BodyParts.push(mimeMsg.body); // just in case this exists too
+        BodyType.push(mimeMsg.contentType || "?")
 
       } else if (mimeMsg.parts && mimeMsg.parts.length) {		
         origPart = mimeMsg.parts[0];		
 
-        if (origPart.body) {		
-          msgBody = origPart.body;		
-          // util.logDebug("found body element in parts[0]");		
+        if (origPart.body) {
+          // util.logDebug("found body element in parts[0]");	
+          BodyParts.push(origPart.body);
+          BodyType.push(origPart.contentType || "?")
+        }  
 
-        }  else if (origPart.parts) {		
+        if (origPart.parts) {		//continue search in case it have multiple bodys
           for (let p = 0; p<origPart.parts.length; p++)  {		
             let o = origPart.parts[p];		
             if (o.body) {		
-              // util.logDebug("found body element in parts[0].parts[" + p + "]");		
-              msgBody = o.body;		
-              break;		
+              // util.logDebug("found body element in parts[0].parts[" + p + "]");
+              BodyParts.push(o.body);
+              BodyType.push(o.contentType || "?")	
+              //break;		
             }		
           }		
-        }		
-      }		
-      if (!msgBody) {		
-        isTested=true; // no regex, as it failed.		
-      }else {		
-        msgBody = msgBody.replace(/<\/?[^>]+(>|$)/g,"");		
+        }	
       }		
 
+      if (!BodyParts.length) {		
+        isTested=true; // no regex, as it failed.		
+      }	
     }		
 
   } else {		
     let [headers, body] = MimeParser.extractHeadersAndBody(data);		
 
-    // util.logDebug("body_new headers: "+ headers);		
-    // util.logDebug("body_new UNDECbody: "+ body);		
-
-    msgBody = body; // this is only the raw mime crap!		
-    try{		
-      msgBody = decodeURIComponent(body);		
+    // util.logDebug("body_tb78_new headers: "+ headers);		
+    // util.logDebug("body_tb78_new UNDECbody: "+ body);		
+	
+    BodyParts.push(body); // this is only the raw mime crap!
+    BodyType.push(body.includes("<html>") ? "html" : "mime-raw?")
+    try{
+      BodyParts.push(decodeURIComponent(body)); // try to decode that 
+      BodyType.push(body.includes("<html>") ? "html" : "mime-decoded?")
+      	
       // util.logDebug("body_new bodydec: "+msgBody);		
     }catch(ex){		
       util.logException("Failed to decode.",e);		
@@ -711,25 +716,48 @@ FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody_new = function parseBody
     util.logDebug("Thunderbird 78 gives the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")		
     util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")		
 
-  }		
+  }			
+  this.processed = isTested;		
 
-  this.body = msgBody;		
-  this.processed = true;		
-
-  if(this.body == null || isTested){		
+  if(isTested || !BodyParts.length || BodyParts.length == 0){		
     return false;		
   }		
 
-  let r = this.regex.test(this.body);		
-  debugger; 		
+  let r = false;
 
+  //iterate over parts, if any
+  for (let i=0;  i<BodyParts.length; i++) {
+    let p = BodyParts[i];
+    util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
+
+    // if it is html, strip out as much as possible:
+    //replace(/<\/?[^>]+(>|$)/g,"");
+    if (BodyType[i].includes("html")) {
+      // remove html the dirty way
+      p = p.replace(/(<style[\w\W]+style>)/g, '')
+           .replace(/<[^>]+>/g, '')
+           .replace(/(\r\n|\r|\n){2,}/g,"")
+           .replace(/(\t){2,}/g,"");
+    }
+    
+    let found = this.regex.test(p);
+    if (found) {
+      let ct = p.contentType || "unknown";
+      util.logDebug("Found pattern " + this.regex + " with content type: " + BodyType[i] + "; ct: "+ct);
+      r = true;
+      this.body = p;
+      break;
+    }
+  }
+
+  this.processed = true;
   if(r === true){		
     this.foundBody = true;		
 
-    util.logDebug("body_new matches: "+r);		
+    util.logDebug("body_new matched");		
     let results = this.regex.exec(this.body);		
     if (results.length) {		
-      util.logDebug("new_Matches: "+ results[0]);		
+      util.logDebug("new_Matches to: "+ results[0]);		
     }		
   } 		
 

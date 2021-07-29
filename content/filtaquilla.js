@@ -1522,7 +1522,7 @@
            return true;
          }
 				
-         util.logDebug("!found: "+ callbackObject);
+         util.logDebug("!found: "+ JSON.stringify(callbackObject));
         
         return false;//not matched or failed
       }
