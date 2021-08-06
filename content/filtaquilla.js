@@ -1397,6 +1397,7 @@
       match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
         let folder = aMsgHdr.folder;
         let msgBody;
+        let BodyParts = [], BodyType = []; // if we need multiple bodys (e.g. plain text + html mixed)
         
         
         /* NOT WORKING AS IT IS ASYNC !!!
@@ -1454,32 +1455,34 @@
             includeAttachments: false  // ,getMimePart: partName
           });
           if (!mimeMsg.parts || !mimeMsg.parts.length) {
-            isTested=true;
+            isTested = true;
             msgBody = "";
           }
           else {
             if (mimeMsg.body) {
-              msgBody = mimeMsg.body; // just in case this exists too
+              BodyParts.push(mimeMsg.body); // just in case this exists too
+              BodyType.push(mimeMsg.contentType || "?")
             }
             else if (mimeMsg.parts && mimeMsg.parts.length) {
               origPart = mimeMsg.parts[0];
               if (origPart.body) {
                 msgBody = origPart.body;
                 util.logDebug("found body element in parts[0]");
-                
+                BodyParts.push(msgBody);
+                BodyType.push(origPart.contentType || "?")
               }
-              else if (origPart.parts) {
+              if (origPart.parts) {
                 for (let p = 0; p<origPart.parts.length; p++)  {
                   let o = origPart.parts[p];
                   if (o.body) {
-                    util.logDebug("found body element in parts[0].parts[" + p + "]", );
-                    msgBody = o.body;
-                    break;
+                    util.logDebug("found body element in parts[0].parts[" + p + "]", o);
+                    BodyParts.push(o.body);
+                    BodyType.push(o.contentType || "?")
                   }
                 }
               }
             }
-            if (!msgBody) isTested=true; // no regex, as it failed.
+            if (!BodyParts.length) isTested=true; // no regex, as it failed.
               
           }
            
@@ -1487,19 +1490,43 @@
         else {
           let [headers, body] = MimeParser.extractHeadersAndBody(data);
 
-          msgBody = body; // this is only the raw mime crap!
+           BodyParts.push(body); // this is only the raw mime crap!
+           BodyType.push("?");
         }
         
         let searchValue, searchFlags, reg;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
         
-        if (!isTested && msgBody && searchValue) {
+        if (!isTested && BodyParts.length && searchValue) {
           reg = RegExp(searchValue, searchFlags);
-          r = reg.test(msgBody);
+          if (BodyParts.length>0) {
+            for (let i=0;  i<BodyParts.length; i++) {
+              let p = BodyParts[i];
+              util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
+              // if it is html, strip out as much as possible:
+              // p = p;
+              if (BodyType[i].includes("html")) {
+                // remove html the dirty way
+                p = p.replace(/(<style[\w\W]+style>)/g, '').replace(/<[^>]+>/g, '').replace(/(\r\n|\r|\n){2,}/g,"").replace(/(\t){2,}/g,"");
+              }
+              let found = reg.test(p);
+              if (found) {
+                let ct=p.contentType || "unknown";
+                util.logDebug("Found pattern " + searchValue + " with content type: " + BodyType[i]);
+                r = true;
+                msgBody = p;
+                break;
+              }
+            }
+          }
+          else {
+            util.logDebug("No parts found.");
+            r = false;
+          }
         }
         if(r === true){
           util.logDebug("body matches: ", r);
-          let results = reg.exec(msgBody);
+          let results = reg.exec(msgBody); // the winning body part LOL
           if (results.length) {
             util.logDebug("Matches: ", results[0]);
           }

@@ -351,24 +351,24 @@ FiltaQuilla.Util = {
   showAboutConfig: function(clickedElement, filter, readOnly) {
     const name = "Preferences:ConfigManager",
 		      util = FiltaQuilla.Util;
-    let uri = "chrome://global/content/config.xhtml";
-		if (util.Application)
-			uri += "?debug";
+          
+    let mediator = Services.wm,
+        isTbModern = util.versionGreaterOrEqual(util.AppverFull, "85"),
+        uri = (isTbModern) ? "about:config": "chrome://global/content/config.xhtml?debug";
 
-    let mediator = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-    let w = mediator.getMostRecentWindow(name);
-
-    let win = clickedElement ?
+    let w = mediator.getMostRecentWindow(name),
+        win = clickedElement ?
 		          (clickedElement.ownerDocument.defaultView ? clickedElement.ownerDocument.defaultView : window)
 							: window;
     if (!w) {
       let watcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
-      w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=500px,height=350px", null);
+      w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=750px,height=450px", null);
     }
     w.focus();
     w.addEventListener('load',
       function () {
-        let flt = w.document.getElementById("textbox");
+        let id = (isTbModern) ? "about-config-search" : "textbox",
+            flt = w.document.getElementById(id);
         if (flt) {
           flt.value=filter;
           // make filter box readonly to prevent damage!
