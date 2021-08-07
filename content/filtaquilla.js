@@ -345,11 +345,15 @@
           for (let msgHdr of aMsgHdrs)
             _messageIds.push(msgHdr.messageId); // are these used later?
 
-          const copyService = MailServices.copy  // Tb91
+          const cs = MailServices.copy  // Tb91
             || Cc["@mozilla.org/messenger/messagecopyservice;1"].getService(Ci.nsIMsgCopyService); // older
-                                
-          copyService.CopyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
-                                   _localListener, aMsgWindow, false /*allowUndo*/);
+
+          if (cs.copyMessages)
+            copyService.copyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
+                                     _localListener, aMsgWindow, false /*allowUndo*/);
+          else
+            copyService.CopyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
+                                     _localListener, aMsgWindow, false /*allowUndo*/);
 
         },
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
@@ -1997,13 +2001,16 @@
     if ( (moveLaterCount <= 0) || (this.recallCount <= 0)) { // execute move    
       const copyService = MailServices.copy  // Tb91
             || Cc["@mozilla.org/messenger/messagecopyservice;1"].getService(Ci.nsIMsgCopyService);
-      copyService.CopyMessages(this.source, 
-                               this.messages,
-                               this.destination, 
-                               isMove,
-                               null, 
-                               null, 
-                               allowUndo);
+            
+      let copyMsg = (copyService.copyMessages) ? copyService.copyMessages : copyService.CopyMessages;
+
+      copyMsg(this.source, 
+              this.messages,
+              this.destination, 
+              isMove,
+              null, 
+              null, 
+              allowUndo);
       moveLaterTimers[this.timerIndex] = null;
       this.messages.clear(); // release all objects, just in case.
     }
