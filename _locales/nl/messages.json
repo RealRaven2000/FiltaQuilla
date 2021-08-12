@@ -252,6 +252,9 @@
   "fq.saveMsgAsFile.access": {
     "message": "I"
   },
+  "fq.subjectBodyRegex": {
+    "message": "Reguliere expressie voor onderwerp- of e-mailtekst"
+  },
   "fq.subjectRegex": {
     "message": "RegEx-overeenkomst onderwerp"
   },

@@ -80,6 +80,10 @@
 				EndsWith = nsMsgSearchOp.EndsWith,
 				Matches = nsMsgSearchOp.Matches,
 				DoesntMatch = nsMsgSearchOp.DoesntMatch;
+        
+  const REGEX_CASE_SENSITIVE_FLAG = "c"; //use this to override global case insensitive flag 
+                                         //(js doesnt have that, but tcl does)
+        // REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
 
   let maxThreadScan = 20; // the largest number of thread messages that we will examine
   
@@ -111,12 +115,13 @@
   // Enabling of search terms.
   let SubjectRegexEnabled = false,
       HeaderRegexEnabled = false,
-      BodyRegexEnabled = false,
       JavascriptEnabled = false,
       SearchBccEnabled = false,
       ThreadHeadTagEnabled = false,
       ThreadAnyTagEnabled = false,
-      FolderNameEnabled = false;
+      FolderNameEnabled = false,
+      BodyRegexEnabled = false,
+      SubjectBodyRegexEnabled = false;
 	// [#5] AG new condition - attachment name regex
 	let AttachmentRegexEnabled = false,
       moveLaterTimers = {}, // references to timers used in moveLater action
@@ -1399,155 +1404,73 @@
         return [Matches, DoesntMatch];
       },
       match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-        let folder = aMsgHdr.folder;
-        let msgBody;
-        let BodyParts = [], BodyType = []; // if we need multiple bodys (e.g. plain text + html mixed)
-        
-        
-        /* NOT WORKING AS IT IS ASYNC !!!
-        function convertAttachment(attachment) {
-          return {
-            contentType: attachment.contentType,
-            name: attachment.name,
-            size: attachment.size,
-            partName: attachment.partName,
-          };
-        }        
-        
-        //Get folder in case it's not a plaintext
-        //@see https://stackoverflow.com/questions/27265271/how-to-intercept-incoming-email-and-retrieve-message-body-in-thunderbird
-        
-        let p = 
-          new Promise(resolve => {
-            MsgHdrToMimeMessage(
-              aMsgHdr,
-              null,
-              (_msgHdr, mimeMsg) => {
-                resolve(mimeMsg.allAttachments.map(convertAttachment));
-              },
-              true,
-              { examineEncryptedParts: true, partsOnDemand: true }
-            );
-          });
-          
-        let msgBody = await p;
-        */
-        
-        // see https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/filters.jsm#276-296
-        
-        var stream = folder.getMsgInputStream(aMsgHdr, {});
-        var messageSize = folder.hasMsgOffline(aMsgHdr.messageKey)
-          ? aMsgHdr.offlineMessageSize
-          : aMsgHdr.messageSize;
-        var data;
-        try {
-          data = NetUtil.readInputStreamToString(stream, messageSize);
-        } 
-        catch (ex) {
-          util.logDebug(ex);
-          stream.close(); // If we don't know better to return false.
-          return false;
-        }
-        
-        stream.close();
-        let r = false,
-            isTested = false;
-            
-        if (MimeParser.extractMimeMsg) {
-          // Tb 91
-          let mimeMsg = MimeParser.extractMimeMsg(data, {
-            includeAttachments: false  // ,getMimePart: partName
-          });
-          if (!mimeMsg.parts || !mimeMsg.parts.length) {
-            isTested = true;
-            msgBody = "";
-          }
-          else {
-            if (mimeMsg.body) {
-              BodyParts.push(mimeMsg.body); // just in case this exists too
-              BodyType.push(mimeMsg.contentType || "?")
-            }
-            else if (mimeMsg.parts && mimeMsg.parts.length) {
-              origPart = mimeMsg.parts[0];
-              if (origPart.body) {
-                msgBody = origPart.body;
-                util.logDebug("found body element in parts[0]");
-                BodyParts.push(msgBody);
-                BodyType.push(origPart.contentType || "?")
-              }
-              if (origPart.parts) {
-                for (let p = 0; p<origPart.parts.length; p++)  {
-                  let o = origPart.parts[p];
-                  if (o.body) {
-                    util.logDebug("found body element in parts[0].parts[" + p + "]", o);
-                    BodyParts.push(o.body);
-                    BodyType.push(o.contentType || "?")
-                  }
-                }
-              }
-            }
-            if (!BodyParts.length) isTested=true; // no regex, as it failed.
-              
-          }
-           
-        }
-        else {
-          let [headers, body] = MimeParser.extractHeadersAndBody(data);
-
-           BodyParts.push(body); // this is only the raw mime crap!
-           BodyType.push("?");
-        }
-        
+        /*** SEARCH INIT  **/
         let searchValue, searchFlags, reg;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
         
-        if (!isTested && BodyParts.length && searchValue) {
-          reg = RegExp(searchValue, searchFlags);
-          if (BodyParts.length>0) {
-            for (let i=0;  i<BodyParts.length; i++) {
-              let p = BodyParts[i];
-              util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
-              // if it is html, strip out as much as possible:
-              // p = p;
-              if (BodyType[i].includes("html")) {
-                // remove html the dirty way
-                p = p.replace(/(<style[\w\W]+style>)/g, '').replace(/<[^>]+>/g, '').replace(/(\r\n|\r|\n){2,}/g,"").replace(/(\t){2,}/g,"");
-              }
-              let found = reg.test(p);
-              if (found) {
-                let ct=p.contentType || "unknown";
-                util.logDebug("Found pattern " + searchValue + " with content type: " + BodyType[i]);
-                r = true;
-                msgBody = p;
-                break;
-              }
-            }
-          }
-          else {
-            util.logDebug("No parts found.");
-            r = false;
-          }
-        }
-        if(r === true){
-          util.logDebug("body matches: ", r);
-          let results = reg.exec(msgBody); // the winning body part LOL
-          if (results.length) {
-            util.logDebug("Matches: ", results[0]);
-          }
-          util.logDebug("Thunderbird 78 gives the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
-          util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
-          
-        }
+        // see https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/filters.jsm#276-296
+        let result = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags);
         
         switch (aSearchOp)
         {
           case Matches:
-            return r;//return RegExp(searchValue, searchFlags).test(subject);
+            return result;//return RegExp(searchValue, searchFlags).test(subject);
           case DoesntMatch:
-            return !r;//return !RegExp(searchValue, searchFlags).test(subject);
+            return !result;//return !RegExp(searchValue, searchFlags).test(subject);
         }
       }
     };
+    
+    self.subjectBodyRegex =
+    {
+      id: "filtaquilla@mesquilla.com#subjectBodyRegex",
+      name: util.getBundleString("fq.subjectBodyRegex"),
+      getEnabled: function subjectBodyRegex_getEnabled(scope, op) {
+        return _isLocalSearch(scope);
+      },
+      needsBody: true,
+      getAvailable: function subjectBodyRegex_getAvailable(scope, op) {
+        return _isLocalSearch(scope) && SubjectBodyRegexEnabled;
+      },
+      getAvailableOperators: function subjectBodyRegex_getAvailableOperators(scope) {
+        if (!_isLocalSearch(scope)){  return [];  }
+        return [Matches, DoesntMatch];
+      },
+      match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
+        var subject = aMsgHdr.mime2DecodedSubject,
+            subResult = false;
+        let isMatched = false;
+        
+        /*** SEARCH INIT  **/
+        let searchValue, searchFlags, reg;
+        [searchValue, searchFlags] = _getRegEx(aSearchValue);
+        
+        subResult = RegExp(searchValue, searchFlags).test(subject); 
+            
+
+        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+          decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
+        var subject = aMsgHdr.mime2DecodedSubject;
+
+        // early exit (only when found, not when not found!)
+        if((aSearchOp == Matches) && subResult){
+          return true;
+        }
+        
+        let bodyResult = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags);
+        
+        switch (aSearchOp)
+        {
+          case Matches:
+            return bodyResult || subResult;
+          case DoesntMatch:
+            return !(bodyResult || subResult);
+        }
+				
+        return false;//not matched or failed
+      }
+    };
+    
 
     // search using arbitrary javascript
     self.javascript =
@@ -1894,6 +1817,11 @@
 			BodyRegexEnabled = prefs.getBoolPref("BodyRegexEnabled");
 		} catch(e) {}
 
+    try {
+			SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
+		} catch(e) {}
+
+
   }
 
   // extension initialization
@@ -1946,6 +1874,7 @@
     filterService.addCustomTerm(self.subjectRegex);
     filterService.addCustomTerm(self.headerRegex);
     filterService.addCustomTerm(self.bodyRegex);
+    filterService.addCustomTerm(self.subjectBodyRegex);
     filterService.addCustomTerm(self.javascript);
     filterService.addCustomTerm(self.searchBcc);
     filterService.addCustomTerm(self.threadHeadTag);
@@ -2174,8 +2103,9 @@
       searchValue = aSearchValue.substring(1, lastSlashIndex);
       searchFlags = aSearchValue.substring(lastSlashIndex + 1);
     }
-    if(regexpCaseInsensitiveEnabled && !searchFlags.includes("i")){
-      searchFlags+="i";
+    
+    if (regexpCaseInsensitiveEnabled && !searchFlags.includes("i") && !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)){
+      searchFlags += "i";
     }
     
     return [searchValue, searchFlags];
@@ -2183,39 +2113,54 @@
 
   function _saveAs(aMsgHdr, aDirectory, aType) {
     let msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr),
-        fileName = _sanitizeName(aMsgHdr.subject),
+        subject = MailServices.mimeConverter.decodeMimeHeader(aMsgHdr.subject, null, false, true), // [issue 53]
+        fileName = _sanitizeName(subject),
+        fullFileName = fileName + "." + aType,
         file = aDirectory.clone();
-    file.append(fileName + "." + aType);
-    file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
-    let service = messenger.messageServiceFromURI(msgSpec);
-    /*
-    void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
-                           in boolean aGenerateDummyEnvelope,
-                           in nsIUrlListener aUrlListener, out nsIURI aURL,
-                           in boolean canonicalLineEnding, in nsIMsgWindow aMsgWindow);
-    */
-    let aURL = {};
-    service.SaveMessageToDisk(msgSpec, file, false, _urlListener, aURL, true, null);
+         
+    file.append(fullFileName);
+    try {
+      file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
+      let service = messenger.messageServiceFromURI(msgSpec);
+      /*
+      void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
+                             in boolean aGenerateDummyEnvelope,
+                             in nsIUrlListener aUrlListener, out nsIURI aURL,
+                             in boolean canonicalLineEnding, in nsIMsgWindow aMsgWindow);
+      */
+      let aURL = {};
+      service.SaveMessageToDisk(msgSpec, file, false, _urlListener, aURL, true, null);
+    }
+    catch (ex) {
+      console.log("Could not create file with name:" + fullFileName);
+      throw(ex);
+    }
 
   }
 
-  // from http://mxr.mozilla.org/comm-1.9.2/source/mozilla/toolkit/components/search/nsSearchService.js#677
+  // OBSOLETE from http://mxr.mozilla.org/comm-1.9.2/source/mozilla/toolkit/components/search/nsSearchService.js#677
   /**
-   * Removes all characters not in the "chars" string from aName.
+   * Removes invalid file name characters
    *
    * @returns a sanitized name to be used as a filename, or a random name
    *          if a sanitized name cannot be obtained (if aName contains
    *          no valid characters).
    */
   function _sanitizeName(aName) {
+    
+    
     const chars = "-abcdefghijklmnopqrstuvwxyz0123456789",
           maxLength = 60;
 
     let name = aName.toLowerCase();
     name = name.replace(/ /g, "-");
+    name = name.replace(/[@\|\/\\]/g, "-");
+    name = name.replace(/[\$%"<>,]/g, "");
+    /*
     name = name.split("").filter(function (el) {
                                    return chars.indexOf(el) != -1;
                                  }).join("");
+    */
 
     if (!name) {
       // Our input had no valid characters - use a random name

@@ -534,6 +534,118 @@ FiltaQuilla.Util = {
 														.getService(Components.interfaces.nsIVersionComparator);
 		 return (versionComparator.compare(a, b) < 0);
 	} ,	
+  
+  bodyMimeMatch: function(aMsgHdr, searchValue, searchFlags) {
+    const util = FiltaQuilla.Util;
+    let msgBody,
+        BodyParts = [], 
+        BodyType = [], // if we need multiple bodys (e.g. plain text + html mixed)
+        r = false,
+        reg,
+        isTested = false,
+        folder = aMsgHdr.folder;
+        
+    /*** READ body ***/
+    var stream = folder.getMsgInputStream(aMsgHdr, {});
+    var messageSize = folder.hasMsgOffline(aMsgHdr.messageKey)
+      ? aMsgHdr.offlineMessageSize
+      : aMsgHdr.messageSize;
+    var data;
+    try {
+      data = NetUtil.readInputStreamToString(stream, messageSize);
+    } 
+    catch (ex) {
+      util.logDebug(ex);
+      stream.close(); // If we don't know better to return false.
+      return false;
+    }
+    stream.close();
+    
+    /** EXTRACT MIME PARTS **/
+    if (MimeParser.extractMimeMsg) {
+      // Tb 91
+      let mimeMsg = MimeParser.extractMimeMsg(data, {
+        includeAttachments: false  // ,getMimePart: partName
+      });
+      if (!mimeMsg.parts || !mimeMsg.parts.length) {
+        isTested = true;
+        msgBody = "";
+      }
+      else {
+        if (mimeMsg.body) {
+          BodyParts.push(mimeMsg.body); // just in case this exists too
+          BodyType.push(mimeMsg.contentType || "?")
+        }
+        else if (mimeMsg.parts && mimeMsg.parts.length) {
+          origPart = mimeMsg.parts[0];
+          if (origPart.body) {
+            msgBody = origPart.body;
+            util.logDebug("found body element in parts[0]");
+            BodyParts.push(msgBody);
+            BodyType.push(origPart.contentType || "?")
+          }
+          if (origPart.parts) {
+            for (let p = 0; p<origPart.parts.length; p++)  {
+              let o = origPart.parts[p];
+              if (o.body) {
+                util.logDebug("found body element in parts[0].parts[" + p + "]", o);
+                BodyParts.push(o.body);
+                BodyType.push(o.contentType || "?")
+              }
+            }
+          }
+        }
+        if (!BodyParts.length) isTested=true; // no regex, as it failed.
+          
+      }
+       
+    }
+    else {
+      let [headers, body] = MimeParser.extractHeadersAndBody(data);
+
+       BodyParts.push(body); // this is only the raw mime crap!
+       BodyType.push("?");
+    }    
+    
+    if (!isTested && BodyParts.length && searchValue) {
+      reg = RegExp(searchValue, searchFlags);
+      if (BodyParts.length>0) {
+        for (let i=0;  i<BodyParts.length; i++) {
+          let p = BodyParts[i];
+          util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
+          // if it is html, strip out as much as possible:
+          // p = p;
+          if (BodyType[i].includes("html")) {
+            // remove html the dirty way
+            p = p.replace(/(<style[\w\W]+style>)/g, '').replace(/<[^>]+>/g, '').replace(/(\r\n|\r|\n){2,}/g,"").replace(/(\t){2,}/g,"");
+          }
+          let found = reg.test(p);
+          if (found) {
+            let ct=p.contentType || "unknown";
+            util.logDebug("Found pattern " + searchValue + " with content type: " + BodyType[i]);
+            r = true;
+            msgBody = p;
+            break;
+          }
+        }
+      }
+      else {
+        util.logDebug("No parts found.");
+        r = false;
+      }
+    }
+    
+    if (r === true) {
+      util.logDebug("body matches: ", r);
+      let results = reg.exec(msgBody); // the winning body part LOL
+      if (results.length) {
+        util.logDebug("Matches: ", results[0]);
+      }
+      util.logDebug("Thunderbird 78 returns the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
+      util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
+    }    
+    return r;
+  }
 
 } // Util
 

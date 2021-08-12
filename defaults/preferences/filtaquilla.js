@@ -28,6 +28,7 @@ pref("extensions.filtaquilla.regexpCaseInsensitive.enabled", true);
 // search terms
 pref("extensions.filtaquilla.SubjectRegexEnabled", true);
 pref("extensions.filtaquilla.BodyRegexEnabled", true);
+pref("extensions.filtaquilla.SubjectBodyRegexEnabled", false);
 pref("extensions.filtaquilla.HeaderRegexEnabled", false);
 pref("extensions.filtaquilla.JavascriptEnabled", false);
 pref("extensions.filtaquilla.SearchBccEnabled", true);
