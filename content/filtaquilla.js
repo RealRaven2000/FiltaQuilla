@@ -83,10 +83,6 @@
 				Matches = nsMsgSearchOp.Matches,
 				DoesntMatch = nsMsgSearchOp.DoesntMatch;
         
-  const REGEX_CASE_SENSITIVE_FLAG = "c"; //use this to override global case insensitive flag 
-                                         //(js doesnt have that, but tcl does)
-        // REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
-
   const REGEX_CASE_SENSITIVE_FLAG = "c", //use this to override global case insensitive flag 
                                          //(js doesnt have that, but tcl does)
         REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
@@ -1418,7 +1414,12 @@
         return [Matches, DoesntMatch];
       },
       match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-       return regexUtil.bodyMimeMatch(aMsgHdr, aSearchValue, aSearchOp);
+        let [searchValue, searchFlags] = _getRegEx(aSearchValue);
+
+       let result = regexUtil.bodyMimeMatch(aMsgHdr, searchValue, searchFlags, aSearchOp, regexShowAlertSuccessValueEnabled);
+       regexShowAlertSuccessValueEnabled = false;
+
+       return result;
       }
     };
 
@@ -1438,7 +1439,12 @@
         return [Matches, DoesntMatch];
       },
       match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
-        return regexUtil.subjectBodyMimeMatch(aMsgHdr, aSearchValue, aSearchOp);
+        let [searchValue, searchFlags] = _getRegEx(aSearchValue);
+
+        let result = regexUtil.subjectBodyMimeMatch(aMsgHdr, searchValue, searchFlags, aSearchOp, regexShowAlertSuccessValueEnabled);
+        regexShowAlertSuccessValueEnabled = false;
+
+        return result;
       }
     };
     

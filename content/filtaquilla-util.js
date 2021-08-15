@@ -649,8 +649,6 @@ FiltaQuilla.Util = {
 
 } // Util
 
-   
-
 FiltaQuilla.RegexUtil = {		
   RegexCallback: function RegexCallback(matchRegex) {		
     this.regex = matchRegex;		
@@ -676,7 +674,7 @@ FiltaQuilla.RegexUtil = {
      * @returns 
      */
     IsMatched: function IsMatched(aSearchOp, isMatched){
-      if(((aSearchOp == Matches) && isMatched) || ((aSearchOp == DoesntMatch) && !isMatched)){
+      if(((aSearchOp == Ci.nsMsgSearchOp.Matches) && isMatched) || ((aSearchOp == Ci.nsMsgSearchOp.DoesntMatch) && !isMatched)){
         return true;
       }
       return false;
@@ -696,17 +694,15 @@ FiltaQuilla.RegexUtil = {
       }*/
    },
 
-    bodyMimeMatch: function(aMsgHdr, searchValue, aSearchOp) {
+    bodyMimeMatch: function(aMsgHdr, searchValue, searchFlags, aSearchOp, regexShowAlertSuccessValueEnabled) {
       const util = FiltaQuilla.Util;		
   
       var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
       decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
      
       debugger;
-
-      let [searchValue, searchFlags] = _getRegEx(aSearchValue);
           
-      util.logDebug("aSearchOp: "+ (aSearchOp == Matches)+ "; searchValue: "+searchValue+"; searchFlags: "+searchFlags+(regexShowAlertSuccessValueEnabled ? "a" : ""));
+      //util.logDebug("aSearchOp: "+ (aSearchOp == Matches)+ "; searchValue: "+searchValue+"; searchFlags: "+searchFlags+(regexShowAlertSuccessValueEnabled ? "a" : ""));
       
       let callbackObject = new ReadBodyCallback(new RegExp(searchValue, searchFlags));
           callbackObject.alert = regexShowAlertSuccessValueEnabled;
@@ -730,8 +726,9 @@ FiltaQuilla.RegexUtil = {
       return false;//not matched or failed
     },
     
-    subjectBodyMimeMatch: function(aMsgHdr, searchValue, aSearchOp) {
+    subjectBodyMimeMatch: function(aMsgHdr, searchValue, searchFlags, aSearchOp, regexShowAlertSuccessValueEnabled) {
       const util = FiltaQuilla.Util;		
+      const regexUtil = FiltaQuilla.RegexUtil;		
   
       debugger;
       let isMatched = false;
@@ -739,9 +736,6 @@ FiltaQuilla.RegexUtil = {
       var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
         decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
       var subject = aMsgHdr.mime2DecodedSubject;
-
-      let searchValue, searchFlags;
-      [searchValue, searchFlags] = _getRegEx(aSearchValue);
             
       let subjectRegexCallback = new regexUtil.RegexCallback(RegExp(searchValue, searchFlags));
         subjectRegexCallback.alert = regexShowAlertSuccessValueEnabled;
@@ -750,7 +744,7 @@ FiltaQuilla.RegexUtil = {
       isMatched = subjectRegexCallback.foundSubject;
 
       // early exit (only when found, not when not found!)
-      if(FiltaQuilla.RegexUtil.IsMatched(aSearchOp, isMatched)){
+      if(regexUtil.IsMatched(aSearchOp, isMatched)){
         if(subjectRegexCallback.alert){
           triggerAlertControl(subject, decodedMessageId);
         }
@@ -764,7 +758,7 @@ FiltaQuilla.RegexUtil = {
       callbackObject.parseBody_new(aMsgHdr);
       isMatched = callbackObject.found();
 
-      if(FiltaQuilla.RegexUtil.IsMatched(aSearchOp, isMatched)){
+      if(regexUtil.IsMatched(aSearchOp, isMatched)){
          if(callbackObject.alert){
            triggerAlertControl(callbackObject.body, decodedMessageId);
          }
@@ -777,7 +771,8 @@ FiltaQuilla.RegexUtil = {
     }
 }		
 
-FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody = function parseBody(aMsgHdr, aMimeMessage){		
+FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody = function parseBody(aMsgHdr, aMimeMessage){	
+  const regexUtil = FiltaQuilla.RegexUtil;		
   const util = FiltaQuilla.Util;		
   debugger;		
 
@@ -985,8 +980,7 @@ FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody_new = function parseBody
 }		
 
 FiltaQuilla.RegexUtil.RegexCallback.prototype.handleSubject = function handleSubject(aMsgHdr){		
-  const util = FiltaQuilla.Util;		
-  debugger;		
+   debugger;		
 
   this.subject = aMsgHdr.mime2DecodedSubject;		
   if (this.regex.test(this.subject)) {		
@@ -999,6 +993,8 @@ FiltaQuilla.RegexUtil.RegexCallback.prototype.handleSubject = function handleSub
 
 
 function ReadBodyCallback(matchRegex) {
+  const regexUtil = FiltaQuilla.RegexUtil;	
+
   regexUtil.RegexCallback.apply(this, arguments);
   this.callback = regexUtil.RegexCallback.prototype.parseBody;
   this.found = function found(){
@@ -1006,7 +1002,7 @@ function ReadBodyCallback(matchRegex) {
   }
 }
 
-ReadBodyCallback.prototype = regexUtil.RegexCallback.prototype;
+ReadBodyCallback.prototype = FiltaQuilla.RegexUtil.RegexCallback.prototype;
 ReadBodyCallback.prototype.constructor = ReadBodyCallback;
 
 // some scoping for globals
