@@ -44,7 +44,9 @@
   const Cc = Components.classes,
         Ci = Components.interfaces,
         Cu = Components.utils,
-				util = FiltaQuilla.Util;
+				util = FiltaQuilla.Util,
+        regexUtil = FiltaQuilla.RegexUtil
+        ;
 
 
   // parameters for MoveLater
@@ -81,10 +83,11 @@
 				Matches = nsMsgSearchOp.Matches,
 				DoesntMatch = nsMsgSearchOp.DoesntMatch;
         
-  const REGEX_CASE_SENSITIVE_FLAG = "c"; //use this to override global case insensitive flag 
+  const REGEX_CASE_SENSITIVE_FLAG = "c", //use this to override global case insensitive flag 
                                          //(js doesnt have that, but tcl does)
-        // REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
-
+        REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
+        ;
+        
   let maxThreadScan = 20; // the largest number of thread messages that we will examine
   
   // Enabling of filter actions.
@@ -119,9 +122,14 @@
       SearchBccEnabled = false,
       ThreadHeadTagEnabled = false,
       ThreadAnyTagEnabled = false,
-      FolderNameEnabled = false,
+      FolderNameEnabled = false;
+      
+  let 
       BodyRegexEnabled = false,
-      SubjectBodyRegexEnabled = false;
+      SubjectBodyRegexEnabled = false,
+      regexShowAlertSuccessValueEnabled = false
+  ;
+  
 	// [#5] AG new condition - attachment name regex
 	let AttachmentRegexEnabled = false,
       moveLaterTimers = {}, // references to timers used in moveLater action
@@ -1220,16 +1228,18 @@
         }
       },
       match: function subjectRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-        var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
-            
-        switch (aSearchOp)
-        {
+        let subjectRegexCallback = new regexUtil.RegexCallback(RegExp(searchValue, searchFlags));
+        subjectRegexCallback.handleSubject(aMsgHdr);
+
+        util.logDebug(_getRegEx(aSearchValue));
+        util.logDebug(RegExp(_getRegEx(aSearchValue)));
+        switch (aSearchOp){
           case Matches:
-            return RegExp(searchValue, searchFlags).test(subject);
+            return subjectRegexCallback.foundSubject;
           case DoesntMatch:
-            return !RegExp(searchValue, searchFlags).test(subject);
+            return !subjectRegexCallback.foundSubject;
         }
       },
     };
@@ -1384,7 +1394,7 @@
         }
       }
     };
-    
+
     self.bodyRegex =
     {
       id: "filtaquilla@mesquilla.com#bodyRegex",
@@ -1404,25 +1414,17 @@
         return [Matches, DoesntMatch];
       },
       match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-        /*** SEARCH INIT  **/
-        let searchValue, searchFlags, reg;
-        [searchValue, searchFlags] = _getRegEx(aSearchValue);
-        
-        // see https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/filters.jsm#276-296
-        let result = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags);
-        
-        switch (aSearchOp)
-        {
-          case Matches:
-            return result;//return RegExp(searchValue, searchFlags).test(subject);
-          case DoesntMatch:
-            return !result;//return !RegExp(searchValue, searchFlags).test(subject);
-        }
+        let [searchValue, searchFlags] = _getRegEx(aSearchValue);
+
+       let result = regexUtil.bodyMimeMatch(aMsgHdr, searchValue, searchFlags, aSearchOp, regexShowAlertSuccessValueEnabled);
+       regexShowAlertSuccessValueEnabled = false;
+
+       return result;
       }
     };
-    
+
     self.subjectBodyRegex =
-    {
+        {
       id: "filtaquilla@mesquilla.com#subjectBodyRegex",
       name: util.getBundleString("fq.subjectBodyRegex"),
       getEnabled: function subjectBodyRegex_getEnabled(scope, op) {
@@ -1437,41 +1439,15 @@
         return [Matches, DoesntMatch];
       },
       match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
-        var subject = aMsgHdr.mime2DecodedSubject,
-            subResult = false;
-        let isMatched = false;
-        
-        /*** SEARCH INIT  **/
-        let searchValue, searchFlags, reg;
-        [searchValue, searchFlags] = _getRegEx(aSearchValue);
-        
-        subResult = RegExp(searchValue, searchFlags).test(subject); 
-            
+        let [searchValue, searchFlags] = _getRegEx(aSearchValue);
 
-        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
-          decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
-        var subject = aMsgHdr.mime2DecodedSubject;
+        let result = regexUtil.subjectBodyMimeMatch(aMsgHdr, searchValue, searchFlags, aSearchOp, regexShowAlertSuccessValueEnabled);
+        regexShowAlertSuccessValueEnabled = false;
 
-        // early exit (only when found, not when not found!)
-        if((aSearchOp == Matches) && subResult){
-          return true;
-        }
-        
-        let bodyResult = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags);
-        
-        switch (aSearchOp)
-        {
-          case Matches:
-            return bodyResult || subResult;
-          case DoesntMatch:
-            return !(bodyResult || subResult);
-        }
-				
-        return false;//not matched or failed
+        return result;
       }
     };
     
-
     // search using arbitrary javascript
     self.javascript =
     {
@@ -2103,9 +2079,18 @@
       searchValue = aSearchValue.substring(1, lastSlashIndex);
       searchFlags = aSearchValue.substring(lastSlashIndex + 1);
     }
-    
-    if (regexpCaseInsensitiveEnabled && !searchFlags.includes("i") && !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)){
+
+    if(regexpCaseInsensitiveEnabled && !searchFlags.includes("i") && !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)){
       searchFlags += "i";
+    }
+
+    //alert is useful for rss advertisment monitoring - alert for interested ads
+    //todo# delete via cancel button in interactive alerts/ ok trigger url redirection
+    if(searchFlags.includes(REGEX_SHOW_ALERT_SUCCESS_VALUE)){
+      searchFlags = searchFlags.replace(REGEX_SHOW_ALERT_SUCCESS_VALUE,"");
+      regexShowAlertSuccessValueEnabled = true;
+    }else{
+      regexShowAlertSuccessValueEnabled = false;
     }
     
     return [searchValue, searchFlags];

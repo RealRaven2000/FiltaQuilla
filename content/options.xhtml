@@ -348,11 +348,15 @@
                   tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
-            
-            <span style="grid-column: 3 / span 2;">
-              <checkbox id="checkFolderNameEnabled" preference="FolderNameEnabled"
-                        label="__MSG_fq.folderName__"
-                        accesskey="__MSG_fq.folderName.access__"/>
+            <span>
+              <checkbox id="checkSubjectBodyRegexEnabled" preference="SubjectBodyRegexEnabled" label="__MSG_fq.subjectBodyRegex__" />
+              <toolbarbutton class="helpLink" onclick="FiltaQuilla.Util.openHelpTab('subjectbody_regex');" />
+
+            </span>
+            <span>
+              <checkbox id="checkBodyRegexEnabled" 
+                        preference="BodyRegexEnabled"
+                        label="__MSG_fq.bodyRegex__"/>
               <toolbarbutton
                   class="helpLink"
                   onclick="FiltaQuilla.Util.openHelpTab('match_folder_name');"

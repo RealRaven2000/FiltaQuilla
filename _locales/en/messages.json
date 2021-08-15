@@ -147,6 +147,9 @@
   "fq.bodyRegex": {
     "message": "Body Regexp match"
   },
+  "fq.subjectBodyRegex": {
+    "message": "Subject || Body Regexp match"
+  },
   "fq.copyAsRead": {
     "message": "Copy As Read"
   },
