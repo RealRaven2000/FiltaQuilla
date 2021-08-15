@@ -82,6 +82,10 @@
 				EndsWith = nsMsgSearchOp.EndsWith,
 				Matches = nsMsgSearchOp.Matches,
 				DoesntMatch = nsMsgSearchOp.DoesntMatch;
+        
+  const REGEX_CASE_SENSITIVE_FLAG = "c"; //use this to override global case insensitive flag 
+                                         //(js doesnt have that, but tcl does)
+        // REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
 
   const REGEX_CASE_SENSITIVE_FLAG = "c", //use this to override global case insensitive flag 
                                          //(js doesnt have that, but tcl does)
@@ -358,11 +362,15 @@
           for (let msgHdr of aMsgHdrs)
             _messageIds.push(msgHdr.messageId); // are these used later?
 
-          const copyService = MailServices.copy  // Tb91
+          const cs = MailServices.copy  // Tb91
             || Cc["@mozilla.org/messenger/messagecopyservice;1"].getService(Ci.nsIMsgCopyService); // older
-                                
-          copyService.CopyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
-                                   _localListener, aMsgWindow, false /*allowUndo*/);
+
+          if (cs.copyMessages)
+            copyService.copyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
+                                     _localListener, aMsgWindow, false /*allowUndo*/);
+          else
+            copyService.CopyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
+                                     _localListener, aMsgWindow, false /*allowUndo*/);
 
         },
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
@@ -1390,18 +1398,6 @@
         }
       }
     };
-    
-
-    function ReadBodyCallback(matchRegex) {
-      regexUtil.RegexCallback.apply(this, arguments);
-      this.callback = regexUtil.RegexCallback.prototype.parseBody;
-      this.found = function found(){
-        return this.foundBody;
-      }
-    }
-
-    ReadBodyCallback.prototype = regexUtil.RegexCallback.prototype;
-    ReadBodyCallback.prototype.constructor = ReadBodyCallback;
 
     self.bodyRegex =
     {
@@ -1422,52 +1418,9 @@
         return [Matches, DoesntMatch];
       },
       match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-        
-        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
-        decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
-       
-        debugger;
-
-        let [searchValue, searchFlags] = _getRegEx(aSearchValue);
-            
-        util.logDebug("aSearchOp: "+ (aSearchOp == Matches)+ "; searchValue: "+searchValue+"; searchFlags: "+searchFlags+(regexShowAlertSuccessValueEnabled ? "a" : ""));
-				
-				let callbackObject = new ReadBodyCallback(new RegExp(searchValue, searchFlags));
-				    callbackObject.alert = regexShowAlertSuccessValueEnabled;
-				    
-				// message must be available offline!
-				let isMatched = false;
-        callbackObject.parseBody_new(aMsgHdr);
-        isMatched = callbackObject.found();
-        //first try a new solution -> undecodeable garbage
-
-        if(IsMatched(aSearchOp, isMatched)){
-				 	//console.log("found_new: ", callbackObject);
-           if(callbackObject.alert){
-             triggerAlertControl(callbackObject.body, decodedMessageId);
-           }
-           return true;
-         }
-				
-         util.logDebug("!found: "+ callbackObject);
-        
-        return false;//not matched or failed
+       return regexUtil.bodyMimeMatch(aMsgHdr, aSearchValue, aSearchOp);
       }
     };
-
-    /**
-     * Normalize match status. 
-     * 
-     * @param {*} aSearchOp 
-     * @param {*} isMatched 
-     * @returns 
-     */
-    function IsMatched(aSearchOp, isMatched){
-      if(((aSearchOp == Matches) && isMatched) || ((aSearchOp == DoesntMatch) && !isMatched)){
-        return true;
-      }
-      return false;
-    }
 
     self.subjectBodyRegex =
         {
@@ -1485,63 +1438,10 @@
         return [Matches, DoesntMatch];
       },
       match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
-        debugger;
-        let isMatched = false;
-
-        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
-          decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
-        var subject = aMsgHdr.mime2DecodedSubject;
-
-        let searchValue, searchFlags;
-        [searchValue, searchFlags] = _getRegEx(aSearchValue);
-              
-        let subjectRegexCallback = new regexUtil.RegexCallback(RegExp(searchValue, searchFlags));
-          subjectRegexCallback.alert = regexShowAlertSuccessValueEnabled;
-          subjectRegexCallback.handleSubject(aMsgHdr);
-
-        isMatched = subjectRegexCallback.foundSubject;
-
-        if(IsMatched(aSearchOp, isMatched)){
-          if(subjectRegexCallback.alert){
-            triggerAlertControl(subject, decodedMessageId);
-          }
-          return true;
-        }
-        
-				let  callbackObject = new ReadBodyCallback("");
-          callbackObject.regex = subjectRegexCallback.regex;
-          callbackObject.alert = subjectRegexCallback.alert;
-
-        callbackObject.parseBody_new(aMsgHdr);
-        isMatched = callbackObject.found();
-
-        if(IsMatched(aSearchOp, isMatched)){
-           if(callbackObject.alert){
-             triggerAlertControl(callbackObject.body, decodedMessageId);
-           }
-           return true;
-         }
-				
-         util.logDebug("!found: "+ JSON.stringify(callbackObject));
-        
-        return false;//not matched or failed
+        return regexUtil.subjectBodyMimeMatch(aMsgHdr, aSearchValue, aSearchOp);
       }
     };
     
-    function triggerAlertControl(msgBody, messageId) {
-       let msg = msgBody+"\n"+messageId;
-       var retVal = confirm(msg);
-       //var notification = new Notification("", {body: msg});
-					  //setTimeout(function() {notification.close()}, 1000);
-					  
-       regexShowAlertSuccessValueEnabled = false;
-       /*if( retVal == true ) {
-          //do nothing
-       } else {
-          //#todo delete message
-       }*/
-    }
-
     // search using arbitrary javascript
     self.javascript =
     {
@@ -1890,6 +1790,8 @@
     try {
 			SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
 		} catch(e) {}
+
+
   }
 
   // extension initialization
@@ -1943,7 +1845,6 @@
     filterService.addCustomTerm(self.headerRegex);
     filterService.addCustomTerm(self.bodyRegex);
     filterService.addCustomTerm(self.subjectBodyRegex);
-    
     filterService.addCustomTerm(self.javascript);
     filterService.addCustomTerm(self.searchBcc);
     filterService.addCustomTerm(self.threadHeadTag);
@@ -1999,13 +1900,16 @@
     if ( (moveLaterCount <= 0) || (this.recallCount <= 0)) { // execute move    
       const copyService = MailServices.copy  // Tb91
             || Cc["@mozilla.org/messenger/messagecopyservice;1"].getService(Ci.nsIMsgCopyService);
-      copyService.CopyMessages(this.source, 
-                               this.messages,
-                               this.destination, 
-                               isMove,
-                               null, 
-                               null, 
-                               allowUndo);
+            
+      let copyMsg = (copyService.copyMessages) ? copyService.copyMessages : copyService.CopyMessages;
+
+      copyMsg(this.source, 
+              this.messages,
+              this.destination, 
+              isMove,
+              null, 
+              null, 
+              allowUndo);
       moveLaterTimers[this.timerIndex] = null;
       this.messages.clear(); // release all objects, just in case.
     }
@@ -2174,6 +2078,8 @@
       searchFlags += "i";
     }
 
+    //alert is useful for rss advertisment monitoring - alert for interested ads
+    //todo# delete via cancel button in interactive alerts/ ok trigger url redirection
     if(searchFlags.includes(REGEX_SHOW_ALERT_SUCCESS_VALUE)){
       searchFlags = searchFlags.replace(REGEX_SHOW_ALERT_SUCCESS_VALUE,"");
       regexShowAlertSuccessValueEnabled = true;
@@ -2186,39 +2092,54 @@
 
   function _saveAs(aMsgHdr, aDirectory, aType) {
     let msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr),
-        fileName = _sanitizeName(aMsgHdr.subject),
+        subject = MailServices.mimeConverter.decodeMimeHeader(aMsgHdr.subject, null, false, true), // [issue 53]
+        fileName = _sanitizeName(subject),
+        fullFileName = fileName + "." + aType,
         file = aDirectory.clone();
-    file.append(fileName + "." + aType);
-    file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
-    let service = messenger.messageServiceFromURI(msgSpec);
-    /*
-    void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
-                           in boolean aGenerateDummyEnvelope,
-                           in nsIUrlListener aUrlListener, out nsIURI aURL,
-                           in boolean canonicalLineEnding, in nsIMsgWindow aMsgWindow);
-    */
-    let aURL = {};
-    service.SaveMessageToDisk(msgSpec, file, false, _urlListener, aURL, true, null);
+         
+    file.append(fullFileName);
+    try {
+      file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
+      let service = messenger.messageServiceFromURI(msgSpec);
+      /*
+      void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
+                             in boolean aGenerateDummyEnvelope,
+                             in nsIUrlListener aUrlListener, out nsIURI aURL,
+                             in boolean canonicalLineEnding, in nsIMsgWindow aMsgWindow);
+      */
+      let aURL = {};
+      service.SaveMessageToDisk(msgSpec, file, false, _urlListener, aURL, true, null);
+    }
+    catch (ex) {
+      console.log("Could not create file with name:" + fullFileName);
+      throw(ex);
+    }
 
   }
 
-  // from http://mxr.mozilla.org/comm-1.9.2/source/mozilla/toolkit/components/search/nsSearchService.js#677
+  // OBSOLETE from http://mxr.mozilla.org/comm-1.9.2/source/mozilla/toolkit/components/search/nsSearchService.js#677
   /**
-   * Removes all characters not in the "chars" string from aName.
+   * Removes invalid file name characters
    *
    * @returns a sanitized name to be used as a filename, or a random name
    *          if a sanitized name cannot be obtained (if aName contains
    *          no valid characters).
    */
   function _sanitizeName(aName) {
+    
+    
     const chars = "-abcdefghijklmnopqrstuvwxyz0123456789",
           maxLength = 60;
 
     let name = aName.toLowerCase();
     name = name.replace(/ /g, "-");
+    name = name.replace(/[@\|\/\\]/g, "-");
+    name = name.replace(/[\$%"<>,]/g, "");
+    /*
     name = name.split("").filter(function (el) {
                                    return chars.indexOf(el) != -1;
                                  }).join("");
+    */
 
     if (!name) {
       // Our input had no valid characters - use a random name

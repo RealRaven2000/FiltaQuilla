@@ -255,6 +255,9 @@
   "fq.saveMsgAsFile.access": {
     "message": "I"
   },
+  "fq.subjectBodyRegex": {
+    "message": "Subject or Body Regexp match"
+  },
   "fq.subjectRegex": {
     "message": "Subject Regex Match"
   },

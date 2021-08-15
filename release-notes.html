@@ -1,14 +1,15 @@
 <b>Version 3.2</b>
 
-FiltaQuilla is now compatible with Thunderbird 78. Again, FiltaQuilla had to be largely rewritten for Thunderbird 78, because support for some key technologies was deprecated by Mozilla (bindings was central to making the filter editor work, so there was numerous days of work and guessing necessary to get it back on track. Many thanks to John Bieling from Thunderbird for helping especially with the very problematic Filter Editor.
+FiltaQuilla is now compatible with Thunderbird 91. FiltaQuilla had to have some necessary changes for Thunderbird 91, for instance the filteraction "match" function has been replace with "matchAction" and changed parameters.
 
-Going forward most bugfixes / new features will be exclusively available for Thunderbird 78 - but there may be some minor backports for Thunderbird 68. The reason for this is that through architectural changes on the Mozilla code platform the code for Thunderbird 68 and earlier is substantially different.
+I will try to keep the latest version on ATN compatible with both Thunderbird 78 and ESR 91 as long as possible.
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>
 
 <ul>
 <li> added option to set regexp for case insensitive match by default </li>
-<li> added body regexp match (WIP) </li>
+<li> added body regexp match (WIP) </li> 
+<li> <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/53">[issue 53]</a> Support saving files with Mime encoded subjects and file names with cyrillic / other characters.</li>
 <li> options now accessible via wrench symbol in Add-ons Manager </li>
 <li> Check the new <a href="https://github.com/RealRaven2000/FiltaQuilla/issues">Issue Tracker</a> for open problems and to add feature requests.</li>
 <li> Added Russian locale by ashed @ github </li>

@@ -252,6 +252,9 @@
   "fq.saveMsgAsFile.access": {
     "message": "I"
   },
+  "fq.subjectBodyRegex": {
+    "message": "Регулярное выражение для текста темы или письма"
+  },
   "fq.subjectRegex": {
     "message": "Совпадение с регэкспом темы"
   },

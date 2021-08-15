@@ -252,6 +252,9 @@
   "fq.saveMsgAsFile.access": {
     "message": "D"
   },
+  "fq.subjectBodyRegex": {
+    "message": "Betreff oder Inhalt (Regulärer Ausdruck)"
+  },
   "fq.subjectRegex": {
     "message": "Betreff vergleichen (Regulärer Ausdruck)"
   },

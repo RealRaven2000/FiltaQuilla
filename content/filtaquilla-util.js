@@ -351,24 +351,24 @@ FiltaQuilla.Util = {
   showAboutConfig: function(clickedElement, filter, readOnly) {
     const name = "Preferences:ConfigManager",
 		      util = FiltaQuilla.Util;
-    let uri = "chrome://global/content/config.xhtml";
-		if (util.Application)
-			uri += "?debug";
+          
+    let mediator = Services.wm,
+        isTbModern = util.versionGreaterOrEqual(util.AppverFull, "85"),
+        uri = (isTbModern) ? "about:config": "chrome://global/content/config.xhtml?debug";
 
-    let mediator = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-    let w = mediator.getMostRecentWindow(name);
-
-    let win = clickedElement ?
+    let w = mediator.getMostRecentWindow(name),
+        win = clickedElement ?
 		          (clickedElement.ownerDocument.defaultView ? clickedElement.ownerDocument.defaultView : window)
 							: window;
     if (!w) {
       let watcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
-      w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=500px,height=350px", null);
+      w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=750px,height=450px", null);
     }
     w.focus();
     w.addEventListener('load',
       function () {
-        let flt = w.document.getElementById("textbox");
+        let id = (isTbModern) ? "about-config-search" : "textbox",
+            flt = w.document.getElementById(id);
         if (flt) {
           flt.value=filter;
           // make filter box readonly to prevent damage!
@@ -533,10 +533,123 @@ FiltaQuilla.Util = {
 		let versionComparator = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
 														.getService(Components.interfaces.nsIVersionComparator);
 		 return (versionComparator.compare(a, b) < 0);
-	} ,	
+	},	
+  
+  bodyMimeMatch: function(aMsgHdr, searchValue, searchFlags) {
+    const util = FiltaQuilla.Util;
+    let msgBody,
+        BodyParts = [], 
+        BodyType = [], // if we need multiple bodys (e.g. plain text + html mixed)
+        r = false,
+        reg,
+        isTested = false,
+        folder = aMsgHdr.folder;
+        
+    /*** READ body ***/
+    var stream = folder.getMsgInputStream(aMsgHdr, {});
+    var messageSize = folder.hasMsgOffline(aMsgHdr.messageKey)
+      ? aMsgHdr.offlineMessageSize
+      : aMsgHdr.messageSize;
+    var data;
+    try {
+      data = NetUtil.readInputStreamToString(stream, messageSize);
+    } 
+    catch (ex) {
+      util.logDebug(ex);
+      stream.close(); // If we don't know better to return false.
+      return false;
+    }
+    stream.close();
+    
+    /** EXTRACT MIME PARTS **/
+    if (MimeParser.extractMimeMsg) {
+      // Tb 91
+      let mimeMsg = MimeParser.extractMimeMsg(data, {
+        includeAttachments: false  // ,getMimePart: partName
+      });
+      if (!mimeMsg.parts || !mimeMsg.parts.length) {
+        isTested = true;
+        msgBody = "";
+      }
+      else {
+        if (mimeMsg.body) {
+          BodyParts.push(mimeMsg.body); // just in case this exists too
+          BodyType.push(mimeMsg.contentType || "?")
+        }
+        else if (mimeMsg.parts && mimeMsg.parts.length) {
+          origPart = mimeMsg.parts[0];
+          if (origPart.body) {
+            msgBody = origPart.body;
+            util.logDebug("found body element in parts[0]");
+            BodyParts.push(msgBody);
+            BodyType.push(origPart.contentType || "?")
+          }
+          if (origPart.parts) {
+            for (let p = 0; p<origPart.parts.length; p++)  {
+              let o = origPart.parts[p];
+              if (o.body) {
+                util.logDebug("found body element in parts[0].parts[" + p + "]", o);
+                BodyParts.push(o.body);
+                BodyType.push(o.contentType || "?")
+              }
+            }
+          }
+        }
+        if (!BodyParts.length) isTested=true; // no regex, as it failed.
+          
+      }
+       
+    }
+    else {
+      let [headers, body] = MimeParser.extractHeadersAndBody(data);
+
+       BodyParts.push(body); // this is only the raw mime crap!
+       BodyType.push("?");
+    }    
+    
+    if (!isTested && BodyParts.length && searchValue) {
+      reg = RegExp(searchValue, searchFlags);
+      if (BodyParts.length>0) {
+        for (let i=0;  i<BodyParts.length; i++) {
+          let p = BodyParts[i];
+          util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
+          // if it is html, strip out as much as possible:
+          // p = p;
+          if (BodyType[i].includes("html")) {
+            // remove html the dirty way
+            p = p.replace(/(<style[\w\W]+style>)/g, '').replace(/<[^>]+>/g, '').replace(/(\r\n|\r|\n){2,}/g,"").replace(/(\t){2,}/g,"");
+          }
+          let found = reg.test(p);
+          if (found) {
+            let ct=p.contentType || "unknown";
+            util.logDebug("Found pattern " + searchValue + " with content type: " + BodyType[i]);
+            r = true;
+            msgBody = p;
+            break;
+          }
+        }
+      }
+      else {
+        util.logDebug("No parts found.");
+        r = false;
+      }
+    }
+    
+    if (r === true) {
+      util.logDebug("body matches: ", r);
+      let results = reg.exec(msgBody); // the winning body part LOL
+      if (results.length) {
+        util.logDebug("Matches: ", results[0]);
+      }
+      util.logDebug("Thunderbird 78 returns the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
+      util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
+    }    
+    return r;
+  }
 
 } // Util
 
+   
 
 FiltaQuilla.RegexUtil = {		
   RegexCallback: function RegexCallback(matchRegex) {		
@@ -554,7 +667,114 @@ FiltaQuilla.RegexUtil = {
     this.found = function found(){		
       return this.foundBody || this.foundSubject;		
     }		
-  }		
+  },
+   /**
+     * Normalize match status. 
+     * 
+     * @param {*} aSearchOp 
+     * @param {*} isMatched 
+     * @returns 
+     */
+    IsMatched: function IsMatched(aSearchOp, isMatched){
+      if(((aSearchOp == Matches) && isMatched) || ((aSearchOp == DoesntMatch) && !isMatched)){
+        return true;
+      }
+      return false;
+    },
+
+    triggerAlertControl: function triggerAlertControl(msgBody, messageId) {
+      let msg = msgBody+"\n"+messageId;
+      var retVal = confirm(msg);
+      //var notification = new Notification("", {body: msg});
+           //setTimeout(function() {notification.close()}, 1000);
+           
+      regexShowAlertSuccessValueEnabled = false;
+      /*if( retVal == true ) {
+         //do nothing
+      } else {
+         //#todo delete message
+      }*/
+   },
+
+    bodyMimeMatch: function(aMsgHdr, searchValue, aSearchOp) {
+      const util = FiltaQuilla.Util;		
+  
+      var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+      decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
+     
+      debugger;
+
+      let [searchValue, searchFlags] = _getRegEx(aSearchValue);
+          
+      util.logDebug("aSearchOp: "+ (aSearchOp == Matches)+ "; searchValue: "+searchValue+"; searchFlags: "+searchFlags+(regexShowAlertSuccessValueEnabled ? "a" : ""));
+      
+      let callbackObject = new ReadBodyCallback(new RegExp(searchValue, searchFlags));
+          callbackObject.alert = regexShowAlertSuccessValueEnabled;
+          
+      // message must be available offline!
+      let isMatched = false;
+      callbackObject.parseBody_new(aMsgHdr);
+      isMatched = callbackObject.found();
+      //first try a new solution -> undecodeable garbage
+
+      if(FiltaQuilla.RegexUtil.IsMatched(aSearchOp, isMatched)){
+         //console.log("found_new: ", callbackObject);
+         if(callbackObject.alert){
+           triggerAlertControl(callbackObject.body, decodedMessageId);
+         }
+         return true;
+       }
+      
+       util.logDebug("!found: "+ callbackObject);
+      
+      return false;//not matched or failed
+    },
+    
+    subjectBodyMimeMatch: function(aMsgHdr, searchValue, aSearchOp) {
+      const util = FiltaQuilla.Util;		
+  
+      debugger;
+      let isMatched = false;
+
+      var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+        decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
+      var subject = aMsgHdr.mime2DecodedSubject;
+
+      let searchValue, searchFlags;
+      [searchValue, searchFlags] = _getRegEx(aSearchValue);
+            
+      let subjectRegexCallback = new regexUtil.RegexCallback(RegExp(searchValue, searchFlags));
+        subjectRegexCallback.alert = regexShowAlertSuccessValueEnabled;
+        subjectRegexCallback.handleSubject(aMsgHdr);
+
+      isMatched = subjectRegexCallback.foundSubject;
+
+      // early exit (only when found, not when not found!)
+      if(FiltaQuilla.RegexUtil.IsMatched(aSearchOp, isMatched)){
+        if(subjectRegexCallback.alert){
+          triggerAlertControl(subject, decodedMessageId);
+        }
+        return true;
+      }
+      
+      let  callbackObject = new ReadBodyCallback("");
+        callbackObject.regex = subjectRegexCallback.regex;
+        callbackObject.alert = subjectRegexCallback.alert;
+
+      callbackObject.parseBody_new(aMsgHdr);
+      isMatched = callbackObject.found();
+
+      if(FiltaQuilla.RegexUtil.IsMatched(aSearchOp, isMatched)){
+         if(callbackObject.alert){
+           triggerAlertControl(callbackObject.body, decodedMessageId);
+         }
+         return true;
+      }
+      
+      util.logDebug("!found: "+ JSON.stringify(callbackObject));
+
+      return false;
+    }
 }		
 
 FiltaQuilla.RegexUtil.RegexCallback.prototype.parseBody = function parseBody(aMsgHdr, aMimeMessage){		
@@ -776,6 +996,18 @@ FiltaQuilla.RegexUtil.RegexCallback.prototype.handleSubject = function handleSub
 
   return this.foundSubject; 		
 }		
+
+
+function ReadBodyCallback(matchRegex) {
+  regexUtil.RegexCallback.apply(this, arguments);
+  this.callback = regexUtil.RegexCallback.prototype.parseBody;
+  this.found = function found(){
+    return this.foundBody;
+  }
+}
+
+ReadBodyCallback.prototype = regexUtil.RegexCallback.prototype;
+ReadBodyCallback.prototype.constructor = ReadBodyCallback;
 
 // some scoping for globals
 //(function fq_firstRun()

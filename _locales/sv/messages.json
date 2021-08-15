@@ -252,6 +252,9 @@
   "fq.saveMsgAsFile.access": {
     "message": "m"
   },
+  "fq.subjectBodyRegex": {
+    "message": "Regeluttryck för ämne eller e -posttext"
+  },
   "fq.subjectRegex": {
     "message": "Regex-matchning i ämnet"
   },

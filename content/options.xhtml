@@ -257,40 +257,6 @@
           <div id="conditionsGrid" class="grid-container">
 
             <span>
-              <checkbox id="checkSubjectRegexEnabled" preference="SubjectRegexEnabled"
-                        label="__MSG_fq.subjectRegex__"
-                        accesskey="__MSG_fq.subjectRegex.access__"/>
-              <toolbarbutton
-                class="helpLink"
-                onclick="FiltaQuilla.Util.openHelpTab('subject_regex');"
-                />
-            </span>
-            <span>
-              <checkbox id="checkHeaderRegexEnabled" preference="HeaderRegexEnabled"
-                        label="__MSG_fq.hdrRegex__"
-                        accesskey="__MSG_fq.hdrRegex.access__"/>
-              <toolbarbutton
-                class="helpLink"
-                onclick="FiltaQuilla.Util.openHelpTab('header_regex');"
-                tooltiptext="__MSG_helpFeatureTip__"
-                />
-            </span>
-            <checkbox id="fq.Bcc" preference="SearchBccEnabled"
-                      label="__MSG_fq.Bcc__"
-                      accesskey="__MSG_fq.Bcc.access__"/>
-            <span>
-              <checkbox id="checkJavascriptEnabled" preference="JavascriptEnabled"
-                        label="__MSG_checkJavascriptEnabled.label__"
-                        accesskey="__MSG_checkJavascriptEnabled.accesskey__"/>
-              <toolbarbutton
-                  class="helpLink"
-                  onclick="FiltaQuilla.Util.openHelpTab('match_javascript');"
-                  tooltiptext="__MSG_helpFeatureTip__"
-                  />
-            </span>
-
-
-            <span>
               <checkbox id="checkThreadHeadTagEnabled" preference="ThreadHeadTagEnabled"
                         label="__MSG_fq.threadHeadTag__"
                         accesskey="__MSG_fq.threadHeadTag.access__"/>
@@ -309,18 +275,50 @@
                   onclick="FiltaQuilla.Util.openHelpTab('tag_thread_msg');"
                   tooltiptext="__MSG_helpFeatureTip__"
                   />
-            </span>
-            <span style="grid-column: 3 / span 2;">
-              <checkbox id="checkFolderNameEnabled" preference="FolderNameEnabled"
-                        label="__MSG_fq.folderName__"
-                        accesskey="__MSG_fq.folderName.access__"/>
+            </span>            
+            
+            <checkbox id="fq.Bcc" preference="SearchBccEnabled"
+                      label="__MSG_fq.Bcc__"
+                      accesskey="__MSG_fq.Bcc.access__"/>
+            <span>
+              <checkbox id="checkJavascriptEnabled" preference="JavascriptEnabled"
+                        label="__MSG_checkJavascriptEnabled.label__"
+                        accesskey="__MSG_checkJavascriptEnabled.accesskey__"/>
               <toolbarbutton
                   class="helpLink"
-                  onclick="FiltaQuilla.Util.openHelpTab('match_folder_name');"
+                  onclick="FiltaQuilla.Util.openHelpTab('match_javascript');"
                   tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
 
+
+            <span>
+              <checkbox id="checkSubjectRegexEnabled" preference="SubjectRegexEnabled"
+                        label="__MSG_fq.subjectRegex__"
+                        accesskey="__MSG_fq.subjectRegex.access__"/>
+              <toolbarbutton
+                class="helpLink"
+                onclick="FiltaQuilla.Util.openHelpTab('subject_regex');"
+                />
+            </span>
+            <span>
+              <checkbox id="checkHeaderRegexEnabled" preference="HeaderRegexEnabled"
+                        label="__MSG_fq.hdrRegex__"
+                        accesskey="__MSG_fq.hdrRegex.access__"/>
+              <toolbarbutton
+                class="helpLink"
+                onclick="FiltaQuilla.Util.openHelpTab('header_regex');"
+                tooltiptext="__MSG_helpFeatureTip__"
+                />
+            </span>
+
+            <span style="grid-column: 3 / span 2;">
+              <checkbox id="checkSubjectBodyRegexEnabled" 
+                        preference="SubjectBodyRegexEnabled" 
+                        label="__MSG_fq.subjectBodyRegex__" />
+              <toolbarbutton class="helpLink" onclick="FiltaQuilla.Util.openHelpTab('subjectbody_regex');" />
+            </span>
+            
 
             <div style="grid-column: 1 / span 4;" >
               <spacer></spacer>
@@ -328,6 +326,16 @@
             </div>
               
               
+            <span>
+              <checkbox id="checkBodyRegexEnabled" 
+                        preference="BodyRegexEnabled"
+                        label="__MSG_fq.bodyRegex__"/>
+              <toolbarbutton
+                class="helpLink"
+                onclick="FiltaQuilla.Util.openHelpTab('body_regex');"
+                />
+            </span>
+            
             <span>
               <checkbox id="checkAttachRegexEnabled"
                         preference="AttachmentRegexEnabled"
@@ -350,10 +358,12 @@
                         preference="BodyRegexEnabled"
                         label="__MSG_fq.bodyRegex__"/>
               <toolbarbutton
-                class="helpLink"
-                onclick="FiltaQuilla.Util.openHelpTab('body_regex');"
-                />
+                  class="helpLink"
+                  onclick="FiltaQuilla.Util.openHelpTab('match_folder_name');"
+                  tooltiptext="__MSG_helpFeatureTip__"
+                  />
             </span>
+            
 
 
           </div>
