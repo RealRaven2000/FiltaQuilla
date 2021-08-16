@@ -572,13 +572,13 @@ FiltaQuilla.Util = {
         msgBody = "";
       }
       else {
-        if (mimeMsg.body) {
+        if (mimeMsg.body && mimeMsg.contentType && mimeMsg.contentType.startsWith("text")) {
           BodyParts.push(mimeMsg.body); // just in case this exists too
           BodyType.push(mimeMsg.contentType || "?")
         }
         else if (mimeMsg.parts && mimeMsg.parts.length) {
-          origPart = mimeMsg.parts[0];
-          if (origPart.body) {
+          let origPart = mimeMsg.parts[0];
+          if (origPart.body && origPart.contentType && ("" + origPart.contentType).startsWith("text")) {
             msgBody = origPart.body;
             util.logDebug("found body element in parts[0]");
             BodyParts.push(msgBody);
@@ -587,7 +587,7 @@ FiltaQuilla.Util = {
           if (origPart.parts) {
             for (let p = 0; p<origPart.parts.length; p++)  {
               let o = origPart.parts[p];
-              if (o.body) {
+              if (o.body && o.contentType && o.contentType.startsWith("text")) {
                 util.logDebug("found body element in parts[0].parts[" + p + "]", o);
                 BodyParts.push(o.body);
                 BodyType.push(o.contentType || "?")
