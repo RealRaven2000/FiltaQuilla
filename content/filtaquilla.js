@@ -484,6 +484,7 @@
         for (var i = 0; i < aMsgHdrs.length; i++) {
           msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
         }
+        if (util.isDebug) debugger;
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },        
 
@@ -536,6 +537,7 @@
         for (var i = 0; i < aMsgHdrs.length; i++) {
           msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
         }
+        if (util.isDebug) debugger;
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },        
       
@@ -600,7 +602,9 @@
         let count = aMsgHdrs.length;
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs[i];
-          printQueue.push(hdr);
+          // no duplicates!
+          if (!printQueue.includes(hdr))
+            printQueue.push(hdr);
         }
         /*
          * Message printing always assumes that we want to put up a print selection
@@ -614,30 +618,64 @@
                            .getService(Ci.nsIPrefService)
                            .getBranch("");
 
-        function printNextMessage() {
+        async function printNextMessage() {
           if (printingMessage || !printQueue.length)
             return;
-          printingMessage = true;
+          if (!PrintUtils)
+            printingMessage = true; // old code branch
+          
           let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-          timer.initWithCallback(function _printNextMessage() {
+          timer.initWithCallback(async function _printNextMessage() {
             let hdr = printQueue.shift();
             let uri = hdr.folder.generateMessageURI(hdr.messageKey);
             Services.console.logStringMessage("Queue filter request to print message: " + hdr.subject);
             let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
             rootprefs.setBoolPref("print.always_print_silent", true);
-            let printDialog =
-              window.openDialog("chrome://messenger/content/msgPrintEngine.xhtml", "",
-                                "chrome,dialog=no,all,centerscreen",
-                                1, [uri], statusFeedback,
-                                false, Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG, window);
-            printDialog.addEventListener("DOMWindowClose", function (e) {
-              Services.console.logStringMessage("Finished printing message: " + hdr.subject);
+            if (!PrintUtils) {
+              debugger;
+              var { PrintUtils } = window.ownerGlobal;
+                // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
+            }
+            
+            // Tb 91
+            // let uri = gFolderDisplay.selectedMessageUris[0];
+            if (PrintUtils  && PrintUtils.startPrintWindow) { // && PrintUtils.loadPrintBrowser MISSING IN TB 91.3.2 ???
+              debugger;
+              let messageService = messenger.messageServiceFromURI(uri),
+                  messageURL = messageService.getUrlForUri(uri).spec;
+              if (PrintUtils.loadPrintBrowser) {
+                await PrintUtils.loadPrintBrowser(messageURL);
+                PrintUtils.startPrintWindow(PrintUtils.printBrowser.browsingContext, {});     
+              }
+              else {
+                if (gMessageDisplay.visible && 
+                    hdr == gFolderDisplay.selectedMessage &&
+                    gFolderDisplay.selectedMessage == gMessageDisplay.displayedMessage) {
+                  let messagePaneBrowser = document.getElementById("messagepane");
+                  PrintUtils.startPrintWindow(messagePaneBrowser.browsingContext, {});              
+                }
+                else {
+                  console.log ("CANNOT PRINT, PrintUtils IS MISSING THE METHOD loadPrintBrowser !!");
+                }
+              }
               printingMessage = false;
-              // [issue 97] try to restore the setting
-              rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
-              
               printNextMessage();
-            }, true);
+            }
+            else { // older Thunderbird versions.
+              let printDialog =
+                window.openDialog("chrome://messenger/content/msgPrintEngine.xhtml", "",
+                                  "chrome,dialog=no,all,centerscreen",
+                                  1, [uri], statusFeedback,
+                                  false, Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG, window);
+              printDialog.addEventListener("DOMWindowClose", function (e) {
+                Services.console.logStringMessage("Finished printing message: " + hdr.subject);
+                printingMessage = false;
+                // [issue 97] try to restore the setting
+                rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
+                
+                printNextMessage();
+              }, true);
+            }
           }, 10, Ci.nsITimer.TYPE_ONE_SHOT);
         }
         printNextMessage();
@@ -1906,6 +1944,7 @@
     for (let i=0; i<aMessages.length; i++) {
       this.messages.push(aMessages[i]);
     }
+    util.logDebug("MoveLaterNotify ()", aMessages, aSource, aDestination, aTimerIndex);
     this.source = aSource;
     this.destination = aDestination;
     this.timerIndex = aTimerIndex;
@@ -1941,7 +1980,8 @@
               null, 
               allowUndo);
       moveLaterTimers[this.timerIndex] = null;
-      this.messages.clear(); // release all objects, just in case.
+      if (this.messages.clear)
+        this.messages.clear(); // release all objects, just in case.
     }
     else // reschedule another check
       moveLaterTimers[this.timerIndex].initWithCallback(this, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
@@ -2154,7 +2194,7 @@
 
     let name = aName.toLowerCase();
     name = name.replace(/ /g, "-");
-    name = name.replace(/[@\|\/\\]/g, "-");
+    name = name.replace(/[@:\|\/\\]/g, "-");
     name = name.replace(/[\$%"<>,]/g, "");
     /*
     name = name.split("").filter(function (el) {
