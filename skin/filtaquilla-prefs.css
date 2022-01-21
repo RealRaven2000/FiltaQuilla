@@ -135,7 +135,6 @@ hbox.title spacer {
 }
 
 .linkDescription {
-	/* -moz-appearance: none; */
 	display: table-cell;
 	margin: 0 5px;
 	max-width: 50em !important;

@@ -28,6 +28,18 @@
         Cc = Components.classes;
 
   util.logDebug("fq_FilterEditor.js - start...");
+  
+  function getAddressBooklists(node) {
+    // if legacy code / enum (Tb78):
+    if (node.hasMoreElements) {
+      let list = [];
+      while (node.hasMoreElements()) {
+        list.push(node.getNext());
+      }
+      return list;
+    }
+    return node; // Tb 91.*
+  }
 
 
   function getChildNode(type) {
@@ -284,7 +296,8 @@
 
       // recursively add all address books and email lists
       let abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager);
-      this.addDirectories(abManager.directories, menupopup);
+      let dirs = getAddressBooklists(abManager.directories); // convert to array.
+      this.addDirectories(dirs, menupopup);
 
       updateParentNode(this.closest(".ruleaction"));
       let value = typeof(this.hbox.value) != 'undefined' ? this.hbox.value : ""
@@ -302,9 +315,8 @@
 
     }
 
-    addDirectories(aDirEnum, aMenupopup) {
-      while (aDirEnum.hasMoreElements()) {
-        let dir = aDirEnum.getNext();
+    addDirectories(directoryArray, aMenupopup) {
+      for (let dir of directoryArray) {      
         if (dir instanceof Ci.nsIAbDirectory) {
           // get children
           let newMenuItem = document.createXULElement('menuitem'),
@@ -316,8 +328,8 @@
             newMenuItem.classList.add('mailing-list');
           aMenupopup.appendChild(newMenuItem);
           // recursive add of child mailing lists
-          let childNodes = dir.childNodes;
-          if (childNodes && childNodes.hasMoreElements())
+          let childNodes = getAddressBooklists(dir.childNodes);
+          if (childNodes.length)
             this.addDirectories(childNodes, aMenupopup);
         }
       }
@@ -774,7 +786,6 @@
   fq_observer.observe(termList, fq_observerOptions);
   
   function selectCustomCondition(event) {
-    debugger;
     let target = event.target,
         attType = event.originalTarget.getAttribute('value'),
         p = target.parentElement; // find the richlistitem

@@ -1,4 +1,3 @@
-/* no more bindings! */
 
 .ruleactiontarget[type="filtaquilla@mesquilla.com#launchFile"],
 .ruleactiontarget[type="filtaquilla@mesquilla.com#runFile"],
@@ -8,7 +7,8 @@
 .ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptAction"] ,
 .ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptActionBody"] ,
 .ruleactiontarget[type="filtaquilla@mesquilla.com#saveMessageAsFile"] {
-  -moz-box-flex: 1;
+  flex-grow: 2;
+  /* -moz-box-flex: 1;  */
 }
 
 toolbarbutton.focusbutton {
@@ -25,7 +25,7 @@ hbox.flexelementcontainer[hidden] {
 
 input.flexinput,
 menulist.flexinput {
-  flex-grow: 2 !important;
+  +: 2 !important;
 }
 
 
@@ -57,14 +57,7 @@ menulist.flexinput {
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#subjectRegex"],
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadheadtag"],
 .search-value-custom[searchAttribute="filtaquilla@mesquilla.com#threadanytag"] {
-  -moz-box-flex: 1;
+  /* -moz-box-flex: 1; */
+  flex-grow: 2;
 }
 
-
-
-/* JavaScript editor
-  OBSOLETE!
-.search-value-custom[searchAttribute="filtaquilla@mesquilla.com#javascript"] {
-  -moz-binding: url("chrome://filtaquilla/content/bindings.xml#javascript");
-}
- */

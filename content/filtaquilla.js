@@ -2189,18 +2189,92 @@
   function _sanitizeName(aName) {
     
     
-    const chars = "-abcdefghijklmnopqrstuvwxyz0123456789",
+    const chars = "-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
           maxLength = 60;
-
-    let name = aName.toLowerCase();
-    name = name.replace(/ /g, "-");
-    name = name.replace(/[@:\|\/\\]/g, "-");
+    debugger;
+    
+    let str = aName; // .toLowerCase();
+    // diacritics
+    str = str.replace(/Ä/g, 'Ae');
+    str = str.replace(/æ|ǽ|ä/g, 'ae');
+    str = str.replace(/À|Á|Â|Ã|Å|Ǻ|Ā|Ă|Ą|Ǎ|А/g, 'A');
+    str = str.replace(/à|á|â|ã|å|ǻ|ā|ă|ą|ǎ|ª|а/g, 'a');
+    str = str.replace(/Б/g, 'B');
+    str = str.replace(/б/g, 'b');
+    str = str.replace(/Ç|Ć|Ĉ|Ċ|Č|Ц/g, 'C');
+    str = str.replace(/ç|ć|ĉ|ċ|č|ц/g, 'c');
+    str = str.replace(/Ð|Ď|Đ/g, 'Dj');
+    str = str.replace(/ð|ď|đ/g, 'dj');
+    str = str.replace(/Д/g, 'D');
+    str = str.replace(/д/g, 'd');
+    str = str.replace(/È|É|Ê|Ë|Ē|Ĕ|Ė|Ę|Ě|Е|Ё|Э/g, 'E');
+    str = str.replace(/è|é|ê|ë|ē|ĕ|ė|ę|ě|е|ё|э/g, 'e');
+    str = str.replace(/Ф/g, 'F');
+    str = str.replace(/ƒ|ф/g, 'f');
+    str = str.replace(/Ĝ|Ğ|Ġ|Ģ|Г/g, 'G');
+    str = str.replace(/ĝ|ğ|ġ|ģ|г/g, 'g');
+    str = str.replace(/Ĥ|Ħ|Х/g, 'H');
+    str = str.replace(/ĥ|ħ|х/g, 'h');
+    str = str.replace(/Ì|Í|Î|Ï|Ĩ|Ī|Ĭ|Ǐ|Į|İ|И/g, 'I');
+    str = str.replace(/ì|í|î|ï|ĩ|ī|ĭ|ǐ|į|ı|и/g, 'i');
+    str = str.replace(/Ĵ|Й/g, 'J');
+    str = str.replace(/ĵ|й/g, 'j');
+    str = str.replace(/Ķ|К/g, 'K');
+    str = str.replace(/ķ|к/g, 'k');
+    str = str.replace(/Ĺ|Ļ|Ľ|Ŀ|Ł|Л/g, 'L');
+    str = str.replace(/ĺ|ļ|ľ|ŀ|ł|л/g, 'l');
+    str = str.replace(/М/g, 'M');
+    str = str.replace(/м/g, 'm');
+    str = str.replace(/Ñ|Ń|Ņ|Ň|Н/g, 'N');
+    str = str.replace(/ñ|ń|ņ|ň|ŉ|н/g, 'n');
+    str = str.replace(/Ö/g, 'Oe');
+    str = str.replace(/œ|ö/g, 'oe');
+    str = str.replace(/Ò|Ó|Ô|Õ|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ǿ|О/g, 'O');
+    str = str.replace(/ò|ó|ô|õ|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º|о/g, 'o');
+    str = str.replace(/П/g, 'P');
+    str = str.replace(/п/g, 'p');
+    str = str.replace(/Ŕ|Ŗ|Ř|Р/g, 'R');
+    str = str.replace(/ŕ|ŗ|ř|р/g, 'r');
+    str = str.replace(/Ś|Ŝ|Ş|Ș|Š|С/g, 'S');
+    str = str.replace(/ś|ŝ|ş|ș|š|ſ|с/g, 's');
+    str = str.replace(/Ţ|Ț|Ť|Ŧ|Т/g, 'T');
+    str = str.replace(/ţ|ț|ť|ŧ|т/g, 't');
+    str = str.replace(/Ü/g, 'Ue');
+    str = str.replace(/ü/g, 'ue');
+    str = str.replace(/Ù|Ú|Û|Ũ|Ū|Ŭ|Ů|Ű|Ų|Ư|Ǔ|Ǖ|Ǘ|Ǚ|Ǜ|У/g, 'U');
+    str = str.replace(/ù|ú|û|ũ|ū|ŭ|ů|ű|ų|ư|ǔ|ǖ|ǘ|ǚ|ǜ|у/g, 'u');
+    str = str.replace(/В/g, 'V');
+    str = str.replace(/в/g, 'v');
+    str = str.replace(/Ý|Ÿ|Ŷ|Ы/g, 'Y');
+    str = str.replace(/ý|ÿ|ŷ|ы/g, 'y');
+    str = str.replace(/Ŵ/g, 'W');
+    str = str.replace(/ŵ/g, 'w');
+    str = str.replace(/Ź|Ż|Ž|З/g, 'Z');
+    str = str.replace(/ź|ż|ž|з/g, 'z');
+    str = str.replace(/Æ|Ǽ/g, 'AE');
+    str = str.replace(/ß/g, 'ss');
+    str = str.replace(/Ĳ/g, 'IJ');
+    str = str.replace(/ĳ/g, 'ij');
+    str = str.replace(/Œ/g, 'OE');
+    str = str.replace(/Ч/g, 'Ch');
+    str = str.replace(/ч/g, 'ch');
+    str = str.replace(/Ю/g, 'Ju');
+    str = str.replace(/ю/g, 'ju');
+    str = str.replace(/Я/g, 'Ja');
+    str = str.replace(/я/g, 'ja');
+    str = str.replace(/Ш/g, 'Sh');
+    str = str.replace(/ш/g, 'sh');
+    str = str.replace(/Щ/g, 'Shch');
+    str = str.replace(/щ/g, 'shch');
+    str = str.replace(/Ж/g, 'Zh');
+    str = str.replace(/ж/g, 'zh');  
+    // sepcial characters    
+    name = str.replace(/ /g, "-");
+    name = name.replace(/[@:\|\/\\\*\?]/g, "-");
     name = name.replace(/[\$%"<>,]/g, "");
-    /*
     name = name.split("").filter(function (el) {
                                    return chars.indexOf(el) != -1;
                                  }).join("");
-    */
 
     if (!name) {
       // Our input had no valid characters - use a random name
