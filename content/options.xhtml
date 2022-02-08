@@ -64,12 +64,14 @@
       <preference id="trainAsJunkEnabled" name="extensions.filtaquilla.trainAsJunk.enabled" type="bool"/>
       <preference id="trainAsGoodEnabled" name="extensions.filtaquilla.trainAsGood.enabled" type="bool"/>
       <preference id="printEnabled" name="extensions.filtaquilla.print.enabled" type="bool"/>
+      <preference id="printToolsEnabled" name="extensions.filtaquilla.print.enablePrintToolsNG" type="bool"/>
       <preference id="addSenderEnabled" name="extensions.filtaquilla.addSender.enabled" type="bool"/>
       <preference id="saveAttachmentEnabled" name="extensions.filtaquilla.saveAttachment.enabled" type="bool"/>
       <preference id="detachAttachmentsEnabled" name="extensions.filtaquilla.detachAttachments.enabled" type="bool"/>
       <preference id="javascriptActionEnabled" name="extensions.filtaquilla.javascriptAction.enabled" type="bool"/>
       <preference id="javascriptActionBodyEnabled" name="extensions.filtaquilla.javascriptActionBody.enabled" type="bool"/>
       <preference id="tonequillaEnabled" name="extensions.filtaquilla.tonequilla.enabled" type="bool"/>
+      <preference id="archiveMessage" name="extensions.filtaquilla.archiveMessage.enabled" type="bool"/>
 
       <preference id="saveMessageAsFileEnabled" name="extensions.filtaquilla.saveMessageAsFile.enabled" type="bool"/>
       <preference id="moveLaterEnabled" name="extensions.filtaquilla.moveLater.enabled" type="bool"/>
@@ -174,12 +176,10 @@
                   tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
+            
             <checkbox id="checkTrainAsGoodEnabled" preference="trainAsGoodEnabled"
                       label="__MSG_fq.trainGood__"
                       accesskey="__MSG_fq.trainGood.access__"/>
-            <checkbox id="checkPrintEnabled" preference="printEnabled"
-                      label="__MSG_fq.print__"
-                      accesskey="__MSG_fq.print.access__"/>
 
             <span>
               <checkbox id="checkSubjectSuffixEnabled" preference="subjectSuffixEnabled"
@@ -247,6 +247,18 @@
             <checkbox id="checkTonequillaEnabled" 
                       preference="tonequillaEnabled"
                       label="__MSG_fq.toneQuilla__"/>
+
+            <checkbox id="checkArchiveEnabled" 
+                      preference="archiveMessage"
+                      label="__MSG_fq.archiveMessage__"/>
+                      
+            <checkbox id="checkPrintEnabled" preference="printEnabled"
+                      label="__MSG_fq.print__"
+                      accesskey="__MSG_fq.print.access__"/>
+
+            <checkbox id="checkPrintEnabled" preference="printToolsEnabled"
+                      label="__MSG_fq.printTools__"
+                      />
           
           <!-- dummy row because I have complaints about size ? -->
             <spacer height="20px" />

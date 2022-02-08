@@ -108,9 +108,9 @@
       javascriptActionBodyEnabled = false,
       tonequillaEnabled = false,
       saveMessageAsFileEnabled = false,
-      moveLaterEnabled = false,
- 
-      regexpCaseInsensitiveEnabled = false;
+      moveLaterEnabled = false, 
+      regexpCaseInsensitiveEnabled = false,
+      archiveMessageEnabled = false;
 
   // Enabling of search terms.
   let SubjectRegexEnabled = false,
@@ -599,7 +599,11 @@
       name: util.getBundleString("fq.print"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // print me
+        const prefserv = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
+              prefs = prefserv.getBranch("extensions.filtaquilla.");        
         let count = aMsgHdrs.length;
+        let isPrintingToolsNG = prefs.getBoolPref("print.enablePrintToolsNG"); // [issue 152] - PrintingTools NG
+        
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs[i];
           // no duplicates!
@@ -621,61 +625,73 @@
         async function printNextMessage() {
           if (printingMessage || !printQueue.length)
             return;
-          if (!PrintUtils)
+          if (!PrintUtils && !isPrintingToolsNG)
             printingMessage = true; // old code branch
           
           let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
           timer.initWithCallback(async function _printNextMessage() {
             let hdr = printQueue.shift();
-            let uri = hdr.folder.generateMessageURI(hdr.messageKey);
-            Services.console.logStringMessage("Queue filter request to print message: " + hdr.subject);
-            let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
-            rootprefs.setBoolPref("print.always_print_silent", true);
-            if (!PrintUtils) {
-              debugger;
-              var { PrintUtils } = window.ownerGlobal;
-                // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
-            }
             
-            // Tb 91
-            // let uri = gFolderDisplay.selectedMessageUris[0];
-            if (PrintUtils  && PrintUtils.startPrintWindow) { // && PrintUtils.loadPrintBrowser MISSING IN TB 91.3.2 ???
+            if (isPrintingToolsNG) {
               debugger;
-              let messageService = messenger.messageServiceFromURI(uri),
-                  messageURL = messageService.getUrlForUri(uri).spec;
-              if (PrintUtils.loadPrintBrowser) {
-                await PrintUtils.loadPrintBrowser(messageURL);
-                PrintUtils.startPrintWindow(PrintUtils.printBrowser.browsingContext, {});     
+              let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(hdr);
+              FiltaQuilla.Util.notifyTools.notifyBackground({ func: "printMessage", msgKey: MessageHeader });
+              await printNextMessage();
+            }
+            else {
+              let uri = hdr.folder.generateMessageURI(hdr.messageKey);
+              Services.console.logStringMessage("Queue filter request to print message: " + hdr.subject);
+              let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
+              rootprefs.setBoolPref("print.always_print_silent", true);
+              if (!PrintUtils) {
+                debugger;
+                var { PrintUtils } = window.ownerGlobal;
+                  // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
               }
-              else {
-                if (gMessageDisplay.visible && 
-                    hdr == gFolderDisplay.selectedMessage &&
-                    gFolderDisplay.selectedMessage == gMessageDisplay.displayedMessage) {
-                  let messagePaneBrowser = document.getElementById("messagepane");
-                  PrintUtils.startPrintWindow(messagePaneBrowser.browsingContext, {});              
+              
+              // Tb 91
+              // let uri = gFolderDisplay.selectedMessageUris[0];
+              if (PrintUtils  && PrintUtils.startPrintWindow) { // && PrintUtils.loadPrintBrowser MISSING IN TB 91.3.2 ???
+                debugger;
+                let messageService = messenger.messageServiceFromURI(uri),
+                    messageURL = messageService.getUrlForUri(uri).spec;
+                if (PrintUtils.loadPrintBrowser) {
+                  await PrintUtils.loadPrintBrowser(messageURL);
+                  PrintUtils.startPrintWindow(PrintUtils.printBrowser.browsingContext, {});     
                 }
                 else {
-                  console.log ("CANNOT PRINT, PrintUtils IS MISSING THE METHOD loadPrintBrowser !!");
+                  if (gMessageDisplay.visible && 
+                      hdr == gFolderDisplay.selectedMessage &&
+                      gFolderDisplay.selectedMessage == gMessageDisplay.displayedMessage) {
+                    let messagePaneBrowser = document.getElementById("messagepane");
+                    PrintUtils.startPrintWindow(messagePaneBrowser.browsingContext, {});              
+                  }
+                  else {
+                    console.log ("CANNOT PRINT, PrintUtils IS MISSING THE METHOD loadPrintBrowser !!");
+                  }
                 }
-              }
-              printingMessage = false;
-              printNextMessage();
-            }
-            else { // older Thunderbird versions.
-              let printDialog =
-                window.openDialog("chrome://messenger/content/msgPrintEngine.xhtml", "",
-                                  "chrome,dialog=no,all,centerscreen",
-                                  1, [uri], statusFeedback,
-                                  false, Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG, window);
-              printDialog.addEventListener("DOMWindowClose", function (e) {
-                Services.console.logStringMessage("Finished printing message: " + hdr.subject);
                 printingMessage = false;
-                // [issue 97] try to restore the setting
                 rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
-                
-                printNextMessage();
-              }, true);
+                await printNextMessage();
+              }
+              else { // older Thunderbird versions.
+                let printDialog =
+                  window.openDialog("chrome://messenger/content/msgPrintEngine.xhtml", "",
+                                    "chrome,dialog=no,all,centerscreen",
+                                    1, [uri], statusFeedback,
+                                    false, Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG, window);
+                printDialog.addEventListener("DOMWindowClose", async function (e) {
+                  Services.console.logStringMessage("Finished printing message: " + hdr.subject);
+                  printingMessage = false;
+                  // [issue 97] try to restore the setting
+                  rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
+                  
+                  await printNextMessage();
+                }, true);
+              }              
             }
+            
+
           }, 10, Ci.nsITimer.TYPE_ONE_SHOT);
         }
         printNextMessage();
@@ -914,7 +930,7 @@
 					util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
 				}
       }
-    },
+    };
     // end save Attachment
 
     self.detachAttachments =
@@ -959,7 +975,7 @@
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: false,
       needsBody: true
-    },
+    };
     // end detach Attachments
 
     self.javascriptAction =
@@ -981,7 +997,7 @@
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
       needsBody: false
-    },
+    };
 
     self.javascriptActionBody =
     {
@@ -1002,7 +1018,7 @@
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
       needsBody: true
-    },
+    };
 
     self.saveMessageAsFile =
     {
@@ -1039,7 +1055,7 @@
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
       needsBody: true
-    },
+    };
 
     self.moveLater =
     {
@@ -1070,7 +1086,33 @@
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: false,
       needsBody: true
-    },
+    };
+    
+	  // archiveMessage [issue 126]
+    self.archiveMessage =
+    {
+      id: "filtaquilla@mesquilla.com#archiveMessage",
+      name: util.getBundleString("fq.archiveMessage"),
+      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        let w = Cc["@mozilla.org/appshell/window-mediator;1"]
+            .getService(Ci.nsIWindowMediator)
+            .getMostRecentWindow("mail:3pane");
+        let batchMover = new w.BatchMessageMover();
+        batchMover.archiveMessages(aMsgHdrs);
+      },      
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        let a = [];
+        for (let index = 0; index < aMsgHdrs.length; index++)
+        {
+          a.push(aMsgHdrs.queryElementAt(index, Ci.nsIMsgDBHdr));
+        }
+        this.applyAction(a, aActionValue, aListener, aType, aMsgWindow);
+      },
+      isValidForType: function(type, scope) { return archiveMessageEnabled;},
+      validateActionValue: function(value, folder, type) { return null;},
+    }; // end archiveMessage
+       
+    
     /*
      * Custom searches
      */
@@ -1129,7 +1171,7 @@
           return !matches;
         return matches;
       },
-    },
+    };
 
     // search of BCC field
     self.searchBcc =
@@ -1229,7 +1271,7 @@
           return !matches;
         return matches;
       },
-    },
+    };
 
     // search subject with regular expression
     self.subjectRegex =
@@ -1321,7 +1363,7 @@
 					this.processed = true;
 				}
       }
-    },
+    };
     // end read Attachment
 
 		// search attachment names with regular expression
@@ -1820,6 +1862,10 @@
       moveLaterEnabled = prefs.getBoolPref("moveLater.enabled");
     } catch(e) {}
     
+    try {
+      archiveMessageEnabled = prefs.getBoolPref("archiveMessage.enabled");
+    } catch (e) {}
+    
     // 2. Enable conditions
     try {
       SubjectRegexEnabled = prefs.getBoolPref("SubjectRegexEnabled");
@@ -1907,6 +1953,8 @@
     filterService.addCustomAction(self.saveMessageAsFile);
     filterService.addCustomAction(self.moveLater);
     filterService.addCustomAction(self.playSound);
+    filterService.addCustomAction(self.archiveMessage);
+
 
     // search terms 
     filterService.addCustomTerm(self.subjectRegex);
@@ -2016,8 +2064,19 @@
 
   function _replaceParameters(hdr, parameter) {
     // replace ambersand-delimited fields in a parameter
-    if (/@SUBJECT@/.test(parameter))
+    function convertFromUnicode(aSrc) {
+      // [issue 102] Variables @SUBJECT@ and others - decoding problems - WIP!!
+      let unicodeConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(
+        Ci.nsIScriptableUnicodeConverter
+      );
+      unicodeConverter.charset = "UTF-8";
+      return unicodeConverter.ConvertFromUnicode(aSrc);
+    };
+    
+    if (/@SUBJECT@/.test(parameter)) {
+      // let str = convertFromUnicode(hdr.mime2DecodedSubject);
       return parameter.replace(/@SUBJECT@/, hdr.mime2DecodedSubject);
+    }
     if (/@AUTHOR@/.test(parameter))
       return parameter.replace(/@AUTHOR@/, hdr.mime2DecodedAuthor);
     if (/@MESSAGEID@/.test(parameter))

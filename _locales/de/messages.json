@@ -219,6 +219,9 @@
   "fq.print.access": {
     "message": "K"
   },
+  "fq.printTools": {
+    "message": "Verwendet PrintingTools NG zum Drucken"
+  },
   "fq.regex.caseInsensitive": {
     "message": "Regulärer Ausdruck ohne Beachtung der Groß-/Kleinschreibung"
   },
@@ -251,6 +254,9 @@
   },
   "fq.saveMsgAsFile.access": {
     "message": "D"
+  },
+  "fq.archiveMessage" : {
+    "message": "Mail archivieren"
   },
   "fq.subjectBodyRegex": {
     "message": "Betreff oder Inhalt (Regulärer Ausdruck)"

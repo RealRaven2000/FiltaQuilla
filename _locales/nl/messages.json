@@ -219,6 +219,9 @@
   "fq.print.access": {
     "message": "D"
   },
+  "fq.printTools": {
+    "message": "Gebruikt PrintingTools NG voor afdrukken"
+  },
   "fq.regex.caseInsensitive": {
     "message": "Regex hoofdletterongevoelige Match"
   },
@@ -251,6 +254,9 @@
   },
   "fq.saveMsgAsFile.access": {
     "message": "I"
+  },
+  "fq.archiveMessage" : {
+    "message": "archief mail"
   },
   "fq.subjectBodyRegex": {
     "message": "Reguliere expressie voor onderwerp- of e-mailtekst"

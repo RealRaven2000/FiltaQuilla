@@ -219,6 +219,9 @@
   "fq.print.access": {
     "message": "P"
   },
+  "fq.printTools": {
+    "message": "Use PrintingTools NG for printing"
+  },
   "fq.regex.caseInsensitive": {
     "message": "Regex case-insensitive Match"
   },
@@ -251,6 +254,9 @@
   },
   "fq.saveMsgAsFile.access": {
     "message": "I"
+  },
+  "fq.archiveMessage" : {
+    "message": "Archive message"
   },
   "fq.subjectBodyRegex": {
     "message": "Subject or Body Regexp match"

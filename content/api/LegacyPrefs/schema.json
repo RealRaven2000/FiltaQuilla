@@ -1,12 +1,57 @@
 [
   {
     "namespace": "LegacyPrefs",
+    "events": [
+      {
+        "name": "onChanged",
+        "type": "function",
+        "description": "Fired when a preference has been changed.",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "description": "Name of the preference."
+          },
+          {
+            "name": "value",
+            "type": "any",
+            "description": "Value of the preference."
+          }
+        ]
+      }
+    ],
     "functions": [
       {
-        "name": "get",
+        "name": "setObservingBranch",
         "type": "function",
-        "description": "Gets a value from the legacy pref system.",
         "async": true,
+        "description": "Set the branch which onChanged should be sensitive for.",
+        "parameters": [
+          {
+            "name": "aBranch",
+            "type": "string",
+            "description": "Name of the branch to observe."
+          }
+        ]
+      },
+      {
+        "name": "getUserPref",
+        "type": "function",
+        "async": true,
+        "description": "Gets a user value from the legacy pref system.",
+        "parameters": [
+          {
+            "name": "aName",
+            "type": "string",
+            "description": "Name of the preference."
+          }
+        ]
+      },
+      {
+        "name": "getPref",
+        "type": "function",
+        "async": true,
+        "description": "Gets a value from the legacy pref system.",
         "parameters": [
           {
             "name": "aName",
@@ -14,27 +59,74 @@
             "description": "Name of the preference."
           },
           {
-            "name": "aDefault",
-            "description": "Default value of the preference.",
-            "choices": [
-              {
-                "type": "integer"
-              },              
-              {
-                "type": "string"
-              },              
-              {
-                "type": "boolean"
-              }
-            ]
+            "name": "aFallback",
+            "type": "string",
+            "description": "Value to be returned, if the requested preference does not exist.",
+            "optional": true,
+            "default": null
           }
         ]
       },
       {
-        "name": "clear",
+        "name": "setPref",
         "type": "function",
-        "description": "Removes a value from the legacy pref system.",
         "async": true,
+        "description": "Sets a value for an existing pref of the legacy pref system.",
+        "parameters": [
+          {
+            "name": "aName",
+            "type": "string",
+            "description": "Name of the preference."
+          },
+          {
+            "name": "aValue",
+            "choices": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "description": "Value to be set."
+          }
+        ]
+      },
+      {
+        "name": "setDefaultPref",
+        "type": "function",
+        "async": true,
+        "description": "Defines the default value for pref of the legacy pref system. This defines the type of a pref and is needed for new prefs.",
+        "parameters": [
+          {
+            "name": "aName",
+            "type": "string",
+            "description": "Name of the preference."
+          },
+          {
+            "name": "aValue",
+            "choices": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "description": "Default value to be set."
+          }
+        ]
+      },
+      {
+        "name": "clearUserPref",
+        "type": "function",
+        "description": "Removes a user value from the legacy pref system.",
         "parameters": [
           {
             "name": "aName",

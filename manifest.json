@@ -2,7 +2,7 @@
   "manifest_version" : 2,
   "name" : "FiltaQuilla",
   "description" : "Mail filter custom actions and searches",
-  "version" : "3.3",
+  "version" : "3.3.1pre21",
   "default_locale": "en",
   "author" : "R Kent James,Axel Grude",
   "developer" : {
@@ -25,6 +25,10 @@
       "filtaquilla-background.js"
     ]
   } ,
+  "permissions": [
+    "messagesRead",
+    "notifications"
+  ],  
   "experiment_apis": {
     "WindowListener": {
       "schema": "content/api/WindowListener/schema.json",
@@ -32,6 +36,15 @@
         "scopes": ["addon_parent"],
         "paths": [["WindowListener"]],
         "script": "content/api/WindowListener/implementation.js"
+      }
+    },
+    "NotifyTools": {
+      "schema": "content/api/NotifyTools/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "paths": [["NotifyTools"]],
+        "script": "content/api/NotifyTools/implementation.js",
+        "events": ["startup"]
       }
     },
     "LegacyPrefs": {

@@ -219,6 +219,9 @@
   "fq.print.access": {
     "message": "P"
   },
+  "fq.printTools": {
+    "message": "Использует PrintingTools NG для печати"
+  },
   "fq.regex.caseInsensitive": {
     "message": "Регэксп совпадение без учета регистра"
   },
@@ -251,6 +254,9 @@
   },
   "fq.saveMsgAsFile.access": {
     "message": "I"
+  },
+  "fq.archiveMessage" : {
+    "message": "архив почты"
   },
   "fq.subjectBodyRegex": {
     "message": "Регэксп для текста темы или письма"

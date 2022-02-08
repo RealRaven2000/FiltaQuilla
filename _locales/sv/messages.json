@@ -219,6 +219,9 @@
   "fq.print.access": {
     "message": "u"
   },
+  "fq.printTools": {
+    "message": "Använder PrintingTools NG för utskrift"
+  },
   "fq.regex.caseInsensitive": {
     "message": "Regex skiftlägeskänslig Match"
   },
@@ -251,6 +254,9 @@
   },
   "fq.saveMsgAsFile.access": {
     "message": "m"
+  },
+  "fq.archiveMessage" : {
+    "message": "arkivpost"
   },
   "fq.subjectBodyRegex": {
     "message": "Regeluttryck för ämne eller e -posttext"

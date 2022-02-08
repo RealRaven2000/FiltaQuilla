@@ -16,6 +16,7 @@ pref("extensions.filtaquilla.runFile.enabled", false);
 pref("extensions.filtaquilla.trainAsJunk.enabled", false);
 pref("extensions.filtaquilla.trainAsGood.enabled", false);
 pref("extensions.filtaquilla.print.enabled", true);
+pref("extensions.filtaquilla.print.enablePrintToolsNG", false);
 pref("extensions.filtaquilla.addSender.enabled", false);
 pref("extensions.filtaquilla.saveAttachment.enabled", false);
 pref("extensions.filtaquilla.detachAttachments.enabled", false);
@@ -25,6 +26,7 @@ pref("extensions.filtaquilla.tonequilla.enabled", false);
 pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
 pref("extensions.filtaquilla.moveLater.enabled", false);
 pref("extensions.filtaquilla.regexpCaseInsensitive.enabled", true);
+pref("extensions.filtaquilla.archiveMessage.enabled", false);
 // search terms
 pref("extensions.filtaquilla.SubjectRegexEnabled", true);
 pref("extensions.filtaquilla.BodyRegexEnabled", true);
@@ -39,6 +41,7 @@ pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
 // debug
 pref("extensions.filtaquilla.debug", false);
 pref("extensions.filtaquilla.debug.firstrun", false);
+pref("extensions.filtaquilla.debug.notifications", false);
 
 // upgrade handling stuff
 pref("extensions.filtaquilla.installDate", "");

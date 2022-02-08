@@ -787,3 +787,14 @@ FiltaQuilla.Util = {
 
 
 // vim: set expandtab tabstop=2 shiftwidth=2:
+
+// the following adds the notifyTools API as a util method to communicate with the background page
+// this mechanism will be used to replace legacy code with API calls.
+var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+FiltaQuilla.Util.extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
+Services.scriptloader.loadSubScript(
+  FiltaQuilla.Util.extension.rootURI.resolve("content/scripts/notifyTools.js"),
+  FiltaQuilla.Util,
+  "UTF-8"
+);

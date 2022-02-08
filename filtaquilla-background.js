@@ -40,6 +40,30 @@
   
   
   
+  messenger.NotifyTools.onNotifyBackground.addListener(async (data) => {
+    const legacy_root = "extensions.filtaquilla.";
+    let isLog = await messenger.LegacyPrefs.getPref(legacy_root + "debug.notifications");
+    if (isLog && data.func) {
+      console.log ("=========================\n" +
+                   "BACKGROUND LISTENER received: " + data.func + "\n" +
+                   "=========================");
+    }
+    switch (data.func) {
+      case "printMessage": // [issue 152] - PrintingTools NG support
+        // third "options" parameter must be passed to be able to have extensionId as 1st parameter , not sure whether it requires a particular format, or null is allowed
+        const PrintinTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net";
+        let options = {};
+        
+
+        let result = await messenger.runtime.sendMessage(
+          PrintinTools_Addon_Name, 
+          { command: "printMessage", messageId: data.msgKey },
+          options 
+        );
+        break;
+    }
+  });
+  
   
   messenger.WindowListener.startListening();
 
