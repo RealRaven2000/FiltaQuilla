@@ -51,13 +51,13 @@
     switch (data.func) {
       case "printMessage": // [issue 152] - PrintingTools NG support
         // third "options" parameter must be passed to be able to have extensionId as 1st parameter , not sure whether it requires a particular format, or null is allowed
-        const PrintinTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net";
+        const PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net";
         let options = {};
         
 
         let result = await messenger.runtime.sendMessage(
-          PrintinTools_Addon_Name, 
-          { command: "printMessage", messageId: data.msgKey },
+          PrintingTools_Addon_Name, 
+          { command: "printMessage", messageHeader: data.msgKey },
           options 
         );
         break;
