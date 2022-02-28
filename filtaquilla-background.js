@@ -41,26 +41,50 @@
   
   
   messenger.NotifyTools.onNotifyBackground.addListener(async (data) => {
-    const legacy_root = "extensions.filtaquilla.";
-    let isLog = await messenger.LegacyPrefs.getPref(legacy_root + "debug.notifications");
+    const Legacy_Root = "extensions.filtaquilla." 
+          PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net" 
+          SmartTemplates_Name = "smarttemplate4@thunderbird.extension";
+    
+    let isLog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.notifications");
     if (isLog && data.func) {
-      console.log ("=========================\n" +
-                   "BACKGROUND LISTENER received: " + data.func + "\n" +
-                   "=========================");
+      console.log ("================================\n" +
+                   "FQ BACKGROUND LISTENER received: " + data.func + "\n" +
+                   "================================");
     }
     switch (data.func) {
       case "printMessage": // [issue 152] - PrintingTools NG support
-        // third "options" parameter must be passed to be able to have extensionId as 1st parameter , not sure whether it requires a particular format, or null is allowed
-        const PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net";
-        let options = {};
-        
-
-        let result = await messenger.runtime.sendMessage(
-          PrintingTools_Addon_Name, 
-          { command: "printMessage", messageHeader: data.msgKey },
-          options 
-        );
+        {
+          // third "options" parameter must be passed to be able to have extensionId as 1st parameter , not sure whether it requires a particular format, or null is allowed
+          let options = {},
+              msgKey = data.msgKey;
+          let isPrintLog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.PrintingToolsNG");
+          if (isPrintLog) {
+            console.log("printMessage", `( '${msgKey.subject}' - ${msgKey.date.toLocaleDateString()} ${msgKey.date.toLocaleTimeString()} )`);
+          }
+          let result = await messenger.runtime.sendMessage(
+            PrintingTools_Addon_Name, 
+            { command: "printMessage", messageHeader: msgKey },
+            options 
+          );
+        }
         break;
+      case "forwardMessageST": // [issue 153] - Implement new filter action "Forward with SmartTemplate"
+        {
+          let result = await messenger.runtime.sendMessage(
+            SmartTemplates_Name, 
+            { command: "forwardMessageWithTemplate", messageHeader: data.msgKey, templateURL: data.fileURL }
+          );
+        }
+        break;
+      case "replyMessageST": // [issue 153]
+        {
+          let result = await messenger.runtime.sendMessage(
+            SmartTemplates_Name, 
+            { command: "replyMessageWithTemplate", messageHeader: data.msgKey, templateURL: data.fileURL }
+          );
+        }
+        break;
+        
     }
   });
   

@@ -66,16 +66,17 @@ function loadPreferences() {
   }	
   util.logDebug("loadPreferences - start:");
   
-  let myprefElements = document.querySelectorAll("[preference]");
-  let foundElements = {};
+  let myprefElements = document.querySelectorAll("[preference]"),
+      foundElements = {};
+  
   for (let myprefElement of myprefElements) {
     let legacyPrefId = myprefElement.getAttribute("preference");
     foundElements[legacyPrefId] = myprefElement;
   }
 
   let myprefs = document.getElementsByTagName("preference");
+  let prefArray = [];
   if (myprefs.length) {
-    let prefArray = [];
     for (let it of myprefs) {
       let p = new Object({ id: it.getAttribute('name'), 
                 name: it.getAttribute('name'),
@@ -94,6 +95,16 @@ function loadPreferences() {
       Preferences.addAll(prefArray);
   }
   util.logDebug("loadPreferences - finished.");
+  if(!Preferences.get("extensions.filtaquilla.print.enabled").value) {
+    document.getElementById("checkPrintToolsEnabled").disabled = true;
+  }
+  let printOption = document.getElementById("checkPrintEnabled");
+  printOption.addEventListener("click",
+    (event) => {
+      document.getElementById("checkPrintToolsEnabled").disabled = !(event.target.checked);
+    }
+  );
+    
 }
 
 function onl10n() {

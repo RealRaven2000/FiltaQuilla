@@ -123,6 +123,9 @@
   "filtaquilla.selectFolder.title": {
     "message": "Select a Folder"
   },
+  "filtaquilla.template.select": {
+    "message": "Select a Template…"
+  },
   "filtaquilla.tone.select": {
     "message": "Select a Sound File…"
   },
@@ -254,6 +257,12 @@
   },
   "fq.saveMsgAsFile.access": {
     "message": "I"
+  },
+  "fq.smartTemplate.fwd": {
+    "message": "Forward with SmartTemplate"
+  },
+  "fq.smartTemplate.rsp": {
+    "message": "Reply with SmartTemplate"
   },
   "fq.archiveMessage" : {
     "message": "Archive message"

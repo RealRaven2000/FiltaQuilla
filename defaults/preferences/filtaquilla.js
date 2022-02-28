@@ -27,6 +27,9 @@ pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
 pref("extensions.filtaquilla.moveLater.enabled", false);
 pref("extensions.filtaquilla.regexpCaseInsensitive.enabled", true);
 pref("extensions.filtaquilla.archiveMessage.enabled", false);
+pref("extensions.filtaquilla.smarttemplates.fwd.enabled", false);
+pref("extensions.filtaquilla.smarttemplates.rsp.enabled", false);
+
 // search terms
 pref("extensions.filtaquilla.SubjectRegexEnabled", true);
 pref("extensions.filtaquilla.BodyRegexEnabled", true);
@@ -42,6 +45,7 @@ pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
 pref("extensions.filtaquilla.debug", false);
 pref("extensions.filtaquilla.debug.firstrun", false);
 pref("extensions.filtaquilla.debug.notifications", false);
+pref("extensions.filtaquilla.debug.PrintingToolsNG", false);
 
 // upgrade handling stuff
 pref("extensions.filtaquilla.installDate", "");

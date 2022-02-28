@@ -72,6 +72,9 @@
       <preference id="javascriptActionBodyEnabled" name="extensions.filtaquilla.javascriptActionBody.enabled" type="bool"/>
       <preference id="tonequillaEnabled" name="extensions.filtaquilla.tonequilla.enabled" type="bool"/>
       <preference id="archiveMessage" name="extensions.filtaquilla.archiveMessage.enabled" type="bool"/>
+      <preference id="fwdSmartTemplatesEnabled" name="extensions.filtaquilla.smarttemplates.fwd.enabled" type="bool"/>
+      <preference id="rspSmartTemplatesEnabled" name="extensions.filtaquilla.smarttemplates.rsp.enabled" type="bool"/>
+      
 
       <preference id="saveMessageAsFileEnabled" name="extensions.filtaquilla.saveMessageAsFile.enabled" type="bool"/>
       <preference id="moveLaterEnabled" name="extensions.filtaquilla.moveLater.enabled" type="bool"/>
@@ -256,8 +259,16 @@
                       label="__MSG_fq.print__"
                       accesskey="__MSG_fq.print.access__"/>
 
-            <checkbox id="checkPrintEnabled" preference="printToolsEnabled"
+            <checkbox id="checkPrintToolsEnabled" preference="printToolsEnabled"
                       label="__MSG_fq.printTools__"
+                      />
+            <br></br>
+            <checkbox id="checkFwdSmartTemplates" preference="fwdSmartTemplatesEnabled"
+                      label="__MSG_fq.smartTemplate.fwd__"
+                      />
+
+            <checkbox id="checkRspSmartTemplates" preference="rspSmartTemplatesEnabled"
+                      label="__MSG_fq.smartTemplate.rsp__"
                       />
           
           <!-- dummy row because I have complaints about size ? -->

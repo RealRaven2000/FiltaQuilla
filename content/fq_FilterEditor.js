@@ -59,6 +59,8 @@
       "filtaquilla@mesquilla.com#javascriptAction": "filtaquilla-ruleactiontarget-javascriptaction",
       "filtaquilla@mesquilla.com#javascriptActionBody": "filtaquilla-ruleactiontarget-javascriptaction",
       "filtaquilla@mesquilla.com#saveMessageAsFile": "filtaquilla-ruleactiontarget-directorypicker",
+      "filtaquilla@mesquilla.com#fwdSmart" : "filtaquilla-ruleactiontarget-templatepicker",
+      "filtaquilla@mesquilla.com#rspSmart" : "filtaquilla-ruleactiontarget-templatepicker",
       // ToneQuilla
       "tonequilla@mesquilla.com#playSound": "filtaquilla-ruleactiontarget-tonequillapicker",
     };
@@ -193,6 +195,74 @@
   } // launch picker
   
   defineIfNotPresent("filtaquilla-ruleactiontarget-launchpicker", FiltaQuillaRuleactiontargetLaunchPicker);
+  
+  
+  class FiltaQuillaRuleactiontargetTemplatePicker extends FiltaQuillaRuleactiontargetBase {
+    connectedCallback() {
+      if (this.delayConnectedCallback()) {
+        return;
+      }
+      this.textContent = "";
+      this.appendChild(MozXULElement.parseXULToFragment(`
+        <hbox flex="1" class="flexelementcontainer">
+          <html:input class="ruleactionitem flexinput" onchange="this.parentNode.value = this.value;"></html:input>
+          <toolbarbutton image="chrome://messenger/skin/icons/folder.svg"
+                         class="focusbutton"
+                         tooltiptext="dummy"
+                         oncommand="this.parentNode.parentNode.getURL()">
+          </toolbarbutton>
+        </hbox>
+      `));
+
+      this.hbox = this.getElementsByTagName("hbox")[0];
+      this.textbox = this.hbox.firstChild;
+      const txtLaunchSelector = util.getBundleString('filtaquilla.template.select', "Select a Template…");
+      this.launchtitle = txtLaunchSelector;
+
+      let btns = this.getElementsByTagName("toolbarbutton");
+      btns[0].setAttribute('tooltiptext', txtLaunchSelector);
+
+
+      updateParentNode(this.closest(".ruleaction"));
+
+      if (typeof(this.hbox.value) != 'undefined')
+        this.textbox.setAttribute('value', this.hbox.value);
+
+    }
+
+    getURL() {
+      const nsIFilePicker = Ci.nsIFilePicker;
+      var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+      fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+      fp.appendFilter("Template Files", "*.htm;*.html;*.txt");
+      try {
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        file.initWithPath(this.textbox.value);
+        fp.displayDirectory = file.parent;
+        fp.defaultString = file.leafName;
+      } catch (e) {}
+
+      //closured stuff:
+      let pathBox = this.textbox,
+        hBox = this.hbox;
+
+      let fpCallback = function fpCallback_done(aResult) {
+        if (aResult == nsIFilePicker.returnOK) {
+          pathBox.value = fp.file.path;
+          hBox.value = fp.file.path;
+        }
+      }
+
+      if (fp.open)
+        fp.open(fpCallback);
+      else { // old code
+        fpCallback(fp.show());
+      }
+    }
+  } // template picker  
+  
+  defineIfNotPresent("filtaquilla-ruleactiontarget-templatepicker", FiltaQuillaRuleactiontargetTemplatePicker);
+  
 
   class FiltaQuillaRuleactiontargetRunPicker extends FiltaQuillaRuleactiontargetBase {
     connectedCallback() {

@@ -110,7 +110,11 @@
       saveMessageAsFileEnabled = false,
       moveLaterEnabled = false, 
       regexpCaseInsensitiveEnabled = false,
-      archiveMessageEnabled = false;
+      archiveMessageEnabled = false,
+      fwdSmartTemplatesEnabled = false,
+      rspSmartTemplatesEnabled = false;
+      
+      
 
   // Enabling of search terms.
   let SubjectRegexEnabled = false,
@@ -547,6 +551,92 @@
       allowDuplicates: true,
       needsBody: false
     }; // end runFile
+    
+    self.fwdSmartTemplates =
+    {
+      id: "filtaquilla@mesquilla.com#fwdSmart",
+      name: util.getBundleString("fq.smartTemplate.fwd"),
+      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        var file = Cc["@mozilla.org/file/local;1"]
+                     .createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var args = aActionValue.split(','),
+            fileURL = args[0],
+            parmCount = args.length - 1;
+            
+        file.initWithPath(fileURL); // check whether template exists!
+        if (!file.exists()) {
+          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL)
+        }
+        // then send a message to SmartTemplates
+        for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
+          // pass on the message header - similar to printingTools NG
+          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(aMsgHdrs[messageIndex]);
+          FiltaQuilla.Util.notifyTools.notifyBackground(
+            { func: "forwardMessageST", msgKey: MessageHeader, fileURL }
+          );
+          // 
+        }
+      },
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      {
+        let msgHdrs = [];
+        for (var i = 0; i < aMsgHdrs.length; i++) {
+          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
+        }
+        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
+      },        
+
+      isValidForType: function(type, scope) {
+        return fwdSmartTemplatesEnabled;
+      },
+      validateActionValue: function(value, folder, type) { return null;},
+      allowDuplicates: true,
+      needsBody: true
+    }; // end fwdSmartTemplates    
+    
+
+    self.replySmartTemplates =
+    {
+      id: "filtaquilla@mesquilla.com#rspSmart",
+      name: util.getBundleString("fq.smartTemplate.rsp"),
+      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        var file = Cc["@mozilla.org/file/local;1"]
+                     .createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var args = aActionValue.split(','),
+            fileURL = args[0],
+            parmCount = args.length - 1;
+            
+        file.initWithPath(fileURL); // check whether template exists!
+        if (!file.exists()) {
+          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL)
+        }
+        // then send a message to SmartTemplates
+        for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
+          // pass on the message header - similar to printingTools NG
+          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(aMsgHdrs[messageIndex]);
+          FiltaQuilla.Util.notifyTools.notifyBackground(
+            { func: "replyMessageST", msgKey: MessageHeader, fileURL }
+          );
+          // 
+        }
+      },
+      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
+      {
+        let msgHdrs = [];
+        for (var i = 0; i < aMsgHdrs.length; i++) {
+          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
+        }
+        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
+      },        
+
+      isValidForType: function(type, scope) {
+        return rspSmartTemplatesEnabled;
+      },
+      validateActionValue: function(value, folder, type) { return null;},
+      allowDuplicates: true,
+      needsBody: true
+    }; // end fwdSmartTemplates    
+    
 
     // train as junk
     self.trainAsJunk =
@@ -633,7 +723,6 @@
             let hdr = printQueue.shift();
             
             if (isPrintingToolsNG) {
-              debugger;
               let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(hdr);
               FiltaQuilla.Util.notifyTools.notifyBackground({ func: "printMessage", msgKey: MessageHeader });
               await printNextMessage();
@@ -1866,6 +1955,14 @@
       archiveMessageEnabled = prefs.getBoolPref("archiveMessage.enabled");
     } catch (e) {}
     
+    try {
+      fwdSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.fwd.enabled");
+    } catch (e) {}
+    
+    try {
+      rspSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.rsp.enabled");
+    } catch (e) {}
+    
     // 2. Enable conditions
     try {
       SubjectRegexEnabled = prefs.getBoolPref("SubjectRegexEnabled");
@@ -1945,6 +2042,10 @@
     filterService.addCustomAction(self.trainAsJunk);
     filterService.addCustomAction(self.trainAsGood);
     filterService.addCustomAction(self.print);
+    // [issue 153]
+    // test: filterService.getCustomAction("filtaquilla@mesquilla.com#fwdSmart")
+    filterService.addCustomAction(self.fwdSmartTemplates);
+    filterService.addCustomAction(self.replySmartTemplates);
     filterService.addCustomAction(self.addSender);
     filterService.addCustomAction(self.saveAttachment);
     filterService.addCustomAction(self.detachAttachments);
@@ -1954,6 +2055,7 @@
     filterService.addCustomAction(self.moveLater);
     filterService.addCustomAction(self.playSound);
     filterService.addCustomAction(self.archiveMessage);
+    filterService.addCustomAction(self.trainAsJunk);
 
 
     // search terms 
@@ -1968,7 +2070,6 @@
     filterService.addCustomTerm(self.folderName);
 
 		if (AttachmentRegexEnabled) {
-			debugger;
 			filterService.addCustomTerm(self.attachmentRegex);
 		}
 
@@ -2250,7 +2351,6 @@
     
     const chars = "-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
           maxLength = 60;
-    debugger;
     
     let str = aName; // .toLowerCase();
     // diacritics
