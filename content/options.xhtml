@@ -61,6 +61,7 @@
       <preference id="markRepliedEnabled" name="extensions.filtaquilla.markReplied.enabled" type="bool"/>
       <preference id="launchFileEnabled" name="extensions.filtaquilla.launchFile.enabled" type="bool"/>
       <preference id="runFileEnabled" name="extensions.filtaquilla.runFile.enabled" type="bool"/>
+      <preference id="runFileUnicode" name="extensions.filtaquilla.runFile.unicode" type="bool"/>
       <preference id="trainAsJunkEnabled" name="extensions.filtaquilla.trainAsJunk.enabled" type="bool"/>
       <preference id="trainAsGoodEnabled" name="extensions.filtaquilla.trainAsGood.enabled" type="bool"/>
       <preference id="printEnabled" name="extensions.filtaquilla.print.enabled" type="bool"/>
@@ -148,6 +149,18 @@
             <checkbox id="checkMarkRepliedEnabled" preference="markRepliedEnabled"
                       label="__MSG_fq.markReplied__"
                       accesskey="__MSG_fq.markReplied.access__"/>
+                      
+            <span>
+              <checkbox id="checkSubjectSuffixEnabled" preference="subjectSuffixEnabled"
+                        label="__MSG_fq.subjectappend__" 
+                        accesskey="__MSG_fq.subjectappend.access__"/>
+              <toolbarbutton
+                  class="helpLink"
+                  onclick="FiltaQuilla.Util.openHelpTab('prepend_subject');"
+                  tooltiptext="__MSG_helpFeatureTip__"
+                  />
+            </span>                      
+                      
             <span>
               <checkbox id="checkLaunchFileEnabled" preference="launchFileEnabled"
                         label="__MSG_fq.launchFile__"
@@ -169,6 +182,10 @@
                 tooltiptext="__MSG_helpFeatureTip__"
                 />
             </span>
+            
+            <checkbox id="checkRunFileUnicode" preference="runFileUnicode"
+                        label="__MSG_fq.runFile.unicode__"/>
+            
             <span>
               <checkbox id="checkTrainAsJunkEnabled" preference="trainAsJunkEnabled"
                         label="__MSG_fq.trainJunk__"
@@ -184,16 +201,7 @@
                       label="__MSG_fq.trainGood__"
                       accesskey="__MSG_fq.trainGood.access__"/>
 
-            <span>
-              <checkbox id="checkSubjectSuffixEnabled" preference="subjectSuffixEnabled"
-                        label="__MSG_fq.subjectappend__" 
-                        accesskey="__MSG_fq.subjectappend.access__"/>
-              <toolbarbutton
-                  class="helpLink"
-                  onclick="FiltaQuilla.Util.openHelpTab('prepend_subject');"
-                  tooltiptext="__MSG_helpFeatureTip__"
-                  />
-            </span>
+
 
             <span>
               <checkbox id="checkDetachAttachmentsEnabled" preference="detachAttachmentsEnabled"

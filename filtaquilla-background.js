@@ -70,18 +70,27 @@
         break;
       case "forwardMessageST": // [issue 153] - Implement new filter action "Forward with SmartTemplate"
         {
+          
+          let isSTlog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.SmartTemplates");
           let result = await messenger.runtime.sendMessage(
             SmartTemplates_Name, 
             { command: "forwardMessageWithTemplate", messageHeader: data.msgKey, templateURL: data.fileURL }
           );
+          if (isSTlog) {
+            console.log("FQ: after sending forwardMessageWithTemplate");
+          }
         }
         break;
       case "replyMessageST": // [issue 153]
         {
+          let isSTlog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.SmartTemplates");
           let result = await messenger.runtime.sendMessage(
             SmartTemplates_Name, 
             { command: "replyMessageWithTemplate", messageHeader: data.msgKey, templateURL: data.fileURL }
           );
+          if (isSTlog) {
+            console.log("FQ: after sending replyMessageWithTemplate");
+          }
         }
         break;
         

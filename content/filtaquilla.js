@@ -98,6 +98,7 @@
       copyAsReadEnabled = false,
       launchFileEnabled = false,
       runFileEnabled = false,
+      runFileUnicode = false,
       trainAsJunkEnabled = false,
       trainAsGoodEnabled = false,
       printEnabled = false,
@@ -519,6 +520,27 @@
         //   @DATEINSECONDS@ date in seconds
         //   @MESSAGEURI@ URI for the message
         //   @PROPERTY@somedbproperty@ uses .getStringProperty("somedbproperty")
+        
+        /**
+         * Convert a UTF8 string to UTF16.
+         * @param {String} input
+         * @returns {String}
+         */
+        function utf8To16(input) {
+          var _escape = function(s) {
+            function q(c) {
+              c = c.charCodeAt();
+              return '%' + (c<16 ? '0' : '') + c.toString(16).toUpperCase();
+            }
+            return s.replace(/[\x00-),:-?[-^`{-\xFF]/g, q);
+          };
+          try {
+            return decodeURIComponent(_escape(input));
+          } catch (URIError) {
+            //include invalid character, cannot convert
+            return input;
+          }
+        }       
 
         var args = aActionValue.split(','),
             fileURL = args[0],
@@ -529,10 +551,22 @@
           let theProcess = Cc["@mozilla.org/process/util;1"]
                            .createInstance(Ci.nsIProcess);
           theProcess.init(file);
+          
+          // convert parameters
           let parameters = new Array(parmCount);
-          for (var i = 0; i < parmCount; i++)
-            parameters[i] = _replaceParameters(aMsgHdrs[messageIndex], args[i + 1]);
-          theProcess.run(false, parameters, parmCount);
+          if (runFileUnicode) {
+            for (let i = 0; i < parmCount; i++) {
+              let pRaw = _replaceParameters(aMsgHdrs[messageIndex], args[i + 1]);
+              parameters[i] = utf8To16(pRaw);
+            }
+            theProcess.runw(false, parameters, parmCount); // [issue 102] decoding problems -  UTF-16
+          }
+          else {
+            for (let i = 0; i < parmCount; i++) {
+              parameters[i] = _replaceParameters(aMsgHdrs[messageIndex], args[i + 1]);
+            }
+            theProcess.run(false, parameters, parmCount);
+          }
         }
       },
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
@@ -567,14 +601,25 @@
         if (!file.exists()) {
           console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL)
         }
+        const prefserv = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
+              prefs = prefserv.getBranch("extensions.filtaquilla."),
+              isDebug = prefs.getBoolPref("debug.SmartTemplates");
+            
         // then send a message to SmartTemplates
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           // pass on the message header - similar to printingTools NG
-          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(aMsgHdrs[messageIndex]);
+          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(aMsgHdrs[messageIndex]),
+              count = messageIndex+1,
+              length = aMsgHdrs.length;
           FiltaQuilla.Util.notifyTools.notifyBackground(
             { func: "forwardMessageST", msgKey: MessageHeader, fileURL }
           );
-          // 
+          if (isDebug) {
+            console.log(`FQ: after notifyBackground(forwardMessageST) - ${count} of ${length} `); 
+          }          
+        }
+        if (isDebug) {
+          console.log(`FQ: processed array of ${aMsgHdrs.length} messages for forwarding to SmartTemplates!`);
         }
       },
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
@@ -1902,7 +1947,11 @@
     try {
       runFileEnabled = prefs.getBoolPref("runFile.enabled");
     } catch (e) {}
-
+    
+    try {
+      runFileUnicode = prefs.getBoolPref("runFile.unicode");
+    } catch (e) {}
+    
     try {
       trainAsJunkEnabled = prefs.getBoolPref("trainAsJunk.enabled");
     } catch (e) {}

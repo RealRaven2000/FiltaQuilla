@@ -94,7 +94,7 @@ function loadPreferences() {
     if (Preferences)
       Preferences.addAll(prefArray);
   }
-  util.logDebug("loadPreferences - finished.");
+  
   if(!Preferences.get("extensions.filtaquilla.print.enabled").value) {
     document.getElementById("checkPrintToolsEnabled").disabled = true;
   }
@@ -104,7 +104,18 @@ function loadPreferences() {
       document.getElementById("checkPrintToolsEnabled").disabled = !(event.target.checked);
     }
   );
+  
+  if(!Preferences.get("extensions.filtaquilla.runFile.enabled").value) {
+    document.getElementById("checkRunFileUnicode").disabled = true;
+  }
+  let checkRunFileOption =  document.getElementById("checkRunFileEnabled");
+  checkRunFileOption.addEventListener("click",
+    (event) => {
+      document.getElementById("checkRunFileUnicode").disabled = !(event.target.checked);
+    }
+  );
     
+  util.logDebug("loadPreferences - finished.");
 }
 
 function onl10n() {

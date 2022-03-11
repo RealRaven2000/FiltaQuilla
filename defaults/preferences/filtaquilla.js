@@ -13,6 +13,7 @@ pref("extensions.filtaquilla.noBiff.enabled", false);
 pref("extensions.filtaquilla.copyAsRead.enabled", false);
 pref("extensions.filtaquilla.launchFile.enabled", true);
 pref("extensions.filtaquilla.runFile.enabled", false);
+pref("extensions.filtaquilla.runFile.unicode", false); // [issue 102]
 pref("extensions.filtaquilla.trainAsJunk.enabled", false);
 pref("extensions.filtaquilla.trainAsGood.enabled", false);
 pref("extensions.filtaquilla.print.enabled", true);
@@ -46,6 +47,7 @@ pref("extensions.filtaquilla.debug", false);
 pref("extensions.filtaquilla.debug.firstrun", false);
 pref("extensions.filtaquilla.debug.notifications", false);
 pref("extensions.filtaquilla.debug.PrintingToolsNG", false);
+pref("extensions.filtaquilla.debug.SmartTemplates", false);
 
 // upgrade handling stuff
 pref("extensions.filtaquilla.installDate", "");
