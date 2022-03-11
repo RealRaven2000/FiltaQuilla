@@ -243,6 +243,9 @@
   "fq.runFile.access": {
     "message": "k"
   },
+  "fq.runFile.unicode": {
+    "message": "Överför parametrar som UTF-16"
+  },
   "fq.saveAttachment": {
     "message": "Spara bifogade filer till"
   },

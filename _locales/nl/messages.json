@@ -243,6 +243,9 @@
   "fq.runFile.access": {
     "message": "R"
   },
+  "fq.runFile.unicode": {
+    "message": "Parameters verzenden als UTF-16"
+  },
   "fq.saveAttachment": {
     "message": "Bijlagen opslaan in"
   },

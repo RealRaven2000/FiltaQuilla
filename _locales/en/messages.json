@@ -246,6 +246,9 @@
   "fq.runFile.access": {
     "message": "R"
   },
+  "fq.runFile.unicode": {
+    "message": "Transmit Parameters as UTF-16"
+  },
   "fq.saveAttachment": {
     "message": "Save Attachments To"
   },
