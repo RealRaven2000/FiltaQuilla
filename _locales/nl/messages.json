@@ -1,38 +1,6 @@
 {
-  "_l10nstatus": {
-    "message": "SPLASH+UI"
-  },
   "aboutAndSupport": {
     "message": "Over FiltaQuilla / Help"
-  },
-  "active-version-info": {
-    "description": "The boldStart and boldEnd parts will be replaced with html tags",
-    "message": "U voert nu {boldStart} versie $addonVer$ {boldEnd} uit op Thunderbird $appVer$.",
-    "placeholders": {
-      "addonVer": {
-        "content": "$1",
-        "example": "Version 1.1"
-      },
-      "appVer": {
-        "content": "$2",
-        "example": "78.0b4"
-      }
-    }
-  },
-  "addon-authors-struggle": {
-    "message": "Om nuttig te blijven, moeten wij add-on-ontwikkelaars nu de middelen financieren die nodig zijn om te repareren en te herschrijven, zodat onze gebruikers kunnen blijven profiteren van de functionaliteit die we bieden."
-  },
-  "btn-extend-license": {
-    "message": "Ik wil mijn licentie met een jaar verlengen"
-  },
-  "btn-renew-license": {
-    "message": "Ik wil mijn licentie verlengen"
-  },
-  "btn-want-a-license": {
-    "message": "Ik wil een vergunning kopen"
-  },
-  "btn-want-to-donate": {
-    "message": "Ik wil helpen met een eenmalige donatie."
   },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "Y"
@@ -46,26 +14,14 @@
   "checkJavascriptEnabled.label": {
     "message": "Javascript"
   },
-  "cost-of-independence": {
-    "message": "Softwareontwikkeling kost tijd en geld - in tegenstelling tot veel platform-apps worden add-ons niet geschreven door grote bedrijven en worden ze op geen enkele manier gesponsord door Mozilla."
-  },
   "default": {
     "message": "Standaard gebruiken"
-  },
-  "donate": {
-    "message": "Help mee met een eenmalige donatie."
-  },
-  "donate-heading": {
-    "message": "Help door te doneren!"
   },
   "editJavascript": {
     "message": "Javascript bewerken"
   },
   "enabled": {
     "message": "Ingeschakeld"
-  },
-  "extend-your-license": {
-    "message": "Overweeg om uw licentie met een jaar te verlengen."
   },
   "extensionDescription": {
     "description": "Description of the extension.",
@@ -309,37 +265,8 @@
   "fq.trainJunk.access": {
     "message": "O"
   },
-  "heading-installed": {
-    "description": "page heading. first placeholder will be replaced with Add-on name",
-    "message": "$addonName$ succesvol geïnstalleerd",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
-  },
-  "heading-updated": {
-    "description": "page heading. first placeholder will be replaced with Add-on name",
-    "message": "$addonName$ Succesvol bijgewerkt",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
-  },
   "helpFeatureTip": {
     "message": "Details van deze functie weergeven"
-  },
-  "hours-effort": {
-    "message": "We hebben al aanzienlijke middelen (meer dan $hoursSpent$ uur) besteed aan het conversieproject - en er is nog veel meer werk aan het oplossen van regressies en problemen veroorzaakt door veranderingen in Thunderbird.",
-    "placeholders": {
-      "hoursSpent": {
-        "content": "$1",
-        "example": "250"
-      }
-    }
   },
   "indexInGlobalDatabase": {
     "message": "Index in Algemene database"
@@ -349,25 +276,6 @@
   },
   "inheritedProperties": {
     "message": "Overgenomen eigenschappen"
-  },
-  "label-remind-me": {
-    "message": "Herinner me er over $countDays$ dagen opnieuw aan.",
-    "placeholders": {
-      "countDays": {
-        "content": "$1",
-        "example": "10"
-      }
-    }
-  },
-  "mozillas-basic-platform": {
-    "message": "Mozilla biedt alleen een basisplatform om onze software aan u, de eindgebruikers, te leveren. Als we onze gebruikers om betaling of ondersteuning moeten vragen, kunnen we dit niet doen vanaf addons.thunderbird.net - het is geen 'app store' met ingebouwde paywalls of licentiebeheer zoals iTunes of Google Play."
-  },
-  "notificationTitle": {
-    "description": "Title of the click notification.",
-    "message": "Click notification"
-  },
-  "ongoing-work": {
-    "message": "De noodzakelijke wijzigingen om over te schakelen naar het nieuwe legacy-less model (mail-experiment) hebben al meerdere weken geduurd en zijn nog steeds aan de gang, terwijl sommige functies hierdoor kunnen worden beïnvloed. Met een complexe add-on als deze wordt duur werk onvermijdelijk. Help ons hier alstublieft mee."
   },
   "optionsIntro": {
     "message": "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen."
@@ -393,29 +301,8 @@
   "quickFiltersPage_desc": {
     "message": "Download deze geweldige add-on om uw filteracties een boost te geven. quickFilters maakt definiëren van filters en het beheer ervan een makkie."
   },
-  "renew-your-license": {
-    "message": "Verleng uw licentie."
-  },
   "searchTerms": {
     "message": "Zoekwoorden"
-  },
-  "support-preference": {
-    "message": "Dit is de beste manier om $addonName$ te ondersteunen.",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
-  },
-  "support-suggestion": {
-    "message": "Zodat $addonName$ functioneel en levend blijft, doe het alsjeblieft een belangrijke gunst:",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
   },
   "supportFiltaquilla": {
     "message": "Support FiltaQuilla"
@@ -428,46 +315,5 @@
   },
   "supportPage_desc": {
     "message": "Deze pagina beschrijft de verschillende acties en voorwaarden die met FiltaQuilla aan e-mailfilters kunt toevoegen."
-  },
-  "thanks-for-installing-intro": {
-    "message": "Bedankt voor het installeren van  $addonName$.",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
-  },
-  "thanks-for-updating-intro": {
-    "message": "Bedankt voor het updaten van $addonName$.",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
-  },
-  "time-and-effort": {
-    "message": "Mijn add-ons vereisen fundamentele wijzigingen om compatibel te blijven met het Mozilla-platform. Mijn ontwikkelingsteam bij Github (Realraven2000, opto en paenglab) werkt hard om de volledige functionaliteit voor $addonName$ te herstellen.",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
-  },
-  "translated-by-google": {
-    "description": "disclaimer.",
-    "message": "vertalingen geleverd door Google"
-  },
-  "window-title": {
-    "description": "page title. first placeholder will be replaced with Add-on name",
-    "message": "Welkom bij $addonName$",
-    "placeholders": {
-      "addonName": {
-        "content": "$1",
-        "example": "FiltaQuilla"
-      }
-    }
   }
 }
