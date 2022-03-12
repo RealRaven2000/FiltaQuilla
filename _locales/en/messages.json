@@ -203,7 +203,10 @@
     "message": "R"
   },
   "fq.runFile.unicode": {
-    "message": "Transmit Parameters as UTF-16"
+    "message": "Default to UTF-16"
+  },
+  "fq.runFile.unicode.tooltip": {
+    "message": "Use the additional parameter @UTF16@ or @UTF8@ to use individual encoding"
   },
   "fq.saveAttachment": {
     "message": "Save Attachments To"

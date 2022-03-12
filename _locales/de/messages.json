@@ -200,7 +200,10 @@
     "message": "R"
   },
   "fq.runFile.unicode": {
-    "message": "Parameter als UTF-16 übertragen"
+    "message": "UTF-16 als Standard verwenden"
+  },
+  "fq.runFile.unicode.tooltip": {
+    "message": "Verwenden Sie den zusätzlichen Parameter @UTF16@ oder @UTF8@, um eine individuelle Codierung zu verwenden"
   },
   "fq.saveAttachment": {
     "message": "Anhänge abspeichern in"

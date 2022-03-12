@@ -85,6 +85,25 @@ div.lineSpacer {
   background-image: url("resource://filtaquilla-skin/fugue-question-disabled.png");
 }
 
+
+.helpLink .tooltip {
+  position: fixed;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 5px;
+  background: white;
+  border: 1px solid #ccc;
+  visibility: hidden;
+  opacity: 0;
+  box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s, visibility 0s;
+}
+
+.helpLink:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
 hbox.title {
   display: inline-flex; /* make child elements flex */
   font-size: 20px;

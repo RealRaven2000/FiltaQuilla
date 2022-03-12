@@ -183,9 +183,15 @@
                 />
             </span>
             
-            <checkbox id="checkRunFileUnicode" preference="runFileUnicode"
-                        label="__MSG_fq.runFile.unicode__"/>
-            
+            <span>
+              <checkbox id="checkRunFileUnicode" preference="runFileUnicode"
+                          label="__MSG_fq.runFile.unicode__"/>
+              <toolbarbutton
+                class="helpLink"
+                onclick="FiltaQuilla.Util.openTooltipPopup(this);"
+                clickyTooltip="__MSG_fq.runFile.unicode.tooltip__"
+                />
+            </span>
             <span>
               <checkbox id="checkTrainAsJunkEnabled" preference="trainAsJunkEnabled"
                         label="__MSG_fq.trainJunk__"

@@ -542,10 +542,20 @@
           }
         }       
 
-        var args = aActionValue.split(','),
+        let args = aActionValue.split(','),
             fileURL = args[0],
-            parmCount = args.length - 1;
+            isUnicode = runFileUnicode;
             
+        if (args.includes("@UTF16@")) {
+          isUnicode = true;
+          args = args.filter((f) => f!="@UTF16@");
+        }
+        else if (args.includes("@UTF8@")) {
+          isUnicode = false;
+          args = args.filter((f) => f!="@UTF8@");
+        }
+        let parmCount = args.length - 1;
+
         file.initWithPath(fileURL);
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           let theProcess = Cc["@mozilla.org/process/util;1"]
@@ -554,7 +564,7 @@
           
           // convert parameters
           let parameters = new Array(parmCount);
-          if (runFileUnicode) {
+          if (isUnicode) {
             for (let i = 0; i < parmCount; i++) {
               let pRaw = _replaceParameters(aMsgHdrs[messageIndex], args[i + 1]);
               parameters[i] = utf8To16(pRaw);

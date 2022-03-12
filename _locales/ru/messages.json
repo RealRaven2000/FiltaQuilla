@@ -200,7 +200,10 @@
     "message": "R"
   },
   "fq.runFile.unicode": {
-    "message": "Передать параметры как UTF-16"
+    "message": "UTF-16 по умолчанию"
+  },
+  "fq.runFile.unicode.tooltip": {
+    "message": "Используйте дополнительный параметр @UTF16@ или @UTF8@ для использования индивидуальной кодировки"
   },
   "fq.saveAttachment": {
     "message": "Сохранить вложения в"

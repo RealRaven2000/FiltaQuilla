@@ -179,6 +179,25 @@ FiltaQuilla.Util = {
 			FiltaQuilla.Util.openLinkInTab(URL);
 			});
 	} ,
+  
+  openTooltipPopup: function(el) {
+    let txt = el.getAttribute("clickyTooltip");
+    if (txt) {
+      let tip  = document.createElement("div");
+      tip.classList.add('tooltip');
+      tip.innerText = txt;
+      tip.style.transform =
+        'translate(' +
+          (el.hasAttribute('tip-left') ? 'calc(-100% - 5px)' : '15px') + ', ' +
+          (el.hasAttribute('tip-top') ? '-100%' : '0') +
+        ')';
+      el.appendChild(tip);
+      el.onmousemove = e => {
+        tip.style.left = e.clientX + 'px'
+        tip.style.top = e.clientY + 'px';
+      };      
+    }
+  },
 
 	openLinkInTab : function FiltaQuilla_openLinkInTab(URL) {
 		const util = FiltaQuilla.Util;

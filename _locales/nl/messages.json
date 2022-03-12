@@ -200,7 +200,10 @@
     "message": "R"
   },
   "fq.runFile.unicode": {
-    "message": "Parameters verzenden als UTF-16"
+    "message": "UTF-16 als standaard gebruiken"
+  },
+  "fq.runFile.unicode.tooltip": {
+    "message": "Gebruik de extra parameter @UTF16@ of @UTF8@ om individuele codering te gebruiken"
   },
   "fq.saveAttachment": {
     "message": "Bijlagen opslaan in"
