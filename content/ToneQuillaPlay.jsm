@@ -253,20 +253,20 @@ var ToneQuillaPlay = {
     
     that.logDebug("determined mimeType = " + mimeType);
 
+    let url = Services.io.newURI(uriSpec);
     switch (mimeType) {
       case "video/ogg":
       case "audio/ogg":
       case "audio/mpeg":
         that._audioElement = new that.window.Audio(uriSpec);
-        that._audioElement.autoplay = true;
+        that._audioElement.setAttribute("autoplay", true);
+        that._audioElement.setAttribute("type", mimeType);
         that._audioElement.load(); // plays twice!
-        // that._nsISound.play(Services.io.newURI(playSpec));
+        // that._nsISound.play(Services.io.newURI(uriSpec));
+        that._nsISound.play(url);
         break;
       case "audio/wav":
       case "audio/x-wav":
-        let url = that._nsIIOService
-                      .newURI(uriSpec, null, null)
-                      .QueryInterface(Ci.nsIURL);
         that._nsISound.play(url);
         break;
       default:
