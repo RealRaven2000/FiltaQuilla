@@ -27,18 +27,20 @@
   messenger.WindowListener.registerWindow("chrome://messenger/content/messenger.xhtml", "content/scripts/filtaquilla-messenger.js");
   
   // overlay  chrome://messenger/content/FilterEditor.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.WindowListener.registerWindow("chrome://messenger/content/FilterEditor.xhtml", "content/scripts/filtaquilla-filterEditor.js");
+  messenger.DomContentScript.registerWindow("chrome://messenger/content/FilterEditor.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
+  messenger.WindowListener.registerWindow("chrome://messenger/content/FilterEditor.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
   
   // overlay  chrome://messenger/content/SearchDialog.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.WindowListener.registerWindow("chrome://messenger/content/SearchDialog.xhtml", "content/scripts/filtaquilla-filterEditor.js");
+  messenger.DomContentScript.registerWindow("chrome://messenger/content/SearchDialog.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
+  messenger.WindowListener.registerWindow("chrome://messenger/content/SearchDialog.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
   
   // overlay  chrome://messenger/content/mailViewSetup.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.WindowListener.registerWindow("chrome://messenger/content/mailViewSetup.xhtml", "content/scripts/filtaquilla-filterEditor.js");
+  messenger.DomContentScript.registerWindow("chrome://messenger/content/mailViewSetup.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
+  messenger.WindowListener.registerWindow("chrome://messenger/content/mailViewSetup.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
   
   // overlay  chrome://messenger/content/virtualFolderProperties.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.WindowListener.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "content/scripts/filtaquilla-filterEditor.js");
-  
-  
+  messenger.DomContentScript.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
+  messenger.WindowListener.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
   
   messenger.NotifyTools.onNotifyBackground.addListener(async (data) => {
     const Legacy_Root = "extensions.filtaquilla." 

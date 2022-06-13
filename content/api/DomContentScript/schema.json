@@ -1,0 +1,25 @@
+[
+  {
+    "namespace": "DomContentScript",
+    "functions": [
+      {
+        "name": "registerWindow",
+        "type": "function",
+        "async": true,
+        "description": "Register a script for onDOMContentLoaded",
+        "parameters": [
+          {
+            "name": "windowUrl",
+            "type": "string",
+            "description": "chrome URL of the window "
+          },
+          {
+            "name": "jsPath",
+            "type": "string",
+            "description": "chrome URL of the script"
+          }
+        ]
+      }
+    ]
+  }
+]
