@@ -25,7 +25,7 @@ hbox.flexelementcontainer[hidden] {
 
 input.flexinput,
 menulist.flexinput {
-  +: 2 !important;
+  flex-grow: 2 !important;
 }
 
 
