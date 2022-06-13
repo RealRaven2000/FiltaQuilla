@@ -277,13 +277,27 @@
                       label="__MSG_fq.printTools__"
                       />
             <br></br>
-            <checkbox id="checkFwdSmartTemplates" preference="fwdSmartTemplatesEnabled"
-                      label="__MSG_fq.smartTemplate.fwd__"
-                      />
+            <span>
+              <checkbox id="checkFwdSmartTemplates" preference="fwdSmartTemplatesEnabled"
+                        label="__MSG_fq.smartTemplate.fwd__"
+                        />
+              <toolbarbutton
+                  class="helpLink"
+                  onclick="FiltaQuilla.Util.openHelpTab('smart_templates');"
+                  tooltiptext="__MSG_helpFeatureTip__"
+                  />
+            </span>
 
-            <checkbox id="checkRspSmartTemplates" preference="rspSmartTemplatesEnabled"
-                      label="__MSG_fq.smartTemplate.rsp__"
-                      />
+            <span>
+              <checkbox id="checkRspSmartTemplates" preference="rspSmartTemplatesEnabled"
+                        label="__MSG_fq.smartTemplate.rsp__"
+                        />
+              <toolbarbutton
+                  class="helpLink"
+                  onclick="FiltaQuilla.Util.openHelpTab('smart_templates');"
+                  tooltiptext="__MSG_helpFeatureTip__"
+                  />
+            </span>
           
           <!-- dummy row because I have complaints about size ? -->
             <spacer height="20px" />

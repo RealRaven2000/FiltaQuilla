@@ -181,6 +181,9 @@ FiltaQuilla.Util = {
 	} ,
   
   openTooltipPopup: function(el) {
+    if (el.getAttribute("hasToolTip")) {
+      return;
+    }
     let txt = el.getAttribute("clickyTooltip");
     if (txt) {
       let tip  = document.createElement("div");
@@ -195,7 +198,8 @@ FiltaQuilla.Util = {
       el.onmousemove = e => {
         tip.style.left = e.clientX + 'px'
         tip.style.top = e.clientY + 'px';
-      };      
+      };
+      el.setAttribute("hasToolTip", true); // avoids duplicates
     }
   },
 
