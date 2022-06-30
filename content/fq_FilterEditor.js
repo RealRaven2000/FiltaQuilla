@@ -536,8 +536,8 @@
 
     getURL() {
       const nsIFilePicker = Ci.nsIFilePicker,
-            wildmat = "*.wav; *.ogg; *.mp3; *.aiff",
-            label = ".wav, .ogg, .mp3; .aiff";
+            wildmat = "*.wav; *.ogg; *.aiff",
+            label = ".wav, .ogg, .aiff";
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
       fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilter(label, wildmat);

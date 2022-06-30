@@ -153,9 +153,9 @@ var ToneQuillaPlay = {
       let dir = makePath();
       if (dir) {
         that.soundsDirectory = dir;
-        let fileList = ['applause.mp3', 'duogourd.mp3', 'Freedom.mp3', 'nightingale.mp3', 
-          'squishbeat.mp3', 'TheBrightestStar.mp3', 'squeak.wav', 'notify-1.wav', 'pour-1.wav',
-          'maybe-one-day-584.mp3', 'hold-your-horses-468.mp3', 'scratch-389.mp3', 'your-turn-491.mp3', 'knob-458.mp3', 'worthwhile-438.mp3', 'scissors-423.mp3'];
+        let fileList = ["applause.ogg", "duogourd.ogg", "Freedom.ogg", "nightingale.ogg", 
+          "squishbeat.ogg", "TheBrightestStar.ogg", "squeak.wav", "notify-1.wav", "pour-1.wav",
+          "maybe-one-day-584.ogg", "hold-your-horses-468.ogg", "scratch-389.ogg", "your-turn-491.ogg", "knob-458.ogg", "worthwhile-438.ogg", "scissors-423.ogg"];
         
         for (let i=0; i<fileList.length; i++) {
           let name = fileList[i],
