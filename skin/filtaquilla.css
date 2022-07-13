@@ -11,6 +11,15 @@
   /* -moz-box-flex: 1;  */
 }
 
+filtaquilla-ruleactiontarget-runpicker toolbarbutton,
+filtaquilla-ruleactiontarget-launchpicker toolbarbutton,
+filtaquilla-ruleactiontarget-directorypicker toolbarbutton,
+filtaquilla-ruleactiontarget-tonequillapicker toolbarbutton,
+filtaquilla-ruleactiontarget-templatepicker toolbarbutton {
+  -moz-context-properties: fill;
+  fill: currentColor;  
+}
+
 toolbarbutton.focusbutton {
   -moz-user-focus: normal;
 }
