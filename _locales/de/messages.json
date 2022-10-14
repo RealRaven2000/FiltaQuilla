@@ -175,6 +175,9 @@
   "fq.print.access": {
     "message": "K"
   },
+  "fq.printAllowDuplicates": {
+    "message": "Duplikate zulassen"
+  },
   "fq.printTools": {
     "message": "Verwendet PrintingTools NG zum Drucken"
   },

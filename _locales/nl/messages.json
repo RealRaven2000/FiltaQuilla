@@ -175,6 +175,9 @@
   "fq.print.access": {
     "message": "D"
   },
+  "fq.printAllowDuplicates": {
+    "message": "Duplicaten toestaan"
+  },
   "fq.printTools": {
     "message": "Gebruikt PrintingTools NG voor afdrukken"
   },

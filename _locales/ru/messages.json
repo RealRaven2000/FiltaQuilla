@@ -175,6 +175,9 @@
   "fq.print.access": {
     "message": "P"
   },
+  "fq.printAllowDuplicates": {
+    "message": "Разрешить дубликаты"
+  },
   "fq.printTools": {
     "message": "Использует PrintingTools NG для печати"
   },

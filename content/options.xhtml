@@ -65,6 +65,7 @@
       <preference id="trainAsJunkEnabled" name="extensions.filtaquilla.trainAsJunk.enabled" type="bool"/>
       <preference id="trainAsGoodEnabled" name="extensions.filtaquilla.trainAsGood.enabled" type="bool"/>
       <preference id="printEnabled" name="extensions.filtaquilla.print.enabled" type="bool"/>
+      <preference id="allowDuplicates" name="extensions.filtaquilla.print.allowDuplicates" type="bool"/>
       <preference id="printToolsEnabled" name="extensions.filtaquilla.print.enablePrintToolsNG" type="bool"/>
       <preference id="addSenderEnabled" name="extensions.filtaquilla.addSender.enabled" type="bool"/>
       <preference id="saveAttachmentEnabled" name="extensions.filtaquilla.saveAttachment.enabled" type="bool"/>
@@ -269,14 +270,6 @@
                       preference="archiveMessage"
                       label="__MSG_fq.archiveMessage__"/>
                       
-            <checkbox id="checkPrintEnabled" preference="printEnabled"
-                      label="__MSG_fq.print__"
-                      accesskey="__MSG_fq.print.access__"/>
-
-            <checkbox id="checkPrintToolsEnabled" preference="printToolsEnabled"
-                      label="__MSG_fq.printTools__"
-                      />
-            <br></br>
             <span>
               <checkbox id="checkFwdSmartTemplates" preference="fwdSmartTemplatesEnabled"
                         label="__MSG_fq.smartTemplate.fwd__"
@@ -298,6 +291,21 @@
                   tooltiptext="__MSG_helpFeatureTip__"
                   />
             </span>
+            
+            <br></br>
+            
+            <checkbox id="checkPrintEnabled" preference="printEnabled"
+                      label="__MSG_fq.print__"
+                      accesskey="__MSG_fq.print.access__"/>
+
+            <checkbox id="checkPrintToolsEnabled" preference="printToolsEnabled"
+                      label="__MSG_fq.printTools__"
+                      />
+                      
+            <checkbox id="chkAllowDuplicates" preference="allowDuplicates"
+                      label="__MSG_fq.printAllowDuplicates__"
+                      />
+                      
           
           <!-- dummy row because I have complaints about size ? -->
             <spacer height="20px" />

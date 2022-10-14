@@ -18,6 +18,7 @@ pref("extensions.filtaquilla.trainAsJunk.enabled", false);
 pref("extensions.filtaquilla.trainAsGood.enabled", false);
 pref("extensions.filtaquilla.print.enabled", true);
 pref("extensions.filtaquilla.print.enablePrintToolsNG", false);
+pref("extensions.filtaquilla.print.allowDuplicates", false);
 pref("extensions.filtaquilla.addSender.enabled", false);
 pref("extensions.filtaquilla.saveAttachment.enabled", false);
 pref("extensions.filtaquilla.detachAttachments.enabled", false);

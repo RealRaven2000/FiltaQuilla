@@ -175,6 +175,9 @@
   "fq.print.access": {
     "message": "u"
   },
+  "fq.printAllowDuplicates": {
+    "message": "Tillåt dubbletter"
+  },
   "fq.printTools": {
     "message": "Använder PrintingTools NG för utskrift"
   },

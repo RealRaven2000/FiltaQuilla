@@ -27,6 +27,7 @@ toolbarbutton.focusbutton {
 /* style the file picker + textbox elements so that the textbox stretches */
 hbox.flexelementcontainer {
   display: inline-flex !important;
+  width: -moz-available;
 }
 hbox.flexelementcontainer[hidden] {
   display: none !important;

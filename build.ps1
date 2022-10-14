@@ -43,7 +43,7 @@ If ($line) {
 }
 
 If ($IncrementRevision.IsPresent) {
-  if ($version -eq $null) {
+  if ($null -eq $version) {
     Write-Error "can't increment revision number, version is missing"
     exit 1
   }
@@ -70,7 +70,7 @@ If ($IncrementRevision.IsPresent) {
 
 $fileNames = @(Get-Content -en UTF8 $build_manifest)
 
-If ($version -eq $null) {
+If ($null -eq $version) {
   $xpi = "filtaquilla.xpi"
 } Else {
   $xpi = "filtaquilla-$version.xpi"
