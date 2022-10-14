@@ -748,13 +748,17 @@
               prefs = prefserv.getBranch("extensions.filtaquilla.");        
         let count = aMsgHdrs.length;
         let isPrintingToolsNG = prefs.getBoolPref("print.enablePrintToolsNG"); // [issue 152] - PrintingTools NG
+        let isAllowDuplicates = prefs.getBoolPref("print.allowDuplicates");
         
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs[i];
+          FiltaQuilla.Util.logDebug("print", hdr, isAllowDuplicates);
           // no duplicates!
-          if (!printQueue.includes(hdr))
+          if (isAllowDuplicates  || !printQueue.includes(hdr)) {
             printQueue.push(hdr);
+          }
         }
+        util.logDebug("print.applyAction queue length: " + printQueue.length, printQueue);
         /*
          * Message printing always assumes that we want to put up a print selection
          *  dialog, which we really don't want to do for filters. We can override
@@ -768,18 +772,29 @@
                            .getBranch("");
 
         async function printNextMessage() {
-          if (printingMessage || !printQueue.length)
+          if (printingMessage || !printQueue.length) {
             return;
-          if (!PrintUtils && !isPrintingToolsNG)
+          }
+          else {
+            util.logDebug("printNextMessage queue length: " + printQueue.length, printQueue);
+          }
+          if (!PrintUtils && !isPrintingToolsNG) {
             printingMessage = true; // old code branch
+          }
           
           let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
           timer.initWithCallback(async function _printNextMessage() {
             let hdr = printQueue.shift();
-            
+            if (!hdr) return; // triggered too often?
+            util.logDebug("_printNextMessage(). Remaining queue length=" + printQueue.length, hdr);
             if (isPrintingToolsNG) {
               let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(hdr);
-              FiltaQuilla.Util.notifyTools.notifyBackground({ func: "printMessage", msgKey: MessageHeader });
+              if (MessageHeader) {
+                FiltaQuilla.Util.notifyTools.notifyBackground({ func: "printMessage", msgKey: MessageHeader });
+              }
+              else {
+                util.logDebug("_printNextMessage() - couldn't convert message header: ", hdr);
+              }
               await printNextMessage();
             }
             else {
@@ -1021,7 +1036,8 @@
                 }
                 // create a unique file for this attachment
                 let uniqueFile = this.directory.clone();
-                uniqueFile.append(attachment.name);
+                let attachmentName = _sanitizeName(attachment.name, true); // allow "." for the extension
+                uniqueFile.append(attachmentName);
                 let txt = "Save attachment [" + j + "] to " + uniqueFile.path +
                     "...\n msgURI=" + this.msgURI +
                     "\n att.url=" + attachment.url +
@@ -1056,7 +1072,8 @@
 								msgURIs.push(this.msgURI);
 								contentTypes.push(attachment.contentType);
 								urls.push(attachment.url);
-								displayNames.push(attachment.name);
+                let attachmentName = _sanitizeName(attachment.name, true);
+								displayNames.push(attachmentName);
 								let txt = "Detach attachment [" + j + "] to " + this.directory.path +
 										"...\n msgURI=" + this.msgURI +
 										"\n att.url=" + attachment.url +
@@ -2405,10 +2422,10 @@
    *          if a sanitized name cannot be obtained (if aName contains
    *          no valid characters).
    */
-  function _sanitizeName(aName) {
+  function _sanitizeName(aName, includesExtension=false) {
     
     
-    const chars = "-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    const chars = "-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" + (includesExtension ? "." : ""),
           maxLength = 60;
     
     let str = aName; // .toLowerCase();
@@ -2486,8 +2503,8 @@
     str = str.replace(/щ/g, 'shch');
     str = str.replace(/Ж/g, 'Zh');
     str = str.replace(/ж/g, 'zh');  
-    // sepcial characters    
-    name = str.replace(/ /g, "-");
+    // special characters    
+    let name = str.replace(/ /g, "-");
     name = name.replace(/[@:\|\/\\\*\?]/g, "-");
     name = name.replace(/[\$%"<>,]/g, "");
     name = name.split("").filter(function (el) {
@@ -2501,8 +2518,21 @@
         name += chars.charAt(Math.round(Math.random() * cl));
     }
 
-    if (name.length > maxLength)
-      name = name.substring(0, maxLength);
+    if (name.length > maxLength) {
+      let ext;
+      if (includesExtension) {
+        let i = name.lastIndexOf(".");
+        if (i>0) {
+          ext = name.substr(i);
+        }
+      }
+      if (ext) {
+        name = name.substring(0, maxLength-ext.length) + ext;
+      }
+      else {
+        name = name.substring(0, maxLength);
+      }
+    }
 
     return name;
   }
