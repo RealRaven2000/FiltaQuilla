@@ -763,6 +763,7 @@
               switch(attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+                case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
                 case "filtaquilla@mesquilla.com#bodyRegex":        // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
@@ -802,6 +803,7 @@
               switch(attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+                case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
                 case "filtaquilla@mesquilla.com#bodyRegex" :       // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
@@ -885,6 +887,7 @@
                "filtaquilla@mesquilla.com#attachmentRegex",
                "filtaquilla@mesquilla.com#headerRegex",
                "filtaquilla@mesquilla.com#bodyRegex",
+               "filtaquilla@mesquilla.com#subjectBodyRegex",
                "filtaquilla@mesquilla.com#searchBcc",
                "filtaquilla@mesquilla.com#folderName"].includes(attType)) {
             if (el.firstChild.classList.contains("fq-textbox"))

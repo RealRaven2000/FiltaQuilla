@@ -1084,6 +1084,7 @@
 							}
 							messenger.detachAttachmentsWOPrompts(this.directory,
 																			contentTypes, urls, displayNames, msgURIs, null);
+              // await trackDeletionMessageListener.promise;
 						}
 					}
 				}
