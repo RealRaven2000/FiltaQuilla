@@ -69,6 +69,9 @@
       <preference id="printToolsEnabled" name="extensions.filtaquilla.print.enablePrintToolsNG" type="bool"/>
       <preference id="addSenderEnabled" name="extensions.filtaquilla.addSender.enabled" type="bool"/>
       <preference id="saveAttachmentEnabled" name="extensions.filtaquilla.saveAttachment.enabled" type="bool"/>
+      <preference id="fileNameSpaceCharacter" name="extensions.filtaquilla.fileNames.spaceCharacter" type="string"/>
+      <preference id="fileNameMaxLength" name="extensions.filtaquilla.fileNames.maxLength" type="int"/>
+      <preference id="fileNameWhiteList" name="extensions.filtaquilla.fileNames.whiteList" type="string"/>
       <preference id="detachAttachmentsEnabled" name="extensions.filtaquilla.detachAttachments.enabled" type="bool"/>
       <preference id="javascriptActionEnabled" name="extensions.filtaquilla.javascriptAction.enabled" type="bool"/>
       <preference id="javascriptActionBodyEnabled" name="extensions.filtaquilla.javascriptActionBody.enabled" type="bool"/>
@@ -211,19 +214,6 @@
 
 
             <span>
-              <checkbox id="checkDetachAttachmentsEnabled" preference="detachAttachmentsEnabled"
-                        label="__MSG_fq.detachAttachments__"
-                        accesskey="__MSG_fq.detachAttachments.access__"/>
-              <toolbarbutton
-                  class="helpLink"
-                  onclick="FiltaQuilla.Util.openHelpTab('detach_attachment');"
-                  tooltiptext="__MSG_helpFeatureTip__"
-                  />
-            </span>
-            <checkbox id="checkSaveMessageAsFileEnabled" preference="saveMessageAsFileEnabled"
-                      label="__MSG_fq.saveMsgAsFile__"
-                      accesskey="__MSG_fq.saveMsgAsFile.access__"/>
-            <span>
               <checkbox id="checkMoveLaterEnabled" preference="moveLaterEnabled"
                         label="__MSG_fq.moveLater__"
                         accesskey="__MSG_fq.moveLater.access__"/>
@@ -237,16 +227,6 @@
             <checkbox id="checkAddSenderEnabled" preference="addSenderEnabled"
                       label="__MSG_fq.addSender__"
                       accesskey="__MSG_fq.addSender.access__"/>
-            <span>
-              <checkbox id="checkSaveAttachmentEnabled" preference="saveAttachmentEnabled"
-                        label="__MSG_fq.saveAttachment__"
-                        accesskey="__MSG_fq.saveAttachment.access__"/>
-              <toolbarbutton
-                  class="helpLink"
-                  onclick="FiltaQuilla.Util.openHelpTab('save_attachment');"
-                  tooltiptext="__MSG_helpFeatureTip__"
-                  />
-            </span>
             <checkbox id="checkJavascriptActionEnabled" preference="javascriptActionEnabled"
                       label="__MSG_fq.javascriptAction__"
                       accesskey="__MSG_fq.javascriptAction.access__"/>
@@ -292,8 +272,6 @@
                   />
             </span>
             
-            <br></br>
-            
             <checkbox id="checkPrintEnabled" preference="printEnabled"
                       label="__MSG_fq.print__"
                       accesskey="__MSG_fq.print.access__"/>
@@ -310,6 +288,47 @@
           <!-- dummy row because I have complaints about size ? -->
             <spacer height="20px" />
           </div>
+          
+          <hr style="background-color:currentColor;height:1px;opacity: 0.3;" />
+          
+          <hbox style="display: flex; gap: 2em;" >
+            <checkbox id="checkSaveMessageAsFileEnabled" preference="saveMessageAsFileEnabled"
+                      label="__MSG_fq.saveMsgAsFile__"
+                      accesskey="__MSG_fq.saveMsgAsFile.access__"/>
+            <span>
+              <checkbox id="checkSaveAttachmentEnabled" preference="saveAttachmentEnabled"
+                        label="__MSG_fq.saveAttachment__"
+                        accesskey="__MSG_fq.saveAttachment.access__"/>
+              <toolbarbutton
+                  class="helpLink"
+                  onclick="FiltaQuilla.Util.openHelpTab('save_attachment');"
+                  tooltiptext="__MSG_helpFeatureTip__"
+                  />
+            </span>
+            <span>
+              <checkbox id="checkDetachAttachmentsEnabled" preference="detachAttachmentsEnabled"
+                        label="__MSG_fq.detachAttachments__"
+                        accesskey="__MSG_fq.detachAttachments.access__"/>
+              <toolbarbutton
+                  class="helpLink"
+                  onclick="FiltaQuilla.Util.openHelpTab('detach_attachment');"
+                  tooltiptext="__MSG_helpFeatureTip__"
+                  />
+            </span>
+          </hbox>
+          
+          <hbox>
+            <label>__MSG_fq.fileNameSpaceCharacter__:</label>
+            <html:input style="max-width: 3em; margin-right: 1em;" preference="fileNameSpaceCharacter" />
+            
+            <label>__MSG_fq.fileNameMaxLength__:</label>
+            <html:input style="max-width: 5em; margin-right: 1em;" preference="fileNameMaxLength" type="number" />
+            
+            <label>__MSG_fq.fileNameWhiteList__:</label>
+            <html:input style="width: 100%;" preference="fileNameWhiteList" />
+          </hbox>
+          
+          
         </tabpanel>
         <tabpanel orient="vertical">
           <label value="__MSG_optionsIntro__"/>

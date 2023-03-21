@@ -113,7 +113,8 @@
       regexpCaseInsensitiveEnabled = false,
       archiveMessageEnabled = false,
       fwdSmartTemplatesEnabled = false,
-      rspSmartTemplatesEnabled = false;
+      rspSmartTemplatesEnabled = false,
+      fileNamesSpaceCharacter = " ";
       
       
 
@@ -611,8 +612,7 @@
         if (!file.exists()) {
           console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL)
         }
-        const prefserv = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
-              prefs = prefserv.getBranch("extensions.filtaquilla."),
+        const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
               isDebug = prefs.getBoolPref("debug.SmartTemplates");
             
         // then send a message to SmartTemplates
@@ -744,11 +744,11 @@
       name: util.getBundleString("fq.print"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // print me
-        const prefserv = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
-              prefs = prefserv.getBranch("extensions.filtaquilla.");        
+        const prefs = Services.prefs.getBranch("extensions.filtaquilla.");        
         let count = aMsgHdrs.length;
         let isPrintingToolsNG = prefs.getBoolPref("print.enablePrintToolsNG"); // [issue 152] - PrintingTools NG
         let isAllowDuplicates = prefs.getBoolPref("print.allowDuplicates");
+        let printDelay = prefs.getBoolPref("print.delay");
         
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs[i];
@@ -767,9 +767,7 @@
          *  in setup.
          *
          */
-        let rootprefs = Cc["@mozilla.org/preferences-service;1"]
-                           .getService(Ci.nsIPrefService)
-                           .getBranch("");
+        let rootprefs = Services.prefs.getBranch("");
 
         async function printNextMessage() {
           if (printingMessage || !printQueue.length) {
@@ -803,7 +801,6 @@
               let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
               rootprefs.setBoolPref("print.always_print_silent", true);
               if (!PrintUtils) {
-                debugger;
                 var { PrintUtils } = window.ownerGlobal;
                   // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
               }
@@ -811,7 +808,6 @@
               // Tb 91
               // let uri = gFolderDisplay.selectedMessageUris[0];
               if (PrintUtils  && PrintUtils.startPrintWindow) { // && PrintUtils.loadPrintBrowser MISSING IN TB 91.3.2 ???
-                debugger;
                 let messageService = messenger.messageServiceFromURI(uri),
                     messageURL = messageService.getUrlForUri(uri).spec;
                 if (PrintUtils.loadPrintBrowser) {
@@ -851,7 +847,7 @@
             }
             
 
-          }, 10, Ci.nsITimer.TYPE_ONE_SHOT);
+          }, printDelay, Ci.nsITimer.TYPE_ONE_SHOT); // was hard coded to 10ms
         }
         printNextMessage();
       },
@@ -872,9 +868,7 @@
     // XXX to do : add a hook to base so that this is not needed
 /*    
     // [issue 97] do not reset this setting generally!!!
-    let rootprefs = Cc["@mozilla.org/preferences-service;1"]
-                      .getService(Ci.nsIPrefService)
-                      .getBranch("");
+    let rootprefs = Services.prefs.getBranch("");
     try {
       rootprefs.clearUserPref("print.always_print_silent");
     } catch (e) {}
@@ -1019,7 +1013,6 @@
               msgSubject = aMsgHdr.subject;
           if (util.isDebug) {
             util.logDebug('saveAttachmentCallback_callback');
-            debugger;
           }
           // note: for some reason I could not use msgDate as it is treated here as a string not a Date object...
           // the only workaround was to create new date objects at each step and call its functions directly:
@@ -1052,9 +1045,7 @@
                 util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
               }
 						}
-					}
-					else
-					{
+					} else {
 						if (this.attachments.length > 0) {
 							let msgURIs = [],
 							    contentTypes = [],
@@ -1259,8 +1250,9 @@
         let w = Cc["@mozilla.org/appshell/window-mediator;1"]
             .getService(Ci.nsIWindowMediator)
             .getMostRecentWindow("mail:3pane");
-        let batchMover = new w.BatchMessageMover();
-        batchMover.archiveMessages(aMsgHdrs);
+        let archiver = new MessageArchiver();
+        // let batchMover = new w.BatchMessageMover();
+        archiver.archiveMessages(aMsgHdrs);
       },      
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let a = [];
@@ -1487,7 +1479,6 @@
 
     ReadAttachmentCallback.prototype = {
       callback: function readAttachmentCallback_callback(aMsgHdr, aMimeMessage) {
-				debugger;
 				if (aMimeMessage==null) { // failure parsing during MsgHdrToMimeMessage
 					this.processed = true;
 					return;
@@ -1560,7 +1551,6 @@
 						case DoesntMatch: return true; // or false? no attachment means we cannot really say...
 					}
 				}
-				debugger;
 
 				let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr),
 				    callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
@@ -1928,8 +1918,7 @@
  
   self.setOptions = function () {
     // enable features from acbout:config    
-    const prefserv = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
-          prefs = prefserv.getBranch("extensions.filtaquilla.");
+    const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
 
     // 1. Enable Actions      
     try {
@@ -2078,6 +2067,8 @@
     try {
 			SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
 		} catch(e) {}
+    
+    fileNamesSpaceCharacter = prefs.getStringPref("fileNames.spaceCharacter");
 
 
   }
@@ -2424,92 +2415,124 @@
    *          no valid characters).
    */
   function _sanitizeName(aName, includesExtension=false) {
+    const prefs = Services.prefs.getBranch("extensions.filtaquilla."); 
+    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()_-+'!%" + (includesExtension ? "." : ""),
+        maxLength = prefs.getIntPref("fileNames.maxLength") || 60,
+        whiteList = prefs.getStringPref("fileNames.whiteList") || "";
+        
+    let replaceMap = new Map();
+    function addItems(keys, val) {
+      let list = keys.split("|");
+      for (let x of list) {
+        replaceMap.set(x, val);
+      }
+        
+    }
     
-    
-    const chars = "-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" + (includesExtension ? "." : ""),
-          maxLength = 60;
+    let spaceChar = fileNamesSpaceCharacter.substring(0,1);
+    if (!chars.includes(spaceChar)) {
+      chars += spaceChar;
+    }
+          
     
     let str = aName; // .toLowerCase();
     // diacritics
-    str = str.replace(/Ä/g, 'Ae');
-    str = str.replace(/æ|ǽ|ä/g, 'ae');
-    str = str.replace(/À|Á|Â|Ã|Å|Ǻ|Ā|Ă|Ą|Ǎ|А/g, 'A');
-    str = str.replace(/à|á|â|ã|å|ǻ|ā|ă|ą|ǎ|ª|а/g, 'a');
-    str = str.replace(/Б/g, 'B');
-    str = str.replace(/б/g, 'b');
-    str = str.replace(/Ç|Ć|Ĉ|Ċ|Č|Ц/g, 'C');
-    str = str.replace(/ç|ć|ĉ|ċ|č|ц/g, 'c');
-    str = str.replace(/Ð|Ď|Đ/g, 'Dj');
-    str = str.replace(/ð|ď|đ/g, 'dj');
-    str = str.replace(/Д/g, 'D');
-    str = str.replace(/д/g, 'd');
-    str = str.replace(/È|É|Ê|Ë|Ē|Ĕ|Ė|Ę|Ě|Е|Ё|Э/g, 'E');
-    str = str.replace(/è|é|ê|ë|ē|ĕ|ė|ę|ě|е|ё|э/g, 'e');
-    str = str.replace(/Ф/g, 'F');
-    str = str.replace(/ƒ|ф/g, 'f');
-    str = str.replace(/Ĝ|Ğ|Ġ|Ģ|Г/g, 'G');
-    str = str.replace(/ĝ|ğ|ġ|ģ|г/g, 'g');
-    str = str.replace(/Ĥ|Ħ|Х/g, 'H');
-    str = str.replace(/ĥ|ħ|х/g, 'h');
-    str = str.replace(/Ì|Í|Î|Ï|Ĩ|Ī|Ĭ|Ǐ|Į|İ|И/g, 'I');
-    str = str.replace(/ì|í|î|ï|ĩ|ī|ĭ|ǐ|į|ı|и/g, 'i');
-    str = str.replace(/Ĵ|Й/g, 'J');
-    str = str.replace(/ĵ|й/g, 'j');
-    str = str.replace(/Ķ|К/g, 'K');
-    str = str.replace(/ķ|к/g, 'k');
-    str = str.replace(/Ĺ|Ļ|Ľ|Ŀ|Ł|Л/g, 'L');
-    str = str.replace(/ĺ|ļ|ľ|ŀ|ł|л/g, 'l');
-    str = str.replace(/М/g, 'M');
-    str = str.replace(/м/g, 'm');
-    str = str.replace(/Ñ|Ń|Ņ|Ň|Н/g, 'N');
-    str = str.replace(/ñ|ń|ņ|ň|ŉ|н/g, 'n');
-    str = str.replace(/Ö/g, 'Oe');
-    str = str.replace(/œ|ö/g, 'oe');
-    str = str.replace(/Ò|Ó|Ô|Õ|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ǿ|О/g, 'O');
-    str = str.replace(/ò|ó|ô|õ|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º|о/g, 'o');
-    str = str.replace(/П/g, 'P');
-    str = str.replace(/п/g, 'p');
-    str = str.replace(/Ŕ|Ŗ|Ř|Р/g, 'R');
-    str = str.replace(/ŕ|ŗ|ř|р/g, 'r');
-    str = str.replace(/Ś|Ŝ|Ş|Ș|Š|С/g, 'S');
-    str = str.replace(/ś|ŝ|ş|ș|š|ſ|с/g, 's');
-    str = str.replace(/Ţ|Ț|Ť|Ŧ|Т/g, 'T');
-    str = str.replace(/ţ|ț|ť|ŧ|т/g, 't');
-    str = str.replace(/Ü/g, 'Ue');
-    str = str.replace(/ü/g, 'ue');
-    str = str.replace(/Ù|Ú|Û|Ũ|Ū|Ŭ|Ů|Ű|Ų|Ư|Ǔ|Ǖ|Ǘ|Ǚ|Ǜ|У/g, 'U');
-    str = str.replace(/ù|ú|û|ũ|ū|ŭ|ů|ű|ų|ư|ǔ|ǖ|ǘ|ǚ|ǜ|у/g, 'u');
-    str = str.replace(/В/g, 'V');
-    str = str.replace(/в/g, 'v');
-    str = str.replace(/Ý|Ÿ|Ŷ|Ы/g, 'Y');
-    str = str.replace(/ý|ÿ|ŷ|ы/g, 'y');
-    str = str.replace(/Ŵ/g, 'W');
-    str = str.replace(/ŵ/g, 'w');
-    str = str.replace(/Ź|Ż|Ž|З/g, 'Z');
-    str = str.replace(/ź|ż|ž|з/g, 'z');
-    str = str.replace(/Æ|Ǽ/g, 'AE');
-    str = str.replace(/ß/g, 'ss');
-    str = str.replace(/Ĳ/g, 'IJ');
-    str = str.replace(/ĳ/g, 'ij');
-    str = str.replace(/Œ/g, 'OE');
-    str = str.replace(/Ч/g, 'Ch');
-    str = str.replace(/ч/g, 'ch');
-    str = str.replace(/Ю/g, 'Ju');
-    str = str.replace(/ю/g, 'ju');
-    str = str.replace(/Я/g, 'Ja');
-    str = str.replace(/я/g, 'ja');
-    str = str.replace(/Ш/g, 'Sh');
-    str = str.replace(/ш/g, 'sh');
-    str = str.replace(/Щ/g, 'Shch');
-    str = str.replace(/щ/g, 'shch');
-    str = str.replace(/Ж/g, 'Zh');
-    str = str.replace(/ж/g, 'zh');  
+    if (true) {
+      // 1. create list of blacklisted (replaced) characters
+      addItems("Ä", "Ae");
+      addItems("æ|ǽ|ä", "ae");
+      addItems("À|Á|Â|Ã|Å|Ǻ|Ā|Ă|Ą|Ǎ|А", "A");
+      addItems("à|á|â|ã|å|ǻ|ā|ă|ą|ǎ|ª|а", "a");
+      addItems("Б", "B");
+      addItems("б", "b");
+      addItems("Ç|Ć|Ĉ|Ċ|Č|Ц", "C");
+      addItems("ç|ć|ĉ|ċ|č|ц", "c");
+      addItems("Ð|Ď|Đ", "Dj");
+      addItems("ð|ď|đ", "dj");
+      addItems("Д", "D");
+      addItems("д", "d");
+      addItems("È|É|Ê|Ë|Ē|Ĕ|Ė|Ę|Ě|Е|Ё|Э", "E");
+      addItems("è|é|ê|ë|ē|ĕ|ė|ę|ě|е|ё|э", "e");
+      addItems("Ф", "F");
+      addItems("ƒ|ф", "f");
+      addItems("Ĝ|Ğ|Ġ|Ģ|Г", "G");
+      addItems("ĝ|ğ|ġ|ģ|г", "g");
+      addItems("Ĥ|Ħ|Х", "H");
+      addItems("ĥ|ħ|х", "h");
+      addItems("Ì|Í|Î|Ï|Ĩ|Ī|Ĭ|Ǐ|Į|İ|И", "I");
+      addItems("ì|í|î|ï|ĩ|ī|ĭ|ǐ|į|ı|и", "i");
+      addItems("Ĵ|Й", "J");
+      addItems("ĵ|й", "j");
+      addItems("Ķ|К", "K");
+      addItems("ķ|к", "k");
+      addItems("Ĺ|Ļ|Ľ|Ŀ|Ł|Л", "L");
+      addItems("ĺ|ļ|ľ|ŀ|ł|л", "l");
+      addItems("М", "M");
+      addItems("м", "m");
+      addItems("Ñ|Ń|Ņ|Ň|Н", "N");
+      addItems("ñ|ń|ņ|ň|ŉ|н", "n");
+      addItems("Ö", "Oe");
+      addItems("œ|ö", "oe");
+      addItems("Ò|Ó|Ô|Õ|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ǿ|О", "O");
+      addItems("ò|ó|ô|õ|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º|о", "o");
+      addItems("П", "P");
+      addItems("п", "p");
+      addItems("Ŕ|Ŗ|Ř|Р", "R");
+      addItems("ŕ|ŗ|ř|р", "r");
+      addItems("Ś|Ŝ|Ş|Ș|Š|С", "S");
+      addItems("ś|ŝ|ş|ș|š|ſ|с", "s");
+      addItems("Ţ|Ț|Ť|Ŧ|Т", "T");
+      addItems("ţ|ț|ť|ŧ|т", "t");
+      addItems("Ü", "Ue");
+      addItems("ü", "ue");
+      addItems("Ù|Ú|Û|Ũ|Ū|Ŭ|Ů|Ű|Ų|Ư|Ǔ|Ǖ|Ǘ|Ǚ|Ǜ|У", "U");
+      addItems("ù|ú|û|ũ|ū|ŭ|ů|ű|ų|ư|ǔ|ǖ|ǘ|ǚ|ǜ|у", "u");
+      addItems("В", "V");
+      addItems("в", "v");
+      addItems("Ý|Ÿ|Ŷ|Ы", "Y");
+      addItems("ý|ÿ|ŷ|ы", "y");
+      addItems("Ŵ", "W");
+      addItems("ŵ", "w");
+      addItems("Ź|Ż|Ž|З", "Z");
+      addItems("ź|ż|ž|з", "z");
+      addItems("Æ|Ǽ", "AE");
+      addItems("ß", "ss");
+      addItems("Ĳ", "IJ");
+      addItems("ĳ", "ij");
+      addItems("Œ", "OE");
+      addItems("Ч", "Ch");
+      addItems("ч", "ch");
+      addItems("Ю", "Ju");
+      addItems("ю", "ju");
+      addItems("Я", "Ja");
+      addItems("я", "ja");
+      addItems("Ш", "Sh");
+      addItems("ш", "sh");
+      addItems("Щ", "Shch");
+      addItems("щ", "shch");
+      addItems("Ж", "Zh");
+      addItems("ж", "zh");  
+      addItems("&", "+"); // improve readability
+      
+      // 2. remove whitelisted characters
+      [...whiteList].forEach(l=>replaceMap.delete(l));
+      
+      // 3. replace stuff
+      replaceMap.forEach(
+        (value, key) => {
+          str = str.replace(new RegExp(key, "g"), value);
+        }      
+      );
+        
+    }
+    
     // special characters    
-    let name = str.replace(/ /g, "-");
+    let name = str.trim().replace(/ /g, spaceChar); // used to be "-"
     name = name.replace(/[@:\|\/\\\*\?]/g, "-");
-    name = name.replace(/[\$%"<>,]/g, "");
+    name = name.replace(/[\$"<>,]/g, "").trim();
+    let finalWhiteList = chars + whiteList; // add user white listed characters
     name = name.split("").filter(function (el) {
-                                   return chars.indexOf(el) != -1;
+                                   return finalWhiteList.indexOf(el) != -1;
                                  }).join("");
 
     if (!name) {

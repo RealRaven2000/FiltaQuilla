@@ -49,12 +49,11 @@ function re(e) {
 var ToneQuillaPlay = {
   
   logDebug: function logDebug(txt) {
-    const Prefix = "extensions.filtaquilla.",
-          service = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch),  
-          consoleService = Cc["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
-    let isDebug = service.getBoolPref(Prefix + 'debug');
-    if (isDebug)
-      consoleService.logStringMessage("FiltaQuilla (toneQuillaPlay module)\n" + txt);
+    const Prefix = "extensions.filtaquilla.";
+    let isDebug = Services.prefs.getBoolPref(Prefix + 'debug');
+    if (isDebug) {
+      Services.console.logStringMessage("FiltaQuilla (toneQuillaPlay module)\n" + txt);
+    }
   },
 
   // nsISound instance to play .wav files
@@ -74,9 +73,6 @@ var ToneQuillaPlay = {
 
   // timer to control delay to clear ignore queue
   _ignoreTimer: null,
-
-  // nsIIOService
-  _nsIIOService: null,
 
   // nsIMIMEService
   _nsIMIMEService: null,
@@ -145,7 +141,7 @@ var ToneQuillaPlay = {
     try {
       that._playTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       that._ignoreTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-      that._nsIIOService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+      // that._nsIIOService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
       that._nsISound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
       that._nsIMIMEService = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
       // new code to unpack sounds...    
@@ -223,33 +219,20 @@ var ToneQuillaPlay = {
       }  // ignore errors, since that probably means not defined
     }
     let uriSpec = aSpec.startsWith("file:") ? aSpec : "file:///" + aSpec,
-        nsIFileURL = that._nsIIOService
-                         .newURI(uriSpec, null, null);
-                         
-    nsIFileURL = nsIFileURL.QueryInterface(Ci.nsIFileURL);
+        nsIFileURL = Services.io.newURI(uriSpec).QueryInterface(Ci.nsIFileURL)
+    // that._nsIIOService.newURI(uriSpec, null, null);
+    //nsIFileURL = nsIFileURL.QueryInterface(Ci.nsIFileURL);
 
-    // If the profile gets moved, then the file URL will no longer
-    //  be valid. Fix that at least for our shipped files by
-    //  also checking the default location.
     if (!nsIFileURL.file.exists())
     {
-      let directory = that.soundsDirectory,
-          newURL = that._nsIIOService.newFileURI(directory)
-                       .QueryInterface(Ci.nsIURL);
-      newURL.fileName = nsIFileURL.QueryInterface(Ci.nsIURL).fileName;
-      uriSpec = newURL.QueryInterface(Ci.nsIURI).spec;  // playSpec
-      nsIFileURL = that._nsIIOService
-                       .newURI(uriSpec, null, null)    // playSpec
-                       .QueryInterface(Ci.nsIFileURL);
-      if (!nsIFileURL.file.exists()) {
-        Cu.reportError("ToneQuilla file to play " + aSpec + " does not exist");
-        return;
-      }
+      Cu.reportError("FiltaQuilla cannot play sound file  " + aSpec + " - it does not exist");
+      return;
     }
 
     // Macs can use nsISound to play aiff files
-    if (that.window.navigator.platform.indexOf("Mac") >= 0 && mimeType == "audio/aiff")
+    if (that.window.navigator.platform.indexOf("Mac") >= 0 && mimeType == "audio/aiff") {
       mimeType = "audio/wav";
+    }
     
     that.logDebug("determined mimeType = " + mimeType);
 

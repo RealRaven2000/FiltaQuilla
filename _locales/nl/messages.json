@@ -118,6 +118,15 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "U dient een doelmap op te geven"
   },
+  "fq.fileNameMaxLength" : {
+    "message": "Maximale lengte"
+  },
+  "fq.fileNameSpaceCharacter" : {
+    "message": "Vervang spaties in bestandsnamen door"
+  },
+  "fq.fileNameWhiteList" : {
+    "message": "Toegestane letters"
+  },
   "fq.folderName": {
     "message": "Mapnaam"
   },

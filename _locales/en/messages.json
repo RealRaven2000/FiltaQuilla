@@ -121,6 +121,15 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "You must select a target folder"
   },
+  "fq.fileNameMaxLength" : {
+    "message": "Maximal length"
+  },
+  "fq.fileNameSpaceCharacter" : {
+    "message": "Replace spaces in file names with"
+  },
+  "fq.fileNameWhiteList" : {
+    "message": "Whitelisted letters"
+  },
   "fq.folderName": {
     "message": "Folder Name"
   },

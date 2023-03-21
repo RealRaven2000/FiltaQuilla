@@ -33,9 +33,7 @@ FiltaQuilla.TabURIregexp = {
 FiltaQuilla.Util = {
   mAppName: null,
   mAppver: null,
-	mExtensionVer: null,
-  VersionProxyRunning: false,
-	HARDCODED_CURRENTVERSION : "3.2", // will later be overriden call to AddonManager
+	HARDCODED_CURRENTVERSION : "3.7", // will later be overriden call to AddonManager
 	HARDCODED_EXTENSION_TOKEN : ".hc",
 	ADDON_ID: "filtaquilla@mesquilla.com",
 	_prefs: null,
@@ -55,14 +53,12 @@ FiltaQuilla.Util = {
     const Ci = Components.interfaces,
           Cc = Components.classes;
 		if (this._prefs) return this._prefs;
-		var prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService);
-		this._prefs = prefs.getBranch("extensions.filtaquilla.");
+		this._prefs = Services.prefs.getBranch("extensions.filtaquilla.");
 		return this._prefs;
 	},
 
   get AppverFull() {
-    let appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-            .getService(Components.interfaces.nsIXULAppInfo);
+    let appInfo = Services.appinfo;
     return appInfo.version;
   },
 
@@ -76,8 +72,7 @@ FiltaQuilla.Util = {
 
   get Application() {
     if (null===this.mAppName) {
-    let appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-            .getService(Components.interfaces.nsIXULAppInfo);
+    let appInfo = Services.appinfo;
       const FIREFOX_ID = "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
       const THUNDERBIRD_ID = "{3550f703-e582-4d05-9a08-453d09bdfdc6}";
       const SEAMONKEY_ID = "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
@@ -144,16 +139,15 @@ FiltaQuilla.Util = {
 	} ,
 
 	findMailTab: function findMailTab(tabmail, URL) {
-		const util = FiltaQuilla.Util;
     var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 		// mail: tabmail.tabInfo[n].browser
-		let baseURL = util.getBaseURI(URL),
-				numTabs = util.getTabInfoLength(tabmail);
+		let baseURL = FiltaQuilla.Util.getBaseURI(URL),
+				numTabs = FiltaQuilla.Util.getTabInfoLength(tabmail);
 
 		for (let i = 0; i < numTabs; i++) {
-			let info = util.getTabInfoByIndex(tabmail, i);
+			let info = FiltaQuilla.Util.getTabInfoByIndex(tabmail, i);
 			if (info.browser && info.browser.currentURI) {
-				let tabUri = util.getBaseURI(info.browser.currentURI.spec);
+				let tabUri = FiltaQuilla.Util.getBaseURI(info.browser.currentURI.spec);
 				if (tabUri == baseURL) {
 					tabmail.switchToTab(i);
           try {
@@ -163,7 +157,7 @@ FiltaQuilla.Util = {
             info.browser.loadURI(URL, params);
           }
           catch(ex) {
-            util.logException(ex);
+            FiltaQuilla.Util.logException(ex);
           }
 					return true;
 				}
@@ -175,7 +169,7 @@ FiltaQuilla.Util = {
 	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
 		let f = (fragment ? "#" + fragment : ""),
 		    URL = "https://quickfilters.quickfolders.org/filtaquilla.html" + f;
-		util.getMail3PaneWindow.window.setTimeout(function() {
+		FiltaQuilla.Util.getMail3PaneWindow.window.setTimeout(function() {
 			FiltaQuilla.Util.openLinkInTab(URL);
 			});
 	} ,
@@ -204,7 +198,6 @@ FiltaQuilla.Util = {
   },
 
 	openLinkInTab : function FiltaQuilla_openLinkInTab(URL) {
-		const util = FiltaQuilla.Util;
 		// URL = util.makeUriPremium(URL);
 		try {
       let sTabMode="",
@@ -223,7 +216,7 @@ FiltaQuilla.Util = {
       }
       // note: findMailTab will activate the tab if it is already open
       if (tabmail) {
-        if (!util.findMailTab(tabmail, URL)) {
+        if (!FiltaQuilla.Util.findMailTab(tabmail, URL)) {
           sTabMode = "contentTab";
           tabmail.openTab(
             sTabMode,
@@ -236,7 +229,7 @@ FiltaQuilla.Util = {
         }
       }
       else {
-        util.getMail3PaneWindow.window.openDialog("chrome://messenger/content/", "_blank",
+        FiltaQuilla.Util.getMail3PaneWindow.window.openDialog("chrome://messenger/content/", "_blank",
                   "chrome,dialog=no,all", null,
           { tabType: "contentTab",
             tabParams: {
@@ -254,8 +247,7 @@ FiltaQuilla.Util = {
 
 	openLinkInBrowserForced: function openLinkInBrowserForced(linkURI) {
     const Ci = Components.interfaces,
-          Cc = Components.classes,
-					util = FiltaQuilla.Util;
+          Cc = Components.classes
     try {
       this.logDebug("openLinkInBrowserForced (" + linkURI + ")");
       let service = Cc["@mozilla.org/uriloader/external-protocol-service;1"]
@@ -298,12 +290,10 @@ FiltaQuilla.Util = {
   logError: function logError(aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags) {
     const Ci = Components.interfaces,
 					Cc = Components.classes;
-    let consoleService = Cc["@mozilla.org/consoleservice;1"]
-                                   .getService(Ci.nsIConsoleService),
-        aCategory = '',
+    let aCategory = '',
         scriptError = Cc["@mozilla.org/scripterror;1"].createInstance(Ci.nsIScriptError);
     scriptError.init(aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory);
-    consoleService.logMessage(scriptError);
+    Services.console.logMessage(scriptError);
   } ,
 
   logException: function logException(aMessage, ex) {
@@ -364,19 +354,18 @@ FiltaQuilla.Util = {
     let prefString = cb.getAttribute("preference");
     let pref = document.getElementById(prefString);
 
-    if (pref)
-			Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch).setBoolPref(pref.getAttribute('name'), cb.checked);
-    if (noUpdate)
-      return true;
+    if (pref) {
+			Services.prefs.setBoolPref(pref.getAttribute('name'), cb.checked);
+    }
+    if (noUpdate) return true;
     return false // this.updateMainWindow();
   },
 
   showAboutConfig: function(clickedElement, filter, readOnly) {
-    const name = "Preferences:ConfigManager",
-		      util = FiltaQuilla.Util;
+    const name = "Preferences:ConfigManager";
           
     let mediator = Services.wm,
-        isTbModern = util.versionGreaterOrEqual(util.AppverFull, "85"),
+        isTbModern = FiltaQuilla.Util.versionGreaterOrEqual(FiltaQuilla.Util.AppverFull, "85"),
         uri = (isTbModern) ? "about:config": "chrome://global/content/config.xhtml?debug";
 
     let w = mediator.getMostRecentWindow(name),
@@ -384,7 +373,7 @@ FiltaQuilla.Util = {
 		          (clickedElement.ownerDocument.defaultView ? clickedElement.ownerDocument.defaultView : window)
 							: window;
     if (!w) {
-      let watcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
+      let watcher = Services.ww;
       w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=750px,height=450px", null);
     }
     w.focus();
@@ -408,9 +397,8 @@ FiltaQuilla.Util = {
 
 	// Tb 66 compatibility.
 	loadPreferences: function fq_loadPreferences() {
-		const util = FiltaQuilla.Util;
 		if (typeof Preferences == 'undefined') {
-			util.logDebug("Skipping loadPreferences - Preferences object not defined");
+			FiltaQuilla.Util.logDebug("Skipping loadPreferences - Preferences object not defined");
 			return; // older versions of Thunderbird do not need this.
 		}
 		let myprefs = document.getElementsByTagName("preference");
@@ -459,79 +447,19 @@ FiltaQuilla.Util = {
         window.document.documentElement.getButton(name).label =  extension.localeData.localizeMessage(label); // apply
       }
     }
-  } ,  
-  
-	VersionProxy: async function VersionProxy(win) {
-    const util = FiltaQuilla.Util,
-          Cu = Components.utils;
-    // new code, but it doesn't work because:
-    // 'await is only valid in async functions and async generators'
-    //const manifest = await messenger.runtime.getManifest(),
-    //      util.mExtensionVer = manifest.version;
-          
-		try {
-      if (!win) {
-        try {
-          win = window;
-        }
-        catch(ex) {
-          util.logException("VersionProxy", ex);
-          return;
-        }
-      }
-			util.logDebugOptional("firstrun", "Util.VersionProxy() started.\n mExtensionVer=" + util.mExtensionVer);
-			if (util.mExtensionVer // early exit, we got the version!
-				||
-			    util.VersionProxyRunning) // no recursion...
-				return;
-			util.VersionProxyRunning = true;
-			if (Cu.import) {
-				
-				let versionCallback = function(addon) {
-					let versionLabel = win.document.getElementById("fq-options-header-version");
-					if (versionLabel) versionLabel.setAttribute("value", addon.version);
-
-					util.mExtensionVer = addon.version;
-					util.logDebug("AddonManager: FiltaQuilla extension's version is " + addon.version);
-					util.logDebugOptional("firstrun", "FiltaQuilla.VersionProxy() - DETECTED FiltaQuilla Version " + util.mExtensionVer);
-					// make sure we are not in options window
-					if (!versionLabel)
-						util.FirstRun.init();
-				}
-				
-				Cu.import("resource://gre/modules/AddonManager.jsm");
-				const addonId = util.ADDON_ID;
-        AddonManager.getAddonByID(addonId).then(function(addonId) { versionCallback(addonId); } ); // this function is now a promise
-			}
-			util.logDebugOptional("firstrun", "AddonManager.getAddonByID .. added callback for setting extensionVer.");
-
-		}
-		catch(ex) {
-			util.logToConsole("FiltaQuilla VersionProxy failed - are you using an old version of " + util.Application + "?"
-				+ "\n" + ex);
-		}
-		finally {
-			util.VersionProxyRunning=false;
-		}
-	},
+  } ,
 
 	get Version() {
-    const util = FiltaQuilla.Util;
 		// returns the current FiltaQuilla (full) version number.
-		if (util.mExtensionVer)
-			return util.mExtensionVer; // set asynchronously
-		let current = util.HARDCODED_CURRENTVERSION + util.HARDCODED_EXTENSION_TOKEN;
-		// Addon Manager: use Proxy code to retrieve version asynchronously
-    // we need to call this beforehand, with await
-		// util.VersionProxy(); // modern Mozilla builds.
-											// these will set mExtensionVer (eventually)
-											// also we will delay FirstRun.init() until we _know_ the version number
+    if (FiltaQuilla.Util.addonInfo) {
+      return FiltaQuilla.Util.addonInfo.version;
+    }
+		let current = FiltaQuilla.Util.HARDCODED_CURRENTVERSION + FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN;
 		return current;
 
 	} ,
 
 	get VersionSanitized() {
-    const util = FiltaQuilla.Util;
 		function strip(version, token) {
 			let cutOff = version.indexOf(token);
 			if (cutOff > 0) { 	// make sure to strip of any pre release labels
@@ -540,26 +468,21 @@ FiltaQuilla.Util = {
 			return version;
 		}
 
-		let pureVersion = strip(util.Version, 'pre');
+		let pureVersion = strip(FiltaQuilla.Util.Version, 'pre');
 		pureVersion = strip(pureVersion, 'beta');
 		pureVersion = strip(pureVersion, 'alpha');
 		return strip(pureVersion, '.hc');
 	},
   
 	versionGreaterOrEqual: function(a, b) {
-		let versionComparator = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
-														.getService(Components.interfaces.nsIVersionComparator);
-		return (versionComparator.compare(a, b) >= 0);
+		return (Services.vc.compare(a, b) >= 0);
 	} ,
 
 	versionSmaller: function(a, b) {
-		let versionComparator = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
-														.getService(Components.interfaces.nsIVersionComparator);
-		 return (versionComparator.compare(a, b) < 0);
+		return (Services.vc.compare(a, b) < 0);
 	} ,	
   
   bodyMimeMatch: function(aMsgHdr, searchValue, searchFlags) {
-    const util = FiltaQuilla.Util;
     let msgBody,
         BodyParts = [], 
         BodyType = [], // if we need multiple bodys (e.g. plain text + html mixed)
@@ -569,20 +492,30 @@ FiltaQuilla.Util = {
         folder = aMsgHdr.folder;
         
     /*** READ body ***/
-    var stream = folder.getMsgInputStream(aMsgHdr, {});
-    var messageSize = folder.hasMsgOffline(aMsgHdr.messageKey)
+    let hasOffline = folder.hasMsgOffline(aMsgHdr.messageKey);
+    let messageSize = hasOffline
       ? aMsgHdr.offlineMessageSize
       : aMsgHdr.messageSize;
     var data;
+    if (!messageSize) {
+      if (FiltaQuilla.Util.isDebug) {
+        console.log(`Filter could not read message size for ${aMsgHdr.subject}! Offline = ${hasOffline}`, aMsgHdr, folder);
+      }
+    }
+    let stream = folder.getMsgInputStream(aMsgHdr, {});
     try {
       data = NetUtil.readInputStreamToString(stream, messageSize);
     } 
     catch (ex) {
-      util.logDebug(ex);
+      FiltaQuilla.Util.logDebug(ex);
       stream.close(); // If we don't know better to return false.
       return false;
     }
     stream.close();
+    if (!data) {
+      FiltaQuilla.Util.logDebug(`No data streamed for body of ${aMsgHdr.subject}, aborting filter condition`);
+      return false;
+    }
     
     /** EXTRACT MIME PARTS **/
     if (MimeParser.extractMimeMsg) {
@@ -603,7 +536,7 @@ FiltaQuilla.Util = {
           let origPart = mimeMsg.parts[0];
           if (origPart.body && origPart.contentType && ("" + origPart.contentType).startsWith("text")) {
             msgBody = origPart.body;
-            util.logDebug("found body element in parts[0]");
+            FiltaQuilla.Util.logDebug("found body element in parts[0]");
             BodyParts.push(msgBody);
             BodyType.push(origPart.contentType || "?")
           }
@@ -611,7 +544,7 @@ FiltaQuilla.Util = {
             for (let p = 0; p<origPart.parts.length; p++)  {
               let o = origPart.parts[p];
               if (o.body && o.contentType && o.contentType.startsWith("text")) {
-                util.logDebug("found body element in parts[0].parts[" + p + "]", o);
+                FiltaQuilla.Util.logDebug("found body element in parts[0].parts[" + p + "]", o);
                 BodyParts.push(o.body);
                 BodyType.push(o.contentType || "?")
               }
@@ -635,7 +568,7 @@ FiltaQuilla.Util = {
       if (BodyParts.length>0) {
         for (let i=0;  i<BodyParts.length; i++) {
           let p = BodyParts[i];
-          util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
+          FiltaQuilla.Util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
           // if it is html, strip out as much as possible:
           // p = p;
           if (BodyType[i].includes("html")) {
@@ -645,7 +578,7 @@ FiltaQuilla.Util = {
           let found = reg.test(p);
           if (found) {
             let ct=p.contentType || "unknown";
-            util.logDebug("Found pattern " + searchValue + " with content type: " + BodyType[i]);
+            FiltaQuilla.Util.logDebug("Found pattern " + searchValue + " with content type: " + BodyType[i]);
             r = true;
             msgBody = p;
             break;
@@ -653,19 +586,19 @@ FiltaQuilla.Util = {
         }
       }
       else {
-        util.logDebug("No parts found.");
+        FiltaQuilla.Util.logDebug("No parts found.");
         r = false;
       }
     }
     
     if (r === true) {
-      util.logDebug("body matches: ", r);
+      FiltaQuilla.Util.logDebug("body matches: ", r);
       let results = reg.exec(msgBody); // the winning body part LOL
       if (results.length) {
-        util.logDebug("Matches: ", results[0]);
+        FiltaQuilla.Util.logDebug("Matches: ", results[0]);
       }
-      util.logDebug("Thunderbird 78 returns the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
-      util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
+      FiltaQuilla.Util.logDebug("Thunderbird 78 returns the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
+      FiltaQuilla.Util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
     }    
     return r;
   }
@@ -675,16 +608,13 @@ FiltaQuilla.Util = {
 // some scoping for globals
 //(function fq_firstRun()
 {
-  const util = FiltaQuilla.Util,
-        Ci = Components.interfaces,
+  const Ci = Components.interfaces,
         Cc = Components.classes;
         
   FiltaQuilla.Util.FirstRun = {
     init: async function init() {
       const prefBranchString = "extensions.filtaquilla.",
-            svc = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService),
-            ssPrefs = svc.getBranch(prefBranchString),
-            versionComparator = Cc["@mozilla.org/xpcom/version-comparator;1"].getService(Ci.nsIVersionComparator);
+            ssPrefs = Services.prefs.getBranch(prefBranchString);
 
       let prev = -1, 
           firstrun = true, 
@@ -696,28 +626,28 @@ FiltaQuilla.Util = {
       } 
       catch (e) { debugFirstRun = false; }
       
-      util.logDebugOptional ("firstrun","Util.FirstRun.init()");
-      // Version: this gettetr will call VersionProxy to determine Add-on version asynchronously
-      await util.VersionProxy();
-      let current = util.Version;
-      util.logDebugOptional("firstrun", "Current FiltaQuilla Version: " + current);
+      FiltaQuilla.Util.logDebugOptional ("firstrun","Util.FirstRun.init()");
+      FiltaQuilla.Util.addonInfo = await FiltaQuilla.Util.notifyTools.notifyBackground({ func: "getAddonInfo" });
+      // await util.VersionProxy();
+      let current = FiltaQuilla.Util.Version;
+      FiltaQuilla.Util.logDebugOptional("firstrun", "Current FiltaQuilla Version: " + current);
       
       
       try {
-        util.logDebugOptional ("firstrun","try to get setting: getStringPref(version)");
+        FiltaQuilla.Util.logDebugOptional ("firstrun","try to get setting: getStringPref(version)");
         try { prev = ssPrefs.getStringPref("version"); }
         catch (e) {
           prev = "?";
-          util.logDebugOptional ("firstrun","Could not determine previous version - " + e);
+          FiltaQuilla.Util.logDebugOptional ("firstrun","Could not determine previous version - " + e);
         } ;
 
-        util.logDebugOptional ("firstrun","try to get setting: getBoolPref(firstrun)");
+        FiltaQuilla.Util.logDebugOptional ("firstrun","try to get setting: getBoolPref(firstrun)");
         try { 
           firstrun = ssPrefs.getBoolPref("firstRun"); 
         } 
         catch (e) { firstrun = true; }
 
-        util.logDebugOptional ("firstrun", "Settings retrieved:"
+        FiltaQuilla.Util.logDebugOptional ("firstrun", "Settings retrieved:"
             + "\nprevious version=" + prev
             + "\ncurrent version=" + current
             + "\nfirstrun=" + firstrun
@@ -726,34 +656,34 @@ FiltaQuilla.Util = {
 
       }
       catch(e) {
-        util.alert("FiltaQuilla exception in filtaquilla-util.js: " + e.message
+        FiltaQuilla.Util.alert("FiltaQuilla exception in filtaquilla-util.js: " + e.message
           + "\n\ncurrent: " + current
           + "\nprev: " + prev
           + "\nfirstrun: " + firstrun
           + "\ndebugFirstRun: " + debugFirstRun);
       }
       finally {
-        util.logDebugOptional ("firstrun","finally - firstrun=" + firstrun);
+        FiltaQuilla.Util.logDebugOptional ("firstrun","finally - firstrun=" + firstrun);
         let suppressVersionScreen = false,
             // if this is a pre-release, cut off everything from "pre" on... e.g. 1.9pre11 => 1.9
-            pureVersion = util.VersionSanitized;
-        util.logDebugOptional ("firstrun","finally - pureVersion=" + pureVersion);
+            pureVersion = FiltaQuilla.Util.VersionSanitized;
+        FiltaQuilla.Util.logDebugOptional ("firstrun","finally - pureVersion=" + pureVersion);
         
         // STORE CURRENT VERSION NUMBER!
-        if (prev!=pureVersion && current!='?' && (current.indexOf(util.HARDCODED_EXTENSION_TOKEN) < 0)) {
-          util.logDebugOptional ("firstrun","Store current version " + current);
+        if (prev!=pureVersion && current!='?' && (current.indexOf(FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN) < 0)) {
+          FiltaQuilla.Util.logDebugOptional ("firstrun","Store current version " + current);
           ssPrefs.setStringPref("version", pureVersion); // store sanitized version! (no more alert on pre-Releases + betas!)
         }
         else {
-          util.logDebugOptional ("firstrun","Can't store current version: " + current
+          FiltaQuilla.Util.logDebugOptional ("firstrun","Can't store current version: " + current
             + "\nprevious: " + prev.toString()
             + "\ncurrent!='?' = " + (current!='?').toString()
             + "\nprev!=current = " + (prev!=current).toString()
-            + "\ncurrent.indexOf(" + util.HARDCODED_EXTENSION_TOKEN + ") = " + current.indexOf(util.HARDCODED_EXTENSION_TOKEN).toString());
+            + "\ncurrent.indexOf(" + FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN + ") = " + current.indexOf(FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN).toString());
         }
         // NOTE: showfirst-check is INSIDE both code-blocks, because prefs need to be set no matter what.
         if (firstrun){  // FIRST TIME INSTALL
-          util.logDebugOptional ("firstrun","set firstrun=false");
+          FiltaQuilla.Util.logDebugOptional ("firstrun","set firstrun=false");
           ssPrefs.setBoolPref("firstRun",false);
           // store first install date 
           let date = new Date(),
@@ -765,9 +695,9 @@ FiltaQuilla.Util = {
           // 
           if (showFirsts) {
             // on very first run, we go to the index page - welcome blablabla
-            util.logDebugOptional ("firstrun","setTimeout for content tab (filtaquilla.html)");
-            util.getMail3PaneWindow.window.setTimeout(function() {
-              util.openLinkInTab("https://quickfilters.quickfolders.org/filtaquilla.html");
+            FiltaQuilla.Util.logDebugOptional ("firstrun","setTimeout for content tab (filtaquilla.html)");
+            FiltaQuilla.Util.getMail3PaneWindow.window.setTimeout(function() {
+              FiltaQuilla.Util.openLinkInTab("https://quickfilters.quickfolders.org/filtaquilla.html");
             }, 1500); 
           }
         }
@@ -779,8 +709,8 @@ FiltaQuilla.Util = {
           // SILENT UPDATES
           // Check for Maintenance updates (no donation screen when updating to 3.12.1, 3.12.2, etc.)
           //  same for 3.14.1, 3.14.2 etc - no donation screen
-          if (prev!=pureVersion && current.indexOf(util.HARDCODED_EXTENSION_TOKEN) < 0) {
-            util.logDebugOptional ("firstrun","prev!=current -> upgrade case.");
+          if (prev!=pureVersion && current.indexOf(FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN) < 0) {
+            FiltaQuilla.Util.logDebugOptional ("firstrun","prev!=current -> upgrade case.");
             // upgrade case!!
 
             if (showFirsts) {
@@ -788,9 +718,9 @@ FiltaQuilla.Util = {
               // VERSION HISTORY PAGE
               // display version history - disable by right-clicking label above show history panel
               if (!suppressVersionScreen) {
-                util.logDebugOptional ("firstrun","open tab for version history, FQ " + current);
-                util.getMail3PaneWindow.window.setTimeout(function(){ 
-                  util.openLinkInTab(versionPage); 
+                FiltaQuilla.Util.logDebugOptional ("firstrun","open tab for version history, FQ " + current);
+                FiltaQuilla.Util.getMail3PaneWindow.window.setTimeout(function(){ 
+                  FiltaQuilla.Util.openLinkInTab(versionPage); 
                 }, 2200);
               }
             }
@@ -798,7 +728,7 @@ FiltaQuilla.Util = {
           }
           
         }
-        util.logDebugOptional ("firstrun","finally { } ends.");
+        FiltaQuilla.Util.logDebugOptional ("firstrun","finally { } ends.");
       } // end finally      
 
       

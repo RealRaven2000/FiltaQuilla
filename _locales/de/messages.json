@@ -118,6 +118,15 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "Bitte ein Verzeichnis auswählen"
   },
+  "fq.fileNameMaxLength" : {
+    "message": "Maximale Länge"
+  },
+  "fq.fileNameSpaceCharacter" : {
+    "message": "Ersetzen von Leerzeichen in Dateinamen durch"
+  },
+  "fq.fileNameWhiteList" : {
+    "message": "Erlaubte Buchstaben"
+  },
   "fq.folderName": {
     "message": "Verzeichnisname"
   },

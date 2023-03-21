@@ -95,6 +95,10 @@
           }
         }
         break;
+      case "getAddonInfo": // needed for version no.
+      {
+        return messenger.management.getSelf();
+      }
         
     }
   });

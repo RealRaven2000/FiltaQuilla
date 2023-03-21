@@ -118,6 +118,12 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "Du måste markera en målmapp"
   },
+  "fq.fileNameMaxLength" : {
+    "message": "Maximal längd"
+  },
+  "fq.fileNameSpaceCharacter" : {
+    "message": "Ersätt mellanslag i filnamn med"
+  },
   "fq.folderName": {
     "message": "Mappnamn"
   },

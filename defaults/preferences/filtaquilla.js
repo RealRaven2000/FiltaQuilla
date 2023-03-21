@@ -19,9 +19,13 @@ pref("extensions.filtaquilla.trainAsGood.enabled", false);
 pref("extensions.filtaquilla.print.enabled", true);
 pref("extensions.filtaquilla.print.enablePrintToolsNG", false);
 pref("extensions.filtaquilla.print.allowDuplicates", false);
+pref("extensions.filtaquilla.print.delay", 10); // test
 pref("extensions.filtaquilla.addSender.enabled", false);
 pref("extensions.filtaquilla.saveAttachment.enabled", false);
 pref("extensions.filtaquilla.detachAttachments.enabled", false);
+pref("extensions.filtaquilla.fileNames.spaceCharacter", " ");
+pref("extensions.filtaquilla.fileNames.maxLength", 60);
+pref("extensions.filtaquilla.fileNames.whiteList", "");
 pref("extensions.filtaquilla.javascriptAction.enabled", false);
 pref("extensions.filtaquilla.javascriptActionBody.enabled", false);
 pref("extensions.filtaquilla.tonequilla.enabled", false);

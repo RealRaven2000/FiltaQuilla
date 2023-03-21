@@ -29,7 +29,7 @@
  
 var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
-const util = FiltaQuilla.Util;
+// const util = FiltaQuilla.Util;
 
 
 async function onLoad() {
@@ -42,29 +42,30 @@ async function onLoad() {
       haveDetachToFile = true,
       detachElement = document.getElementById("checkDetachAttachmentsEnabled");
       
+  FiltaQuilla.Util.addonInfo = await FiltaQuilla.Util.notifyTools.notifyBackground({ func: "getAddonInfo" });
+  
   detachElement.disabled = (haveDetachToFile || detachElement.checked) ? false : true;
 
   let javascriptActionBody = document.getElementById("checkJavascriptActionBodyEnabled");
   javascriptActionBody.disabled = haveActionNeedsBody || javascriptActionBody.checked ? false : true;
   let verPanel = document.getElementById("fq-options-header-version");
-  await util.VersionProxy();
-  verPanel.textContent = util.Version;
+  verPanel.textContent = FiltaQuilla.Util.Version;
   
 }
 
 function onVersionClick() {
-  let pureVersion = util.VersionSanitized,
+  let pureVersion = FiltaQuilla.Util.VersionSanitized,
       versionPage = "https://quickfilters.quickfolders.org/fq-versions.html#" + pureVersion;
-  util.openLinkInTab(versionPage);
+  FiltaQuilla.Util.openLinkInTab(versionPage);
   window.close();
 }
 
 function loadPreferences() {
   if (typeof Preferences == 'undefined') {
-    util.logToConsole("Preferences is not defined - this shouldn't happen!");
+    FiltaQuilla.Util.logToConsole("Preferences is not defined - this shouldn't happen!");
     return;
   }	
-  util.logDebug("loadPreferences - start:");
+  FiltaQuilla.Util.logDebug("loadPreferences - start:");
   
   let myprefElements = document.querySelectorAll("[preference]"),
       foundElements = {};
@@ -90,7 +91,7 @@ function loadPreferences() {
     }
     
     
-    util.logDebug("Adding " + prefArray.length + " preferences to Preferences loader…")
+    FiltaQuilla.Util.logDebug("Adding " + prefArray.length + " preferences to Preferences loader…")
     if (Preferences)
       Preferences.addAll(prefArray);
   }
@@ -115,12 +116,12 @@ function loadPreferences() {
     }
   );
     
-  util.logDebug("loadPreferences - finished.");
+  FiltaQuilla.Util.logDebug("loadPreferences - finished.");
 }
 
 function onl10n() {
   // [mx-l10n]
-  util.localize(window); // , {extra2: 'qf.label.donate'}
+  FiltaQuilla.Util.localize(window); // , {extra2: 'qf.label.donate'}
 }
 
 window.addEventListener("load", async () => {

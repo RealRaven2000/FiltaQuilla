@@ -118,6 +118,15 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "Выберите целевую папку"
   },
+  "fq.fileNameMaxLength" : {
+    "message": "максимальная длина"
+  },
+  "fq.fileNameSpaceCharacter" : {
+    "message": "Замените пробелы в именах файлов на"
+  },
+  "fq.fileNameWhiteList" : {
+    "message": "Письма из белого списка"
+  },
   "fq.folderName": {
     "message": "Имя папки"
   },
