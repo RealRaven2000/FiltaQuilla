@@ -748,7 +748,7 @@
         let count = aMsgHdrs.length;
         let isPrintingToolsNG = prefs.getBoolPref("print.enablePrintToolsNG"); // [issue 152] - PrintingTools NG
         let isAllowDuplicates = prefs.getBoolPref("print.allowDuplicates");
-        let printDelay = prefs.getBoolPref("print.delay");
+        let printDelay = prefs.getIntPref("print.delay");
         
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs[i];
