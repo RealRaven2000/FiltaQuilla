@@ -33,7 +33,7 @@ FiltaQuilla.TabURIregexp = {
 FiltaQuilla.Util = {
   mAppName: null,
   mAppver: null,
-	HARDCODED_CURRENTVERSION : "3.7", // will later be overriden call to AddonManager
+	HARDCODED_CURRENTVERSION : "3.7.2", // will later be overriden call to AddonManager
 	HARDCODED_EXTENSION_TOKEN : ".hc",
 	ADDON_ID: "filtaquilla@mesquilla.com",
 	_prefs: null,
