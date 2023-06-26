@@ -43,8 +43,8 @@
   messenger.WindowListener.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
   
   messenger.NotifyTools.onNotifyBackground.addListener(async (data) => {
-    const Legacy_Root = "extensions.filtaquilla." 
-          PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net" 
+    const Legacy_Root = "extensions.filtaquilla.",
+          PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net",
           SmartTemplates_Name = "smarttemplate4@thunderbird.extension";
     
     let isLog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.notifications");
@@ -96,9 +96,11 @@
         }
         break;
       case "getAddonInfo": // needed for version no.
-      {
-        return messenger.management.getSelf();
-      }
+        {
+          let info = await messenger.management.getSelf()
+          return info;
+        }
+      break;
         
     }
   });

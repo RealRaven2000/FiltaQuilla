@@ -242,11 +242,11 @@ var ToneQuillaPlay = {
       case "audio/ogg":
       case "audio/mpeg":
         that._audioElement = new that.window.Audio(uriSpec);
-        that._audioElement.setAttribute("autoplay", true);
+        that._audioElement.setAttribute("autoplay","true");
         that._audioElement.setAttribute("type", mimeType);
-        that._audioElement.load(); // plays twice!
+        that._audioElement.load(); 
         // that._nsISound.play(Services.io.newURI(uriSpec));
-        that._nsISound.play(url);
+        // that._nsISound.play(url);
         break;
       case "audio/wav":
       case "audio/x-wav":

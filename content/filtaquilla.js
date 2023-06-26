@@ -808,7 +808,7 @@
               // Tb 91
               // let uri = gFolderDisplay.selectedMessageUris[0];
               if (PrintUtils  && PrintUtils.startPrintWindow) { // && PrintUtils.loadPrintBrowser MISSING IN TB 91.3.2 ???
-                let messageService = messenger.messageServiceFromURI(uri),
+                let messageService = MailServices.messageServiceFromURI(uri),
                     messageURL = messageService.getUrlForUri(uri).spec;
                 if (PrintUtils.loadPrintBrowser) {
                   await PrintUtils.loadPrintBrowser(messageURL);
@@ -2078,18 +2078,6 @@
     if (self.initialized)
       return;
       
-    try {
-      let isCorrectWindow =
-        (document && document.getElementById('messengerWindow') &&
-         document.getElementById('messengerWindow').getAttribute('windowtype') === "mail:3pane");
-      if (isCorrectWindow) {
-        util.VersionProxy(window); 
-      }
-    }
-    catch (ex) { 
-      util.logDebug("calling VersionProxy failed\n" + ex.message); 
-    }
-      
     self._init();
     
     self.setOptions();
@@ -2389,7 +2377,7 @@
     file.append(fullFileName);
     try {
       file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
-      let service = messenger.messageServiceFromURI(msgSpec);
+      let service = MailServices.messageServiceFromURI(msgSpec);
       /*
       void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
                              in boolean aGenerateDummyEnvelope,
