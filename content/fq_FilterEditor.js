@@ -20,7 +20,9 @@
  */
 
 {
-  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  var Services = globalThis.Services || ChromeUtils.import(
+    "resource://gre/modules/Services.jsm"
+  ).Services;
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
 
   const util = FiltaQuilla.Util,
