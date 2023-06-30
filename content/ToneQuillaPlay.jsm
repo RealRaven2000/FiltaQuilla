@@ -136,7 +136,9 @@ var ToneQuillaPlay = {
 
     const { NetUtil }  = Cu.import("resource://gre/modules/NetUtil.jsm"),
           { FileUtils } = Cu.import("resource://gre/modules/FileUtils.jsm"),
-          { Services } = Cu.import('resource://gre/modules/Services.jsm');
+          Services = globalThis.Services || Cu.import(
+            'resource://gre/modules/Services.jsm'
+          ).Services;
   
     try {
       that._playTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);

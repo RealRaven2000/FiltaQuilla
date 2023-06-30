@@ -1,4 +1,6 @@
-var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+var Services = globalThis.Services || ChromeUtils.import(
+  "resource://gre/modules/Services.jsm"
+).Services;
 
 Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js", window, "UTF-8");
 Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla.js", window, "UTF-8");

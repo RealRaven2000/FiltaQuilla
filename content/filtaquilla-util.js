@@ -139,7 +139,9 @@ FiltaQuilla.Util = {
 	} ,
 
 	findMailTab: function findMailTab(tabmail, URL) {
-    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+    var Services = globalThis.Services || ChromeUtils.import(
+      "resource://gre/modules/Services.jsm"
+    ).Services;
 		// mail: tabmail.tabInfo[n].browser
 		let baseURL = FiltaQuilla.Util.getBaseURI(URL),
 				numTabs = FiltaQuilla.Util.getTabInfoLength(tabmail);
@@ -433,7 +435,9 @@ FiltaQuilla.Util = {
 	} ,
   
   localize: function(window, buttons = null) {
-    var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+    var Services = globalThis.Services || ChromeUtils.import(
+      "resource://gre/modules/Services.jsm"
+    ).Services;
     var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     Services.scriptloader.loadSubScript(
@@ -743,7 +747,9 @@ FiltaQuilla.Util = {
 
 // the following adds the notifyTools API as a util method to communicate with the background page
 // this mechanism will be used to replace legacy code with API calls.
-var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+var Services = globalThis.Services || ChromeUtils.import(
+  "resource://gre/modules/Services.jsm"
+).Services;
 var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
 FiltaQuilla.Util.extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
 Services.scriptloader.loadSubScript(

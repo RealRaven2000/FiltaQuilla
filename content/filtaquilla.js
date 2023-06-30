@@ -34,7 +34,9 @@
 {
  
   Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
-  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  var Services = globalThis.Services || ChromeUtils.import(
+    "resource://gre/modules/Services.jsm"
+  ).Services;
   var { MimeParser } = ChromeUtils.import("resource:///modules/mimeParser.jsm");
   var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
   
