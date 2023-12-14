@@ -503,19 +503,29 @@ FiltaQuilla.Util = {
     var data;
     if (!messageSize) {
       if (FiltaQuilla.Util.isDebug) {
-        console.log(`Filter could not read message size for ${aMsgHdr.subject}! Offline = ${hasOffline}`, aMsgHdr, folder);
+        console.log(`Filter could not read message size for ${aMsgHdr.mime2DecodedSubject}! Offline = ${hasOffline}`, aMsgHdr, folder);
+      }
+      if (hasOffline) {
+        messageSize = aMsgHdr.messageSize;
+        if (FiltaQuilla.Util.isDebug) {
+          console.log(`trying to fallback to messageSize: ${messageSize}`);
+        }
+        if (!messageSize) {
+          return false;
+        }
       }
     }
     let stream = folder.getMsgInputStream(aMsgHdr, {});
     try {
       data = NetUtil.readInputStreamToString(stream, messageSize);
-    } 
-    catch (ex) {
+    } catch (ex) {
       FiltaQuilla.Util.logDebug(ex);
-      stream.close(); // If we don't know better to return false.
+      // If we don't know better to return false.
       return false;
+    } finally {
+      stream.close();
     }
-    stream.close();
+
     if (!data) {
       FiltaQuilla.Util.logDebug(`No data streamed for body of ${aMsgHdr.subject}, aborting filter condition`);
       return false;
@@ -751,6 +761,7 @@ var Services = globalThis.Services || ChromeUtils.import(
   "resource://gre/modules/Services.jsm"
 ).Services;
 var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+var { MimeParser } = ChromeUtils.import("resource:///modules/mimeParser.jsm");
 FiltaQuilla.Util.extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
 Services.scriptloader.loadSubScript(
   FiltaQuilla.Util.extension.rootURI.resolve("content/scripts/notifyTools.js"),
