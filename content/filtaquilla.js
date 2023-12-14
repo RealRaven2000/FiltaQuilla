@@ -37,8 +37,11 @@
   var Services = globalThis.Services || ChromeUtils.import(
     "resource://gre/modules/Services.jsm"
   ).Services;
-  var { MimeParser } = ChromeUtils.import("resource:///modules/mimeParser.jsm");
   var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
+  var { MessageArchiver } =  ChromeUtils.import("resource:///modules/MessageArchiver.jsm");
+  //  VirtualFolderHelper -  "resource:///modules/VirtualFolderWrapper.jsm",
+  
+
   
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
 
@@ -1243,23 +1246,18 @@
       needsBody: true
     };
     
-	  // archiveMessage [issue 126]
+	  // archiveMessage [issue 126] 
     self.archiveMessage =
     {
       id: "filtaquilla@mesquilla.com#archiveMessage",
       name: util.getBundleString("fq.archiveMessage"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        let w = Cc["@mozilla.org/appshell/window-mediator;1"]
-            .getService(Ci.nsIWindowMediator)
-            .getMostRecentWindow("mail:3pane");
-        let archiver = new MessageArchiver();
-        // let batchMover = new w.BatchMessageMover();
+        let archiver = new MessageArchiver(); // [issue 241]
         archiver.archiveMessages(aMsgHdrs);
       },      
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let a = [];
-        for (let index = 0; index < aMsgHdrs.length; index++)
-        {
+        for (let index = 0; index < aMsgHdrs.length; index++) {
           a.push(aMsgHdrs.queryElementAt(index, Ci.nsIMsgDBHdr));
         }
         this.applyAction(a, aActionValue, aListener, aType, aMsgWindow);
@@ -1752,7 +1750,7 @@
         let thread = null;
         let rootHdr = null;
         try {
-          thread = message.folder.msgDatabase.GetThreadContainingMsgHdr(message);
+          thread = message.folder.msgDatabase.getThreadContainingMsgHdr(message);
           rootHdr = thread.getChildHdrAt(0);
         } catch (e) {
           rootHdr = message;
@@ -1818,7 +1816,7 @@
             tagKeys[tagInfo.key] = true;
 				}
 
-        let thread = message.folder.msgDatabase.GetThreadContainingMsgHdr(message),
+        let thread = message.folder.msgDatabase.getThreadContainingMsgHdr(message),
             // we limit the number of thread items that we look at, but we always look at the thread root
             threadCount = Math.min(thread.numChildren, maxThreadScan),
             myKey = message.messageKey,
@@ -2250,6 +2248,8 @@
       return parameter.replace(/@DATEINSECONDS@/, hdr.dateInSeconds);
     if (/@MESSAGEURI@/.test(parameter))
       return parameter.replace(/@MESSAGEURI@/, hdr.folder.generateMessageURI(hdr.messageKey));
+    if (/@FOLDERNAME@/.test(parameter))
+      return parameter.replace(/@FOLDERNAME@/, hdr.folder.prettyName);
     if (/@PROPERTY@.+@/.test(parameter))
     {
       // This is a little different, the actual property (which is typically a
