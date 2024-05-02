@@ -138,7 +138,32 @@ FiltaQuilla.Util = {
 		return baseURL;
 	} ,
 
-	findMailTab: function findMailTab(tabmail, URL) {
+  /*
+          let oldTabs = await browser.tabs.query({url}); // destructure first 
+        if (oldTabs.length) {
+          // get current windowId
+          let currentWin = await browser.windows.getCurrent();
+          let found = oldTabs.find( w => w.windowId == currentWin.id);
+          if (!found) {
+            [found] = oldTabs; // destructure first element
+            await browser.windows.update(found.windowId, {focused:true, drawAttention: true});
+
+          } else {
+            await browser.tabs.update(found.id, {active:true});
+          }
+
+          // activate the license tab!
+          if (data.mode) {
+            await browser.runtime.sendMessage({
+              activatePrefsPage: data.mode,
+            });
+          }
+*/          
+
+
+  // obsolete (we replaced this with browser.tabs API)
+  /*
+  findMailTab: function(tabmail, URL) {
     var Services = globalThis.Services || ChromeUtils.import(
       "resource://gre/modules/Services.jsm"
     ).Services;
@@ -152,11 +177,19 @@ FiltaQuilla.Util = {
 				let tabUri = FiltaQuilla.Util.getBaseURI(info.browser.currentURI.spec);
 				if (tabUri == baseURL) {
 					tabmail.switchToTab(i);
+          
+          
+          // loadFlags:
+          // [nsIWebNavigation.h](https://searchfox.org/mozilla-esr115/source/__GENERATED__/dist/include/nsIWebNavigation.h#70)
           try {
             let params = {
-              triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
+              triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal(),
+              loadFlags: Ci.nsIWebNavigation.LOAD_FLAGS_IS_REFRESH | Ci.nsIWebNavigation.LOAD_FLAGS_IS_LINK
             }
-            info.browser.loadURI(URL, params);
+            // update the URL to jump to correct anchor.
+            if (URL != info.browser.currentURI.spec ) {
+              info.browser.loadURI(URL, params);
+            }
           }
           catch(ex) {
             FiltaQuilla.Util.logException(ex);
@@ -167,6 +200,7 @@ FiltaQuilla.Util = {
 		}
 		return false;
 	} ,
+  */
 
 	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
 		let f = (fragment ? "#" + fragment : ""),
@@ -199,59 +233,27 @@ FiltaQuilla.Util = {
     }
   },
 
-	openLinkInTab : function FiltaQuilla_openLinkInTab(URL) {
+	openLinkInTab : async function(URL) {
 		// URL = util.makeUriPremium(URL);
-		try {
-      let sTabMode="",
-          tabmail = this.tabmail;
-      if (!tabmail) {
-        // Try opening new tabs in an existing 3pane window
-        let mail3PaneWindow = this.getMail3PaneWindow;
-        if (mail3PaneWindow) {
-          tabmail = mail3PaneWindow.document.getElementById("tabmail");
-          mail3PaneWindow.setTimeout(function()
-              {	mail3PaneWindow.focus();
-              },
-              250
-            );
-        }
+
+    // use API. 
+    // getBaseURI to check if we already opened the page and need to 
+    // jump to a different anchor.
+    await FiltaQuilla.Util.notifyTools.notifyBackground(
+      { 
+        func: "openLinkInTab", 
+        URL: URL, 
+        baseURI: this.getBaseURI(URL)
       }
-      // note: findMailTab will activate the tab if it is already open
-      if (tabmail) {
-        if (!FiltaQuilla.Util.findMailTab(tabmail, URL)) {
-          sTabMode = "contentTab";
-          tabmail.openTab(
-            sTabMode,
-            { 
-              contentPage: URL, 
-              url: URL,
-              clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla.TabURIregexp._thunderbirdRegExp);"
-            }
-          )
-        }
-      }
-      else {
-        FiltaQuilla.Util.getMail3PaneWindow.window.openDialog("chrome://messenger/content/", "_blank",
-                  "chrome,dialog=no,all", null,
-          { tabType: "contentTab",
-            tabParams: {
-              contentPage: URL, 
-              id:"FiltaQuilla_Weblink",
-              clickHandler: "specialTabs.siteClickHandler(event, FiltaQuilla.TabURIregexp._thunderbirdRegExp);"
-            }   
-          }
-        );
-      }
-		}
-		catch(e) { return false; }
+    );
 		return true;
 	} ,
 
-	openLinkInBrowserForced: function openLinkInBrowserForced(linkURI) {
+	openLinkInBrowser: function(linkURI) {
     const Ci = Components.interfaces,
           Cc = Components.classes
     try {
-      this.logDebug("openLinkInBrowserForced (" + linkURI + ")");
+      this.logDebug("openLinkInBrowser (" + linkURI + ")");
       let service = Cc["@mozilla.org/uriloader/external-protocol-service;1"]
                               .getService(Ci.nsIExternalProtocolService),
           ioservice = Cc["@mozilla.org/network/io-service;1"].
@@ -259,7 +261,7 @@ FiltaQuilla.Util = {
           uri = ioservice.newURI(linkURI, null, null);
       service.loadURI(uri);
     }
-    catch(e) { this.logDebug("openLinkInBrowserForced (" + linkURI + ") " + e.toString()); }
+    catch(e) { this.logDebug("openLinkInBrowser (" + linkURI + ") " + e.toString()); }
   },
 
   logTime: function logTime() {
@@ -342,7 +344,7 @@ FiltaQuilla.Util = {
 			for (let i=0; i<options.length; i++) {
 				let option = options[i];
 				if (this.isDebugOption(option)) {
-					this.logWithOption(msg, option);
+					this.logWithOption(option, msg);
 					break; // only log once, in case multiple log switches are on
 				}
 			}
