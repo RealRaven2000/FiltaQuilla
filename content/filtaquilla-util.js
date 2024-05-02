@@ -138,70 +138,6 @@ FiltaQuilla.Util = {
 		return baseURL;
 	} ,
 
-  /*
-          let oldTabs = await browser.tabs.query({url}); // destructure first 
-        if (oldTabs.length) {
-          // get current windowId
-          let currentWin = await browser.windows.getCurrent();
-          let found = oldTabs.find( w => w.windowId == currentWin.id);
-          if (!found) {
-            [found] = oldTabs; // destructure first element
-            await browser.windows.update(found.windowId, {focused:true, drawAttention: true});
-
-          } else {
-            await browser.tabs.update(found.id, {active:true});
-          }
-
-          // activate the license tab!
-          if (data.mode) {
-            await browser.runtime.sendMessage({
-              activatePrefsPage: data.mode,
-            });
-          }
-*/          
-
-
-  // obsolete (we replaced this with browser.tabs API)
-  /*
-  findMailTab: function(tabmail, URL) {
-    var Services = globalThis.Services || ChromeUtils.import(
-      "resource://gre/modules/Services.jsm"
-    ).Services;
-		// mail: tabmail.tabInfo[n].browser
-		let baseURL = FiltaQuilla.Util.getBaseURI(URL),
-				numTabs = FiltaQuilla.Util.getTabInfoLength(tabmail);
-
-		for (let i = 0; i < numTabs; i++) {
-			let info = FiltaQuilla.Util.getTabInfoByIndex(tabmail, i);
-			if (info.browser && info.browser.currentURI) {
-				let tabUri = FiltaQuilla.Util.getBaseURI(info.browser.currentURI.spec);
-				if (tabUri == baseURL) {
-					tabmail.switchToTab(i);
-          
-          
-          // loadFlags:
-          // [nsIWebNavigation.h](https://searchfox.org/mozilla-esr115/source/__GENERATED__/dist/include/nsIWebNavigation.h#70)
-          try {
-            let params = {
-              triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal(),
-              loadFlags: Ci.nsIWebNavigation.LOAD_FLAGS_IS_REFRESH | Ci.nsIWebNavigation.LOAD_FLAGS_IS_LINK
-            }
-            // update the URL to jump to correct anchor.
-            if (URL != info.browser.currentURI.spec ) {
-              info.browser.loadURI(URL, params);
-            }
-          }
-          catch(ex) {
-            FiltaQuilla.Util.logException(ex);
-          }
-					return true;
-				}
-			}
-		}
-		return false;
-	} ,
-  */
-
 	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
 		let f = (fragment ? "#" + fragment : ""),
 		    URL = "https://quickfilters.quickfolders.org/filtaquilla.html" + f;
@@ -487,6 +423,56 @@ FiltaQuilla.Util = {
 	versionSmaller: function(a, b) {
 		return (Services.vc.compare(a, b) < 0);
 	} ,	
+
+
+  // from https://searchfox.org/comm-esr115/rev/27d796e03ef54fe526996bd063d7c3748b7c2d62/mailnews/test/resources/MailTestUtils.jsm#75
+  loadMessageToString: function(aFolder, aMsgHdr, aCharset) {
+    var data = "";
+    let reusable = {};
+    let bytesLeft = aMsgHdr.messageSize;
+    let stream = aFolder.getMsgInputStream(aMsgHdr, reusable);
+    if (aCharset) {
+      let cstream = Cc[
+        "@mozilla.org/intl/converter-input-stream;1"
+      ].createInstance(Ci.nsIConverterInputStream);
+      cstream.init(stream, aCharset, 4096, 0x0000);
+      let str = {};
+      let bytesToRead = Math.min(bytesLeft, 4096);
+      while (cstream.readString(bytesToRead, str) != 0) {
+        data += str.value;
+        bytesLeft -= bytesToRead;
+        if (bytesLeft <= 0) {
+          break;
+        }
+        bytesToRead = Math.min(bytesLeft, 4096);
+      }
+      cstream.close();
+    } else {
+      var sstream = Cc["@mozilla.org/scriptableinputstream;1"].createInstance(
+        Ci.nsIScriptableInputStream
+      );
+
+      sstream.init(stream);
+
+      let bytesToRead = Math.min(bytesLeft, 4096);
+      var str = sstream.read(bytesToRead);
+      bytesLeft -= str.length;
+      while (str.length > 0) {
+        data += str;
+        if (bytesLeft <= 0) {
+          break;
+        }
+        bytesToRead = Math.min(bytesLeft, 4096);
+        str = sstream.read(bytesToRead);
+        bytesLeft -= str.length;
+      }
+      sstream.close();
+    }
+    stream.close();
+
+    return data;
+  },
+
   
   bodyMimeMatch: function(aMsgHdr, searchValue, searchFlags) {
     let msgBody,
@@ -518,15 +504,42 @@ FiltaQuilla.Util = {
       }
     }
     let stream = folder.getMsgInputStream(aMsgHdr, {});
+    let isStreamError = false;
     try {
-      data = NetUtil.readInputStreamToString(stream, messageSize);
+      // [issue #260]
+      FiltaQuilla.Util.logDebug("Calling NetUtil.readInputStreamToString ...");
+      data = NetUtil.readInputStreamToString(stream, stream.available());
     } catch (ex) {
-      FiltaQuilla.Util.logDebug(ex);
-      // If we don't know better to return false.
-      return false;
+      FiltaQuilla.Util.logDebug(`Streaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`, ex);
+      isStreamError=true;
+
+      return false; // shit shit shit - reading the message fails.
     } finally {
       stream.close();
     }
+/*
+                    // TEST TEST TEST ===>
+                    if (isStreamError) try {
+                      // make a new stream
+                      if (FiltaQuilla.Util.isDebug) {
+                        debugger;
+                      }
+                      let decoder  = new TextDecoder();
+                      stream = folder.getMsgInputStream(aMsgHdr, {});
+                      let bytes = NetUtil.readInputStream(stream,messageSize);
+                      data = decoder.decode(bytes); // returns a string full of zeroes.
+                    } catch (ex) {
+                      FiltaQuilla.Util.logDebug(ex);
+                      // If we don't know better to return false.
+                      return false;
+                    } finally {
+                      stream.close();
+                    }
+                    // <=== TEST TEST TEST 
+*/
+
+
+
 
     if (!data) {
       FiltaQuilla.Util.logDebug(`No data streamed for body of ${aMsgHdr.subject}, aborting filter condition`);
@@ -542,13 +555,11 @@ FiltaQuilla.Util = {
       if (!mimeMsg.parts || !mimeMsg.parts.length) {
         isTested = true;
         msgBody = "";
-      }
-      else {
+      } else {
         if (mimeMsg.body && mimeMsg.contentType && mimeMsg.contentType.startsWith("text")) {
           BodyParts.push(mimeMsg.body); // just in case this exists too
           BodyType.push(mimeMsg.contentType || "?")
-        }
-        else if (mimeMsg.parts && mimeMsg.parts.length) {
+        } else if (mimeMsg.parts && mimeMsg.parts.length) {
           let origPart = mimeMsg.parts[0];
           if (origPart.body && origPart.contentType && ("" + origPart.contentType).startsWith("text")) {
             msgBody = origPart.body;
@@ -567,14 +578,16 @@ FiltaQuilla.Util = {
             }
           }
         }
-        if (!BodyParts.length) isTested=true; // no regex, as it failed.
+        if (!BodyParts.length) {
+          isTested=true; // no regex, as it failed.
+          FiltaQuilla.Util.logDebug("bodyMimeMatch() : No BodyParts could be extracted.");
+        } 
           
       }
        
-    }
-    else {
+    } else {
       let [headers, body] = MimeParser.extractHeadersAndBody(data);
-
+      FiltaQuilla.Util.logDebug("Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)");
        BodyParts.push(body); // this is only the raw mime crap!
        BodyType.push("?");
     }    
@@ -600,8 +613,7 @@ FiltaQuilla.Util = {
             break;
           }
         }
-      }
-      else {
+      } else {
         FiltaQuilla.Util.logDebug("No parts found.");
         r = false;
       }
@@ -613,8 +625,7 @@ FiltaQuilla.Util = {
       if (results.length) {
         FiltaQuilla.Util.logDebug("Matches: ", results[0]);
       }
-      FiltaQuilla.Util.logDebug("Thunderbird 78 returns the raw undecoded body. So this is what we parse and if it is encoded I give no guarantee for the regex to find ANYTHING.")
-      FiltaQuilla.Util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
+      //  FiltaQuilla.Util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
     }    
     return r;
   }
