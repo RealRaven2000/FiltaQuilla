@@ -211,11 +211,16 @@ var ToneQuillaPlay = {
   },
 
   play: function ToneQuillaPlay_play(aSpec) {
+    if (!that.window) { // [issue 258]
+      console.log("ToneQuillaPlay.play() - window instance not initialized!;");
+      that.window = Services.wm.getMostRecentWindow("mail:3pane");
+      console.log("initialized 'that.window' with Servies", {window: that.window, that: that});
+    }
     that.logDebug("play() ...");
-    let playSpec = aSpec;
     // initialize module if needed
-    if (!that._playTimer)
+    if (!that._playTimer) {
       that.init();
+    }
 
     let dotIndex = aSpec.lastIndexOf("."),
         extension = "";
