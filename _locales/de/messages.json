@@ -79,6 +79,9 @@
   "filtaquilla.selectFolder.title": {
     "message": "Verzeichnis auswählen"
   },
+  "filtaquilla.template.select": {
+    "message": "SmartTemplate wählen…"
+  },
   "filtaquilla.tone.select": {
     "message": "Klangdatei auswählen…"
   },
@@ -118,13 +121,13 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "Bitte ein Verzeichnis auswählen"
   },
-  "fq.fileNameMaxLength" : {
+  "fq.fileNameMaxLength": {
     "message": "Maximale Länge"
   },
-  "fq.fileNameSpaceCharacter" : {
+  "fq.fileNameSpaceCharacter": {
     "message": "Ersetzen von Leerzeichen in Dateinamen durch"
   },
-  "fq.fileNameWhiteList" : {
+  "fq.fileNameWhiteList": {
     "message": "Erlaubte Buchstaben"
   },
   "fq.folderName": {
@@ -229,7 +232,13 @@
   "fq.saveMsgAsFile.access": {
     "message": "D"
   },
-  "fq.archiveMessage" : {
+  "fq.smartTemplate.fwd": {
+    "message": "Mit SmartTemplates weiterleiten"
+  },
+  "fq.smartTemplate.rsp": {
+    "message": "Mit SmartTemplates beantworten"
+  },
+  "fq.archiveMessage": {
     "message": "Mail archivieren"
   },
   "fq.subjectBodyRegex": {
@@ -320,7 +329,7 @@
     "message": "Suchbegriffe"
   },
   "supportFiltaquilla": {
-    "message": "FiltaQuilla Unterstützen"
+    "message": "FiltaQuilla unterstützen"
   },
   "supportFiltaquilla_desc": {
     "message": "FiltaQuilla kann kostenlos heruntergeladen und verwendet werden. Der beste Weg, das Entwicklungsteam zu unterstützen, ist der Kauf einer Lizenz für quickFilters Pro. Es ist die beeindruckendste Filtererweiterung für die Verwaltung und Erstellung von Filtern auf äußerst praktische Weise."
@@ -329,6 +338,6 @@
     "message": "Support Seite besuchen"
   },
   "supportPage_desc": {
-    "message": "Diese Seite beschreibt die verschiedenen Aktionen und Bedingungen die man mit FiltaQuilla zu den Filterregeln hinzufügen kann."
+    "message": "Diese Seite beschreibt die verschiedenen Aktionen und Suchbedingungen die man mit FiltaQuilla zu den Filterregeln hinzufügen kann."
   }
 }
