@@ -89,7 +89,7 @@ var ToneQuillaPlay = {
   MY_ID: "tonequilla@mesquilla.com",
 
   //function to initialize variables
-  init: function ToneQuillaPlay_init() { 
+  init: async function() { 
     // new utility function to unpack a file from the xpi
     function copyDataURLToFile(aURL, file, callback) {
       let step = 0;
@@ -123,15 +123,26 @@ var ToneQuillaPlay = {
     }  
   
     function makePath() {
-      let path = new Array("extensions", "filtaquilla"); // was: tonequilla
-      return FileUtils.getDir("ProfD", path, true);
+      // let path = new Array("extensions", "filtaquilla"); // was: tonequilla
+      // return FileUtils.getDir("ProfD", path, true);
+      const profileDir = PathUtils.profileDir;
+      let path = PathUtils.join(profileDir, "extensions", "filtaquilla");
+      return path;
     }
   
-    function getLocalFile(fileName) {
+    async function getLocalFile(fileName) {
       // get the "menuOnTop.json" file in the profile/extensions directory
-      let path = new Array("extensions", "filtaquilla", fileName);  // was: tonequilla
+      const profileDir = PathUtils.profileDir;
+      // let path = new Array("extensions", "filtaquilla", fileName);  // was: tonequilla
       // http://dxr.mozilla.org/comm-central/source/mozilla/toolkit/modules/FileUtils.jsm?from=FileUtils.jsm&case=true#41
-      return FileUtils.getFile("ProfD", path); // implements nsIFile
+      // return FileUtils.getFile("ProfD", path); // implements nsIFile
+      // [bug 920187] = getFile was deprecated. Use IOUtils / PathUtils
+      let path = PathUtils.join(profileDir, "extensions", "filtaquilla", fileName);
+      const stat = await IOUtils.stat(path); // returns FileInfo
+      return {
+        path,
+        fileInfo: stat
+      };      
     } 
 
     const { NetUtil }  = Cu.import("resource://gre/modules/NetUtil.jsm"),
@@ -156,17 +167,18 @@ var ToneQuillaPlay = {
           "maybe-one-day-584.ogg", "hold-your-horses-468.ogg", "scratch-389.ogg", "your-turn-491.ogg", "knob-458.ogg", "worthwhile-438.ogg", "scissors-423.ogg"];
         
         for (let i=0; i<fileList.length; i++) {
-          let name = fileList[i],
-              file = getLocalFile(name);
           //Services.dirsvc.get("TmpD", Ci.nsIFile);
           // file.append("applause.wav");
           try {
-            if (file && !file.exists()) {
+            // generate path from name list
+            let file = await getLocalFile(fileList[i]); // rejects with DOMException?
+            if (file && !file.fileInfo) {
               ToneQuillaPlay.logDebug("Try to copy " + name + " to " + file.path + "...");
               copyDataURLToFile("chrome://filtaquilla/content/sounds/" + name, file); // was  tonequilla/content/sounds/
             }
-            else
+            else {
               ToneQuillaPlay.logDebug("File exists: " + file.path);
+            }
           }
           catch(ex) {
             re(ex);
