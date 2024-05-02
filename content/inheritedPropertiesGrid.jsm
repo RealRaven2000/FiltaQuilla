@@ -38,7 +38,9 @@ const Cc = Components.classes,
       Cu = Components.utils,
       catMan = Cc["@mozilla.org/categorymanager;1"].getService(Ci.nsICategoryManager);
 
-Cu.import("resource://gre/modules/Services.jsm");
+var Services = globalThis.Services || ChromeUtils.import(
+	"resource://gre/modules/Services.jsm"
+).Services;
 
 var InheritedPropertiesGrid = {
 	getInheritedProperties: function getInheritedProperties() {

@@ -31,7 +31,7 @@
  // filter properties xul to make a normal overlay possible, so instead we have
  // to add our xul dynamically.
 
-Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
+ var {InheritedPropertiesGrid} = ChromeUtils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
 
 (function() {
   // global scope variables

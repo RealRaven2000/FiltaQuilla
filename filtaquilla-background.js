@@ -7,9 +7,9 @@
   // dropped ["resource", "filtaquilla",           "skin/"],
 
   messenger.WindowListener.registerChromeUrl([ 
-      ["resource", "filtaquilla",           "content/"],  
-      ["resource", "filtaquilla-skin",      "skin/"],  // make a separate resource (we can't have 2 different resources mapped to to the same name)
-      ["content",  "filtaquilla",           "content/"],
+      ["resource", "filtaquilla",           "content/"],  // resource://
+      ["resource", "filtaquilla-skin",      "skin/"],     // make a separate resource (we can't have 2 different resources mapped to to the same name)
+      ["content",  "filtaquilla",           "content/"],  // chrome://path
       ["locale",   "filtaquilla", "en",     "locale/en/"],
       ["locale",   "filtaquilla", "sv",     "locale/sv/"],
       ["locale",   "filtaquilla", "de",     "locale/de/"],
@@ -65,7 +65,10 @@
           }
           let result = await messenger.runtime.sendMessage(
             PrintingTools_Addon_Name, 
-            { command: "printMessage", messageHeader: msgKey },
+            { 
+              command: "printMessage", 
+              messageHeader: msgKey 
+            },
             options 
           );
         }
@@ -100,7 +103,25 @@
           let info = await messenger.management.getSelf()
           return info;
         }
-      break;
+        break;
+      case "openLinkInTab":
+        // https://webextension-api.thunderbird.net/en/stable/tabs.html#query-queryinfo
+        {
+          let baseURI = data.baseURI || data.URL;
+          let found = await browser.tabs.query( { url:baseURI } );
+          if (found.length) {
+            let tab = found[0]; // first result
+            await browser.tabs.update(
+              tab.id, 
+              {active:true, url: data.URL}
+            );
+            return;
+          }
+          browser.tabs.create(
+            { active:true, url: data.URL }
+          );        
+        }
+        break;
         
     }
   });
