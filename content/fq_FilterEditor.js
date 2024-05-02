@@ -24,6 +24,7 @@
     "resource://gre/modules/Services.jsm"
   ).Services;
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
+  var { ToneQuillaPlay } = ChromeUtils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
 
   const util = FiltaQuilla.Util,
         Ci = Components.interfaces,
@@ -549,7 +550,14 @@
       let pathBox = this.textbox,
           hBox = this.hbox;
           
-      
+      let fpCallback = function fpCallback_done(aResult) {
+        if (aResult == nsIFilePicker.returnOK) {
+          // We will setup a default using the subject
+          pathBox.value = fp.file.path;
+          hBox.value = pathBox.value;
+        }
+      } 
+
       if (pathBox.value)  {
         try {
           var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
@@ -559,33 +567,29 @@
           fp.defaultString = file.leafName;
         } 
         catch (e) {;}
-      }
-      else  // if (!this.hBox.value)
+        fp.open(fpCallback);
+      } else  // if (!this.hBox.value)
       // if there is an empty box initialize and use default directory.
       {
-        Components.utils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
         if (!ToneQuillaPlay.window || !ToneQuillaPlay.soundsDirectory) {
-          ToneQuillaPlay.init();
+          // init is now async!!
+          ToneQuillaPlay.init().then(
+            () => {
+              if (ToneQuillaPlay.soundsDirectory) {
+                fp.displayDirectory =
+                  ToneQuillaPlay.soundsDirectory.QueryInterface(Ci.nsIFile);
+              }
+              fp.open(fpCallback);
+            }
+          );
+        } else {
+          fp.open(fpCallback);
         }
-        if (ToneQuillaPlay.soundsDirectory)
-          fp.displayDirectory =
-            ToneQuillaPlay.soundsDirectory.QueryInterface(Ci.nsIFile);
       }
 
-      let fpCallback = function fpCallback_done(aResult) {
-        if (aResult == nsIFilePicker.returnOK) {
-          // We will setup a default using the subject
-          pathBox.value = fp.file.path;
-          hBox.value = pathBox.value;
-        }
-      }
-
-      fp.open(fpCallback);
     }
     
     play() {
-      Components.utils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
-      // ToneQuillaPlay.logDebug("Calling play() method from binding 'soundPicker'.");
       ToneQuillaPlay.play(this.hbox.value);
     }
     
