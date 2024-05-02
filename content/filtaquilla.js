@@ -32,8 +32,11 @@
 
 (function filtaQuilla()
 {
- 
-  Components.utils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
+  try {
+    var {InheritedPropertiesGrid} = ChromeUtils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
+  } catch (ex) {
+    FiltaQuilla.Util.logException("Importing inheritedPropertiesGrid.jsm failed.", ex);
+  }
   var Services = globalThis.Services || ChromeUtils.import(
     "resource://gre/modules/Services.jsm"
   ).Services;
@@ -158,7 +161,7 @@
   
   self._mimeMsg = ChromeUtils.import("resource:///modules/gloda/MimeMessage.jsm"); // Tb78
 
-  self._init = function() {
+  self._init = async function() {
     // self.strings = filtaquillaStrings;
 
     /*
@@ -526,6 +529,8 @@
         //   @DATEINSECONDS@ date in seconds
         //   @MESSAGEURI@ URI for the message
         //   @PROPERTY@somedbproperty@ uses .getStringProperty("somedbproperty")
+
+        // TO DO: add @BODY@ support [issue 41]
         
         /**
          * Convert a UTF8 string to UTF16.
@@ -1437,6 +1442,7 @@
       },
       needsBody: false,
       getAvailable: function subjectRegEx_getAvailable(scope, op) {
+        FiltaQuilla.Util.logDebug("subjectRegex - getAvaillable()...");
         return _isLocalSearch(scope) && SubjectRegexEnabled;
       },
       getAvailableOperators: function subjectRegEx_getAvailableOperators(scope) {
@@ -1599,6 +1605,8 @@
       },
       match: function headerRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
         // the header and its regex are separated by a ':' in aSearchValue
+        const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
+              isDebug = prefs.getBoolPref("debug.regexHeader");
         let colonIndex = aSearchValue.indexOf(':');
         if (colonIndex == -1) // not found, default to does not match
           return aSearchOp != Matches;
@@ -1607,7 +1615,25 @@
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(regex);
 
-        var headerValue = aMsgHdr.getStringProperty(headerName);
+        // find the property with the correct case (in case it was misspelled):
+        let propertyRealName =
+          aMsgHdr.properties.find(e => e.toLowerCase() == headerName.toLowerCase());
+
+        if (!propertyRealName) {
+          if (isDebug) {
+            util.logDebugOptional("regexHeader", `Header ${headerName} not found. The following properties are available in\n"${aMsgHdr.subject}":\n`
+              + `${aMsgHdr.properties.join(", ")}\n`);
+          }
+          // property not found!
+          switch (aSearchOp) {
+            case Matches:
+              return false;
+            case DoesntMatch:
+              return true;
+          }          
+        } 
+
+        var headerValue = aMsgHdr.getStringProperty(propertyRealName);
         switch (aSearchOp) {
           case Matches:
             return RegExp(searchValue, searchFlags).test(headerValue);
@@ -1626,6 +1652,7 @@
       },
       needsBody: true,
       getAvailable: function bodyRegEx_getAvailable(scope, op) {
+        if (scope == Ci.nsMsgSearchScope.newsFilter) return false;
         return _isLocalSearch(scope) && BodyRegexEnabled;
       },
       getAvailableOperators: function bodyRegEx_getAvailableOperators(scope) {
@@ -1887,9 +1914,13 @@
     };
 
     
-    Components.utils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
-    ToneQuillaPlay.init();
-    ToneQuillaPlay.window = window;
+    var { ToneQuillaPlay } = ChromeUtils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
+    try {
+      await ToneQuillaPlay.init();
+      ToneQuillaPlay.window = window;
+    } catch (ex) {
+      FiltaQuilla.Util.logException("ToneQuillaPlay.init failed.", ex);
+    }
     let tonequilla_name = util.getBundleString("filtaquilla.playSound");
     self.playSound = 
     {
@@ -2074,11 +2105,11 @@
   }
 
   // extension initialization
-  self.onLoad = function() {
+  self.onLoad = async function() {
     if (self.initialized)
       return;
       
-    self._init();
+    await self._init();
     
     self.setOptions();
 
@@ -2135,7 +2166,9 @@
     //   defaultValue:  value if inherited property missing (boolean true or false)
     //   name:          localized display name
     //   property:      inherited property name
-    InheritedPropertiesGrid.addPropertyObject(applyIncomingFilters);
+    if (typeof InheritedPropertiesGrid !== "undefined") {
+      InheritedPropertiesGrid.addPropertyObject(applyIncomingFilters);
+    }
 
     self.initialized = true;
   };
@@ -2199,9 +2232,11 @@
       case Ci.nsMsgSearchScope.offlineMailFilter:
       case Ci.nsMsgSearchScope.onlineMailFilter:
       case Ci.nsMsgSearchScope.localNews:
+      case Ci.nsMsgSearchScope.newsFilter:
         return true;
       default:
-        return false;
+        FiltaQuilla.Util.logDebug("isLocalSearch = FALSE!", aSearchScope);  // test!!!
+        return false; 
     }
   }
 
@@ -2587,8 +2622,5 @@
   },"filtaquilla-options-changed", false);
 
 })();
-
-// moved to filtaquilla-messenger.js
-// window.addEventListener("load", function(e) { filtaquilla.onLoad(e); }, false);
 
 // vim: set expandtab tabstop=2 shiftwidth=2:
