@@ -250,6 +250,12 @@ FiltaQuilla.Util = {
       this.logToConsole(...arguments);
   },
 
+	logHighlightDebug: function(txt, color="white", background="rgb(80,0,0)", ...args) {
+		if (this.isDebug) {
+			console.log(`FiltaQuilla\n %c${txt}`, `color:${color};background:${background}`, ...args);
+		}
+	},  
+
   isDebug: function isDebug() {
 		return this.prefs.getBoolPref("debug");
   },
@@ -484,62 +490,21 @@ FiltaQuilla.Util = {
         folder = aMsgHdr.folder;
         
     /*** READ body ***/
-    let hasOffline = folder.hasMsgOffline(aMsgHdr.messageKey);
-    let messageSize = hasOffline
-      ? aMsgHdr.offlineMessageSize
-      : aMsgHdr.messageSize;
+    // let hasOffline = folder.hasMsgOffline(aMsgHdr.messageKey);
     var data;
-    if (!messageSize) {
-      if (FiltaQuilla.Util.isDebug) {
-        console.log(`Filter could not read message size for ${aMsgHdr.mime2DecodedSubject}! Offline = ${hasOffline}`, aMsgHdr, folder);
-      }
-      if (hasOffline) {
-        messageSize = aMsgHdr.messageSize;
-        if (FiltaQuilla.Util.isDebug) {
-          console.log(`trying to fallback to messageSize: ${messageSize}`);
-        }
-        if (!messageSize) {
-          return false;
-        }
-      }
-    }
+
     let stream = folder.getMsgInputStream(aMsgHdr, {});
     let isStreamError = false;
     try {
       // [issue #260]
-      FiltaQuilla.Util.logDebug("Calling NetUtil.readInputStreamToString ...");
       data = NetUtil.readInputStreamToString(stream, stream.available());
     } catch (ex) {
-      FiltaQuilla.Util.logDebug(`Streaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`, ex);
+      FiltaQuilla.Util.logDebug(`NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`, ex);
       isStreamError=true;
-
       return false; // shit shit shit - reading the message fails.
     } finally {
       stream.close();
     }
-/*
-                    // TEST TEST TEST ===>
-                    if (isStreamError) try {
-                      // make a new stream
-                      if (FiltaQuilla.Util.isDebug) {
-                        debugger;
-                      }
-                      let decoder  = new TextDecoder();
-                      stream = folder.getMsgInputStream(aMsgHdr, {});
-                      let bytes = NetUtil.readInputStream(stream,messageSize);
-                      data = decoder.decode(bytes); // returns a string full of zeroes.
-                    } catch (ex) {
-                      FiltaQuilla.Util.logDebug(ex);
-                      // If we don't know better to return false.
-                      return false;
-                    } finally {
-                      stream.close();
-                    }
-                    // <=== TEST TEST TEST 
-*/
-
-
-
 
     if (!data) {
       FiltaQuilla.Util.logDebug(`No data streamed for body of ${aMsgHdr.subject}, aborting filter condition`);
@@ -563,7 +528,7 @@ FiltaQuilla.Util = {
           let origPart = mimeMsg.parts[0];
           if (origPart.body && origPart.contentType && ("" + origPart.contentType).startsWith("text")) {
             msgBody = origPart.body;
-            FiltaQuilla.Util.logDebug("found body element in parts[0]");
+            FiltaQuilla.Util.logDebugOptional ("mimeBody","found body element in parts[0]");
             BodyParts.push(msgBody);
             BodyType.push(origPart.contentType || "?")
           }
@@ -571,7 +536,7 @@ FiltaQuilla.Util = {
             for (let p = 0; p<origPart.parts.length; p++)  {
               let o = origPart.parts[p];
               if (o.body && o.contentType && o.contentType.startsWith("text")) {
-                FiltaQuilla.Util.logDebug("found body element in parts[0].parts[" + p + "]", o);
+                FiltaQuilla.Util.logDebugOptional ("mimeBody","found body element in parts[0].parts[" + p + "]", o);
                 BodyParts.push(o.body);
                 BodyType.push(o.contentType || "?")
               }
@@ -587,17 +552,19 @@ FiltaQuilla.Util = {
        
     } else {
       let [headers, body] = MimeParser.extractHeadersAndBody(data);
-      FiltaQuilla.Util.logDebug("Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)");
+      FiltaQuilla.Util.logDebugOptional ("mimeBody","Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)");
        BodyParts.push(body); // this is only the raw mime crap!
        BodyType.push("?");
     }    
     
+
+    let detectResults = "";
     if (!isTested && BodyParts.length && searchValue) {
       reg = RegExp(searchValue, searchFlags);
       if (BodyParts.length>0) {
         for (let i=0;  i<BodyParts.length; i++) {
           let p = BodyParts[i];
-          FiltaQuilla.Util.logDebug("testing part [" + i + "] ct = ", BodyType[i]);
+          FiltaQuilla.Util.logDebugOptional ("mimeBody","testing part [" + i + "] ct = ", BodyType[i]);
           // if it is html, strip out as much as possible:
           // p = p;
           if (BodyType[i].includes("html")) {
@@ -607,28 +574,43 @@ FiltaQuilla.Util = {
           let found = reg.test(p);
           if (found) {
             let ct=p.contentType || "unknown";
-            FiltaQuilla.Util.logDebug("Found pattern " + searchValue + " with content type: " + BodyType[i]);
+            detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${BodyType[i]}\n`
+            FiltaQuilla.Util.logDebug();
             r = true;
             msgBody = p;
             break;
           }
         }
       } else {
-        FiltaQuilla.Util.logDebug("No parts found.");
+        FiltaQuilla.Util.logDebugOptional ("mimeBody","No parts found.");
         r = false;
       }
     }
     
     if (r === true) {
-      FiltaQuilla.Util.logDebug("body matches: ", r);
-      let results = reg.exec(msgBody); // the winning body part LOL
-      if (results.length) {
-        FiltaQuilla.Util.logDebug("Matches: ", results[0]);
+      let count = 0,
+          txtResults="",
+          results = reg.exec(msgBody); // the winning body part LOL
+
+      while ((results= reg.exec(msgBody)) !== null) {
+        txtResults += `Match[${count}]: ${results[0]}\n`
+        count++;
       }
+      FiltaQuilla.Util.logDebug(`${detectResults} found ${count} ${(count!=1 ? "matches": "match")}: \n ------------ \n ${txtResults} `);
       //  FiltaQuilla.Util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
     }    
     return r;
-  }
+  },
+
+	getFileInitArg: function(win) {
+    // [issue 265]
+		// [bug 1882701] nsIFilePicker.init() first parameter changed from Tb125
+		if (!win) return null;
+		if (this.versionGreaterOrEqual(this.AppverFull, "125")) {    
+			return win.browsingContext;
+		}
+		return win;
+	}
 
 } // Util
 
@@ -700,8 +682,7 @@ FiltaQuilla.Util = {
         if (prev!=pureVersion && current!='?' && (current.indexOf(FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN) < 0)) {
           FiltaQuilla.Util.logDebugOptional ("firstrun","Store current version " + current);
           ssPrefs.setStringPref("version", pureVersion); // store sanitized version! (no more alert on pre-Releases + betas!)
-        }
-        else {
+        } else {
           FiltaQuilla.Util.logDebugOptional ("firstrun","Can't store current version: " + current
             + "\nprevious: " + prev.toString()
             + "\ncurrent!='?' = " + (current!='?').toString()

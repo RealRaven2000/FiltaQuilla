@@ -54,6 +54,8 @@ pref("extensions.filtaquilla.debug.notifications", false);
 pref("extensions.filtaquilla.debug.PrintingToolsNG", false);
 pref("extensions.filtaquilla.debug.SmartTemplates", false);
 pref("extensions.filtaquilla.debug.regexHeader", false);
+pref("extensions.filtaquilla.debug.mimeBody", false);
+
 
 // upgrade handling stuff
 pref("extensions.filtaquilla.installDate", "");

@@ -1,29 +1,27 @@
-<b>Version 4.0</b>
+<b>Version 4.1</b>
 
-FiltaQuilla had to have some necessary changes for Thunderbird 115, especially custom search terms and actions could not be edited anymore. If you find any new problems, related to the update to ESR115, please report them at <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/223"> FiltaQuilla issue 223</a>
+FiltaQuilla had to have some necessary changes for Thunderbird 128, especially custom search terms and actions could not be edited anymore. If you find any new problems, related to the update to ESR128, please report them at the <a href="https://github.com/RealRaven2000/FiltaQuilla/issues"> FiltaQuilla Github</a>
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>
 
 
 <b>Improvements</b>
 <ul>
-<li>Added @FOLDERNAME@  parameter to run program action <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/234">[issue 234]</a></li>
-<li>Increased max version to 125.* for beta users</li>
-<li>Fixed opening files from filter editor for play sound action. </li>
+  <li>Some improvements during bodyMimeMatch.</li>
+  <li>Added German UI for SmartTemplates.</li>
 </ul>
 
 <b>Bug Fixes</b>
 <ul>
-<li>Archiving action is working again.<a href="https://github.com/RealRaven2000/FiltaQuilla/issues/241">[issue 241]</a></li>
-<li>Repaired tag by thread (Thunderbird renamed function GetThreadContainingMsgHdr)</li>
-<li>replace deprecated  Components.utils.import with ChromeUtils.import. Future work should switch it to an ES module and use ChromeUtils.importESModule. </li>
-<li>Reading files (beta 122): replace deprecated FileUtils.getFile with IOUtils. See [Bug 920187]</li>
+  <li>Fixed file picker which was broken in Thunderbird 125 - <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/265">[issue 265]</a></li>
+  <li>Fixed an isseu during play sound - Init window during tone playing if it is not set.<a href="https://github.com/RealRaven2000/FiltaQuilla/issues/258">[issue 258]</a></li>
 </ul>
 
 <b>Miscellaneus / Code Modernisation</b>
 <ul>
-<li>Replaced deprecated Components.utils.import with ChromeUtils.import</li>
-<li>Use globalThis.Services where it is present</li>
+  <li>Added debug info for bodyRegEx_match, subjectRegEx_match and headerRegEx_match</li>
+  <li>Added troubleshooting info for NetUtil.readInputStreamToString</li>
+  <li>Added debug switch "mimeBody" for issues related to reading body of the emnail</li>
 </ul>
 
 <strong>Support My Work</strong>

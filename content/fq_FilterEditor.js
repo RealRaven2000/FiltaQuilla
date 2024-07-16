@@ -162,7 +162,7 @@
     getURL() {
       const nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-      fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+      fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilters(nsIFilePicker.filterAll);
       try {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
@@ -236,7 +236,7 @@
     getURL() {
       const nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-      fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+      fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilter("Template Files", "*.htm;*.html;*.txt");
       try {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
@@ -297,7 +297,7 @@
     getURL() {
       const nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-      fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+      fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilters(nsIFilePicker.filterAll);
       try {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
@@ -443,7 +443,7 @@
     getURL() {
       const nsIFilePicker = Ci.nsIFilePicker;
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-      fp.init(window, this.dialogTitle, nsIFilePicker.modeGetFolder);
+      fp.init(util.getFileInitArg(window), this.dialogTitle, nsIFilePicker.modeGetFolder);
       fp.appendFilters(nsIFilePicker.filterAll);
       try {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
@@ -542,7 +542,7 @@
             wildmat = "*.wav; *.ogg; *.aiff",
             label = ".wav, .ogg, .aiff";
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-      fp.init(window, this.launchtitle, nsIFilePicker.modeOpen);
+      fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilter(label, wildmat);
       fp.appendFilters(nsIFilePicker.filterAll);
 

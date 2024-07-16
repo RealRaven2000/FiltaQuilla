@@ -364,15 +364,8 @@
           for (let msgHdr of aMsgHdrs)
             _messageIds.push(msgHdr.messageId); // are these used later?
 
-          const cs = MailServices.copy  // Tb91
-            || Cc["@mozilla.org/messenger/messagecopyservice;1"].getService(Ci.nsIMsgCopyService); // older
-
-          if (cs.copyMessages)
-            copyService.copyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
-                                     _localListener, aMsgWindow, false /*allowUndo*/);
-          else
-            copyService.CopyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
-                                     _localListener, aMsgWindow, false /*allowUndo*/);
+          MailServices.copy.copyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
+            _localListener, aMsgWindow, false /*allowUndo*/);
 
         },
         apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
@@ -1442,7 +1435,7 @@
       },
       needsBody: false,
       getAvailable: function subjectRegEx_getAvailable(scope, op) {
-        FiltaQuilla.Util.logDebug("subjectRegex - getAvaillable()...");
+        FiltaQuilla.Util.logDebug("subjectRegex - getAvailable()...");
         return _isLocalSearch(scope) && SubjectRegexEnabled;
       },
       getAvailableOperators: function subjectRegEx_getAvailableOperators(scope) {
@@ -1464,14 +1457,26 @@
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
             
+        let retVal, operand;
         switch (aSearchOp)
         {
           case Matches:
-            return RegExp(searchValue, searchFlags).test(subject);
+            retVal = RegExp(searchValue, searchFlags).test(subject);
+            operand = "matches";
+            break;
           case DoesntMatch:
-            return !RegExp(searchValue, searchFlags).test(subject);
+            retVal = !RegExp(searchValue, searchFlags).test(subject);
+            operand = "doesn't match";
+            break;
+          default:
+            retVal = null;
         }
-      },
+        FiltaQuilla.Util.logHighlightDebug(`subjectRegex RESULT: ${retVal}`,
+          "white",
+          "rgb(0,100,0)",
+          `\n search term: Subject ${operand} ${searchValue}`);
+        return retVal;
+  },
     };
 
    // local object used for callback
@@ -1634,12 +1639,25 @@
         } 
 
         var headerValue = aMsgHdr.getStringProperty(propertyRealName);
+        let result, operand; 
+
         switch (aSearchOp) {
           case Matches:
-            return RegExp(searchValue, searchFlags).test(headerValue);
+            result = RegExp(searchValue, searchFlags).test(headerValue);
+            operand = "matches";
+            break;
           case DoesntMatch:
-            return !RegExp(searchValue, searchFlags).test(headerValue);
+            result = !RegExp(searchValue, searchFlags).test(headerValue);
+            operand = "doesn't match";
+            break;
+          default: 
+            result = null;
         }
+        FiltaQuilla.Util.logHighlightDebug(`headerRegEx[${headerName}] RESULT: ${result}`,
+          "white",
+          "rgb(0,100,0)",
+          `\n search term: Header ${operand} ${searchValue}`);
+        return result;
       }
     };
     
@@ -1662,21 +1680,32 @@
         }
         return [Matches, DoesntMatch];
       },
-      match: function bodyRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function (aMsgHdr, aSearchValue, aSearchOp) {
         /*** SEARCH INIT  **/
-        let searchValue, searchFlags, reg;
+        let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
         
-        // see https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/filters.jsm#276-296
         let result = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags);
+        let operand;
         
-        switch (aSearchOp)
-        {
+        switch (aSearchOp) {
           case Matches:
-            return result;//return RegExp(searchValue, searchFlags).test(subject);
+            operand = "matches";
+            break;
           case DoesntMatch:
-            return !result;//return !RegExp(searchValue, searchFlags).test(subject);
+            operand = "doesn't match";
+            result = !result;
+            break;
+          default: 
+            result = null;
         }
+        FiltaQuilla.Util.logHighlightDebug(`bodyRegex RESULT: ${result}`,
+          "white",
+          "rgb(0,100,0)",
+          `\n search term: Body ${operand} ${searchValue}`);
+
+        return result;
+
       }
     };
     
@@ -1704,7 +1733,7 @@
         let searchValue, searchFlags, reg;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
         
-        subResult = RegExp(searchValue, searchFlags).test(subject); 
+        subResult = RegExp(searchValue, searchFlags).test(subject); // find in subject
             
 
         var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
@@ -2205,12 +2234,7 @@
       } catch(e) {}
     }
     if ( (moveLaterCount <= 0) || (this.recallCount <= 0)) { // execute move    
-      const copyService = MailServices.copy  // Tb91
-            || Cc["@mozilla.org/messenger/messagecopyservice;1"].getService(Ci.nsIMsgCopyService);
-            
-      let copyMsg = (copyService.copyMessages) ? copyService.copyMessages : copyService.CopyMessages;
-
-      copyMsg(this.source, 
+      MailServices.copy.copyMessages(this.source, 
               this.messages,
               this.destination, 
               isMove,
