@@ -4,7 +4,7 @@ Use this API to access Thunderbird's system preferences or to migrate your own p
 
 ## Usage
 
-Add the [LegacyPrefs API](https://github.com/thundernest/addon-developer-support/tree/master/auxiliary-apis/LegacyPrefs) to your add-on. Your `manifest.json` needs an entry like this:
+Add the [LegacyPrefs API](https://github.com/thunderbird/addon-developer-support/tree/master/auxiliary-apis/LegacyPrefs) to your add-on. Your `manifest.json` needs an entry like this:
 
 ```
   "experiment_apis": {
@@ -57,4 +57,4 @@ browser.LegacyPrefs.onChanged.addListener(async (name, value) => {
 
 ---
 
-A detailed example using the LegacyPref API to migrate add-on preferences to the local storage can be found in [/scripts/preferences/](https://github.com/thundernest/addon-developer-support/tree/master/scripts/preferences).
+A detailed example using the LegacyPref API to migrate add-on preferences to the local storage can be found in [/scripts/preferences/](https://github.com/thunderbird/addon-developer-support/tree/master/scripts/preferences).

@@ -62,6 +62,34 @@
         ]
       },
       {
+        "name": "createPref",
+        "type": "function",
+        "async": true,
+        "description": "Creates a new entry in the legacy pref system.",
+        "parameters": [
+          {
+            "name": "aName",
+            "type": "string",
+            "description": "Name of the preference."
+          },
+          {
+            "name": "aValue",
+            "choices": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "description": "Value to be set."
+          }
+        ]
+      },
+      {
         "name": "setPref",
         "type": "function",
         "async": true,

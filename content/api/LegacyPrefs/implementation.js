@@ -1,9 +1,16 @@
 /*
  * This file is provided by the addon-developer-support repository at
- * https://github.com/thundernest/addon-developer-support
+ * https://github.com/thunderbird/addon-developer-support
  *
+ * Version 1.12
+ * - added createPref(), proposed by Axel Grude
+ * 
+ * Version 1.11
+ * - adjusted to TB128 (no longer loading Services and ExtensionCommon)
+ * - use ChromeUtils.importESModule()
+ * 
  * Version 1.10
- * - adjusted to Thunderbird Supernova (Services is now in globalThis)
+ * - adjusted to Thunderbird 115 (Services is now in globalThis)
  *
  * Version 1.9
  * - fixed fallback issue reported by Axel Grude
@@ -36,17 +43,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-var { ExtensionCommon } = ChromeUtils.import(
-  "resource://gre/modules/ExtensionCommon.jsm"
-);
-var { ExtensionUtils } = ChromeUtils.import(
-  "resource://gre/modules/ExtensionUtils.jsm"
+/* global Services, ExtensionCommon */
+
+"use strict";
+
+var { ExtensionUtils } = ChromeUtils.importESModule(
+  "resource://gre/modules/ExtensionUtils.sys.mjs"
 );
 var { ExtensionError } = ExtensionUtils;
-
-var Services = globalThis.Services || 
-  ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
-
 
 var LegacyPrefs = class extends ExtensionCommon.ExtensionAPI {
   getAPI(context) {
@@ -160,6 +164,28 @@ var LegacyPrefs = class extends ExtensionCommon.ExtensionAPI {
 
         clearUserPref: function (aName) {
           Services.prefs.clearUserPref(aName);
+        },
+
+        // creates a new pref
+        createPref: async function (aName, aValue) {
+          if (typeof aValue == "string") {
+              Services.prefs.setStringPref(aName, aValue);
+              return "string";
+          }
+
+          if (typeof aValue == "boolean") {
+              Services.prefs.setBoolPref(aName, aValue);
+              return "boolean";
+          }
+
+          if (typeof aValue == "number" && Number.isSafeInteger(aValue)) {
+              Services.prefs.setIntPref(aName, aValue);
+              return "integer";
+          }
+          console.error(
+            `The provided value <${aValue}> for the new legacy preference <${aName}> is none of STRING, BOOLEAN or INTEGER.`
+          );
+          return false;
         },
 
         // sets a pref
