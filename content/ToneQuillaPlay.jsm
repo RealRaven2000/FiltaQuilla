@@ -27,6 +27,10 @@
  * ***** END LICENSE BLOCK *****
  */
 
+ // for the next ESR (140) we need to convert this to a .sys.msj file because we need to 
+ // use Cu.importESModule(...)
+ // To Do: create an issue for this [ESMification]
+
 var EXPORTED_SYMBOLS = ["ToneQuillaPlay"];
 
 const Cc = Components.classes,
