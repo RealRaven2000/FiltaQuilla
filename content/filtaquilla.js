@@ -2439,14 +2439,16 @@
     try {
       file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
       let service = MailServices.messageServiceFromURI(msgSpec);
-      /*
-      void SaveMessageToDisk(in string aMessageURI, in nsIFile aFile,
-                             in boolean aGenerateDummyEnvelope,
-                             in nsIUrlListener aUrlListener, out nsIURI aURL,
-                             in boolean canonicalLineEnding, in nsIMsgWindow aMsgWindow);
-      */
-      let aURL = {};
-      service.SaveMessageToDisk(msgSpec, file, false, _urlListener, aURL, true, null);
+      if (service.SaveMessageToDisk) { // TB115
+        let aURL = {};
+        service.SaveMessageToDisk(msgSpec, file, false, _urlListener, aURL, true, null);
+      }
+      if (service.saveMessageToDisk) { // TB128 [issue 270]
+        // converted to camelcase
+        // 5th parameter was dropped
+        // nsIUrlListener is unchanged
+        service.saveMessageToDisk(msgSpec, file, false, _urlListener, true, null);
+      }
     }
     catch (ex) {
       console.log("Could not create file with name:" + fullFileName);
@@ -2610,7 +2612,7 @@
     return name;
   }
 
-  var _urlListener = {
+  var _urlListener = { // nsIUrlListener
     OnStartRunningUrl: function _onStartRunningUrl(aUrl) {},
     OnStopRunningUrl: function _onStopRunningUrl(aUrl, aStatus) {
       let messageUri;
