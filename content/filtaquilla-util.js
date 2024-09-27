@@ -488,6 +488,25 @@ FiltaQuilla.Util = {
         reg,
         isTested = false,
         folder = aMsgHdr.folder;
+
+    function isQuotedPrintable(raw) {
+      if (!raw) {
+        return false;
+      }
+      const xxlines = raw.split("\n");
+      let cte; // line beginning "content transfer encoding"
+      if (!xxlines) return false;
+      if (!xxlines.length) return false;
+
+      cte = xxlines.find(l => l.startsWith("Content-Transfer-Encoding"));
+      if (!cte) return false;
+      const vals = cte.split(":");
+      if (vals.length < 2) return false;
+      const contentType = vals[1].trim();
+      var result = (contentType=="quoted-printable");
+      FiltaQuilla.Util.logDebug(`content type from raw message: ${contentType}\nisQuotedPrintable=${result}`);
+      return result;
+    }
         
     /*** READ body ***/
     // let hasOffline = folder.hasMsgOffline(aMsgHdr.messageKey);
@@ -497,7 +516,11 @@ FiltaQuilla.Util = {
     let isStreamError = false;
     try {
       // [issue #260]
-      data = NetUtil.readInputStreamToString(stream, stream.available());
+      data = "";
+      let available;
+      while (available = stream.available() ) {
+        data += NetUtil.readInputStreamToString(stream, available);
+      }
     } catch (ex) {
       FiltaQuilla.Util.logDebug(`NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`, ex);
       isStreamError=true;
@@ -551,7 +574,7 @@ FiltaQuilla.Util = {
       }
        
     } else {
-      let [headers, body] = MimeParser.extractHeadersAndBody(data);
+      let [headers, body] = MimeParser.extractHeadersAndBody(data); // headers._rawHeaders?.forEach(e => console.log(e));
       FiltaQuilla.Util.logDebugOptional ("mimeBody","Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)");
        BodyParts.push(body); // this is only the raw mime crap!
        BodyType.push("?");
@@ -563,11 +586,17 @@ FiltaQuilla.Util = {
       reg = RegExp(searchValue, searchFlags);
       if (BodyParts.length>0) {
         for (let i=0;  i<BodyParts.length; i++) {
-          let p = BodyParts[i];
           FiltaQuilla.Util.logDebugOptional ("mimeBody","testing part [" + i + "] ct = ", BodyType[i]);
+          let p = BodyParts[i];
+          // parse Message and decide if its encoded as quotedPrintable
+          if (isQuotedPrintable(p)) {
+            p = unescape(
+              p.replace(/%/g, "=25").replace(new RegExp("=", "g"), "%")
+            ).replace(/%\n?\s?\n?/g,""); //  reflow line breaks
+          }
           // if it is html, strip out as much as possible:
           // p = p;
-          if (BodyType[i].includes("html")) {
+          if (p.includes("<html")) {
             // remove html the dirty way
             p = p.replace(/(<style[\w\W]+style>)/g, '').replace(/<[^>]+>/g, '').replace(/(\r\n|\r|\n){2,}/g,"").replace(/(\t){2,}/g,"");
           }
