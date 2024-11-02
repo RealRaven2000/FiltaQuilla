@@ -53,6 +53,7 @@ pref("extensions.filtaquilla.debug.firstrun", false);
 pref("extensions.filtaquilla.debug.notifications", false);
 pref("extensions.filtaquilla.debug.PrintingToolsNG", false);
 pref("extensions.filtaquilla.debug.SmartTemplates", false);
+pref("extensions.filtaquilla.debug.regexSubject", false);
 pref("extensions.filtaquilla.debug.regexHeader", false);
 pref("extensions.filtaquilla.debug.mimeBody", false);
 

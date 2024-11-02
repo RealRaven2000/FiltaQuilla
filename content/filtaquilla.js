@@ -1152,7 +1152,8 @@
       isValidForType: function(type, scope) {return javascriptActionEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
-      needsBody: false
+      needsBody: false,
+      isAsync: false
     };
 
     self.javascriptActionBody =
@@ -1456,6 +1457,10 @@
         var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
+        FiltaQuilla.Util.logDebugOptional(
+          "regexSubject",
+          `decoded subject: ${subject}\nRegex String:${searchValue}`
+        );
             
         let retVal, operand;
         switch (aSearchOp)
@@ -1471,6 +1476,7 @@
           default:
             retVal = null;
         }
+        
         FiltaQuilla.Util.logHighlightDebug(`subjectRegex RESULT: ${retVal}`,
           "white",
           "rgb(0,100,0)",
@@ -1639,6 +1645,12 @@
         } 
 
         var headerValue = aMsgHdr.getStringProperty(propertyRealName);
+        if (headerValue) { // [issue 308]
+          const mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(
+            Ci.nsIMimeConverter
+          );
+          headerValue = mimeConvert.decodeMimeHeader(headerValue, null, false, true);
+        }
         let result, operand; 
 
         switch (aSearchOp) {
@@ -1736,7 +1748,7 @@
         subResult = RegExp(searchValue, searchFlags).test(subject); // find in subject
             
 
-        var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
+        const mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
           decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
         var subject = aMsgHdr.mime2DecodedSubject;
 
