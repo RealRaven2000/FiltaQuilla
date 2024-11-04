@@ -246,8 +246,9 @@ FiltaQuilla.Util = {
   } ,
 
   logDebug: function logDebug(msg) {
-    if (this.isDebug)
+    if (this.isDebug) {
       this.logToConsole(...arguments);
+    }
   },
 
 	logHighlightDebug: function(txt, color="white", background="rgb(80,0,0)", ...args) {
@@ -541,7 +542,7 @@ FiltaQuilla.Util = {
     
     /** EXTRACT MIME PARTS **/
     if (MimeParser.extractMimeMsg) {
-      // Tb 91
+      // Tb 91 - 115
       let mimeMsg = MimeParser.extractMimeMsg(data, {
         includeAttachments: false  // ,getMimePart: partName
       });
@@ -575,10 +576,9 @@ FiltaQuilla.Util = {
           isTested=true; // no regex, as it failed.
           FiltaQuilla.Util.logDebug("bodyMimeMatch() : No BodyParts could be extracted.");
         } 
-          
       }
-       
     } else {
+      // Tb 128
       let [headers, body] = MimeParser.extractHeadersAndBody(data); // headers._rawHeaders?.forEach(e => console.log(e));
       FiltaQuilla.Util.logDebugOptional ("mimeBody","Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)");
        BodyParts.push(body); // this is only the raw mime crap!
@@ -621,17 +621,22 @@ FiltaQuilla.Util = {
       }
     }
     
-    if (r === true) {
+    if (r === true && FiltaQuilla.Util.isDebug) {
       let count = 0,
-          txtResults="",
-          results = reg.exec(msgBody); // the winning body part LOL
+        txtResults = "",
+        results = reg.exec(msgBody); // the winning body part LOL
 
-      while ((results= reg.exec(msgBody)) !== null) {
-        txtResults += `Match[${count}]: ${results[0]}\n`;
-        count++;
+      if (reg.global) {
+        while ((results = reg.exec(msgBody)) !== null) {
+          txtResults += `Match[${count}]: ${results[0]}\n`;
+          count++;
+        }
+        FiltaQuilla.Util.logDebug(
+          `${detectResults} found ${count} ${
+            count != 1 ? "matches" : "match"
+          }: \n ------------ \n ${txtResults} `
+        );
       }
-      FiltaQuilla.Util.logDebug(`${detectResults} found ${count} ${(count!=1 ? "matches": "match")}: \n ------------ \n ${txtResults} `);
-      //  FiltaQuilla.Util.logDebug("Thunderbird 91 will have a new function MimeParser.extractMimeMsg()  which will enable proper body parsing ")
     }    
     return r;
   },
