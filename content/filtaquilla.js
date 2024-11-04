@@ -46,7 +46,7 @@
   
 
   
-  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
+  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
 
 
   const Cc = Components.classes,
@@ -613,7 +613,7 @@
             
         file.initWithPath(fileURL); // check whether template exists!
         if (!file.exists()) {
-          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL)
+          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
         }
         const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
               isDebug = prefs.getBoolPref("debug.SmartTemplates");
@@ -666,7 +666,7 @@
             
         file.initWithPath(fileURL); // check whether template exists!
         if (!file.exists()) {
-          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL)
+          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
         }
         // then send a message to SmartTemplates
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
@@ -1139,7 +1139,15 @@
       id: "filtaquilla@mesquilla.com#javascriptAction",
       name: util.getBundleString("filtaquilla.javascriptAction.name"),
       applyAction: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
-        return eval(actionValue);
+		    try {
+    	    return eval(actionValue);
+				}  catch (ex) { 
+          // Galantha: javascript eval action error triggered a bug report 
+					let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
+					util.logToConsole(msg);
+					util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
+					return false;
+				}
       },
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -1161,7 +1169,15 @@
       id: "filtaquilla@mesquilla.com#javascriptActionBody",
       name: util.getBundleString("filtaquilla.javascriptActionBody.name"),
       applyAction: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
-        return eval(actionValue);
+		    try {
+    	    return eval(actionValue);
+				}  catch (ex) { 
+          // Galantha: javascript eval action error triggered a bug report 
+					let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
+					util.logToConsole(msg);
+					util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
+					return false;
+				}
       },
       apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
@@ -1982,7 +1998,7 @@
         validateActionValue: function(value, folder, type) { return null;},
 
         allowDuplicates: true
-    }
+    };
     
 
  };
@@ -2143,7 +2159,7 @@
     fileNamesSpaceCharacter = prefs.getStringPref("fileNames.spaceCharacter");
 
 
-  }
+  };
 
   // extension initialization
   self.onLoad = async function() {
@@ -2259,7 +2275,7 @@
     }
     else // reschedule another check
       moveLaterTimers[this.timerIndex].initWithCallback(this, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
-  }
+  };
 
   // is this search scope local, and therefore valid for db-based terms?
   function _isLocalSearch(aSearchScope) {
@@ -2299,7 +2315,7 @@
       );
       unicodeConverter.charset = "UTF-8";
       return unicodeConverter.ConvertFromUnicode(aSrc);
-    };
+    }
     
     if (/@SUBJECT@/.test(parameter)) {
       // let str = convertFromUnicode(hdr.mime2DecodedSubject);

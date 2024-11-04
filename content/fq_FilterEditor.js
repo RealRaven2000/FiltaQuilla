@@ -23,7 +23,7 @@
   var Services = globalThis.Services || ChromeUtils.import(
     "resource://gre/modules/Services.jsm"
   ).Services;
-  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
+  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
   var { ToneQuillaPlay } = ChromeUtils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
 
   const util = FiltaQuilla.Util,
@@ -180,11 +180,11 @@
           pathBox.value = fp.file.path;
           hBox.value = fp.file.path;
         }
-      }
+      };
 
-      if (fp.open)
+      if (fp.open) {
         fp.open(fpCallback);
-      else { // old code
+      } else { // old code
         fpCallback(fp.show());
       }
 
@@ -254,7 +254,7 @@
           pathBox.value = fp.file.path;
           hBox.value = fp.file.path;
         }
-      }
+      };
 
       if (fp.open)
         fp.open(fpCallback);
@@ -318,7 +318,7 @@
           pathBox.value = fp.file.path + ",@SUBJECT@,@MESSAGEID@";
           hBox.value = pathBox.value;
         }
-      }
+      };
 
       if (fp.open)
         fp.open(fpCallback);
@@ -373,7 +373,7 @@
       this.addDirectories(dirs, menupopup);
 
       updateParentNode(this.closest(".ruleaction"));
-      let value = typeof(this.hbox.value) != 'undefined' ? this.hbox.value : ""
+      let value = typeof(this.hbox.value) != 'undefined' ? this.hbox.value : "";
       // set the default to the personal address book
       if (!value || !value.length)
         value = "moz-abmdbdirectory://abook.mab";    
@@ -384,7 +384,7 @@
         menulist.selectedItem = valueElements[0];
       else
         menulist.selectedIndex = 0;
-      this.value = menulist.selectedItem.getAttribute("value");;
+      this.value = menulist.selectedItem.getAttribute("value");
 
     }
 
@@ -464,7 +464,7 @@
           pathBox.value = fp.file.path;
           hBox.value = pathBox.value;
         }
-      }
+      };
 
       if (fp.open)
         fp.open(fpCallback);
@@ -556,7 +556,7 @@
           pathBox.value = fp.file.path;
           hBox.value = pathBox.value;
         }
-      } 
+      };
 
       if (pathBox.value)  {
         try {
@@ -612,7 +612,7 @@
       es.onCommand = function() {
         let textbox = es.children[1]; // document.getAnonymousNodes(es)[1];
         window.openDialog("chrome://filtaquilla/content/jsEditor.xhtml", "", "chrome,dialog,centerscreen,modal,resizable=yes", textbox);
-      }
+      };
       
       
       es.textContent = "";
@@ -778,10 +778,10 @@
                   break;
                 case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
                 case "filtaquilla@mesquilla.com#threadanytag":
-                  isPatched = patchFiltaQuillaTagSelector(es)
+                  isPatched = patchFiltaQuillaTagSelector(es);
                   break;
                 case "filtaquilla@mesquilla.com#javascript":
-                  isPatched = patchFiltaQuillaJavaScriptCondition(es)
+                  isPatched = patchFiltaQuillaJavaScriptCondition(es);
                   break;
                 default:
                   // irrelevant for FiltaQuilla
@@ -826,14 +826,14 @@
                     if (es.firstChild.classList.contains("fq-tag")) return;
                     es.removeChild(es.firstChild);
                   }
-                  isPatched = patchFiltaQuillaTagSelector(es)
+                  isPatched = patchFiltaQuillaTagSelector(es);
                   break;
                 case "filtaquilla@mesquilla.com#javascript":
                   if (es.firstChild) {
                     if (es.firstChild.classList.contains("fq-javascript")) return;
                     es.removeChild(es.firstChild);
                   }
-                  isPatched = patchFiltaQuillaJavaScriptCondition(es)
+                  isPatched = patchFiltaQuillaJavaScriptCondition(es);
                   break;
                 default:
                   // irrelevant for FiltaQuilla
@@ -860,7 +860,7 @@
     subtree: true // Omit (or set to false) to observe only changes to the parent node
   }
   
-  let termList = window.document.querySelector('#searchTermList')
+  let termList = window.document.querySelector('#searchTermList');
   fq_observer.observe(termList, fq_observerOptions);
   
   function selectCustomCondition(event) {

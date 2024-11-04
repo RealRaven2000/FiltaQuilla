@@ -162,7 +162,7 @@ FiltaQuilla.Util = {
         ')';
       el.appendChild(tip);
       el.onmousemove = e => {
-        tip.style.left = e.clientX + 'px'
+        tip.style.left = e.clientX + 'px';
         tip.style.top = e.clientY + 'px';
       };
       el.setAttribute("hasToolTip", true); // avoids duplicates
@@ -187,7 +187,7 @@ FiltaQuilla.Util = {
 
 	openLinkInBrowser: function(linkURI) {
     const Ci = Components.interfaces,
-          Cc = Components.classes
+          Cc = Components.classes;
     try {
       this.logDebug("openLinkInBrowser (" + linkURI + ")");
       let service = Cc["@mozilla.org/uriloader/external-protocol-service;1"]
@@ -207,13 +207,13 @@ FiltaQuilla.Util = {
     try { // AG added time logging for test
       if (this.lastTime === 0) {
         this.lastTime = endTime;
-        return "[logTime init]"
+        return "[logTime init]";
       }
       let elapsed = new String(endTime - this.lastTime); // time in milliseconds
       timePassed = '[' + elapsed + ' ms]   ';
       this.lastTime = endTime; // remember last time
     }
-    catch(e) {;}
+    catch(e) {}
     return end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds() + '.' + end.getMilliseconds() + '  ' + timePassed;
   },
 
@@ -291,7 +291,7 @@ FiltaQuilla.Util = {
 				}
 			}
 		}
-		catch(ex) {;}
+		catch(ex) {}
   },
 
   toggleBoolPreference: function(cb, noUpdate) {
@@ -304,7 +304,7 @@ FiltaQuilla.Util = {
 			Services.prefs.setBoolPref(pref.getAttribute('name'), cb.checked);
     }
     if (noUpdate) return true;
-    return false // this.updateMainWindow();
+    return false; // this.updateMainWindow();
   },
 
   showAboutConfig: function(clickedElement, filter, readOnly) {
@@ -487,7 +487,8 @@ FiltaQuilla.Util = {
         r = false,
         reg,
         isTested = false,
-        folder = aMsgHdr.folder;
+        folder = aMsgHdr.folder,
+	      subject = aMsgHdr.subject;
 
     function isQuotedPrintable(raw) {
       if (!raw) {
@@ -504,7 +505,11 @@ FiltaQuilla.Util = {
       if (vals.length < 2) return false;
       const contentType = vals[1].trim();
       var result = (contentType=="quoted-printable");
-      FiltaQuilla.Util.logDebug(`content type from raw message: ${contentType}\nisQuotedPrintable=${result}`);
+      FiltaQuilla.Util.logDebug(
+        `subject=${subject}\n` +
+        `content type from raw message: ${contentType}\n` +
+        `isQuotedPrintable=${result}`        
+      );
       return result;
     }
         
@@ -546,14 +551,14 @@ FiltaQuilla.Util = {
       } else {
         if (mimeMsg.body && mimeMsg.contentType && mimeMsg.contentType.startsWith("text")) {
           BodyParts.push(mimeMsg.body); // just in case this exists too
-          BodyType.push(mimeMsg.contentType || "?")
+          BodyType.push(mimeMsg.contentType || "?");
         } else if (mimeMsg.parts && mimeMsg.parts.length) {
           let origPart = mimeMsg.parts[0];
           if (origPart.body && origPart.contentType && ("" + origPart.contentType).startsWith("text")) {
             msgBody = origPart.body;
             FiltaQuilla.Util.logDebugOptional ("mimeBody","found body element in parts[0]");
             BodyParts.push(msgBody);
-            BodyType.push(origPart.contentType || "?")
+            BodyType.push(origPart.contentType || "?");
           }
           if (origPart.parts) {
             for (let p = 0; p<origPart.parts.length; p++)  {
@@ -561,7 +566,7 @@ FiltaQuilla.Util = {
               if (o.body && o.contentType && o.contentType.startsWith("text")) {
                 FiltaQuilla.Util.logDebugOptional ("mimeBody","found body element in parts[0].parts[" + p + "]", o);
                 BodyParts.push(o.body);
-                BodyType.push(o.contentType || "?")
+                BodyType.push(o.contentType || "?");
               }
             }
           }
@@ -603,7 +608,7 @@ FiltaQuilla.Util = {
           let found = reg.test(p);
           if (found) {
             let ct=p.contentType || "unknown";
-            detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${BodyType[i]}\n`
+            detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${BodyType[i]}\n`;
             FiltaQuilla.Util.logDebug();
             r = true;
             msgBody = p;
@@ -622,7 +627,7 @@ FiltaQuilla.Util = {
           results = reg.exec(msgBody); // the winning body part LOL
 
       while ((results= reg.exec(msgBody)) !== null) {
-        txtResults += `Match[${count}]: ${results[0]}\n`
+        txtResults += `Match[${count}]: ${results[0]}\n`;
         count++;
       }
       FiltaQuilla.Util.logDebug(`${detectResults} found ${count} ${(count!=1 ? "matches": "match")}: \n ------------ \n ${txtResults} `);
@@ -673,17 +678,19 @@ FiltaQuilla.Util = {
       
       try {
         FiltaQuilla.Util.logDebugOptional ("firstrun","try to get setting: getStringPref(version)");
-        try { prev = ssPrefs.getStringPref("version"); }
-        catch (e) {
+        try { 
+          prev = ssPrefs.getStringPref("version"); 
+        } catch (e) {
           prev = "?";
           FiltaQuilla.Util.logDebugOptional ("firstrun","Could not determine previous version - " + e);
-        } ;
+        }
 
         FiltaQuilla.Util.logDebugOptional ("firstrun","try to get setting: getBoolPref(firstrun)");
         try { 
           firstrun = ssPrefs.getBoolPref("firstRun"); 
-        } 
-        catch (e) { firstrun = true; }
+        }  catch (e) { 
+          firstrun = true; 
+				}
 
         FiltaQuilla.Util.logDebugOptional ("firstrun", "Settings retrieved:"
             + "\nprevious version=" + prev
