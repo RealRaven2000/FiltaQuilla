@@ -483,37 +483,189 @@ FiltaQuilla.Util = {
   
   bodyMimeMatch: function(aMsgHdr, searchValue, searchFlags) {
     let msgBody,
-        BodyParts = [], 
-        BodyType = [], // if we need multiple bodys (e.g. plain text + html mixed)
-        r = false,
-        reg,
-        isTested = false,
-        folder = aMsgHdr.folder,
-	      subject = aMsgHdr.subject;
+      BodyParts = [], // if we need multiple bodys (e.g. plain text + html mixed)
+      r = false,
+      reg,
+      isTested = false,
+      folder = aMsgHdr.folder,
+      subject = aMsgHdr.subject;
 
     function isQuotedPrintable(raw) {
       if (!raw) {
         return false;
       }
-      const xxlines = raw.split("\n");
       let cte; // line beginning "content transfer encoding"
+      if (typeof raw == "object") {
+        if (raw?.encoding == "Content-Transfer-Encoding") {
+          return true;
+        }
+        return false;
+      }
+      const xxlines = raw.split("\n");
       if (!xxlines) return false;
       if (!xxlines.length) return false;
 
-      cte = xxlines.find(l => l.startsWith("Content-Transfer-Encoding"));
+      cte = xxlines.find((l) => l.startsWith("Content-Transfer-Encoding"));
       if (!cte) return false;
       const vals = cte.split(":");
       if (vals.length < 2) return false;
       const contentType = vals[1].trim();
-      var result = (contentType=="quoted-printable");
+      var result = contentType == "quoted-printable";
       FiltaQuilla.Util.logDebug(
         `subject=${subject}\n` +
-        `content type from raw message: ${contentType}\n` +
-        `isQuotedPrintable=${result}`        
+          `content type from raw message: ${contentType}\n` +
+          `isQuotedPrintable=${result}`
       );
       return result;
     }
-        
+
+    function decodeQuotedPrintable(cleanedInput) {
+      // Step 1: Remove soft line breaks (=`\n` or `=` at the end of lines)
+      // let cleanedInput = input.replace(/=\r?\n/g, "");
+
+      // Step 2: Decode quoted-printable characters
+      let decoded = cleanedInput.replace(/=([A-Fa-f0-9]{2})/g, (match, hex) => {
+        return String.fromCharCode(parseInt(hex, 16));
+      });
+
+      return decoded;
+    }
+
+    function stripQuotes(val) {
+      if (!isNaN(val)) {
+        return val;
+      }
+      if (val.startsWith("'")) {
+        return val.substring(1, val.lastIndexOf("'"));
+      }
+      if (val.startsWith('"')) {
+        return val.substring(1, val.lastIndexOf('"'));
+      }
+      return val.trim();
+    }
+
+    // Helper function to get content type and attributes
+    function getContentAttributes(line) {
+      const conData = line.split(":")[1];
+      if (!conData) {
+        return ["?", {}]; // no attributes found
+      }
+      const attributes = {};
+      const contArray = conData.trim().split(";");
+      for (let i = 1; i < contArray.length; i++) {
+        let keyval = contArray[i].split("=");
+        if (keyval.length > 1) {
+          attributes[keyval[0].trim()] = stripQuotes(keyval[1]); // attribute = value
+        }
+      }
+
+      return [contArray[0].trim(), attributes];
+    }
+
+    // Main function to split MIME parts
+    function splitBodyParts(raw) {
+      if (!raw) return [];
+
+      const bodies = []; // Array of objects containing each type + raw MIME part.
+      const xxlines = raw
+        .replaceAll("\r\n", "\n")
+        .replaceAll(/(Content-.*:.*;)(\n)(.*=.*)/g, "$1$3")
+        .split("\n")
+        .filter((line) => line.trim() !== "");
+      // remove empty elements (if email starts with line breaks)
+      while (!xxlines[0] && xxlines.length) {
+        xxlines.splice(0, 1);
+      }
+
+      if (!xxlines.length) return [];
+      if (xxlines[0].startsWith("This is an OpenPGP/MIME signed message")) {
+
+      } else if (
+          !xxlines[0].startsWith("This is a multi-part message") &&
+          !xxlines[0].startsWith("--")
+        ) {
+          FiltaQuilla.Util.logDebugOptional("mimeBody", "not a multipart message:" + subject);
+          return [{ contentType: "?", body: raw }];
+        }
+
+      // Regex to identify boundaries
+      const boundaryRegex = /--+[_\=\.A-Za-z0-9]+$/;
+      let part = "",
+        contentType = "",
+        contentEncoding = "",
+        contentAttributes = {},
+        isAttachment = false;
+
+      // Helper to reset part attributes
+      const resetPartAttributes = () => {
+        part = "";
+        contentEncoding = "";
+        contentType = "";
+        contentAttributes = {};
+        isAttachment = false;
+      };
+
+      // Helper to push a complete part
+      const pushPart = () => {
+        if (part && !part.startsWith("This is a multi-part message")) {
+          bodies.push({
+            contentType: contentType || "?",
+            encoding: contentEncoding,
+            contentAttributes,
+            isAttachment,
+            body: part.trim(),
+          });
+        }
+      };
+
+      let isBoundaryLine = false;
+
+      for (let l = 0; l < xxlines.length; l++) {
+        const line = xxlines[l].trim();
+        // Boundary check
+        if (boundaryRegex.test(line)) {
+          pushPart(); // Push the current part before starting a new one
+          resetPartAttributes();
+          continue;
+        }
+
+        // Content-Type header
+        if (line.startsWith("Content-Type:")) {
+          [contentType, contentAttributes] = getContentAttributes(line);
+          continue;
+        }
+
+        if (line.startsWith("Content-Transfer-Encoding:")) {
+          contentEncoding = line.split(":")[1]?.trim();
+          continue;
+        }
+
+        // Content-Disposition header
+        if (line.startsWith("Content-Disposition")) {
+          const [cDis, cAtt] = getContentAttributes(
+            line + (xxlines[l + 1]?.startsWith("\t") ? xxlines[++l] : "")
+          );
+          contentAttributes.contentDisposition = cDis.toLowerCase();
+          if (cAtt.filename) contentAttributes.fileName = cAtt.filename;
+          isAttachment = contentAttributes.contentDisposition === "attachment";
+          continue;
+        }
+
+        // Skip unwanted types (e.g., images, vCard)
+        if (contentType.startsWith("image/") || contentType.startsWith("text/vcard")) {
+          continue;
+        }
+
+        // Accumulate the part content
+        part += (part ? "\n" : "") + line; // Add newline for the part body
+      }
+
+      // Push the last part if it exists
+      pushPart();
+
+      return bodies;
+    }
+
     /*** READ body ***/
     // let hasOffline = folder.hasMsgOffline(aMsgHdr.messageKey);
     var data;
@@ -524,91 +676,144 @@ FiltaQuilla.Util = {
       // [issue #260]
       data = "";
       let available;
-      while (available = stream.available() ) {
+      while ((available = stream.available())) {
         data += NetUtil.readInputStreamToString(stream, available);
       }
     } catch (ex) {
-      FiltaQuilla.Util.logDebug(`NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`, ex);
-      isStreamError=true;
+      FiltaQuilla.Util.logDebug(
+        `NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`,
+        ex
+      );
+      isStreamError = true;
       return false; // shit shit shit - reading the message fails.
     } finally {
       stream.close();
     }
 
     if (!data) {
-      FiltaQuilla.Util.logDebug(`No data streamed for body of ${aMsgHdr.subject}, aborting filter condition`);
+      FiltaQuilla.Util.logDebug(
+        `No data streamed for body of ${aMsgHdr.subject}, aborting filter condition`
+      );
       return false;
     }
-    
+
     /** EXTRACT MIME PARTS **/
     if (MimeParser.extractMimeMsg) {
       // Tb 91 - 115
       let mimeMsg = MimeParser.extractMimeMsg(data, {
-        includeAttachments: false  // ,getMimePart: partName
+        includeAttachments: false, // ,getMimePart: partName
       });
       if (!mimeMsg.parts || !mimeMsg.parts.length) {
         isTested = true;
         msgBody = "";
       } else {
         if (mimeMsg.body && mimeMsg.contentType && mimeMsg.contentType.startsWith("text")) {
-          BodyParts.push(mimeMsg.body); // just in case this exists too
-          BodyType.push(mimeMsg.contentType || "?");
+          // just in case this exists too
+          BodyParts.push({
+            body: mimeMsg.body,
+            contentType: mimeMsg.contentType || "?",
+            contentAttributes: {},
+          });
         } else if (mimeMsg.parts && mimeMsg.parts.length) {
           let origPart = mimeMsg.parts[0];
-          if (origPart.body && origPart.contentType && ("" + origPart.contentType).startsWith("text")) {
+          if (
+            origPart.body &&
+            origPart.contentType &&
+            ("" + origPart.contentType).startsWith("text")
+          ) {
             msgBody = origPart.body;
-            FiltaQuilla.Util.logDebugOptional ("mimeBody","found body element in parts[0]");
+            FiltaQuilla.Util.logDebugOptional("mimeBody", "found body element in parts[0]");
+            BodyParts.push({
+              body: msgBody,
+              contentType: origPart.contentType || "?",
+              contentAttributes: {},
+            });
             BodyParts.push(msgBody);
-            BodyType.push(origPart.contentType || "?");
           }
           if (origPart.parts) {
-            for (let p = 0; p<origPart.parts.length; p++)  {
+            for (let p = 0; p < origPart.parts.length; p++) {
               let o = origPart.parts[p];
               if (o.body && o.contentType && o.contentType.startsWith("text")) {
-                FiltaQuilla.Util.logDebugOptional ("mimeBody","found body element in parts[0].parts[" + p + "]", o);
-                BodyParts.push(o.body);
-                BodyType.push(o.contentType || "?");
+                FiltaQuilla.Util.logDebugOptional(
+                  "mimeBody",
+                  "found body element in parts[0].parts[" + p + "]",
+                  o
+                );
+                BodyParts.push({
+                  body: o.body,
+                  contentType: o.contentType || "?",
+                  contentAttributes: {},
+                });
               }
             }
           }
         }
         if (!BodyParts.length) {
-          isTested=true; // no regex, as it failed.
+          isTested = true; // no regex, as it failed.
           FiltaQuilla.Util.logDebug("bodyMimeMatch() : No BodyParts could be extracted.");
-        } 
+        }
       }
     } else {
       // Tb 128
       let [headers, body] = MimeParser.extractHeadersAndBody(data); // headers._rawHeaders?.forEach(e => console.log(e));
-      FiltaQuilla.Util.logDebugOptional ("mimeBody","Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)");
-       BodyParts.push(body); // this is only the raw mime crap!
-       BodyType.push("?");
-    }    
-    
+      FiltaQuilla.Util.logDebugOptional(
+        "mimeBody",
+        "Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)"
+      );
+
+      let newPartArray = splitBodyParts(body);
+      FiltaQuilla.Util.logDebug("Split body:", newPartArray);
+      for (let p of newPartArray) {
+        BodyParts.push(p);
+      }
+    }
 
     let detectResults = "";
     if (!isTested && BodyParts.length && searchValue) {
       reg = RegExp(searchValue, searchFlags);
-      if (BodyParts.length>0) {
-        for (let i=0;  i<BodyParts.length; i++) {
-          FiltaQuilla.Util.logDebugOptional ("mimeBody","testing part [" + i + "] ct = ", BodyType[i]);
-          let p = BodyParts[i];
+      if (BodyParts.length > 0) {
+        for (let i = 0; i < BodyParts.length; i++) {
+          let p = BodyParts[i].body;
+          FiltaQuilla.Util.logDebugOptional(
+            "mimeBody",
+            "testing part [" + i + "] ct = ",
+            BodyParts[i].contentType
+          );
+          if (BodyParts[i].isAttachment) {
+            FiltaQuilla.Util.logDebugOptional(
+              "mimeBody",
+              `Skipping attachment: ${p.substring(0, 50)}...`
+            );
+            continue;
+          }
           // parse Message and decide if its encoded as quotedPrintable
           if (isQuotedPrintable(p)) {
-            p = unescape(
-              p.replace(/%/g, "=25").replace(new RegExp("=", "g"), "%")
-            ).replace(/%\n?\s?\n?/g,""); //  reflow line breaks
+            p = unescape(p.replace(/%/g, "=25").replace(new RegExp("=", "g"), "%")).replace(
+              /%\n?\s?\n?/g,
+              ""
+            ); //  reflow line breaks
           }
           // if it is html, strip out as much as possible:
           // p = p;
-          if (p.includes("<html")) {
+          if (
+            BodyParts[i].contentType.startsWith("text/html") ||
+            p.toLowerCase().includes("<html")
+          ) {
             // remove html the dirty way
-            p = p.replace(/(<style[\w\W]+style>)/g, '').replace(/<[^>]+>/g, '').replace(/(\r\n|\r|\n){2,}/g,"").replace(/(\t){2,}/g,"");
+            p = p
+              .replace(/(<style[\w\W]+style>)/g, "")
+              .replaceAll("<br>", " ")
+              .replace(/<\/[^>]+>/g, " ")
+              .replace(/<[^>]+>/g, "")
+              .replace(/(\r\n|\r|\n){2,}/g, " ")
+              .replace(/(\t){2,}/g, "");
+
+            p = decodeQuotedPrintable(p);
           }
           let found = reg.test(p);
           if (found) {
-            let ct=p.contentType || "unknown";
-            detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${BodyType[i]}\n`;
+            let ct = p.contentType || "unknown";
+            detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${BodyParts[i].contentType}\n`;
             FiltaQuilla.Util.logDebug();
             r = true;
             msgBody = p;
@@ -616,11 +821,11 @@ FiltaQuilla.Util = {
           }
         }
       } else {
-        FiltaQuilla.Util.logDebugOptional ("mimeBody","No parts found.");
+        FiltaQuilla.Util.logDebugOptional("mimeBody", "No parts found.");
         r = false;
       }
     }
-    
+
     if (r === true && FiltaQuilla.Util.isDebug) {
       let count = 0,
         txtResults = "",
@@ -637,7 +842,7 @@ FiltaQuilla.Util = {
           }: \n ------------ \n ${txtResults} `
         );
       }
-    }    
+    }
     return r;
   },
 
