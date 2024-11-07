@@ -55,6 +55,7 @@ pref("extensions.filtaquilla.debug.PrintingToolsNG", false);
 pref("extensions.filtaquilla.debug.SmartTemplates", false);
 pref("extensions.filtaquilla.debug.regexSubject", false);
 pref("extensions.filtaquilla.debug.regexHeader", false);
+pref("extensions.filtaquilla.debug.regexBody", false);
 pref("extensions.filtaquilla.debug.mimeBody", false);
 
 

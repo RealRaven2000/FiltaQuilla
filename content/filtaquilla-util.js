@@ -33,29 +33,30 @@ FiltaQuilla.TabURIregexp = {
 FiltaQuilla.Util = {
   mAppName: null,
   mAppver: null,
-	HARDCODED_CURRENTVERSION : "4.0", // will later be overriden call to AddonManager
-	HARDCODED_EXTENSION_TOKEN : ".hc",
-	ADDON_ID: "filtaquilla@mesquilla.com",
-	_prefs: null,
-	_consoleService: null,
+  HARDCODED_CURRENTVERSION: "4.0", // will later be overriden call to AddonManager
+  HARDCODED_EXTENSION_TOKEN: ".hc",
+  ADDON_ID: "filtaquilla@mesquilla.com",
+  _prefs: null,
+  _consoleService: null,
   _stringBundleSvc: null,
   _properties: null,
-	lastTime: 0,
-  
+  lastTime: 0,
+
   get StringBundleSvc() {
     if (!this._stringBundleSvc)
-      this._stringBundleSvc = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(Components.interfaces.nsIStringBundleService);
+      this._stringBundleSvc = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(
+        Components.interfaces.nsIStringBundleService
+      );
     return this._stringBundleSvc;
   },
-  
-  
-	get prefs () {
+
+  get prefs() {
     const Ci = Components.interfaces,
-          Cc = Components.classes;
-		if (this._prefs) return this._prefs;
-		this._prefs = Services.prefs.getBranch("extensions.filtaquilla.");
-		return this._prefs;
-	},
+      Cc = Components.classes;
+    if (this._prefs) return this._prefs;
+    this._prefs = Services.prefs.getBranch("extensions.filtaquilla.");
+    return this._prefs;
+  },
 
   get AppverFull() {
     let appInfo = Services.appinfo;
@@ -64,162 +65,166 @@ FiltaQuilla.Util = {
 
   get Appver() {
     if (null === this.mAppver) {
-    let appVer=this.AppverFull.substr(0,3); // only use 1st three letters - that's all we need for compatibility checking!
+      let appVer = this.AppverFull.substr(0, 3); // only use 1st three letters - that's all we need for compatibility checking!
       this.mAppver = parseFloat(appVer); // quick n dirty!
     }
     return this.mAppver;
   },
 
   get Application() {
-    if (null===this.mAppName) {
-    let appInfo = Services.appinfo;
+    if (null === this.mAppName) {
+      let appInfo = Services.appinfo;
       const FIREFOX_ID = "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
       const THUNDERBIRD_ID = "{3550f703-e582-4d05-9a08-453d09bdfdc6}";
       const SEAMONKEY_ID = "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
       const POSTBOX_ID = "postbox@postbox-inc.com";
-      switch(appInfo.ID) {
+      switch (appInfo.ID) {
         case FIREFOX_ID:
-          return this.mAppName='Firefox';
+          return (this.mAppName = "Firefox");
         case THUNDERBIRD_ID:
-          return this.mAppName='Thunderbird';
+          return (this.mAppName = "Thunderbird");
         case SEAMONKEY_ID:
-          return this.mAppName='SeaMonkey';
+          return (this.mAppName = "SeaMonkey");
         case POSTBOX_ID:
-          return this.mAppName='Postbox';
+          return (this.mAppName = "Postbox");
         default:
-          this.mAppName=appInfo.name;
-          this.logDebug ( 'Unknown Application: ' + appInfo.name);
+          this.mAppName = appInfo.name;
+          this.logDebug("Unknown Application: " + appInfo.name);
           return appInfo.name;
       }
     }
     return this.mAppName;
   },
 
-	get tabmail() {
-		let doc = this.getMail3PaneWindow.document,
-		    tabmail = doc.getElementById("tabmail");
-		return tabmail;
-	} ,
+  get tabmail() {
+    let doc = this.getMail3PaneWindow.document,
+      tabmail = doc.getElementById("tabmail");
+    return tabmail;
+  },
 
   get getMail3PaneWindow() {
-    let windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1']
-        .getService(Components.interfaces.nsIWindowMediator),
-        win3pane = windowManager.getMostRecentWindow("mail:3pane");
+    let windowManager = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(
+        Components.interfaces.nsIWindowMediator
+      ),
+      win3pane = windowManager.getMostRecentWindow("mail:3pane");
     return win3pane;
-  } ,
+  },
 
   getTabInfoLength: function getTabInfoLength(tabmail) {
-		if (tabmail.tabInfo)
-		  return tabmail.tabInfo.length;
-	  if (tabmail.tabOwners)
-		  return tabmail.tabOwners.length;
-		return null;
-	} ,
+    if (tabmail.tabInfo) return tabmail.tabInfo.length;
+    if (tabmail.tabOwners) return tabmail.tabOwners.length;
+    return null;
+  },
 
-	getTabInfoByIndex: function getTabInfoByIndex(tabmail, idx) {
-		if (tabmail.tabInfo)
-			return tabmail.tabInfo[idx];
-		if (tabmail.tabOwners)
-		  return tabmail.tabOwners[idx];  // Postbox
-		return null;
-	} ,
+  getTabInfoByIndex: function getTabInfoByIndex(tabmail, idx) {
+    if (tabmail.tabInfo) return tabmail.tabInfo[idx];
+    if (tabmail.tabOwners) return tabmail.tabOwners[idx]; // Postbox
+    return null;
+  },
 
-	getBaseURI: function baseURI(URL) {
-		let hashPos = URL.indexOf('#'),
-				queryPos = URL.indexOf('?'),
-				baseURL = URL;
+  getBaseURI: function baseURI(URL) {
+    let hashPos = URL.indexOf("#"),
+      queryPos = URL.indexOf("?"),
+      baseURL = URL;
 
-		if (hashPos>0)
-			baseURL = URL.substr(0, hashPos);
-		else if (queryPos>0)
-			baseURL = URL.substr(0, queryPos);
-		if (baseURL.endsWith('/'))
-			return baseURL.substr(0, baseURL.length-1); // match "x.com" with "x.com/"
-		return baseURL;
-	} ,
+    if (hashPos > 0) baseURL = URL.substr(0, hashPos);
+    else if (queryPos > 0) baseURL = URL.substr(0, queryPos);
+    if (baseURL.endsWith("/")) return baseURL.substr(0, baseURL.length - 1); // match "x.com" with "x.com/"
+    return baseURL;
+  },
 
-	openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
-		let f = (fragment ? "#" + fragment : ""),
-		    URL = "https://quickfilters.quickfolders.org/filtaquilla.html" + f;
-		FiltaQuilla.Util.getMail3PaneWindow.window.setTimeout(function() {
-			FiltaQuilla.Util.openLinkInTab(URL);
-			});
-	} ,
-  
-  openTooltipPopup: function(el) {
+  openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
+    let f = fragment ? "#" + fragment : "",
+      URL = "https://quickfilters.quickfolders.org/filtaquilla.html" + f;
+    FiltaQuilla.Util.getMail3PaneWindow.window.setTimeout(function () {
+      FiltaQuilla.Util.openLinkInTab(URL);
+    });
+  },
+
+  openTooltipPopup: function (el) {
     if (el.getAttribute("hasToolTip")) {
       return;
     }
     let txt = el.getAttribute("clickyTooltip");
     if (txt) {
-      let tip  = document.createElement("div");
-      tip.classList.add('tooltip');
+      let tip = document.createElement("div");
+      tip.classList.add("tooltip");
       tip.innerText = txt;
       tip.style.transform =
-        'translate(' +
-          (el.hasAttribute('tip-left') ? 'calc(-100% - 5px)' : '15px') + ', ' +
-          (el.hasAttribute('tip-top') ? '-100%' : '0') +
-        ')';
+        "translate(" +
+        (el.hasAttribute("tip-left") ? "calc(-100% - 5px)" : "15px") +
+        ", " +
+        (el.hasAttribute("tip-top") ? "-100%" : "0") +
+        ")";
       el.appendChild(tip);
-      el.onmousemove = e => {
-        tip.style.left = e.clientX + 'px';
-        tip.style.top = e.clientY + 'px';
+      el.onmousemove = (e) => {
+        tip.style.left = e.clientX + "px";
+        tip.style.top = e.clientY + "px";
       };
       el.setAttribute("hasToolTip", true); // avoids duplicates
     }
   },
 
-	openLinkInTab : async function(URL) {
-		// URL = util.makeUriPremium(URL);
+  openLinkInTab: async function (URL) {
+    // URL = util.makeUriPremium(URL);
 
-    // use API. 
-    // getBaseURI to check if we already opened the page and need to 
+    // use API.
+    // getBaseURI to check if we already opened the page and need to
     // jump to a different anchor.
-    await FiltaQuilla.Util.notifyTools.notifyBackground(
-      { 
-        func: "openLinkInTab", 
-        URL: URL, 
-        baseURI: this.getBaseURI(URL)
-      }
-    );
-		return true;
-	} ,
+    await FiltaQuilla.Util.notifyTools.notifyBackground({
+      func: "openLinkInTab",
+      URL: URL,
+      baseURI: this.getBaseURI(URL),
+    });
+    return true;
+  },
 
-	openLinkInBrowser: function(linkURI) {
+  openLinkInBrowser: function (linkURI) {
     const Ci = Components.interfaces,
-          Cc = Components.classes;
+      Cc = Components.classes;
     try {
       this.logDebug("openLinkInBrowser (" + linkURI + ")");
-      let service = Cc["@mozilla.org/uriloader/external-protocol-service;1"]
-                              .getService(Ci.nsIExternalProtocolService),
-          ioservice = Cc["@mozilla.org/network/io-service;1"].
-            getService(Ci.nsIIOService),
-          uri = ioservice.newURI(linkURI, null, null);
+      let service = Cc["@mozilla.org/uriloader/external-protocol-service;1"].getService(
+          Ci.nsIExternalProtocolService
+        ),
+        ioservice = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService),
+        uri = ioservice.newURI(linkURI, null, null);
       service.loadURI(uri);
+    } catch (e) {
+      this.logDebug("openLinkInBrowser (" + linkURI + ") " + e.toString());
     }
-    catch(e) { this.logDebug("openLinkInBrowser (" + linkURI + ") " + e.toString()); }
   },
 
   logTime: function logTime() {
-    let timePassed = '',
-        end = new Date(),
-        endTime = end.getTime();
-    try { // AG added time logging for test
+    let timePassed = "",
+      end = new Date(),
+      endTime = end.getTime();
+    try {
+      // AG added time logging for test
       if (this.lastTime === 0) {
         this.lastTime = endTime;
         return "[logTime init]";
       }
       let elapsed = new String(endTime - this.lastTime); // time in milliseconds
-      timePassed = '[' + elapsed + ' ms]   ';
+      timePassed = "[" + elapsed + " ms]   ";
       this.lastTime = endTime; // remember last time
-    }
-    catch(e) {}
-    return end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds() + '.' + end.getMilliseconds() + '  ' + timePassed;
+    } catch (e) {}
+    return (
+      end.getHours() +
+      ":" +
+      end.getMinutes() +
+      ":" +
+      end.getSeconds() +
+      "." +
+      end.getMilliseconds() +
+      "  " +
+      timePassed
+    );
   },
 
   logToConsole: function logToConsole(a) {
-    let msg = "FiltaQuilla " + this.logTime() + "\n"; // (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '') + 
-    console.log (msg, ...arguments);
+    let msg = "FiltaQuilla " + this.logTime() + "\n"; // (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '') +
+    console.log(msg, ...arguments);
   },
 
   // flags
@@ -227,23 +232,37 @@ FiltaQuilla.Util = {
   // warningFlag    0x1   Warning messages.
   // exceptionFlag  0x2   An exception was thrown for this case - exception-aware hosts can ignore this.
   // strictFlag     0x4
-  logError: function logError(aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags) {
+  logError: function logError(
+    aMessage,
+    aSourceName,
+    aSourceLine,
+    aLineNumber,
+    aColumnNumber,
+    aFlags
+  ) {
     const Ci = Components.interfaces,
-					Cc = Components.classes;
-    let aCategory = '',
-        scriptError = Cc["@mozilla.org/scripterror;1"].createInstance(Ci.nsIScriptError);
-    scriptError.init(aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory);
+      Cc = Components.classes;
+    let aCategory = "",
+      scriptError = Cc["@mozilla.org/scripterror;1"].createInstance(Ci.nsIScriptError);
+    scriptError.init(
+      aMessage,
+      aSourceName,
+      aSourceLine,
+      aLineNumber,
+      aColumnNumber,
+      aFlags,
+      aCategory
+    );
     Services.console.logMessage(scriptError);
-  } ,
+  },
 
   logException: function logException(aMessage, ex) {
-    let stack = '';
-    if (typeof ex.stack!='undefined')
-      stack= ex.stack.replace("@","\n  ");
+    let stack = "";
+    if (typeof ex.stack != "undefined") stack = ex.stack.replace("@", "\n  ");
 
     let srcName = ex.fileName ? ex.fileName : "";
     this.logError(aMessage + "\n" + ex.message, srcName, stack, ex.lineNumber, 0, 0x1); // use warning flag, as this is an exception we caught ourselves
-  } ,
+  },
 
   logDebug: function logDebug(msg) {
     if (this.isDebug) {
@@ -251,138 +270,140 @@ FiltaQuilla.Util = {
     }
   },
 
-	logHighlightDebug: function(txt, color="white", background="rgb(80,0,0)", ...args) {
-		if (this.isDebug) {
-			console.log(`FiltaQuilla\n %c${txt}`, `color:${color};background:${background}`, ...args);
-		}
-	},  
+  logHighlightDebug: function (txt, color = "white", background = "rgb(80,0,0)", ...args) {
+    if (this.isDebug) {
+      console.log(`FiltaQuilla\n %c${txt}`, `color:${color};background:${background}`, ...args);
+    }
+  },
 
   isDebug: function isDebug() {
-		return this.prefs.getBoolPref("debug");
+    return this.prefs.getBoolPref("debug");
   },
 
-	isDebugOption: function isDebugOption(o) {
-		if(!this.isDebug) return false;
-		try {return this.prefs.getBoolPref("debug." + o);}
-		catch(e) {return false;}
-	},
-
+  isDebugOption: function isDebugOption(o) {
+    if (!this.isDebug) return false;
+    try {
+      return this.prefs.getBoolPref("debug." + o);
+    } catch (e) {
+      return false;
+    }
+  },
 
   logWithOption: function logWithOption(a) {
-    arguments[0] =  "FiltaQuilla "
-      +  '{' + arguments[0].toUpperCase() + '} ' 
-      + QuickFolders.Util.logTime() + "\n";
+    arguments[0] =
+      "FiltaQuilla " + "{" + arguments[0].toUpperCase() + "} " + QuickFolders.Util.logTime() + "\n";
     console.log(...arguments);
   },
-  
+
   /**
-	* only logs if debug mode is set and specific debug option are active
-	*
-	* @optionString {string}: comma delimited options
-  * @msg {string}: text to log
-	*/
+   * only logs if debug mode is set and specific debug option are active
+   *
+   * @optionString {string}: comma delimited options
+   * @msg {string}: text to log
+   */
   logDebugOptional: function logDebugOptional(optionString, msg) {
-		try {
-			let options = optionString.split(',');
-			for (let i=0; i<options.length; i++) {
-				let option = options[i];
-				if (this.isDebugOption(option)) {
-					this.logWithOption(option, msg);
-					break; // only log once, in case multiple log switches are on
-				}
-			}
-		}
-		catch(ex) {}
+    try {
+      let options = optionString.split(",");
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        if (this.isDebugOption(option)) {
+          this.logWithOption(option, msg);
+          break; // only log once, in case multiple log switches are on
+        }
+      }
+    } catch (ex) {}
   },
 
-  toggleBoolPreference: function(cb, noUpdate) {
+  toggleBoolPreference: function (cb, noUpdate) {
     const Ci = Components.interfaces,
-					Cc = Components.classes;
+      Cc = Components.classes;
     let prefString = cb.getAttribute("preference");
     let pref = document.getElementById(prefString);
 
     if (pref) {
-			Services.prefs.setBoolPref(pref.getAttribute('name'), cb.checked);
+      Services.prefs.setBoolPref(pref.getAttribute("name"), cb.checked);
     }
     if (noUpdate) return true;
     return false; // this.updateMainWindow();
   },
 
-  showAboutConfig: function(clickedElement, filter, readOnly) {
+  showAboutConfig: function (clickedElement, filter, readOnly) {
     const name = "Preferences:ConfigManager";
-          
+
     let mediator = Services.wm,
-        isTbModern = FiltaQuilla.Util.versionGreaterOrEqual(FiltaQuilla.Util.AppverFull, "85"),
-        uri = (isTbModern) ? "about:config": "chrome://global/content/config.xhtml?debug";
+      isTbModern = FiltaQuilla.Util.versionGreaterOrEqual(FiltaQuilla.Util.AppverFull, "85"),
+      uri = isTbModern ? "about:config" : "chrome://global/content/config.xhtml?debug";
 
     let w = mediator.getMostRecentWindow(name),
-        win = clickedElement ?
-		          (clickedElement.ownerDocument.defaultView ? clickedElement.ownerDocument.defaultView : window)
-							: window;
+      win = clickedElement
+        ? clickedElement.ownerDocument.defaultView
+          ? clickedElement.ownerDocument.defaultView
+          : window
+        : window;
     if (!w) {
       let watcher = Services.ww;
-      w = watcher.openWindow(win, uri, name, "dependent,chrome,resizable,centerscreen,alwaysRaised,width=750px,height=450px", null);
+      w = watcher.openWindow(
+        win,
+        uri,
+        name,
+        "dependent,chrome,resizable,centerscreen,alwaysRaised,width=750px,height=450px",
+        null
+      );
     }
     w.focus();
-    w.addEventListener('load',
-      function () {
-        let id = (isTbModern) ? "about-config-search" : "textbox",
-            flt = w.document.getElementById(id);
-        if (flt) {
-          flt.value=filter;
-          // make filter box readonly to prevent damage!
-          if (!readOnly)
-            flt.focus();
-          else
-            flt.setAttribute('readonly',true);
-          if (w.self.FilterPrefs) {
-            w.self.FilterPrefs();
-          }
+    w.addEventListener("load", function () {
+      let id = isTbModern ? "about-config-search" : "textbox",
+        flt = w.document.getElementById(id);
+      if (flt) {
+        flt.value = filter;
+        // make filter box readonly to prevent damage!
+        if (!readOnly) flt.focus();
+        else flt.setAttribute("readonly", true);
+        if (w.self.FilterPrefs) {
+          w.self.FilterPrefs();
         }
-      });
+      }
+    });
   },
 
-	// Tb 66 compatibility.
-	loadPreferences: function fq_loadPreferences() {
-		if (typeof Preferences == 'undefined') {
-			FiltaQuilla.Util.logDebug("Skipping loadPreferences - Preferences object not defined");
-			return; // older versions of Thunderbird do not need this.
-		}
-		let myprefs = document.getElementsByTagName("preference");
-		if (myprefs.length) {
-			let prefArray = [];
-			for (let i=0; i<myprefs.length; i++) {
-				let it = myprefs.item(i),
-				    p = { id: it.id, name: it.getAttribute('name'), type: it.getAttribute('type') };
-				if (it.getAttribute('instantApply') == "true") p.instantApply = true;
-				prefArray.push(p);
-			}
-			if (Preferences)
-				Preferences.addAll(prefArray);
-		}
-	},
-  
+  // Tb 66 compatibility.
+  loadPreferences: function fq_loadPreferences() {
+    if (typeof Preferences == "undefined") {
+      FiltaQuilla.Util.logDebug("Skipping loadPreferences - Preferences object not defined");
+      return; // older versions of Thunderbird do not need this.
+    }
+    let myprefs = document.getElementsByTagName("preference");
+    if (myprefs.length) {
+      let prefArray = [];
+      for (let i = 0; i < myprefs.length; i++) {
+        let it = myprefs.item(i),
+          p = { id: it.id, name: it.getAttribute("name"), type: it.getAttribute("type") };
+        if (it.getAttribute("instantApply") == "true") p.instantApply = true;
+        prefArray.push(p);
+      }
+      if (Preferences) Preferences.addAll(prefArray);
+    }
+  },
+
   // l10n
-  getBundleString: function getBundleString(id, defaultText, substitions = []) { 
+  getBundleString: function getBundleString(id, defaultText, substitions = []) {
     var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     let localized = extension.localeData.localizeMessage(id, substitions);
-    
+
     let s = "";
     if (localized) {
       s = localized;
-    }
-    else {
+    } else {
       s = defaultText;
-      this.logToConsole ("Could not retrieve bundle string: " + id + "");
+      this.logToConsole("Could not retrieve bundle string: " + id + "");
     }
-		return s;
-	} ,
-  
-  localize: function(window, buttons = null) {
-    var Services = globalThis.Services || ChromeUtils.import(
-      "resource://gre/modules/Services.jsm"
-    ).Services;
+    return s;
+  },
+
+  localize: function (window, buttons = null) {
+    var Services =
+      globalThis.Services || ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
     var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     Services.scriptloader.loadSubScript(
@@ -390,58 +411,59 @@ FiltaQuilla.Util = {
       window,
       "UTF-8"
     );
-    window.i18n.updateDocument({extension: extension});
+    window.i18n.updateDocument({ extension: extension });
     if (buttons) {
       for (let [name, label] of Object.entries(buttons)) {
-        window.document.documentElement.getButton(name).label =  extension.localeData.localizeMessage(label); // apply
+        window.document.documentElement.getButton(name).label =
+          extension.localeData.localizeMessage(label); // apply
       }
     }
-  } ,
+  },
 
-	get Version() {
-		// returns the current FiltaQuilla (full) version number.
+  get Version() {
+    // returns the current FiltaQuilla (full) version number.
     if (FiltaQuilla.Util.addonInfo) {
       return FiltaQuilla.Util.addonInfo.version;
     }
-		let current = FiltaQuilla.Util.HARDCODED_CURRENTVERSION + FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN;
-		return current;
+    let current =
+      FiltaQuilla.Util.HARDCODED_CURRENTVERSION + FiltaQuilla.Util.HARDCODED_EXTENSION_TOKEN;
+    return current;
+  },
 
-	} ,
+  get VersionSanitized() {
+    function strip(version, token) {
+      let cutOff = version.indexOf(token);
+      if (cutOff > 0) {
+        // make sure to strip of any pre release labels
+        return version.substring(0, cutOff);
+      }
+      return version;
+    }
 
-	get VersionSanitized() {
-		function strip(version, token) {
-			let cutOff = version.indexOf(token);
-			if (cutOff > 0) { 	// make sure to strip of any pre release labels
-				return version.substring(0, cutOff);
-			}
-			return version;
-		}
+    let pureVersion = strip(FiltaQuilla.Util.Version, "pre");
+    pureVersion = strip(pureVersion, "beta");
+    pureVersion = strip(pureVersion, "alpha");
+    return strip(pureVersion, ".hc");
+  },
 
-		let pureVersion = strip(FiltaQuilla.Util.Version, 'pre');
-		pureVersion = strip(pureVersion, 'beta');
-		pureVersion = strip(pureVersion, 'alpha');
-		return strip(pureVersion, '.hc');
-	},
-  
-	versionGreaterOrEqual: function(a, b) {
-		return (Services.vc.compare(a, b) >= 0);
-	} ,
+  versionGreaterOrEqual: function (a, b) {
+    return Services.vc.compare(a, b) >= 0;
+  },
 
-	versionSmaller: function(a, b) {
-		return (Services.vc.compare(a, b) < 0);
-	} ,	
-
+  versionSmaller: function (a, b) {
+    return Services.vc.compare(a, b) < 0;
+  },
 
   // from https://searchfox.org/comm-esr115/rev/27d796e03ef54fe526996bd063d7c3748b7c2d62/mailnews/test/resources/MailTestUtils.jsm#75
-  loadMessageToString: function(aFolder, aMsgHdr, aCharset) {
+  loadMessageToString: function (aFolder, aMsgHdr, aCharset) {
     var data = "";
     let reusable = {};
     let bytesLeft = aMsgHdr.messageSize;
     let stream = aFolder.getMsgInputStream(aMsgHdr, reusable);
     if (aCharset) {
-      let cstream = Cc[
-        "@mozilla.org/intl/converter-input-stream;1"
-      ].createInstance(Ci.nsIConverterInputStream);
+      let cstream = Cc["@mozilla.org/intl/converter-input-stream;1"].createInstance(
+        Ci.nsIConverterInputStream
+      );
       cstream.init(stream, aCharset, 4096, 0x0000);
       let str = {};
       let bytesToRead = Math.min(bytesLeft, 4096);
@@ -480,191 +502,187 @@ FiltaQuilla.Util = {
     return data;
   },
 
-  
-  bodyMimeMatch: function(aMsgHdr, searchValue, searchFlags) {
-    let msgBody,
-      BodyParts = [], // if we need multiple bodys (e.g. plain text + html mixed)
-      r = false,
-      reg,
-      isTested = false,
+  stripQuotes: function (val) {
+    if (!isNaN(val)) {
+      return val;
+    }
+    if (val.startsWith("'")) {
+      return val.substring(1, val.lastIndexOf("'"));
+    }
+    if (val.startsWith('"')) {
+      return val.substring(1, val.lastIndexOf('"'));
+    }
+    return val.trim();
+  },
+
+  // Helper function to get content type and attributes
+  getContentAttributes: function (line) {
+    const conData = line.split(":")[1];
+    if (!conData) {
+      return ["?", {}]; // no attributes found
+    }
+    const attributes = {};
+    const contArray = conData.trim().split(";");
+    for (let i = 1; i < contArray.length; i++) {
+      let keyval = contArray[i].split("=");
+      if (keyval.length > 1) {
+        attributes[keyval[0].trim()] = FiltaQuilla.Util.stripQuotes(keyval[1]); // attribute = value
+      }
+    }
+
+    return [contArray[0].trim(), attributes];
+  },
+
+  // Main function to split MIME parts
+  splitBodyParts: function (raw) {
+    if (!raw) return [];
+
+    const bodies = []; // Array of objects containing each type + raw MIME part.
+    const xxlines = raw
+      .replaceAll("\r\n", "\n")
+      .replaceAll(/(Content-.*:.*;)(\n)(.*=.*)/g, "$1$3")
+      .split("\n")
+      .filter((line) => line.trim() !== "");
+    // remove empty elements (if email starts with line breaks)
+    while (!xxlines[0] && xxlines.length) {
+      xxlines.splice(0, 1);
+    }
+
+    if (!xxlines.length) return [];
+    if (xxlines[0].startsWith("This is an OpenPGP/MIME signed message")) {
+    } else if (
+      !xxlines[0].startsWith("This is a multi-part message") &&
+      !xxlines[0].startsWith("--")
+    ) {
+      FiltaQuilla.Util.logDebugOptional("mimeBody", "not a multipart message:" + subject);
+      return [{ contentType: "?", body: raw }];
+    }
+
+    // Regex to identify boundaries
+    const boundaryRegex = /--+[_\=\.A-Za-z0-9]+$/;
+    let part = "",
+      contentType = "",
+      contentEncoding = "",
+      contentAttributes = {},
+      isAttachment = false;
+
+    // Helper to reset part attributes
+    const resetPartAttributes = () => {
+      part = "";
+      contentEncoding = "";
+      contentType = "";
+      contentAttributes = {};
+      isAttachment = false;
+    };
+
+    // Helper to push a complete part
+    const pushPart = () => {
+      if (part && !part.startsWith("This is a multi-part message")) {
+        bodies.push({
+          contentType: contentType || "?",
+          encoding: contentEncoding,
+          contentAttributes,
+          isAttachment,
+          body: part.trim(),
+        });
+      }
+    };
+
+    let isBoundaryLine = false;
+
+    for (let l = 0; l < xxlines.length; l++) {
+      const line = xxlines[l].trim();
+      // Boundary check
+      if (boundaryRegex.test(line)) {
+        pushPart(); // Push the current part before starting a new one
+        resetPartAttributes();
+        continue;
+      }
+
+      // Content-Type header
+      if (line.startsWith("Content-Type:")) {
+        [contentType, contentAttributes] = FiltaQuilla.Util.getContentAttributes(line);
+        continue;
+      }
+
+      if (line.startsWith("Content-Transfer-Encoding:")) {
+        contentEncoding = line.split(":")[1]?.trim();
+        continue;
+      }
+
+      // Content-Disposition header
+      if (line.startsWith("Content-Disposition")) {
+        const [cDis, cAtt] = FiltaQuilla.Util.getContentAttributes(
+          line + (xxlines[l + 1]?.startsWith("\t") ? xxlines[++l] : "")
+        );
+        contentAttributes.contentDisposition = cDis.toLowerCase();
+        if (cAtt.filename) contentAttributes.fileName = cAtt.filename;
+        isAttachment = contentAttributes.contentDisposition === "attachment";
+        continue;
+      }
+
+      // Skip unwanted types (e.g., images, vCard)
+      if (contentType.startsWith("image/") || contentType.startsWith("text/vcard")) {
+        continue;
+      }
+
+      // Accumulate the part content
+      part += (part ? "\n" : "") + line; // Add newline for the part body
+    }
+
+    // Push the last part if it exists
+    pushPart();
+
+    return bodies;
+  },
+
+  // Helper to check whether source has quoted printable attribute
+  isQuotedPrintable: function (raw) {
+    if (!raw) {
+      return false;
+    }
+    let cte; // line beginning "content transfer encoding"
+    if (typeof raw == "object") {
+      if (raw?.encoding == "Content-Transfer-Encoding") {
+        return true;
+      }
+      return false;
+    }
+    const xxlines = raw.split("\n");
+    if (!xxlines) return false;
+    if (!xxlines.length) return false;
+
+    cte = xxlines.find((l) => l.startsWith("Content-Transfer-Encoding"));
+    if (!cte) return false;
+    const vals = cte.split(":");
+    if (vals.length < 2) return false;
+    const contentType = vals[1].trim();
+    var result = contentType == "quoted-printable";
+    FiltaQuilla.Util.logDebug(
+      `subject=${subject}\n` +
+        `content type from raw message: ${contentType}\n` +
+        `isQuotedPrintable=${result}`
+    );
+    return result;
+  },
+
+  // reflow decoded printabl
+  decodeQuotedPrintable: function (cleanedInput) {
+    // Step 1: Remove soft line breaks (=`\n` or `=` at the end of lines)
+    // let cleanedInput = input.replace(/=\r?\n/g, "");
+
+    // Step 2: Decode quoted-printable characters
+    let decoded = cleanedInput.replace(/=([A-Fa-f0-9]{2})/g, (match, hex) => {
+      return String.fromCharCode(parseInt(hex, 16));
+    });
+
+    return decoded;
+  },
+
+  bodyMimeMatch: function (aMsgHdr, searchValue, searchFlags) {
+    let reg,
       folder = aMsgHdr.folder,
       subject = aMsgHdr.subject;
-
-    function isQuotedPrintable(raw) {
-      if (!raw) {
-        return false;
-      }
-      let cte; // line beginning "content transfer encoding"
-      if (typeof raw == "object") {
-        if (raw?.encoding == "Content-Transfer-Encoding") {
-          return true;
-        }
-        return false;
-      }
-      const xxlines = raw.split("\n");
-      if (!xxlines) return false;
-      if (!xxlines.length) return false;
-
-      cte = xxlines.find((l) => l.startsWith("Content-Transfer-Encoding"));
-      if (!cte) return false;
-      const vals = cte.split(":");
-      if (vals.length < 2) return false;
-      const contentType = vals[1].trim();
-      var result = contentType == "quoted-printable";
-      FiltaQuilla.Util.logDebug(
-        `subject=${subject}\n` +
-          `content type from raw message: ${contentType}\n` +
-          `isQuotedPrintable=${result}`
-      );
-      return result;
-    }
-
-    function decodeQuotedPrintable(cleanedInput) {
-      // Step 1: Remove soft line breaks (=`\n` or `=` at the end of lines)
-      // let cleanedInput = input.replace(/=\r?\n/g, "");
-
-      // Step 2: Decode quoted-printable characters
-      let decoded = cleanedInput.replace(/=([A-Fa-f0-9]{2})/g, (match, hex) => {
-        return String.fromCharCode(parseInt(hex, 16));
-      });
-
-      return decoded;
-    }
-
-    function stripQuotes(val) {
-      if (!isNaN(val)) {
-        return val;
-      }
-      if (val.startsWith("'")) {
-        return val.substring(1, val.lastIndexOf("'"));
-      }
-      if (val.startsWith('"')) {
-        return val.substring(1, val.lastIndexOf('"'));
-      }
-      return val.trim();
-    }
-
-    // Helper function to get content type and attributes
-    function getContentAttributes(line) {
-      const conData = line.split(":")[1];
-      if (!conData) {
-        return ["?", {}]; // no attributes found
-      }
-      const attributes = {};
-      const contArray = conData.trim().split(";");
-      for (let i = 1; i < contArray.length; i++) {
-        let keyval = contArray[i].split("=");
-        if (keyval.length > 1) {
-          attributes[keyval[0].trim()] = stripQuotes(keyval[1]); // attribute = value
-        }
-      }
-
-      return [contArray[0].trim(), attributes];
-    }
-
-    // Main function to split MIME parts
-    function splitBodyParts(raw) {
-      if (!raw) return [];
-
-      const bodies = []; // Array of objects containing each type + raw MIME part.
-      const xxlines = raw
-        .replaceAll("\r\n", "\n")
-        .replaceAll(/(Content-.*:.*;)(\n)(.*=.*)/g, "$1$3")
-        .split("\n")
-        .filter((line) => line.trim() !== "");
-      // remove empty elements (if email starts with line breaks)
-      while (!xxlines[0] && xxlines.length) {
-        xxlines.splice(0, 1);
-      }
-
-      if (!xxlines.length) return [];
-      if (xxlines[0].startsWith("This is an OpenPGP/MIME signed message")) {
-
-      } else if (
-          !xxlines[0].startsWith("This is a multi-part message") &&
-          !xxlines[0].startsWith("--")
-        ) {
-          FiltaQuilla.Util.logDebugOptional("mimeBody", "not a multipart message:" + subject);
-          return [{ contentType: "?", body: raw }];
-        }
-
-      // Regex to identify boundaries
-      const boundaryRegex = /--+[_\=\.A-Za-z0-9]+$/;
-      let part = "",
-        contentType = "",
-        contentEncoding = "",
-        contentAttributes = {},
-        isAttachment = false;
-
-      // Helper to reset part attributes
-      const resetPartAttributes = () => {
-        part = "";
-        contentEncoding = "";
-        contentType = "";
-        contentAttributes = {};
-        isAttachment = false;
-      };
-
-      // Helper to push a complete part
-      const pushPart = () => {
-        if (part && !part.startsWith("This is a multi-part message")) {
-          bodies.push({
-            contentType: contentType || "?",
-            encoding: contentEncoding,
-            contentAttributes,
-            isAttachment,
-            body: part.trim(),
-          });
-        }
-      };
-
-      let isBoundaryLine = false;
-
-      for (let l = 0; l < xxlines.length; l++) {
-        const line = xxlines[l].trim();
-        // Boundary check
-        if (boundaryRegex.test(line)) {
-          pushPart(); // Push the current part before starting a new one
-          resetPartAttributes();
-          continue;
-        }
-
-        // Content-Type header
-        if (line.startsWith("Content-Type:")) {
-          [contentType, contentAttributes] = getContentAttributes(line);
-          continue;
-        }
-
-        if (line.startsWith("Content-Transfer-Encoding:")) {
-          contentEncoding = line.split(":")[1]?.trim();
-          continue;
-        }
-
-        // Content-Disposition header
-        if (line.startsWith("Content-Disposition")) {
-          const [cDis, cAtt] = getContentAttributes(
-            line + (xxlines[l + 1]?.startsWith("\t") ? xxlines[++l] : "")
-          );
-          contentAttributes.contentDisposition = cDis.toLowerCase();
-          if (cAtt.filename) contentAttributes.fileName = cAtt.filename;
-          isAttachment = contentAttributes.contentDisposition === "attachment";
-          continue;
-        }
-
-        // Skip unwanted types (e.g., images, vCard)
-        if (contentType.startsWith("image/") || contentType.startsWith("text/vcard")) {
-          continue;
-        }
-
-        // Accumulate the part content
-        part += (part ? "\n" : "") + line; // Add newline for the part body
-      }
-
-      // Push the last part if it exists
-      pushPart();
-
-      return bodies;
-    }
 
     /*** READ body ***/
     // let hasOffline = folder.hasMsgOffline(aMsgHdr.messageKey);
@@ -697,135 +715,312 @@ FiltaQuilla.Util = {
       return false;
     }
 
-    /** EXTRACT MIME PARTS **/
+    var ExtractMimeMsgEmitter = {
+      getAttachmentName(part) {
+        if (!part || !part.hasOwnProperty("headers")) {
+          return "";
+        }
+
+        if (part.headers.hasOwnProperty("content-disposition")) {
+          let filename = MimeParser.getParameter(
+            part.headers["content-disposition"][0],
+            "filename"
+          );
+          if (filename) {
+            return filename;
+          }
+        }
+
+        if (part.headers.hasOwnProperty("content-type")) {
+          let name = MimeParser.getParameter(part.headers["content-type"][0], "name");
+          if (name) {
+            return name;
+          }
+        }
+
+        return "";
+      },
+
+      // All parts of content-disposition = "attachment" are returned as attachments.
+      // For content-disposition = "inline", all parts except those with content-type
+      // text/plain, text/html and text/enriched are returned as attachments.
+      isAttachment(part) {
+        if (!part) {
+          return false;
+        }
+
+        let contentType = part.contentType || "text/plain";
+        if (contentType.search(/^multipart\//i) === 0) {
+          return false;
+        }
+
+        let contentDisposition = "";
+        if (
+          Array.isArray(part.headers["content-disposition"]) &&
+          part.headers["content-disposition"].length > 0
+        ) {
+          contentDisposition = part.headers["content-disposition"][0];
+        }
+
+        if (
+          contentDisposition.search(/^attachment/i) === 0 ||
+          contentType.search(/^text\/plain|^text\/html|^text\/enriched/i) === -1
+        ) {
+          return true;
+        }
+
+        return false;
+      },
+
+      isBodyPart(part) {
+        if (!part) {
+          return false;
+        }
+
+        let contentType = part.contentType || "text/plain";
+        if (contentType.search(/^multipart\//i) === 0) {
+          return false;
+        }
+
+        if (part.headers["content-disposition"]) {
+          // it's an attachment
+          return false;
+        }
+
+        if (contentType.search(/^text\/plain|^text\/html|^text\/enriched/i) === -1) {
+          return false;
+        }
+
+        return true;
+      },
+
+      /** JSMime API */
+      startMessage() {
+        this.mimeTree = {
+          partName: "",
+          contentType: "message/rfc822",
+          parts: [],
+          size: 0,
+          headers: {},
+          attachments: [],
+          bodyParts: [],
+          // No support for encryption.
+          isEncrypted: false,
+        };
+
+        // partsPath is a hierarchical stack of parts from the root to the
+        // current part.
+        this.partsPath = [this.mimeTree];
+        this.options = this.options || {};
+      },
+
+      endMessage() {
+        // Prepare the mimeMsg object, which is the final output of the emitter.
+        this.mimeMsg = null;
+        if (this.mimeTree.parts.length == 0) {
+          return;
+        }
+
+        // Check if only a specific mime part has been requested.
+        if (this.options.getMimePart) {
+          if (this.mimeTree.parts[0].partName == this.options.getMimePart) {
+            this.mimeMsg = this.mimeTree.parts[0];
+          }
+          return;
+        }
+
+        this.mimeTree.attachments.sort((a, b) => a.partName > b.partName);
+        this.mimeMsg = this.mimeTree;
+      },
+
+      startPart(partNum, headerMap) {
+        let contentType = headerMap.contentType?.type ? headerMap.contentType.type : "text/plain";
+
+        let headers = {};
+        for (let [headerName, headerValue] of headerMap._rawHeaders) {
+          // MsgHdrToMimeMessage always returns an array, even for single values.
+          let valueArray = Array.isArray(headerValue) ? headerValue : [headerValue];
+          // Return a binary string, to mimic MsgHdrToMimeMessage.
+          headers[headerName] = valueArray.map((value) => {
+            return MailStringUtils.stringToByteString(value);
+          });
+        }
+
+        // Get the most recent part from the hierarchical parts stack, which is the
+        // parent of the new part to by added.
+        let parentPart = this.partsPath[this.partsPath.length - 1];
+
+        // Add a leading 1 to the partNum and convert the "$" sub-message deliminator.
+        let partName = "1" + (partNum ? "." : "") + partNum.replaceAll("$", ".1");
+
+        // MsgHdrToMimeMessage differentiates between the message headers and the
+        // headers of the first part. jsmime.js however returns all headers of
+        // the message in the first multipart/* part: Merge all headers into the
+        // parent part and only keep content-* headers.
+        if (parentPart.contentType.startsWith("message/")) {
+          for (let [k, v] of Object.entries(headers)) {
+            if (!parentPart.headers[k]) {
+              parentPart.headers[k] = v;
+            }
+          }
+          headers = Object.fromEntries(
+            Object.entries(headers).filter((h) => h[0].startsWith("content-"))
+          );
+        }
+
+        // Add default content-type header.
+        if (!headers.hasOwnProperty("content-type")) {
+          headers["content-type"] = ["text/plain"];
+        }
+
+        let newPart = {
+          partName,
+          body: "",
+          headers,
+          contentType,
+          size: 0,
+          parts: [],
+          // No support for encryption.
+          isEncrypted: false,
+        };
+
+        // Add nested new part.
+        parentPart.parts.push(newPart);
+        // Push the newly added part into the hierarchical parts stack.
+        this.partsPath.push(newPart);
+      },
+
+      endPart(partNum) {
+        let deleteBody = false;
+        // Get the most recent part from the hierarchical parts stack.
+        let currentPart = this.partsPath[this.partsPath.length - 1];
+
+        // Add size.
+        let size = currentPart.body.length;
+        currentPart.size += size;
+        let partSize = currentPart.size;
+
+        if (this.isAttachment(currentPart)) {
+          currentPart.name = this.getAttachmentName(currentPart);
+          this.mimeTree.attachments.push({ ...currentPart });
+          deleteBody = !this.options.getMimePart;
+        }
+
+        if (this.isBodyPart(currentPart)) {
+          // create a flat list of part objects for top leve access
+          this.mimeTree.bodyParts.push({ ...currentPart });
+        }
+
+        if (deleteBody || currentPart.body == "") {
+          delete currentPart.body;
+        }
+
+        // Remove content-disposition and content-transfer-encoding headers.
+        currentPart.headers = Object.fromEntries(
+          Object.entries(currentPart.headers).filter(
+            (h) => !["content-disposition", "content-transfer-encoding"].includes(h[0])
+          )
+        );
+
+        // Set the parent of this part to be the new current part.
+        this.partsPath.pop();
+
+        // Add the size of this part to its parent as well.
+        currentPart = this.partsPath[this.partsPath.length - 1];
+        currentPart.size += partSize;
+      },
+
+      /**
+       * The data parameter is either a string or a Uint8Array.
+       */
+      deliverPartData(partNum, data) {
+        // Get the most recent part from the hierarchical parts stack.
+        let currentPart = this.partsPath[this.partsPath.length - 1];
+
+        if (typeof data === "string") {
+          currentPart.body += data;
+        } else {
+          currentPart.body += MailStringUtils.uint8ArrayToByteString(data);
+        }
+      },
+    };
+
+    function extractMimeMsg(input, options) {
+      let emitter = Object.create(ExtractMimeMsgEmitter);
+
+      // Set default options and merge with any provided options
+      emitter.options = {
+        getMimePart: "",
+        decodeSubMessages: true,
+        ...options, // adds the enumerated options object members
+      };
+
+      MimeParser.parseSync(input, emitter, {
+        // jsmime does not use the "1." prefix for the partName.
+        // jsmime uses "$." as sub-message deliminator.
+        pruneat: emitter.options.getMimePart.split(".").slice(1).join(".").replaceAll(".1.", "$."),
+        decodeSubMessages: emitter.options.decodeSubMessages,
+        bodyformat: "decode",
+        stripcontinuations: true,
+        strformat: "unicode",
+      });
+      // we need to implement emitter.mimeTree and startMessage() + endMessage()? See
+      // https://searchfox.org/comm-esr115/source/mailnews/mime/src/mimeParser.jsm#75
+      return emitter.mimeMsg;
+    }
+
+    // new code, using my own emitter.
+    let mimeMsg = extractMimeMsg(data, {
+      includeAttachments: false, // ,getMimePart: partName
+    });
+    /* old code from 115
     if (MimeParser.extractMimeMsg) {
       // Tb 91 - 115
-      let mimeMsg = MimeParser.extractMimeMsg(data, {
+      mimeMsg = MimeParser.extractMimeMsg(data, {
         includeAttachments: false, // ,getMimePart: partName
       });
+    } else {  // Tb 128 + later
+     */
+
+    reg = RegExp(searchValue, searchFlags);
+
+    /** EXTRACT MIME PARTS **/
+    if (mimeMsg) {
+      let detectResults = "";
+      // MimeParser.extractMimeMsg
+      for (let bp of mimeMsg.bodyParts) {
+        let p = bp.body;
+
+        let found = reg.test(p);
+        if (found) {
+          detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${bp.contentType}\n`;
+
+          if (FiltaQuilla.Util.isDebug && 
+            FiltaQuilla.Util.isDebugOption("regexBody")) {
+              let firstMatch = p.match(reg)[0];
+              detectResults += `\nFirst match: ${firstMatch}`;
+            }
+          FiltaQuilla.Util.logDebug(`Searched Message "${subject}"`, detectResults);
+          return true;
+        }
+      }
+      FiltaQuilla.Util.logDebug(
+        `Searched Message "${subject}"\n`,
+        `Regex pattern ${searchValue} not found.`);
+      return false;
+      // return ;
+
+      /*
+      // Tb 91 - 115
+
       if (!mimeMsg.parts || !mimeMsg.parts.length) {
         isTested = true;
         msgBody = "";
-      } else {
-        if (mimeMsg.body && mimeMsg.contentType && mimeMsg.contentType.startsWith("text")) {
-          // just in case this exists too
-          BodyParts.push({
-            body: mimeMsg.body,
-            contentType: mimeMsg.contentType || "?",
-            contentAttributes: {},
-          });
-        } else if (mimeMsg.parts && mimeMsg.parts.length) {
-          let origPart = mimeMsg.parts[0];
-          if (
-            origPart.body &&
-            origPart.contentType &&
-            ("" + origPart.contentType).startsWith("text")
-          ) {
-            msgBody = origPart.body;
-            FiltaQuilla.Util.logDebugOptional("mimeBody", "found body element in parts[0]");
-            BodyParts.push({
-              body: msgBody,
-              contentType: origPart.contentType || "?",
-              contentAttributes: {},
-            });
-            BodyParts.push(msgBody);
-          }
-          if (origPart.parts) {
-            for (let p = 0; p < origPart.parts.length; p++) {
-              let o = origPart.parts[p];
-              if (o.body && o.contentType && o.contentType.startsWith("text")) {
-                FiltaQuilla.Util.logDebugOptional(
-                  "mimeBody",
-                  "found body element in parts[0].parts[" + p + "]",
-                  o
-                );
-                BodyParts.push({
-                  body: o.body,
-                  contentType: o.contentType || "?",
-                  contentAttributes: {},
-                });
-              }
-            }
-          }
-        }
-        if (!BodyParts.length) {
-          isTested = true; // no regex, as it failed.
-          FiltaQuilla.Util.logDebug("bodyMimeMatch() : No BodyParts could be extracted.");
-        }
       }
-    } else {
-      // Tb 128
-      let [headers, body] = MimeParser.extractHeadersAndBody(data); // headers._rawHeaders?.forEach(e => console.log(e));
-      FiltaQuilla.Util.logDebugOptional(
-        "mimeBody",
-        "Have to use MimeParser.extractHeadersAndBody() which gets raw data (can be both html and plain text)"
-      );
-
-      let newPartArray = splitBodyParts(body);
-      FiltaQuilla.Util.logDebug("Split body:", newPartArray);
-      for (let p of newPartArray) {
-        BodyParts.push(p);
-      }
+        */
     }
 
-    let detectResults = "";
-    if (!isTested && BodyParts.length && searchValue) {
-      reg = RegExp(searchValue, searchFlags);
-      if (BodyParts.length > 0) {
-        for (let i = 0; i < BodyParts.length; i++) {
-          let p = BodyParts[i].body;
-          FiltaQuilla.Util.logDebugOptional(
-            "mimeBody",
-            "testing part [" + i + "] ct = ",
-            BodyParts[i].contentType
-          );
-          if (BodyParts[i].isAttachment) {
-            FiltaQuilla.Util.logDebugOptional(
-              "mimeBody",
-              `Skipping attachment: ${p.substring(0, 50)}...`
-            );
-            continue;
-          }
-          // parse Message and decide if its encoded as quotedPrintable
-          if (isQuotedPrintable(p)) {
-            p = unescape(p.replace(/%/g, "=25").replace(new RegExp("=", "g"), "%")).replace(
-              /%\n?\s?\n?/g,
-              ""
-            ); //  reflow line breaks
-          }
-          // if it is html, strip out as much as possible:
-          // p = p;
-          if (
-            BodyParts[i].contentType.startsWith("text/html") ||
-            p.toLowerCase().includes("<html")
-          ) {
-            // remove html the dirty way
-            p = p
-              .replace(/(<style[\w\W]+style>)/g, "")
-              .replaceAll("<br>", " ")
-              .replace(/<\/[^>]+>/g, " ")
-              .replace(/<[^>]+>/g, "")
-              .replace(/(\r\n|\r|\n){2,}/g, " ")
-              .replace(/(\t){2,}/g, "");
-
-            p = decodeQuotedPrintable(p);
-          }
-          let found = reg.test(p);
-          if (found) {
-            let ct = p.contentType || "unknown";
-            detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${BodyParts[i].contentType}\n`;
-            FiltaQuilla.Util.logDebug();
-            r = true;
-            msgBody = p;
-            break;
-          }
-        }
-      } else {
-        FiltaQuilla.Util.logDebugOptional("mimeBody", "No parts found.");
-        r = false;
-      }
-    }
-
+    /*
     if (r === true && FiltaQuilla.Util.isDebug) {
       let count = 0,
         txtResults = "",
@@ -843,20 +1038,21 @@ FiltaQuilla.Util = {
         );
       }
     }
-    return r;
+    */
+    FiltaQuilla.Util.logDebug("mime parser retrieved no data!");
+    return false;
   },
 
-	getFileInitArg: function(win) {
+  getFileInitArg: function (win) {
     // [issue 265]
-		// [bug 1882701] nsIFilePicker.init() first parameter changed from Tb125
-		if (!win) return null;
-		if (this.versionGreaterOrEqual(this.AppverFull, "125")) {    
-			return win.browsingContext;
-		}
-		return win;
-	}
-
-} // Util
+    // [bug 1882701] nsIFilePicker.init() first parameter changed from Tb125
+    if (!win) return null;
+    if (this.versionGreaterOrEqual(this.AppverFull, "125")) {
+      return win.browsingContext;
+    }
+    return win;
+  },
+}; // Util
 
 // some scoping for globals
 //(function fq_firstRun()
