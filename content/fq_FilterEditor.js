@@ -601,6 +601,99 @@
 // ***********  CONDITIONS  ***********
 
     
+  function patchFiltaQuillaBodyRegex(es) {
+    if (es.firstChild && es.firstChild.classList.contains("fq-regexbody")) return true;
+    if (es.firstChild) es.removeChild(es.firstChild);
+
+    try {
+      es.onCommand = function () {
+        let textbox = es.children[1]; // document.getAnonymousNodes(es)[1];
+        // open a panel with options
+        // alert("to do: popup options menu");
+        const button = es.querySelector(".fq-regexbody"),
+          buttonRect = button.getBoundingClientRect();
+        /*
+        window.openDialog(
+          "chrome://filtaquilla/content/jsEditor.xhtml",
+          "",
+          "chrome,dialog,centerscreen,modal,resizable=yes",
+          textbox
+        );
+        */
+        let popupPanel = MozXULElement.parseXULToFragment(`
+            <div class="fq_bodyRegexOptions" style="background:white;color:black;position:fixed;border: 1px solid gray;box-shadow: 3px 3px 3px rgba(40,40,40,0.3);">
+              <vbox>
+                <hbox>
+                  <vbox>
+                    <checkbox label="strip html tags" /><br/>
+                    <checkbox label="strip style tags" /><br/>
+                    <checkbox label="ignore html quotes" /><br/>
+                    <checkbox label="collapse whitespace" /><br/>
+                  </vbox>
+                  <vbox>
+                    <label value="Restrictions:" />
+                    <checkbox label="parse plain text part" /><br/>
+                    <checkbox label="parse html part" /><br/>
+                  </vbox>
+                </hbox>
+                <hr />
+                <hbox style="text-align:right;">
+                  <button label="accept" id="fq_body_accept"/> <button label="close" id="fq_body_close"/>
+                </hbox>
+              </vbox>
+            </div>
+            `);
+
+        const dlg = document.querySelector("dialog");
+        dlg.appendChild(popupPanel);
+
+        let popupElement = dlg.querySelector(".fq_bodyRegexOptions");
+
+
+
+        document.getElementById("fq_body_close").addEventListener("click", () => {
+          popupElement.parentElement.removeChild(popupElement);
+        });
+        document.getElementById("fq_body_accept").addEventListener("click", () => {
+          popupElement.parentElement.removeChild(popupElement);
+        });
+        // open popup
+        // Set the position of the fixed element to align below the button
+        popupElement.style.position = "fixed";
+        popupElement.style.top = `${buttonRect.bottom}px`; // Position it below the button
+        popupElement.style.left = `${buttonRect.left}px`; // Align with the left side of the button
+      };
+
+      es.textContent = "";
+      es.appendChild(
+        MozXULElement.parseXULToFragment(`
+        <toolbarbutton image="resource://filtaquilla-skin/settings.svg" class="focusbutton fq-regexbody"></toolbarbutton>
+        <html:input flex="1" class="search-value-textbox flexinput" inherits="disabled" newlines="pasteintact" 
+         onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;"></html:input>
+      `)
+      );
+
+      // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
+
+      let hbox = es, // es.parentNode.getElementsByTagName("hbox")[0], // document.getAnonymousNodes(this)[0];
+        textbox = hbox.children[1], // document.getAnonymousNodes(es)[1];
+        toolbarbutton = hbox.children[0]; // document.getAnonymousNodes(es)[0];
+      textbox.value = es.getAttribute("value");
+      toolbarbutton.addEventListener("command", es.onCommand, false);
+      toolbarbutton.setAttribute(
+        "tooltiptext",
+        // util.getBundleString("filtaquilla.editJavascript", "Edit JavaScript…")
+        "Search Options…"
+      );
+      hbox.classList.add("flexelementcontainer");
+      return true;
+    } catch (ex) {
+      console.log(ex);
+      return false;
+    }    
+
+  }
+
   function patchFiltaQuillaJavaScriptCondition(es) {
     // bindings.xml#javascript: inject a JS editor. Script returns true or false
     // add a class fq-js to the container element!
@@ -766,25 +859,28 @@
               
               util.logDebug("Mutation observer (childList), check for patching: " + es);
               
-              switch(attType) {
-                case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
-                case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+              switch (attType) {
+                case "filtaquilla@mesquilla.com#subjectRegex": // fall-through
+                case "filtaquilla@mesquilla.com#attachmentRegex": // fall-through
                 case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
-                case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
-                case "filtaquilla@mesquilla.com#bodyRegex":        // fall-through
-                case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
-                case "filtaquilla@mesquilla.com#folderName" :      
+                case "filtaquilla@mesquilla.com#headerRegex": // fall-through
+                // case "filtaquilla@mesquilla.com#bodyRegex": // fall-through
+                case "filtaquilla@mesquilla.com#searchBcc": // fall-through
+                case "filtaquilla@mesquilla.com#folderName":
                   isPatched = patchFiltaQuillaTextbox(es);
                   break;
-                case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
+                case "filtaquilla@mesquilla.com#threadheadtag": // fall-through
                 case "filtaquilla@mesquilla.com#threadanytag":
                   isPatched = patchFiltaQuillaTagSelector(es);
                   break;
                 case "filtaquilla@mesquilla.com#javascript":
                   isPatched = patchFiltaQuillaJavaScriptCondition(es);
                   break;
+                case "filtaquilla@mesquilla.com#bodyRegex":
+                  isPatched = patchFiltaQuillaBodyRegex(es);
+                  break;
                 default:
-                  // irrelevant for FiltaQuilla
+                // irrelevant for FiltaQuilla
               }
               if (isPatched) {
                 console.log("mutation observer patched: " + es);
@@ -806,21 +902,21 @@
               util.logDebug("Mutation observer (attribute), check for patching: " + es);
               // console.log(es);
               
-              switch(attType) {
-                case "filtaquilla@mesquilla.com#subjectRegex":     // fall-through
-                case "filtaquilla@mesquilla.com#attachmentRegex":  // fall-through
+              switch (attType) {
+                case "filtaquilla@mesquilla.com#subjectRegex": // fall-through
+                case "filtaquilla@mesquilla.com#attachmentRegex": // fall-through
                 case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
-                case "filtaquilla@mesquilla.com#headerRegex" :     // fall-through
-                case "filtaquilla@mesquilla.com#bodyRegex" :       // fall-through
-                case "filtaquilla@mesquilla.com#searchBcc" :       // fall-through
-                case "filtaquilla@mesquilla.com#folderName" :      
+                case "filtaquilla@mesquilla.com#headerRegex": // fall-through
+                // case "filtaquilla@mesquilla.com#bodyRegex" :       // fall-through
+                case "filtaquilla@mesquilla.com#searchBcc": // fall-through
+                case "filtaquilla@mesquilla.com#folderName":
                   if (es.firstChild) {
                     if (es.firstChild.classList.contains("fq-textbox")) return;
                     es.removeChild(es.firstChild);
                   }
                   isPatched = patchFiltaQuillaTextbox(es);
                   break;
-                case "filtaquilla@mesquilla.com#threadheadtag":  // fall-through
+                case "filtaquilla@mesquilla.com#threadheadtag": // fall-through
                 case "filtaquilla@mesquilla.com#threadanytag":
                   if (es.firstChild) {
                     if (es.firstChild.classList.contains("fq-tag")) return;
@@ -835,8 +931,15 @@
                   }
                   isPatched = patchFiltaQuillaJavaScriptCondition(es);
                   break;
+                case "filtaquilla@mesquilla.com#bodyRegex":
+                  if (es.firstChild) {
+                    if (es.firstChild.classList.contains("fq-regexbody")) return;
+                    es.removeChild(es.firstChild);
+                  }
+                  isPatched = patchFiltaQuillaBodyRegex(es);
+                  break;
                 default:
-                  // irrelevant for FiltaQuilla
+                // irrelevant for FiltaQuilla
               }
               if (isPatched) {
                 console.log("mutation observer patched: "  + es);
