@@ -8,4 +8,4 @@ powershell -Command "(gc -en UTF8 manifest.json) -replace 'pre%oldRev%', 'pre%fi
 echo %filtquillaRev% > revision.txt
 move filtaQuilla*.xpi "..\..\..\_Test Versions\4.2\"
 powershell -Command "Start-Sleep -m 150"
-rename filtaQuilla-FX.zip filtaquilla-4.2pre%filtquillaRev%.xpi
+rename filtaQuilla-FX.zip filtaquilla-4.2.1pre%filtquillaRev%.xpi
