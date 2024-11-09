@@ -679,7 +679,14 @@ FiltaQuilla.Util = {
 
   // remove all STYLE blacks:
   removeStyleTags: function (markUp) {
-    let newMarkup = markUp.replace(/(<style[\w\W]+style>)/g, "");
+    // using character class + negation \w\W makes sure that line breaks are included
+    // ? makes the expression non-greedy to avoid swallowing content between multiple style blocks.
+    let newMarkup = markUp.replace(/(<style[\w\W]*?\/style>)/gm, "");
+    return newMarkup;
+  },
+
+  removeQuotes: function (markUp) {
+    let newMarkup = markUp.replace(/(?<=^|\s)<blockquote[\s\S]*?>[\s\S]*?<\/blockquote>/g,"");
     return newMarkup;
   },
 
@@ -690,7 +697,7 @@ FiltaQuilla.Util = {
       .replace(/<\/[^>]+>/g, " ")
       .replace(/<[^>]+>/g, "") // remove tags
       // .replace(/(\n){1}/g, " ")
-      .replace(/(\t){2,}/g, "");
+      .replace(/(\t){2,}/g, "  ");
     return newMarkup;
   },
 
@@ -1014,7 +1021,13 @@ FiltaQuilla.Util = {
       // MimeParser.extractMimeMsg
       for (let bp of mimeMsg.bodyParts) {
         let p = bp.body;
+        let isTagsRemoved = false;
+        const isContentTypeFilter = searchOptions.some((e) => e.startsWith("type:")); 
         if (bp.contentType.includes("html")) {
+          if (isContentTypeFilter && !searchOptions.includes("type:html")) {
+            // skip html
+            continue;
+          }
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
             p = this.collapseWhiteSpace(
@@ -1022,14 +1035,26 @@ FiltaQuilla.Util = {
                 this.removeStyleTags(p)
               )
             );
-          } else if (searchOptions.includes("-style")) {
+            isTagsRemoved = true;
+          } 
+          
+          if (!isTagsRemoved && searchOptions.includes("-style")) {
             // (only) remove style tags
             p = this.removeStyleTags(p);
+          } 
+          if (!isTagsRemoved && searchOptions.includes("-quotes")) {
+            // (only) remove style tags
+            p = this.removeQuotes(p);
           } 
           if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p);
           }
         } else if (bp.contentType.includes("plain")) {
+          if (isContentTypeFilter && !searchOptions.includes("type:plain")) {
+            // skip plain text
+            continue;
+          }
+
           if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p);
           }
