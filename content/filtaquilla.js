@@ -1639,8 +1639,8 @@
           return aSearchOp != Matches;
         let headerName = aSearchValue.slice(0, colonIndex),
             regex = aSearchValue.slice(colonIndex + 1);
-        let searchValue, searchFlags;
-        [searchValue, searchFlags] = _getRegEx(regex);
+        let searchValue, searchFlags, options;
+        [searchValue, searchFlags, options] = _getRegEx(regex);
 
         // find the property with the correct case (in case it was misspelled):
         let propertyRealName =
@@ -1710,10 +1710,10 @@
       },
       match: function (aMsgHdr, aSearchValue, aSearchOp) {
         /*** SEARCH INIT  **/
-        let searchValue, searchFlags;
-        [searchValue, searchFlags] = _getRegEx(aSearchValue);
+        let searchValue, searchFlags, options;
+        [searchValue, searchFlags, options] = _getRegEx(aSearchValue);
         
-        let result = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags);
+        let result = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags, options);
         let operand;
         
         switch (aSearchOp) {
@@ -1758,8 +1758,8 @@
         let isMatched = false;
         
         /*** SEARCH INIT  **/
-        let searchValue, searchFlags, reg;
-        [searchValue, searchFlags] = _getRegEx(aSearchValue);
+        let searchValue, searchFlags, options, reg;
+        [searchValue, searchFlags, options] = _getRegEx(aSearchValue);
         
         subResult = RegExp(searchValue, searchFlags).test(subject); // find in subject
             
@@ -1773,7 +1773,7 @@
           return true;
         }
         
-        let bodyResult = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags);
+        let bodyResult = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags, options);
         
         switch (aSearchOp)
         {
@@ -2442,18 +2442,26 @@
      * / delimiters. If we detect a / though, we will look for flags and
      * add them to the regex search. See bug m165.
      */
-    let searchValue = aSearchValue, searchFlags = "";
+    let searchValue = aSearchValue, searchFlags = "", searchOptions =[];
     if (aSearchValue.charAt(0) == "/") {
       let lastSlashIndex = aSearchValue.lastIndexOf("/");
       searchValue = aSearchValue.substring(1, lastSlashIndex);
       searchFlags = aSearchValue.substring(lastSlashIndex + 1);
+      let sw = searchFlags.match(/{.*}/) || [];
+      if (sw && sw.length) {
+        const startOptions = searchFlags.indexOf(sw[0]),
+          optionString = searchFlags.substring(startOptions+1, startOptions+sw[0].length-1);
+        searchOptions = optionString.split(",");
+
+        searchFlags = searchFlags.substring(0, startOptions);
+      }
     }
     
     if (regexpCaseInsensitiveEnabled && !searchFlags.includes("i") && !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)){
       searchFlags += "i";
     }
     
-    return [searchValue, searchFlags];
+    return [searchValue, searchFlags, searchOptions];
   }
 
   function _saveAs(aMsgHdr, aDirectory, aType) {

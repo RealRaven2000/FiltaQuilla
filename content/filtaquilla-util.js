@@ -51,8 +51,6 @@ FiltaQuilla.Util = {
   },
 
   get prefs() {
-    const Ci = Components.interfaces,
-      Cc = Components.classes;
     if (this._prefs) return this._prefs;
     this._prefs = Services.prefs.getBranch("extensions.filtaquilla.");
     return this._prefs;
@@ -315,8 +313,6 @@ FiltaQuilla.Util = {
   },
 
   toggleBoolPreference: function (cb, noUpdate) {
-    const Ci = Components.interfaces,
-      Cc = Components.classes;
     let prefString = cb.getAttribute("preference");
     let pref = document.getElementById(prefString);
 
@@ -456,10 +452,12 @@ FiltaQuilla.Util = {
 
   // from https://searchfox.org/comm-esr115/rev/27d796e03ef54fe526996bd063d7c3748b7c2d62/mailnews/test/resources/MailTestUtils.jsm#75
   loadMessageToString: function (aFolder, aMsgHdr, aCharset) {
+    const Ci = Components.interfaces,
+      Cc = Components.classes;
     var data = "";
-    let reusable = {};
     let bytesLeft = aMsgHdr.messageSize;
-    let stream = aFolder.getMsgInputStream(aMsgHdr, reusable);
+    const reusable = {},
+      stream = aFolder.getMsgInputStream(aMsgHdr, reusable);
     if (aCharset) {
       let cstream = Cc["@mozilla.org/intl/converter-input-stream;1"].createInstance(
         Ci.nsIConverterInputStream
@@ -679,7 +677,33 @@ FiltaQuilla.Util = {
     return decoded;
   },
 
-  bodyMimeMatch: function (aMsgHdr, searchValue, searchFlags) {
+  // remove all STYLE blacks:
+  removeStyleTags: function (markUp) {
+    let newMarkup = markUp.replace(/(<style[\w\W]+style>)/g, "");
+    return newMarkup;
+  },
+
+  // removing HTML the dirty way:
+  removeHTML: function (markUp) {
+    let newMarkup = markUp
+      .replaceAll("<br>", " ")
+      .replace(/<\/[^>]+>/g, " ")
+      .replace(/<[^>]+>/g, "") // remove tags
+      // .replace(/(\n){1}/g, " ")
+      .replace(/(\t){2,}/g, "");
+    return newMarkup;
+  },
+
+  collapseWhiteSpace: function (markUp) {
+    let newMarkup = markUp
+      .replace(/\n{2,}/g, "¶") // Temporarily replace double newlines with a marker
+      .replace(/\s+/g, " ") // Collapse other whitespace to a single space
+      .replace(/¶/g, "\n\n")
+
+    return newMarkup;
+  },
+
+  bodyMimeMatch: function (aMsgHdr, searchValue, searchFlags, searchOptions = []) {
     let reg,
       folder = aMsgHdr.folder,
       subject = aMsgHdr.subject;
@@ -990,55 +1014,46 @@ FiltaQuilla.Util = {
       // MimeParser.extractMimeMsg
       for (let bp of mimeMsg.bodyParts) {
         let p = bp.body;
+        if (bp.contentType.includes("html")) {
+          if (searchOptions.includes("-html")) {
+            // remove html tags (must include contents of style, as such rules are not content!)
+            p = this.collapseWhiteSpace(
+              this.removeHTML(
+                this.removeStyleTags(p)
+              )
+            );
+          } else if (searchOptions.includes("-style")) {
+            // (only) remove style tags
+            p = this.removeStyleTags(p);
+          } 
+          if (searchOptions.includes("-whitespace")) {
+            p = this.collapseWhiteSpace(p);
+          }
+        } else if (bp.contentType.includes("plain")) {
+          if (searchOptions.includes("-whitespace")) {
+            p = this.collapseWhiteSpace(p);
+          }
+        }
 
         let found = reg.test(p);
         if (found) {
           detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${bp.contentType}\n`;
 
-          if (FiltaQuilla.Util.isDebug && 
-            FiltaQuilla.Util.isDebugOption("regexBody")) {
-              let firstMatch = p.match(reg)[0];
-              detectResults += `\nFirst match: ${firstMatch}`;
-            }
+          if (FiltaQuilla.Util.isDebug && FiltaQuilla.Util.isDebugOption("regexBody")) {
+            const matches = p.match(reg);
+            detectResults += `\nFirst match: ${matches[0]}`;
+          }
           FiltaQuilla.Util.logDebug(`Searched Message "${subject}"`, detectResults);
           return true;
         }
       }
       FiltaQuilla.Util.logDebug(
         `Searched Message "${subject}"\n`,
-        `Regex pattern ${searchValue} not found.`);
+        `Regex pattern ${searchValue} not found.`
+      );
       return false;
-      // return ;
-
-      /*
-      // Tb 91 - 115
-
-      if (!mimeMsg.parts || !mimeMsg.parts.length) {
-        isTested = true;
-        msgBody = "";
-      }
-        */
     }
 
-    /*
-    if (r === true && FiltaQuilla.Util.isDebug) {
-      let count = 0,
-        txtResults = "",
-        results = reg.exec(msgBody); // the winning body part LOL
-
-      if (reg.global) {
-        while ((results = reg.exec(msgBody)) !== null) {
-          txtResults += `Match[${count}]: ${results[0]}\n`;
-          count++;
-        }
-        FiltaQuilla.Util.logDebug(
-          `${detectResults} found ${count} ${
-            count != 1 ? "matches" : "match"
-          }: \n ------------ \n ${txtResults} `
-        );
-      }
-    }
-    */
     FiltaQuilla.Util.logDebug("mime parser retrieved no data!");
     return false;
   },
@@ -1057,8 +1072,6 @@ FiltaQuilla.Util = {
 // some scoping for globals
 //(function fq_firstRun()
 {
-  const Ci = Components.interfaces,
-        Cc = Components.classes;
         
   FiltaQuilla.Util.FirstRun = {
     init: async function init() {
