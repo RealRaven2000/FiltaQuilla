@@ -121,13 +121,13 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "You must select a target folder"
   },
-  "fq.fileNameMaxLength" : {
+  "fq.fileNameMaxLength": {
     "message": "Maximal length"
   },
-  "fq.fileNameSpaceCharacter" : {
+  "fq.fileNameSpaceCharacter": {
     "message": "Replace spaces in file names with"
   },
-  "fq.fileNameWhiteList" : {
+  "fq.fileNameWhiteList": {
     "message": "Whitelisted letters"
   },
   "fq.folderName": {
@@ -238,7 +238,7 @@
   "fq.smartTemplate.rsp": {
     "message": "Reply with SmartTemplate"
   },
-  "fq.archiveMessage" : {
+  "fq.archiveMessage": {
     "message": "Archive message"
   },
   "fq.subjectBodyRegex": {
@@ -324,6 +324,39 @@
   },
   "quickFiltersPage_desc": {
     "message": "Download this awesome Add-on to turbo-charge your filtering. quickFilters makes filter definition and management a breeze."
+  },
+  "regex.accept": {
+    "message": "Accept"
+  },
+  "regex.cancel": {
+    "message": "Cancel"
+  },
+  "regex.collapseWhiteSpace": {
+    "message": "collapse all whitespace"
+  },
+  "regex.contentfilter": {
+    "message": "Content restrictions:"
+  },
+  "regex.content.plaintext": {
+    "message": "parse plain text part"
+  },
+  "regex.content.html": {
+    "message": "parse html part"
+  },
+  "regex.exclude.html": {
+    "message": "exclude html tags"
+  },
+  "regex.exclude.quotes": {
+    "message": "exclude blockquotes + cited content"
+  },
+  "regex.exclude.style": {
+    "message": "exclude style tags + rules"
+  },
+  "regex.expression": {
+    "message": "Regular expression"
+  },
+  "regex.switches": {
+    "message": "Search switches"
   },
   "searchTerms": {
     "message": "Search Terms"

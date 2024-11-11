@@ -607,54 +607,81 @@
 
     try {
       es.onCommand = function () {
-        let textbox = es.children[1]; // document.getAnonymousNodes(es)[1];
         // open a panel with options
-        // alert("to do: popup options menu");
         const button = es.querySelector(".fq-regexbody"),
           buttonRect = button.getBoundingClientRect();
-        /*
-        window.openDialog(
-          "chrome://filtaquilla/content/jsEditor.xhtml",
-          "",
-          "chrome,dialog,centerscreen,modal,resizable=yes",
-          textbox
-        );
-        */
         let popupPanel = MozXULElement.parseXULToFragment(`
             <div class="fq_bodyRegexOptions" style="background:white;color:black;position:fixed;border: 1px solid gray;box-shadow: 3px 3px 3px rgba(40,40,40,0.3);">
-              <vbox>
-                <hbox>
-                  <vbox>
-                    <checkbox label="strip html tags" /><br/>
-                    <checkbox label="strip style tags" /><br/>
-                    <checkbox label="ignore html quotes" /><br/>
-                    <checkbox label="collapse whitespace" /><br/>
-                  </vbox>
-                  <vbox>
-                    <label value="Restrictions:" />
-                    <checkbox label="parse plain text part" /><br/>
-                    <checkbox label="parse html part" /><br/>
-                  </vbox>
-                </hbox>
-                <hr />
-                <hbox style="text-align:right;">
-                  <button label="accept" id="fq_body_accept"/> <button label="close" id="fq_body_close"/>
-                </hbox>
-              </vbox>
-            </div>
-            `);
+<vbox>
+  <hbox style="display: grid; grid-template-columns: 0.5em auto 0.5em auto; column-gap: 3px; row-gap: 0; margin-block:0.3em;">
+  <label value="" />
+  <label value="${util.getBundleString("regex.expression")}" style="grid-column: 2;" />
+  <label value="" />
+  <label value="${util.getBundleString("regex.switches")}" style="grid-column: 4;" />
+
+  <label value="/" style="align-self: center; text-align:right;" />
+  <html:input type="text" id="fq_editregex"></html:input>
+  <label value="/" style="align-self: center; text-align:right;" />
+  <html:input type="text" id="fq_editregexswitches" style="width: 7em;"></html:input>
+  </hbox>
+  <hr />
+  <hbox id="fq_regex_switches" style="margin-block:0.3em;">
+    <vbox>
+      <checkbox label="${util.getBundleString("regex.exclude.html")}" switch="-html"/><br/>
+      <checkbox label="${util.getBundleString("regex.exclude.style")}" switch="-style"/><br/>
+      <checkbox label="${util.getBundleString("regex.exclude.quotes")}" switch="-quotes"/><br/>
+      <checkbox label="${util.getBundleString(
+        "regex.collapseWhiteSpace"
+      )}" switch="-whitespace"/><br/>
+    </vbox>
+    <vbox>
+      <label value="${util.getBundleString("regex.contentfilter")}" />
+      <checkbox label="${util.getBundleString(
+        "regex.content.plaintext"
+      )}" switch="type:plain"/><br/>
+      <checkbox label="${util.getBundleString("regex.content.html")}" switch="type:html"/><br/>
+    </vbox>
+  </hbox>
+  <hr />
+  <hbox style="justify-content:right;">
+    <button label="${util.getBundleString("regex.accept")}" id="fq_body_accept"/> 
+    <button label="${util.getBundleString("regex.cancel")}" id="fq_body_close"/>
+  </hbox>
+</vbox>
+</div>
+`);
 
         const dlg = document.querySelector("dialog");
         dlg.appendChild(popupPanel);
-
-        let popupElement = dlg.querySelector(".fq_bodyRegexOptions");
-
-
+        const editBox = document.getElementById("fq_editregex");
+        const switchBox = document.getElementById("fq_editregexswitches");
+        const originalEdit = es.querySelector(".search-value-textbox");
+        const popupElement = dlg.querySelector(".fq_bodyRegexOptions");
 
         document.getElementById("fq_body_close").addEventListener("click", () => {
+          button.disabled = false;
           popupElement.parentElement.removeChild(popupElement);
         });
         document.getElementById("fq_body_accept").addEventListener("click", () => {
+          button.disabled = false;
+          let options = popupElement.querySelectorAll("#fq_regex_switches checkbox");
+          let newSearchOptions = [];
+          for (let o of options) {
+            if (o.checked) {
+              newSearchOptions.push(o.getAttribute("switch"))
+            }
+          }
+          try {
+            const switchString = (newSearchOptions.length) ? `{${newSearchOptions.join(",")}}` : "";
+            let searchArg = `/${editBox.value}/${switchBox.value}${switchString}`;
+            console.log("Built new body regex string:", { searchArg });
+            originalEdit.value = searchArg;
+          } catch(ex) {
+            console.error(
+              "couldn't create or apply regex string",
+              {ex}
+            );
+          }
           popupElement.parentElement.removeChild(popupElement);
         });
         // open popup
@@ -662,6 +689,22 @@
         popupElement.style.position = "fixed";
         popupElement.style.top = `${buttonRect.bottom}px`; // Position it below the button
         popupElement.style.left = `${buttonRect.left}px`; // Align with the left side of the button
+
+        // fill values
+        let originalValue = originalEdit.value;
+        let searchValue, searchFlags, searchOptions;
+        [searchValue, searchFlags, searchOptions] = FiltaQuilla.Util.getRegex(originalValue);
+        editBox.value = searchValue;
+        switchBox.value = searchFlags;
+        let options = popupElement.querySelectorAll("#fq_regex_switches checkbox");
+        for (let o of options) {
+          let fSwitch = o.getAttribute("switch");
+          if (searchOptions.includes(fSwitch)) {
+            o.checked = true;
+            console.log(`found switch ${fSwitch}`);
+          }
+        }
+        button.disabled = true; // avoid clicking twice
       };
 
       es.textContent = "";

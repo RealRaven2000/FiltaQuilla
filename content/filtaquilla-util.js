@@ -397,6 +397,39 @@ FiltaQuilla.Util = {
     return s;
   },
 
+  getRegex: function (aSearchValue) {
+    const regexpCaseInsensitiveEnabled = this.prefs.getBoolPref(
+      "regexpCaseInsensitive.enabled"
+    );
+    const REGEX_CASE_SENSITIVE_FLAG = "c";
+    let searchValue = aSearchValue,
+      searchFlags = "",
+      searchOptions = [];
+    if (aSearchValue.charAt(0) == "/") {
+      let lastSlashIndex = aSearchValue.lastIndexOf("/");
+      searchValue = aSearchValue.substring(1, lastSlashIndex);
+      searchFlags = aSearchValue.substring(lastSlashIndex + 1);
+      let sw = searchFlags.match(/{.*}/) || [];
+      if (sw && sw.length) {
+        const startOptions = searchFlags.indexOf(sw[0]),
+          optionString = searchFlags.substring(startOptions + 1, startOptions + sw[0].length - 1);
+        searchOptions = optionString.split(",");
+
+        searchFlags = searchFlags.substring(0, startOptions);
+      }
+    }
+
+    if (
+      regexpCaseInsensitiveEnabled &&
+      !searchFlags.includes("i") &&
+      !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)
+    ) {
+      searchFlags += "i";
+    }
+
+    return [searchValue, searchFlags, searchOptions];
+  },
+
   localize: function (window, buttons = null) {
     var Services =
       globalThis.Services || ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
@@ -686,7 +719,7 @@ FiltaQuilla.Util = {
   },
 
   removeQuotes: function (markUp) {
-    let newMarkup = markUp.replace(/(?<=^|\s)<blockquote[\s\S]*?>[\s\S]*?<\/blockquote>/g,"");
+    let newMarkup = markUp.replace(/(?<=^|\s)<blockquote[\s\S]*?>[\s\S]*?<\/blockquote>/g, "");
     return newMarkup;
   },
 
@@ -705,7 +738,7 @@ FiltaQuilla.Util = {
     let newMarkup = markUp
       .replace(/\n{2,}/g, "¶") // Temporarily replace double newlines with a marker
       .replace(/\s+/g, " ") // Collapse other whitespace to a single space
-      .replace(/¶/g, "\n\n")
+      .replace(/¶/g, "\n\n");
 
     return newMarkup;
   },
@@ -1022,7 +1055,7 @@ FiltaQuilla.Util = {
       for (let bp of mimeMsg.bodyParts) {
         let p = bp.body;
         let isTagsRemoved = false;
-        const isContentTypeFilter = searchOptions.some((e) => e.startsWith("type:")); 
+        const isContentTypeFilter = searchOptions.some((e) => e.startsWith("type:"));
         if (bp.contentType.includes("html")) {
           if (isContentTypeFilter && !searchOptions.includes("type:html")) {
             // skip html
@@ -1030,22 +1063,18 @@ FiltaQuilla.Util = {
           }
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
-            p = this.collapseWhiteSpace(
-              this.removeHTML(
-                this.removeStyleTags(p)
-              )
-            );
+            p = this.collapseWhiteSpace(this.removeHTML(this.removeStyleTags(p)));
             isTagsRemoved = true;
-          } 
-          
+          }
+
           if (!isTagsRemoved && searchOptions.includes("-style")) {
             // (only) remove style tags
             p = this.removeStyleTags(p);
-          } 
+          }
           if (!isTagsRemoved && searchOptions.includes("-quotes")) {
             // (only) remove style tags
             p = this.removeQuotes(p);
-          } 
+          }
           if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p);
           }
