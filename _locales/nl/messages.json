@@ -118,13 +118,13 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "U dient een doelmap op te geven"
   },
-  "fq.fileNameMaxLength" : {
+  "fq.fileNameMaxLength": {
     "message": "Maximale lengte"
   },
-  "fq.fileNameSpaceCharacter" : {
+  "fq.fileNameSpaceCharacter": {
     "message": "Vervang spaties in bestandsnamen door"
   },
-  "fq.fileNameWhiteList" : {
+  "fq.fileNameWhiteList": {
     "message": "Toegestane letters"
   },
   "fq.folderName": {
@@ -229,7 +229,7 @@
   "fq.saveMsgAsFile.access": {
     "message": "I"
   },
-  "fq.archiveMessage" : {
+  "fq.archiveMessage": {
     "message": "archief mail"
   },
   "fq.subjectBodyRegex": {
@@ -315,6 +315,45 @@
   },
   "quickFiltersPage_desc": {
     "message": "Download deze geweldige add-on om uw filteracties een boost te geven. quickFilters maakt definiëren van filters en het beheer ervan een makkie."
+  },
+  "regex.accept": {
+    "message": "Accepteren"
+  },
+  "regex.cancel": {
+    "message": "Annuleren"
+  },
+  "regex.collapseWhiteSpace": {
+    "message": "alle witruimtes samenvouwen"
+  },
+  "regex.contentfilter": {
+    "message": "Inhoudsbeperkingen:"
+  },
+  "regex.content.plaintext": {
+    "message": "platte-tekstdelen verwerken"
+  },
+  "regex.content.html": {
+    "message": "HTML-delen verwerken"
+  },
+  "regex.content.vcard": {
+    "message": "vCard-delen verwerken"
+  },
+  "regex.exclude.html": {
+    "message": "alle HTML-tags uitsluiten"
+  },
+  "regex.exclude.quotes": {
+    "message": "uitsluiten &lt;blockquote&gt; en geciteerde inhoud"
+  },
+  "regex.exclude.style": {
+    "message": "Globale &lt;style&gt;-tags en CSS uitsluiten"
+  },
+  "regex.expression": {
+    "message": "Reguliere expressie"
+  },
+  "regex.popup": {
+    "message": "Zoekopties…"
+  },
+  "regex.switches": {
+    "message": "Zoekopties"
   },
   "searchTerms": {
     "message": "Zoekwoorden"

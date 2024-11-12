@@ -118,13 +118,13 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "Выберите целевую папку"
   },
-  "fq.fileNameMaxLength" : {
+  "fq.fileNameMaxLength": {
     "message": "максимальная длина"
   },
-  "fq.fileNameSpaceCharacter" : {
+  "fq.fileNameSpaceCharacter": {
     "message": "Замените пробелы в именах файлов на"
   },
-  "fq.fileNameWhiteList" : {
+  "fq.fileNameWhiteList": {
     "message": "Письма из белого списка"
   },
   "fq.folderName": {
@@ -229,7 +229,7 @@
   "fq.saveMsgAsFile.access": {
     "message": "I"
   },
-  "fq.archiveMessage" : {
+  "fq.archiveMessage": {
     "message": "архив почты"
   },
   "fq.subjectBodyRegex": {
@@ -315,6 +315,45 @@
   },
   "quickFiltersPage_desc": {
     "message": "Загрузите это дополнение - турбо-зарядка фильтрации. quickFilters делают управление фильтрацией невероятно лёгким."
+  },
+  "regex.accept": {
+    "message": "Принять"
+  },
+  "regex.cancel": {
+    "message": "Отмена"
+  },
+  "regex.collapseWhiteSpace": {
+    "message": "убрать все пробелы"
+  },
+  "regex.contentfilter": {
+    "message": "Ограничения контента:"
+  },
+  "regex.content.plaintext": {
+    "message": "обработать текстовые части"
+  },
+  "regex.content.html": {
+    "message": "обработать HTML-части"
+  },
+  "regex.content.vcard": {
+    "message": "обработать части vCard"
+  },
+  "regex.exclude.html": {
+    "message": "исключить все HTML-теги"
+  },
+  "regex.exclude.quotes": {
+    "message": "исключить &lt;blockquote&gt; и цитируемый контент"
+  },
+  "regex.exclude.style": {
+    "message": "исключить глобальные &lt;style&gt;-теги и CSS"
+  },
+  "regex.expression": {
+    "message": "Регулярное выражение"
+  },
+  "regex.popup": {
+    "message": "Параметры поиска…"
+  },
+  "regex.switches": {
+    "message": "Переключатели поиска"
   },
   "searchTerms": {
     "message": "Темины поиска"

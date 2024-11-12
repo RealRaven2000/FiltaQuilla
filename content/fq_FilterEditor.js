@@ -120,6 +120,14 @@
       console.log ("custom Element is already defined: " + element);
   }
 
+      
+  var filtaquilla_editChangeEvent = (event) => {
+    // this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;
+    let el = event.currentTarget;
+    el.parentNode.setAttribute("value", el.value);
+    el.parentNode.value = el.value;
+  }
+
   class FiltaQuillaRuleactiontargetLaunchPicker extends FiltaQuillaRuleactiontargetBase {
     connectedCallback() {
       if (this.delayConnectedCallback()) {
@@ -156,7 +164,6 @@
 
       if (typeof(this.hbox.value) != 'undefined')
         this.textbox.setAttribute('value', this.hbox.value);
-
     }
 
     getURL() {
@@ -640,6 +647,7 @@
         "regex.content.plaintext"
       )}" switch="type:plain"/><br/>
       <checkbox label="${util.getBundleString("regex.content.html")}" switch="type:html"/><br/>
+      <checkbox label="${util.getBundleString("regex.content.vcard")}" switch="type:vcard"/><br/>
     </vbox>
   </hbox>
   <hr />
@@ -668,19 +676,18 @@
           let newSearchOptions = [];
           for (let o of options) {
             if (o.checked) {
-              newSearchOptions.push(o.getAttribute("switch"))
+              newSearchOptions.push(o.getAttribute("switch"));
             }
           }
           try {
-            const switchString = (newSearchOptions.length) ? `{${newSearchOptions.join(",")}}` : "";
+            const switchString = newSearchOptions.length ? `{${newSearchOptions.join(",")}}` : "";
             let searchArg = `/${editBox.value}/${switchBox.value}${switchString}`;
             console.log("Built new body regex string:", { searchArg });
             originalEdit.value = searchArg;
-          } catch(ex) {
-            console.error(
-              "couldn't create or apply regex string",
-              {ex}
-            );
+            // trigger the change event to update parent element:
+            originalEdit.dispatchEvent(new Event("change", { bubbles: false }));
+          } catch (ex) {
+            console.error("couldn't create or apply regex string", { ex });
           }
           popupElement.parentElement.removeChild(popupElement);
         });
@@ -705,30 +712,39 @@
           }
         }
         button.disabled = true; // avoid clicking twice
+        // restrict to valid regex switch values
+        switchBox.addEventListener("input", (event) => {
+          // Only allow valid regex flags and remove any duplicates
+          event.target.value = event.target.value
+            .replace(/[^gimyuvsd]/g, "") // Remove invalid characters
+            .split("") // Split to array
+            .filter((item, pos, self) => self.indexOf(item) === pos) // Remove duplicates
+            .join(""); // Rejoin as a string
+        });
       };
 
       es.textContent = "";
+
       es.appendChild(
         MozXULElement.parseXULToFragment(`
         <toolbarbutton image="resource://filtaquilla-skin/settings.svg" class="focusbutton fq-regexbody"></toolbarbutton>
         <html:input flex="1" class="search-value-textbox flexinput" inherits="disabled" newlines="pasteintact" 
-         onchange="this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;"></html:input>
+        ></html:input>
       `)
-      );
-
-      // XXX: Implement `this.inheritAttribute()` for the [inherits] attribute in the markup above!
+      ); // onchange = this.parentNode.setAttribute('value', this.value); this.parentNode.value=this.value;
 
       let hbox = es, // es.parentNode.getElementsByTagName("hbox")[0], // document.getAnonymousNodes(this)[0];
         textbox = hbox.children[1], // document.getAnonymousNodes(es)[1];
         toolbarbutton = hbox.children[0]; // document.getAnonymousNodes(es)[0];
       textbox.value = es.getAttribute("value");
+      // event will transmit textbox as currentTarget
+      textbox.addEventListener("change", (event) => {
+        filtaquilla_editChangeEvent(event);
+      });
       toolbarbutton.addEventListener("command", es.onCommand, false);
-      toolbarbutton.setAttribute(
-        "tooltiptext",
-        // util.getBundleString("filtaquilla.editJavascript", "Edit JavaScript…")
-        "Search Options…"
-      );
+      toolbarbutton.setAttribute("tooltiptext", util.getBundleString("regex.popup"));
       hbox.classList.add("flexelementcontainer");
+
       return true;
     } catch (ex) {
       console.log(ex);
@@ -764,6 +780,7 @@
           textbox = hbox.children[1], // document.getAnonymousNodes(es)[1];
           toolbarbutton = hbox.children[0]; // document.getAnonymousNodes(es)[0];
       textbox.value = es.getAttribute("value");
+      textbox.setAttribute("value", es.getAttribute("value"));
       toolbarbutton.addEventListener("command", es.onCommand, false);
       toolbarbutton.setAttribute('tooltiptext', util.getBundleString('filtaquilla.editJavascript', "Edit JavaScript…"));
       hbox.classList.add("flexelementcontainer");

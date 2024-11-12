@@ -325,6 +325,45 @@
   "quickFiltersPage_desc": {
     "message": "Laden Sie dieses fantastische Add-on um Ihre Filterregeln aufzufrisieren. quickFilters macht Filter Definition und Management zum Kinderspiel."
   },
+  "regex.accept": {
+    "message": "Akzeptieren"
+  },
+  "regex.cancel": {
+    "message": "Abbrechen"
+  },
+  "regex.collapseWhiteSpace": {
+    "message": "alle Leerzeichen zusammenfassen"
+  },
+  "regex.contentfilter": {
+    "message": "Inhaltsbeschränkungen:"
+  },
+  "regex.content.plaintext": {
+    "message": "Nur-Text-Teile verarbeiten"
+  },
+  "regex.content.html": {
+    "message": "HTML-Teile verarbeiten"
+  },
+  "regex.content.vcard": {
+    "message": "vCard-Teile verarbeiten"
+  },
+  "regex.exclude.html": {
+    "message": "alle HTML-Tags ausschließen"
+  },
+  "regex.exclude.quotes": {
+    "message": "&lt;blockquote&gt;-tags und zitierte Inhalte ausschließen"
+  },
+  "regex.exclude.style": {
+    "message": "Globale &lt;style&gt;-Tags und CSS ausschließen"
+  },
+  "regex.expression": {
+    "message": "Regulärer Ausdruck"
+  },
+  "regex.popup": {
+    "message": "Suchoptionen…"
+  },
+  "regex.switches": {
+    "message": "Suchschalter"
+  },
   "searchTerms": {
     "message": "Suchbegriffe"
   },

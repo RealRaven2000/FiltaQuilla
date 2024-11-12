@@ -118,10 +118,10 @@
   "fq.filtaquilla.mustSelectFolder": {
     "message": "Du måste markera en målmapp"
   },
-  "fq.fileNameMaxLength" : {
+  "fq.fileNameMaxLength": {
     "message": "Maximal längd"
   },
-  "fq.fileNameSpaceCharacter" : {
+  "fq.fileNameSpaceCharacter": {
     "message": "Ersätt mellanslag i filnamn med"
   },
   "fq.folderName": {
@@ -226,7 +226,7 @@
   "fq.saveMsgAsFile.access": {
     "message": "m"
   },
-  "fq.archiveMessage" : {
+  "fq.archiveMessage": {
     "message": "arkivpost"
   },
   "fq.subjectBodyRegex": {
@@ -312,6 +312,45 @@
   },
   "quickFiltersPage_desc": {
     "message": "Ladda ned detta häftiga tillägg för att turboladda din filtrering. quickFilters förenklar filterdefinition och -hantering."
+  },
+  "regex.accept": {
+    "message": "Acceptera"
+  },
+  "regex.cancel": {
+    "message": "Avbryt"
+  },
+  "regex.collapseWhiteSpace": {
+    "message": "ta bort all vit yta"
+  },
+  "regex.contentfilter": {
+    "message": "Innehållsbegränsningar:"
+  },
+  "regex.content.plaintext": {
+    "message": "bearbeta textdelar"
+  },
+  "regex.content.html": {
+    "message": "bearbeta HTML-delar"
+  },
+  "regex.content.vcard": {
+    "message": "bearbeta vCard-delar"
+  },
+  "regex.exclude.html": {
+    "message": "uteslut alla HTML-taggar"
+  },
+  "regex.exclude.quotes": {
+    "message": "uteslut &lt;blockquote&gt; och citerat innehåll"
+  },
+  "regex.exclude.style": {
+    "message": "uteslut globala &lt;style&gt;-taggar och CSS"
+  },
+  "regex.expression": {
+    "message": "Reguljärt uttryck"
+  },
+  "regex.popup": {
+    "message": "Sök alternativ…"
+  },
+  "regex.switches": {
+    "message": "Sök inställningar"
   },
   "searchTerms": {
     "message": "Söktermer"

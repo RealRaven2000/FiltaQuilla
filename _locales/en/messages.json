@@ -338,22 +338,28 @@
     "message": "Content restrictions:"
   },
   "regex.content.plaintext": {
-    "message": "parse plain text part"
+    "message": "process plain text parts"
   },
   "regex.content.html": {
-    "message": "parse html part"
+    "message": "process html parts"
+  },
+  "regex.content.vcard": {
+    "message": "process vcard parts"
   },
   "regex.exclude.html": {
-    "message": "exclude html tags"
+    "message": "exclude all HTML tags"
   },
   "regex.exclude.quotes": {
-    "message": "exclude blockquotes + cited content"
+    "message": "exclude &lt;blockquote&gt; + quoted content"
   },
   "regex.exclude.style": {
-    "message": "exclude style tags + rules"
+    "message": "exclude global &lt;style&gt; tags + CSS"
   },
   "regex.expression": {
     "message": "Regular expression"
+  },
+  "regex.popup": {
+    "message": "Search Options…"
   },
   "regex.switches": {
     "message": "Search switches"

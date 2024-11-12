@@ -1033,34 +1033,48 @@ FiltaQuilla.Util = {
       return emitter.mimeMsg;
     }
 
+
+    const isContentTypeFilter = searchOptions.some((e) => e.startsWith("type:"));
+    const isIncludeAttachments =
+      isContentTypeFilter && searchOptions.some((e) => e=="type:vcard");
+
     // new code, using my own emitter.
     let mimeMsg = extractMimeMsg(data, {
-      includeAttachments: false, // ,getMimePart: partName
+      includeAttachments: isIncludeAttachments, // ,getMimePart: partName
     });
-    /* old code from 115
-    if (MimeParser.extractMimeMsg) {
-      // Tb 91 - 115
-      mimeMsg = MimeParser.extractMimeMsg(data, {
-        includeAttachments: false, // ,getMimePart: partName
-      });
-    } else {  // Tb 128 + later
-     */
 
     reg = RegExp(searchValue, searchFlags);
 
     /** EXTRACT MIME PARTS **/
+    const isDebugDetail = FiltaQuilla.Util.isDebugOption("regexBody");
     if (mimeMsg) {
       let detectResults = "";
       // MimeParser.extractMimeMsg
-      for (let bp of mimeMsg.bodyParts) {
+      let isFoundContentParts = false;
+
+      // bodyParts only includes text types:
+      // Common: text/plain, text/html, text/calendar, text/vcard
+      // Less Common: text/richtext, text/enriched, text/x-amp-html
+      // Rarely Used: text/markdown, text/xml, text/css, text/javascript
+      // attaching with Tb creates the format text/x-vcard !
+      let parts = [...mimeMsg.bodyParts];
+      if (isIncludeAttachments) {
+        parts.push(
+          ...mimeMsg.attachments.filter(
+            (p) => p?.contentType?.endsWith("/vcard") || p?.contentType?.endsWith("/x-vcard")
+          )
+        );
+      }
+
+      for (let bp of parts) {
         let p = bp.body;
         let isTagsRemoved = false;
-        const isContentTypeFilter = searchOptions.some((e) => e.startsWith("type:"));
         if (bp.contentType.includes("html")) {
           if (isContentTypeFilter && !searchOptions.includes("type:html")) {
             // skip html
             continue;
           }
+          isFoundContentParts = true;
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
             p = this.collapseWhiteSpace(this.removeHTML(this.removeStyleTags(p)));
@@ -1083,7 +1097,13 @@ FiltaQuilla.Util = {
             // skip plain text
             continue;
           }
+          isFoundContentParts = true;
 
+          if (searchOptions.includes("-whitespace")) {
+            p = this.collapseWhiteSpace(p);
+          }
+        } else if (bp.contentType.includes("vcard") && searchOptions.includes("type:vcard")) {
+          isFoundContentParts = true;
           if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p);
           }
@@ -1093,18 +1113,27 @@ FiltaQuilla.Util = {
         if (found) {
           detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${bp.contentType}\n`;
 
-          if (FiltaQuilla.Util.isDebug && FiltaQuilla.Util.isDebugOption("regexBody")) {
+          if (FiltaQuilla.Util.isDebug && isDebugDetail) {
+            // do a match in debug mode, with some performance penalty
             const matches = p.match(reg);
             detectResults += `\nFirst match: ${matches[0]}`;
           }
-          FiltaQuilla.Util.logDebug(`Searched Message "${subject}"`, detectResults);
+          FiltaQuilla.Util.logDebug(
+            `Searched Message "${subject}"\n`,
+            { reg, searchOptions },
+            detectResults
+          );
           return true;
         }
       }
-      FiltaQuilla.Util.logDebug(
-        `Searched Message "${subject}"\n`,
-        `Regex pattern ${searchValue} not found.`
-      );
+      let txtDebug =
+        `Searched Message "${subject}"\n` +
+        `Regex pattern ${searchValue} not found.` +
+        isFoundContentParts
+          ? ""
+          : "No matching text contentType found";
+
+      FiltaQuilla.Util.logDebug(txtDebug);
       return false;
     }
 
