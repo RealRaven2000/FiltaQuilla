@@ -717,7 +717,9 @@ FiltaQuilla.Util = {
   },
 
   removeQuotes: function (markUp) {
-    let newMarkup = markUp.replace(/(?<=^|\s)<blockquote[\s\S]*?>[\s\S]*?<\/blockquote>/g, "");
+    // removed (?<=^|\s) from start..
+    // [\s\S] hack to make sure that line breaks are included
+    let newMarkup = markUp.replace(/<blockquote[\s\S]*?>[\s\S]*?<\/blockquote>/g, "");
     return newMarkup;
   },
 
@@ -726,22 +728,21 @@ FiltaQuilla.Util = {
   // type="u" - return unquoted sections
   // type="q" - return quoted sections
   // type="both" - return [unquoted sections, quoted sections]
-  extractQuotesPlainText: function (markUp, type = "both") {
+  extractQuotesPlainText: function (body, type = "both") {
     const unquoted = [];
     const quoted = [];
     let currentQuoteLevel = "";
     let currentText = "";
-    let input = markUp.replace(/\r\n|\r/g, "\n").split("\n");
+
+    // Split lines with any newline type
+    let input = body.split(/\n\r?|\r/);
 
     input.forEach((line) => {
       // Match the initial quote level using regex
-      const match = line.match(/^(> *)/);
-      const quoteLevel = match ? match[0] : "";
+      const quoteLevel = line.match(/^> */)?.[0] || ""; // Extract quote level
+      const text = line.replace(/^> */, "").trim(); // Strip quote marks
 
-      // Strip the quote marks from the line
-      const text = line.replace(/^(> *)/, "").trim();
-
-      // If the quote level has changed and there's accumulated text, push it to the appropriate array
+      // When quote level changes, push accumulated text to the appropriate array
       if (quoteLevel !== currentQuoteLevel) {
         if (currentText) {
           if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
@@ -750,11 +751,17 @@ FiltaQuilla.Util = {
             quoted.push(currentText);
           }
         }
-        currentText = "";
+        currentText = ""; // Reset for the new group
       }
 
-      // Accumulate text for the current quote level
-      currentText += (currentText ? " " : "") + text;
+      // Accumulate text for the current quote level, based on the type
+      if (
+        type === "both" ||
+        (type === "u" && quoteLevel === "") ||
+        (type === "q" && quoteLevel !== "")
+      ) {
+        currentText += (currentText ? " " : "") + text;
+      }
       currentQuoteLevel = quoteLevel;
     });
 

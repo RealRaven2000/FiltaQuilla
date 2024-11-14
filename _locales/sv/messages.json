@@ -338,7 +338,7 @@
     "message": "uteslut alla HTML-taggar"
   },
   "regex.exclude.quotes": {
-    "message": "uteslut &lt;blockquote&gt; och citerat innehåll"
+    "message": "uteslut citat (html+ren text)"
   },
   "regex.exclude.style": {
     "message": "uteslut globala &lt;style&gt;-taggar och CSS"

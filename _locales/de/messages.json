@@ -350,7 +350,7 @@
     "message": "alle HTML-Tags ausschließen"
   },
   "regex.exclude.quotes": {
-    "message": "&lt;blockquote&gt;-tags und zitierte Inhalte ausschließen"
+    "message": "Zitate ausschließen (HTML+Nur-Text)"
   },
   "regex.exclude.style": {
     "message": "Globale &lt;style&gt;-Tags und CSS ausschließen"

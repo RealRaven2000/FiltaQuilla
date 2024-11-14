@@ -341,7 +341,7 @@
     "message": "исключить все HTML-теги"
   },
   "regex.exclude.quotes": {
-    "message": "исключить &lt;blockquote&gt; и цитируемый контент"
+    "message": "исключить цитаты (HTML+обычный текст)"
   },
   "regex.exclude.style": {
     "message": "исключить глобальные &lt;style&gt;-теги и CSS"

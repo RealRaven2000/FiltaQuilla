@@ -341,7 +341,7 @@
     "message": "alle HTML-tags uitsluiten"
   },
   "regex.exclude.quotes": {
-    "message": "uitsluiten &lt;blockquote&gt; en geciteerde inhoud"
+    "message": "citaten uitsluiten (html+platte tekst)"
   },
   "regex.exclude.style": {
     "message": "Globale &lt;style&gt;-tags en CSS uitsluiten"
