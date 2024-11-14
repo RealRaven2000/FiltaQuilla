@@ -735,12 +735,12 @@ FiltaQuilla.Util = {
     let currentText = "";
 
     // Split lines with any newline type
-    let input = body.split(/\n\r?|\r/);
+    let input = body.split(/\r\n?|\n+|\r+/);
 
     input.forEach((line) => {
       // Match the initial quote level using regex
-      const quoteLevel = line.match(/^> */)?.[0] || ""; // Extract quote level
-      const text = line.replace(/^> */, "").trim(); // Strip quote marks
+      const quoteLevel = line.match(/^(>+ ?)+/)?.[0] || ""; // Extract quote level
+      const text = line.replace(/^(>+ ?)+/, "").trim(); // Strip quote marks
 
       // When quote level changes, push accumulated text to the appropriate array
       if (quoteLevel !== currentQuoteLevel) {
