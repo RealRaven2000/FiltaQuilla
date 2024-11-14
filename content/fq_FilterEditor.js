@@ -612,6 +612,15 @@
     if (es.firstChild && es.firstChild.classList.contains("fq-regexbody")) return true;
     if (es.firstChild) es.removeChild(es.firstChild);
 
+    const acceptEvent = (e)=> {
+      e.preventDefault();
+      document.getElementById("fq_body_accept").click();
+    }
+    const cancelEvent = (e) => {
+      e.preventDefault();
+      document.getElementById("fq_body_close").click();
+    }
+
     function disableElements(btn, isDisable) {
       // guard against certain actions while out panel is shown!
       try {
@@ -627,6 +636,14 @@
             }
           }
           parent = parent.parentElement;
+        }
+        // use Enter to accept, ESC to cancel:
+        if (isDisable) {
+          document.addEventListener("dialogaccept", acceptEvent); 
+          document.addEventListener("dialogcancel", cancelEvent); 
+        } else {
+          document.removeEventListener("dialogaccept", acceptEvent); 
+          document.removeEventListener("dialogcancel", cancelEvent); 
         }
       } catch(ex) {
         console.log("patchFiltaQuillaBodyRegex => disableElements", ex);
