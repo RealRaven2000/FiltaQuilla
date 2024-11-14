@@ -612,6 +612,27 @@
     if (es.firstChild && es.firstChild.classList.contains("fq-regexbody")) return true;
     if (es.firstChild) es.removeChild(es.firstChild);
 
+    function disableElements(btn, isDisable) {
+      // guard against certain actions while out panel is shown!
+      try {
+        btn.disabled = isDisable;
+        es.querySelector(".search-value-textbox").disabled = isDisable; // disable editing the original textbox while panel is open.
+        // also disable row removal (2nd row or later)!
+        let parent=es.parentElement;
+        while (parent) {
+          if (parent.tagName == "richlistitem") {
+            const removeBtn = parent.querySelector("button.small-button[oncommand^=onLess]");
+            if (removeBtn && removeBtn.id != "searchRow0") {
+              removeBtn.disabled = isDisable;
+            }
+          }
+          parent = parent.parentElement;
+        }
+      } catch(ex) {
+        console.log("patchFiltaQuillaBodyRegex => disableElements", ex);
+      }
+    }
+
     try {
       es.onCommand = function () {
         // open a panel with options
@@ -667,11 +688,11 @@
         const popupElement = dlg.querySelector(".fq_bodyRegexOptions");
 
         document.getElementById("fq_body_close").addEventListener("click", () => {
-          button.disabled = false;
+          disableElements(button, false);
           popupElement.parentElement.removeChild(popupElement);
         });
         document.getElementById("fq_body_accept").addEventListener("click", () => {
-          button.disabled = false;
+          disableElements(button, false);
           let options = popupElement.querySelectorAll("#fq_regex_switches checkbox");
           let newSearchOptions = [];
           for (let o of options) {
@@ -711,7 +732,8 @@
             console.log(`found switch ${fSwitch}`);
           }
         }
-        button.disabled = true; // avoid clicking twice
+        disableElements(button, true); // avoid clicking twice
+
         // restrict to valid regex switch values
         switchBox.addEventListener("input", (event) => {
           // Only allow valid regex flags and remove any duplicates
@@ -922,7 +944,6 @@
               switch (attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex": // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex": // fall-through
-                case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex": // fall-through
                 // case "filtaquilla@mesquilla.com#bodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc": // fall-through
@@ -936,6 +957,7 @@
                 case "filtaquilla@mesquilla.com#javascript":
                   isPatched = patchFiltaQuillaJavaScriptCondition(es);
                   break;
+                case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#bodyRegex":
                   isPatched = patchFiltaQuillaBodyRegex(es);
                   break;
@@ -965,7 +987,6 @@
               switch (attType) {
                 case "filtaquilla@mesquilla.com#subjectRegex": // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex": // fall-through
-                case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex": // fall-through
                 // case "filtaquilla@mesquilla.com#bodyRegex" :       // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc": // fall-through
@@ -991,6 +1012,7 @@
                   }
                   isPatched = patchFiltaQuillaJavaScriptCondition(es);
                   break;
+                case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#bodyRegex":
                   if (es.firstChild) {
                     if (es.firstChild.classList.contains("fq-regexbody")) return;

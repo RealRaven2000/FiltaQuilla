@@ -778,8 +778,14 @@ FiltaQuilla.Util = {
     return [quoted.join("\n\n"), unquoted.join("\n\n")];
   },
 
-  // removing HTML the dirty way:
+  // removing HTML markup the dirty way:
+  // this removes all HTML tags but leaves the content untouched.
   removeHTML: function (markUp) {
+    // note: when removing tags, ideally we should add white space because
+    // tags with block level layout can separate content: "text</p>more text"
+    // the same does not apply to inline elements!
+    // we could add heuristics and assume at least </div and </p to create
+    // white space or add an "\n" although strictly this may not always /apply
     let newMarkup = markUp
       .replace(/<br\s?\\?>/g, " ")
       .replace(/<\/[^>]+>/g, " ")
@@ -789,6 +795,7 @@ FiltaQuilla.Util = {
     return newMarkup;
   },
 
+  // collapses all whitespace in a html code part
   collapseWhiteSpace: function (markUp, includeBR = false) {
     // note as  /$^/ matches NOTHING, replace shortcuts and does not burn any performance
     let newMarkup = markUp
