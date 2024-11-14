@@ -398,9 +398,7 @@ FiltaQuilla.Util = {
   },
 
   getRegex: function (aSearchValue) {
-    const regexpCaseInsensitiveEnabled = this.prefs.getBoolPref(
-      "regexpCaseInsensitive.enabled"
-    );
+    const regexpCaseInsensitiveEnabled = this.prefs.getBoolPref("regexpCaseInsensitive.enabled");
     const REGEX_CASE_SENSITIVE_FLAG = "c";
     let searchValue = aSearchValue,
       searchFlags = "",
@@ -723,6 +721,56 @@ FiltaQuilla.Util = {
     return newMarkup;
   },
 
+  // optimized function to return plain text
+  // as strings with consecutive sections of same quote level separated by double lines
+  // type="u" - return unquoted sections
+  // type="q" - return quoted sections
+  // type="both" - return [unquoted sections, quoted sections]
+  extractQuotesPlainText: function (markUp, type = "both") {
+    const unquoted = [];
+    const quoted = [];
+    let currentQuoteLevel = "";
+    let currentText = "";
+    let input = markUp.replace(/\r\n|\r/g, "\n").split("\n");
+
+    input.forEach((line) => {
+      // Match the initial quote level using regex
+      const match = line.match(/^(> *)/);
+      const quoteLevel = match ? match[0] : "";
+
+      // Strip the quote marks from the line
+      const text = line.replace(/^(> *)/, "").trim();
+
+      // If the quote level has changed and there's accumulated text, push it to the appropriate array
+      if (quoteLevel !== currentQuoteLevel) {
+        if (currentText) {
+          if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
+            unquoted.push(currentText);
+          } else if (type === "both" || type === "q") {
+            quoted.push(currentText);
+          }
+        }
+        currentText = "";
+      }
+
+      // Accumulate text for the current quote level
+      currentText += (currentText ? " " : "") + text;
+      currentQuoteLevel = quoteLevel;
+    });
+
+    // Push the last accumulated text after the loop ends
+    if (currentText) {
+      if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
+        unquoted.push(currentText);
+      } else if (type === "both" || type === "q") {
+        quoted.push(currentText);
+      }
+    }
+    if (type === "u") return unquoted.join("\n\n");
+    if (type === "q") return quoted.join("\n\n");
+    return [quoted.join("\n\n"), unquoted.join("\n\n")];
+  },
+
   // removing HTML the dirty way:
   removeHTML: function (markUp) {
     let newMarkup = markUp
@@ -1033,10 +1081,9 @@ FiltaQuilla.Util = {
       return emitter.mimeMsg;
     }
 
-
     const isContentTypeFilter = searchOptions.some((e) => e.startsWith("type:"));
     const isIncludeAttachments =
-      isContentTypeFilter && searchOptions.some((e) => e=="type:vcard");
+      isContentTypeFilter && searchOptions.some((e) => e == "type:vcard");
 
     // new code, using my own emitter.
     let mimeMsg = extractMimeMsg(data, {
@@ -1099,7 +1146,10 @@ FiltaQuilla.Util = {
           }
           isFoundContentParts = true;
 
-          if (searchOptions.includes("-whitespace")) {
+          if (searchOptions.includes("-quotes")) {
+            p = this.extractQuotesPlainText(p, "u"); // only the unquoted part (optimize out quoted parts)
+            // we don't want to extract whitespace as paragraphs are in single lines anyway. (optimized out)
+          } else if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p);
           }
         } else if (bp.contentType.includes("vcard") && searchOptions.includes("type:vcard")) {
