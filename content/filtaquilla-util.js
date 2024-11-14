@@ -781,7 +781,7 @@ FiltaQuilla.Util = {
   // removing HTML the dirty way:
   removeHTML: function (markUp) {
     let newMarkup = markUp
-      .replaceAll("<br>", " ")
+      .replace(/<br\s?\\?>/g, " ")
       .replace(/<\/[^>]+>/g, " ")
       .replace(/<[^>]+>/g, "") // remove tags
       // .replace(/(\n){1}/g, " ")
@@ -789,11 +789,13 @@ FiltaQuilla.Util = {
     return newMarkup;
   },
 
-  collapseWhiteSpace: function (markUp) {
+  collapseWhiteSpace: function (markUp, includeBR = false) {
+    // note as  /$^/ matches NOTHING, replace shortcuts and does not burn any performance
     let newMarkup = markUp
+      .replace(includeBR ? /<br\s?\/?>/g : /$^/, "\n") // Replace <br> tags only if includeBR is true
       .replace(/\n{2,}/g, "¶") // Temporarily replace double newlines with a marker
-      .replace(/\s+/g, " ") // Collapse other whitespace to a single space
-      .replace(/¶/g, "\n\n");
+      .replace(/\s+/g, " ") // Collapse whitespace to a single space
+      .replace(/¶/g, "\n\n"); // Restore double newlines
 
     return newMarkup;
   },
@@ -1131,7 +1133,7 @@ FiltaQuilla.Util = {
           isFoundContentParts = true;
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
-            p = this.collapseWhiteSpace(this.removeHTML(this.removeStyleTags(p)));
+            p = this.collapseWhiteSpace(this.removeHTML(this.removeStyleTags(p)), true);
             isTagsRemoved = true;
           }
 
@@ -1144,7 +1146,7 @@ FiltaQuilla.Util = {
             p = this.removeQuotes(p);
           }
           if (searchOptions.includes("-whitespace")) {
-            p = this.collapseWhiteSpace(p);
+            p = this.collapseWhiteSpace(p, true);
           }
         } else if (bp.contentType.includes("plain")) {
           if (isContentTypeFilter && !searchOptions.includes("type:plain")) {
