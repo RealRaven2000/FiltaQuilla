@@ -723,7 +723,7 @@ FiltaQuilla.Util = {
     return newMarkup;
   },
 
-  // optimized function to return plain text
+  // Optimized function to return plain text
   // as strings with consecutive sections of same quote level separated by double lines
   // type="u" - return unquoted sections
   // type="q" - return quoted sections
@@ -733,14 +733,36 @@ FiltaQuilla.Util = {
     const quoted = [];
     let currentQuoteLevel = "";
     let currentText = "";
+    let consecutiveEmptyLines = 0;
 
     // Split lines with any newline type
-    let input = body.split(/\r\n?|\n+|\r+/);
-
+    let input = body.split(/\r\n|\n|\r/);
     input.forEach((line) => {
+      const trimmedLine = line.trim();
+
+      // Check for empty lines to preserve multiple breaks
+      if (trimmedLine === "") {
+        consecutiveEmptyLines++;
+        if (consecutiveEmptyLines >= 1) {
+          // Push current text when encountering at least one empty line (end of a paragraph)
+          if (currentText) {
+            if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
+              unquoted.push(currentText);
+            } else if (type === "both" || type === "q") {
+              quoted.push(currentText);
+            }
+            currentText = ""; // Reset for a new paragraph
+          }
+        }
+        return; // Skip further processing for this line
+      }
+
+      // Reset empty line counter on non-empty line
+      consecutiveEmptyLines = 0;
+
       // Match the initial quote level using regex
-      const quoteLevel = line.match(/^(>+ ?)+/)?.[0] || ""; // Extract quote level
-      const text = line.replace(/^(>+ ?)+/, "").trim(); // Strip quote marks
+      const quoteLevel = trimmedLine.match(/^(>\s*)*/)?.[0] || ""; // Extract quote level
+      const text = trimmedLine.replace(/^(>\s*)*/, ""); // Strip quote marks
 
       // When quote level changes, push accumulated text to the appropriate array
       if (quoteLevel !== currentQuoteLevel) {
@@ -750,11 +772,11 @@ FiltaQuilla.Util = {
           } else if (type === "both" || type === "q") {
             quoted.push(currentText);
           }
+          currentText = ""; // Reset for the new group
         }
-        currentText = ""; // Reset for the new group
       }
 
-      // Accumulate text for the current quote level, based on the type
+      // Accumulate text for the current quote level
       if (
         type === "both" ||
         (type === "u" && quoteLevel === "") ||
@@ -773,6 +795,8 @@ FiltaQuilla.Util = {
         quoted.push(currentText);
       }
     }
+
+    // Return results based on type
     if (type === "u") return unquoted.join("\n\n");
     if (type === "q") return quoted.join("\n\n");
     return [quoted.join("\n\n"), unquoted.join("\n\n")];
