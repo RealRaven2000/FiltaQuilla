@@ -1207,9 +1207,8 @@ FiltaQuilla.Util = {
 
         let found = reg.test(p);
         if (!found && q) {
-          detectResults += "Pattern not found in unquoted part, searching quoted part\n";
           found = reg.test(q);
-          isFoundQuoted = true;
+          if (found) { isFoundQuoted = true; }
         }
         if (found) {
           detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${bp.contentType}\n`;
