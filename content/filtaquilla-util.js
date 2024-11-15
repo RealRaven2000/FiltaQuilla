@@ -740,12 +740,16 @@ FiltaQuilla.Util = {
     input.forEach((line) => {
       const trimmedLine = line.trim();
 
-      // Check for empty lines to preserve multiple breaks
+      // Check for empty lines to preserve paragraph breaks
       if (trimmedLine === "") {
         consecutiveEmptyLines++;
         if (consecutiveEmptyLines >= 1) {
-          // Push current text when encountering at least one empty line (end of a paragraph)
+          // Push current text when encountering at least one empty line
           if (currentText) {
+            // Reinsert the quote level only at the beginning of the paragraph
+            if (currentQuoteLevel) {
+              currentText = currentQuoteLevel + currentText;
+            }
             if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
               unquoted.push(currentText);
             } else if (type === "both" || type === "q") {
@@ -767,6 +771,10 @@ FiltaQuilla.Util = {
       // When quote level changes, push accumulated text to the appropriate array
       if (quoteLevel !== currentQuoteLevel) {
         if (currentText) {
+          // Reinsert the quote level only at the beginning of the paragraph
+          if (currentQuoteLevel) {
+            currentText = currentQuoteLevel + currentText;
+          }
           if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
             unquoted.push(currentText);
           } else if (type === "both" || type === "q") {
@@ -1192,7 +1200,7 @@ FiltaQuilla.Util = {
             // we don't want to extract whitespace as paragraphs are in single lines anyway. (optimized out)
           } else {
             // parse everything (plain text)
-            [p, q] = this.extractQuotesPlainText(p, "both");
+            [q, p] = this.extractQuotesPlainText(p, "both");
           }
           if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p);
