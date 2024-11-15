@@ -1154,8 +1154,9 @@ FiltaQuilla.Util = {
       }
 
       for (let bp of parts) {
-        let p = bp.body;
+        let p = bp.body, q=""; // put quoted part separate (plaintext)
         let isTagsRemoved = false;
+        let isFoundQuoted = false;
         if (bp.contentType.includes("html")) {
           if (isContentTypeFilter && !searchOptions.includes("type:html")) {
             // skip html
@@ -1189,8 +1190,13 @@ FiltaQuilla.Util = {
           if (searchOptions.includes("-quotes")) {
             p = this.extractQuotesPlainText(p, "u"); // only the unquoted part (optimize out quoted parts)
             // we don't want to extract whitespace as paragraphs are in single lines anyway. (optimized out)
-          } else if (searchOptions.includes("-whitespace")) {
+          } else {
+            // parse everything (plain text)
+            [p, q] = this.extractQuotesPlainText(p, "both");
+          }
+          if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p);
+            q = this.collapseWhiteSpace(q);
           }
         } else if (bp.contentType.includes("vcard") && searchOptions.includes("type:vcard")) {
           isFoundContentParts = true;
@@ -1200,8 +1206,16 @@ FiltaQuilla.Util = {
         }
 
         let found = reg.test(p);
+        if (!found && q) {
+          detectResults += "Pattern not found in unquoted part, searching quoted part\n";
+          found = reg.test(q);
+          isFoundQuoted = true;
+        }
         if (found) {
           detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${bp.contentType}\n`;
+          if (isFoundQuoted) { 
+            detectResults += "Found in quoted part.\n";
+          };
 
           if (FiltaQuilla.Util.isDebug && isDebugDetail) {
             // do a match in debug mode, with some performance penalty
