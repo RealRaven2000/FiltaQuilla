@@ -1237,8 +1237,13 @@ FiltaQuilla.Util = {
 
           if (FiltaQuilla.Util.isDebug && isDebugDetail) {
             // do a match in debug mode, with some performance penalty
-            const matches = p.match(reg);
-            detectResults += `\nFirst match: ${matches[0]}`;
+            const matches = isFoundQuoted ? q.match(reg) : p.match(reg);
+            if (matches) {
+              detectResults += `\nFirst match: ${matches[0]}`;
+            } else {
+              // this case shouldn't happen
+              detectResults += "\nERROR: no match found after positive test?";
+            }
           }
           FiltaQuilla.Util.logDebug(
             `Searched Message "${subject}"\n`,
