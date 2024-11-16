@@ -743,20 +743,21 @@ FiltaQuilla.Util = {
       // Check for empty lines to preserve paragraph breaks
       if (trimmedLine === "") {
         consecutiveEmptyLines++;
-        if (consecutiveEmptyLines >= 1) {
-          // Push current text when encountering at least one empty line
-          if (currentText) {
-            // Reinsert the quote level only at the beginning of the paragraph
-            if (currentQuoteLevel) {
-              currentText = currentQuoteLevel + currentText;
-            }
-            if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
-              unquoted.push(currentText);
-            } else if (type === "both" || type === "q") {
-              quoted.push(currentText);
-            }
-            currentText = ""; // Reset for a new paragraph
+        if (consecutiveEmptyLines<1) {
+          return;
+        }
+        // Push current text when encountering at least one empty line
+        if (currentText) {
+          // Reinsert the quote level only at the beginning of the paragraph
+          if (currentQuoteLevel) {
+            currentText = currentQuoteLevel + currentText;
           }
+          if (currentQuoteLevel === "") {
+            if (type === "both" || type === "u") unquoted.push(currentText);
+          } else if (type === "both" || type === "q") {
+            quoted.push(currentText);
+          }
+          currentText = ""; // Reset for a new paragraph
         }
         return; // Skip further processing for this line
       }
@@ -766,22 +767,20 @@ FiltaQuilla.Util = {
 
       // Match the initial quote level using regex
       const quoteLevel = trimmedLine.match(/^(>\s*)*/)?.[0] || ""; // Extract quote level
-      const text = trimmedLine.replace(/^(>\s*)*/, ""); // Strip quote marks
+      const text = trimmedLine.substr(quoteLevel.length); // Strip quote marks
 
       // When quote level changes, push accumulated text to the appropriate array
-      if (quoteLevel !== currentQuoteLevel) {
-        if (currentText) {
-          // Reinsert the quote level only at the beginning of the paragraph
-          if (currentQuoteLevel) {
-            currentText = currentQuoteLevel + currentText;
-          }
-          if (currentQuoteLevel === "" && (type === "both" || type === "u")) {
-            unquoted.push(currentText);
-          } else if (type === "both" || type === "q") {
-            quoted.push(currentText);
-          }
-          currentText = ""; // Reset for the new group
+      if (quoteLevel !== currentQuoteLevel && currentText) {
+        // Reinsert the quote level only at the beginning of the paragraph
+        if (currentQuoteLevel) {
+          currentText = currentQuoteLevel + currentText;
         }
+        if (currentQuoteLevel === "") {
+          if (type === "both" || type === "u") unquoted.push(currentText);
+        } else if (type === "both" || type === "q") {
+          quoted.push(currentText);
+        }
+        currentText = ""; // Reset for the new group
       }
 
       // Accumulate text for the current quote level
@@ -1173,20 +1172,21 @@ FiltaQuilla.Util = {
             continue;
           }
           isFoundContentParts = true;
+          // purge tags WITH content first:
+          if (searchOptions.includes("-style")) {
+            // (only) remove style tags
+            p = this.removeStyleTags(p);
+          }
+          if (searchOptions.includes("-quotes")) {
+            // (only) remove style tags
+            p = this.removeQuotes(p);
+          }
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
             p = this.collapseWhiteSpace(this.removeHTML(this.removeStyleTags(p)), true);
             isTagsRemoved = true;
           }
 
-          if (!isTagsRemoved && searchOptions.includes("-style")) {
-            // (only) remove style tags
-            p = this.removeStyleTags(p);
-          }
-          if (!isTagsRemoved && searchOptions.includes("-quotes")) {
-            // (only) remove style tags
-            p = this.removeQuotes(p);
-          }
           if (searchOptions.includes("-whitespace")) {
             p = this.collapseWhiteSpace(p, true);
           }
@@ -1226,10 +1226,8 @@ FiltaQuilla.Util = {
 
         let found = reg.test(p);
         if (!found && q) {
-          found = reg.test(q);
-          if (found) {
-            isFoundQuoted = true;
-          }
+          isFoundQuoted = reg.test(q);
+          found ||= isFoundQuoted;
         }
         if (found) {
           detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${bp.contentType}\n`;
