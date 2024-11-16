@@ -328,6 +328,9 @@
   "regex.accept": {
     "message": "Akzeptieren"
   },
+  "regex.btnHelp.tooltip": {
+    "message": "Klicken Sie hier, um Ihren regulären Ausdruck zu testen"
+  },
   "regex.cancel": {
     "message": "Abbrechen"
   },

@@ -319,6 +319,9 @@
   "regex.accept": {
     "message": "Принять"
   },
+  "regex.btnHelp.tooltip": {
+    "message": "Нажмите здесь, чтобы протестировать ваше регулярное выражение"
+  },
   "regex.cancel": {
     "message": "Отмена"
   },

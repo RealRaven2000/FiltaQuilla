@@ -316,6 +316,9 @@
   "regex.accept": {
     "message": "Acceptera"
   },
+  "regex.btnHelp.tooltip": {
+    "message": "Klicka här för att testa ditt reguljära uttryck"
+  },
   "regex.cancel": {
     "message": "Avbryt"
   },

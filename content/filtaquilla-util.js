@@ -1142,6 +1142,7 @@ FiltaQuilla.Util = {
 
     /** EXTRACT MIME PARTS **/
     const isDebugDetail = FiltaQuilla.Util.isDebugOption("regexBody");
+    const isDebugParts = FiltaQuilla.Util.isDebugOption("regexBody_parts");
     if (mimeMsg) {
       let detectResults = "";
       // MimeParser.extractMimeMsg
@@ -1162,7 +1163,8 @@ FiltaQuilla.Util = {
       }
 
       for (let bp of parts) {
-        let p = bp.body, q=""; // put quoted part separate (plaintext)
+        let p = bp.body,
+          q = ""; // put quoted part separate (plaintext)
         let isTagsRemoved = false;
         let isFoundQuoted = false;
         if (bp.contentType.includes("html")) {
@@ -1213,16 +1215,27 @@ FiltaQuilla.Util = {
           }
         }
 
+        if (FiltaQuilla.Util.isDebug && isDebugParts) {
+          if (p) {
+            console.log(p);
+          }
+          if (q) {
+            console.log("---quoted part:---\n", q);
+          }
+        }
+
         let found = reg.test(p);
         if (!found && q) {
           found = reg.test(q);
-          if (found) { isFoundQuoted = true; }
+          if (found) {
+            isFoundQuoted = true;
+          }
         }
         if (found) {
           detectResults += `Detected Regex pattern ${searchValue}\n with content type: ${bp.contentType}\n`;
-          if (isFoundQuoted) { 
+          if (isFoundQuoted) {
             detectResults += "Found in quoted part.\n";
-          };
+          }
 
           if (FiltaQuilla.Util.isDebug && isDebugDetail) {
             // do a match in debug mode, with some performance penalty
@@ -1260,6 +1273,24 @@ FiltaQuilla.Util = {
       return win.browsingContext;
     }
     return win;
+  },
+
+  redirectRegex101({ expression = null, flags = "", exampleId = "MfQBZT" }) {
+    let encodedRegex = "";
+    const flagParam = flags ? `&flags=${flags}` : "";
+
+    // Only encode regex if it's provided
+    if (expression) {
+      encodedRegex = encodeURIComponent(expression);
+    }
+
+    const targetUrl = expression
+      ? `https://regex101.com/?flavor=javascript&regex=${encodedRegex}${flagParam}`
+      : `https://regex101.com/r/${exampleId}/1`;
+    
+
+    // Construct the URL with regex and flags only if expression is provided
+    this.openLinkInBrowser(targetUrl);
   },
 }; // Util
 

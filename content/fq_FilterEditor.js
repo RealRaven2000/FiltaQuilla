@@ -650,6 +650,15 @@
       }
     }
 
+    function openRegexHelpPage() {
+      const editBox = document.getElementById("fq_editregex");
+      const switchBox = document.getElementById("fq_editregexswitches");
+      FiltaQuilla.Util.redirectRegex101({
+        expression: editBox.value,
+        flags: switchBox.value
+      });
+    }
+
     try {
       es.onCommand = function () {
         // open a panel with options
@@ -660,9 +669,16 @@
 <vbox>
   <hbox style="display: grid; grid-template-columns: 0.5em auto 0.5em auto; column-gap: 3px; row-gap: 0; margin-block:0.3em;">
   <label value="" />
-  <label value="${util.getBundleString("regex.expression")}" style="grid-column: 2;" />
+  <hbox style="grid-column: 2;">
+    <label class="filtaquilla_topinput" value="${util.getBundleString("regex.expression")}"  />
+    <toolbarbutton class="filtaquilla_help" id="fq_help_regex" tooltiptext="${util.getBundleString(
+      "regex.btnHelp.tooltip"
+    )}"></toolbarbutton>  
+  </hbox>
   <label value="" />
-  <label value="${util.getBundleString("regex.switches")}" style="grid-column: 4;" />
+  <label class="filtaquilla_topinput" value="${util.getBundleString(
+    "regex.switches"
+  )}" style="grid-column: 4;" />
 
   <label value="/" style="align-self: center; text-align:right;" />
   <html:input type="text" id="fq_editregex"></html:input>
@@ -728,6 +744,9 @@
             console.error("couldn't create or apply regex string", { ex });
           }
           popupElement.parentElement.removeChild(popupElement);
+        });
+        document.getElementById("fq_help_regex").addEventListener("click", (event) => {
+          openRegexHelpPage(event.target);
         });
         // open popup
         // Set the position of the fixed element to align below the button

@@ -71,3 +71,10 @@ menulist.flexinput {
   flex-grow: 2;
 }
 
+.filtaquilla_help {
+  list-style-image: url("chrome://messenger/skin/icons/help.svg");
+}
+/* push down the text */
+.filtaquilla_topinput {
+  align-items: end;
+}
