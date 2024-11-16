@@ -346,6 +346,9 @@
   "regex.content.html": {
     "message": "process html parts"
   },
+  "regex.content.raw": {
+    "message": "Raw mode: no preprocessing on plaintext parts."
+  },
   "regex.content.vcard": {
     "message": "process vcard parts"
   },

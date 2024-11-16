@@ -1164,8 +1164,8 @@ FiltaQuilla.Util = {
       for (let bp of parts) {
         let p = bp.body,
           q = ""; // put quoted part separate (plaintext)
-        let isTagsRemoved = false;
         let isFoundQuoted = false;
+        let isRaw = searchOptions.includes("text:raw");
         if (bp.contentType.includes("html")) {
           if (isContentTypeFilter && !searchOptions.includes("type:html")) {
             // skip html
@@ -1184,7 +1184,6 @@ FiltaQuilla.Util = {
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
             p = this.collapseWhiteSpace(this.removeHTML(this.removeStyleTags(p)), true);
-            isTagsRemoved = true;
           }
 
           if (searchOptions.includes("-whitespace")) {
@@ -1197,16 +1196,18 @@ FiltaQuilla.Util = {
           }
           isFoundContentParts = true;
 
-          if (searchOptions.includes("-quotes")) {
-            p = this.extractQuotesPlainText(p, "u"); // only the unquoted part (optimize out quoted parts)
-            // we don't want to extract whitespace as paragraphs are in single lines anyway. (optimized out)
-          } else {
-            // parse everything (plain text)
-            [q, p] = this.extractQuotesPlainText(p, "both");
-          }
-          if (searchOptions.includes("-whitespace")) {
-            p = this.collapseWhiteSpace(p);
-            q = this.collapseWhiteSpace(q);
+          if (!isRaw) { // bypass all plaintext processing
+            if (searchOptions.includes("-quotes")) {
+              p = this.extractQuotesPlainText(p, "u"); // only the unquoted part (optimize out quoted parts)
+              // we don't want to extract whitespace as paragraphs are in single lines anyway. (optimized out)
+            } else {
+              // parse everything (plain text)
+              [q, p] = this.extractQuotesPlainText(p, "both");
+            }
+            if (searchOptions.includes("-whitespace")) {
+              p = this.collapseWhiteSpace(p);
+              q = this.collapseWhiteSpace(q);
+            }
           }
         } else if (bp.contentType.includes("vcard") && searchOptions.includes("type:vcard")) {
           isFoundContentParts = true;

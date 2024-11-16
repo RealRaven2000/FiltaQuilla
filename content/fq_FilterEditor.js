@@ -650,6 +650,19 @@
       }
     }
 
+    function disableRaw(isDisable) {
+      const popupElement = document.querySelector(".fq_bodyRegexOptions");
+      const options = popupElement.querySelectorAll(".fq_regex_switches checkbox");
+      for (let o of options) {
+        switch (o.getAttribute("switch")) {
+          case "-quotes":
+          case "-whitespace":
+            o.disabled = isDisable;
+        }
+      }
+
+    }
+
     function openRegexHelpPage() {
       const editBox = document.getElementById("fq_editregex");
       const switchBox = document.getElementById("fq_editregexswitches");
@@ -686,7 +699,7 @@
   <html:input type="text" id="fq_editregexswitches" style="width: 7em;"></html:input>
   </hbox>
   <hr />
-  <hbox id="fq_regex_switches" style="margin-block:0.3em;">
+  <hbox class="fq_regex_switches" style="margin-block:0.3em;">
     <vbox>
       <checkbox label="${util.getBundleString("regex.exclude.html")}" switch="-html"/><br/>
       <checkbox label="${util.getBundleString("regex.exclude.style")}" switch="-style"/><br/>
@@ -704,6 +717,11 @@
       <checkbox label="${util.getBundleString("regex.content.vcard")}" switch="type:vcard"/><br/>
     </vbox>
   </hbox>
+  <span class="fq_regex_switches">
+    <checkbox id="filtaquilla_raw" label="${util.getBundleString(
+      "regex.content.raw"
+    )}" switch="text:raw"/><br/>
+  </span>
   <hr />
   <hbox style="justify-content:right;">
     <button label="${util.getBundleString("regex.accept")}" id="fq_body_accept"/> 
@@ -719,6 +737,7 @@
         const switchBox = document.getElementById("fq_editregexswitches");
         const originalEdit = es.querySelector(".search-value-textbox");
         const popupElement = dlg.querySelector(".fq_bodyRegexOptions");
+        const rawBtn = document.getElementById("filtaquilla_raw");
 
         document.getElementById("fq_body_close").addEventListener("click", () => {
           disableElements(button, false);
@@ -726,7 +745,7 @@
         });
         document.getElementById("fq_body_accept").addEventListener("click", () => {
           disableElements(button, false);
-          let options = popupElement.querySelectorAll("#fq_regex_switches checkbox");
+          let options = popupElement.querySelectorAll(".fq_regex_switches checkbox");
           let newSearchOptions = [];
           for (let o of options) {
             if (o.checked) {
@@ -748,6 +767,19 @@
         document.getElementById("fq_help_regex").addEventListener("click", (event) => {
           openRegexHelpPage(event.target);
         });
+        rawBtn.addEventListener("click", (evt) => {
+          let el = evt.target;
+          while (el) {
+            if (el.tagName=="checkbox") {
+              // disable quote + collapse white space
+              disableRaw(el.checked);
+              return;
+            }
+            el = el.parentElement;
+          }
+          
+        });
+
         // open popup
         // Set the position of the fixed element to align below the button
         popupElement.style.position = "fixed";
@@ -760,12 +792,15 @@
         [searchValue, searchFlags, searchOptions] = FiltaQuilla.Util.getRegex(originalValue);
         editBox.value = searchValue;
         switchBox.value = searchFlags;
-        let options = popupElement.querySelectorAll("#fq_regex_switches checkbox");
+        let options = popupElement.querySelectorAll(".fq_regex_switches checkbox");
         for (let o of options) {
           let fSwitch = o.getAttribute("switch");
           if (searchOptions.includes(fSwitch)) {
             o.checked = true;
             console.log(`found switch ${fSwitch}`);
+            if (fSwitch == "text:raw") {
+              disableRaw(true);
+            }
           }
         }
         disableElements(button, true); // avoid clicking twice
