@@ -733,19 +733,13 @@ FiltaQuilla.Util = {
     const quoted = [];
     let currentQuoteLevel = "";
     let currentText = "";
-    let consecutiveEmptyLines = 0;
 
     // Split lines with any newline type
     let input = body.split(/\r\n|\n|\r/);
     input.forEach((line) => {
       const trimmedLine = line.trim();
-
       // Check for empty lines to preserve paragraph breaks
       if (trimmedLine === "") {
-        consecutiveEmptyLines++;
-        if (consecutiveEmptyLines<1) {
-          return;
-        }
         // Push current text when encountering at least one empty line
         if (currentText) {
           // Reinsert the quote level only at the beginning of the paragraph
@@ -761,9 +755,6 @@ FiltaQuilla.Util = {
         }
         return; // Skip further processing for this line
       }
-
-      // Reset empty line counter on non-empty line
-      consecutiveEmptyLines = 0;
 
       // Match the initial quote level using regex
       const quoteLevel = trimmedLine.match(/^(>\s*)*/)?.[0] || ""; // Extract quote level
