@@ -1172,21 +1172,28 @@ FiltaQuilla.Util = {
             continue;
           }
           isFoundContentParts = true;
+          let isStylesRemoved = false;
+          let isWhiteSpaceCollapsed = false;
           // purge tags WITH content first:
           if (searchOptions.includes("-style")) {
             // (only) remove style tags
             p = this.removeStyleTags(p);
+            isStylesRemoved = true;
           }
           if (searchOptions.includes("-quotes")) {
-            // (only) remove style tags
+            // remove <blockquote> tags and their content
             p = this.removeQuotes(p);
           }
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
-            p = this.collapseWhiteSpace(this.removeHTML(this.removeStyleTags(p)), true);
+            p = this.collapseWhiteSpace(this.removeHTML(
+              (isStylesRemoved ? p : this.removeStyleTags(p))), 
+              true
+            );
+            isWhiteSpaceCollapsed = true;
           }
 
-          if (searchOptions.includes("-whitespace")) {
+          if (searchOptions.includes("-whitespace") && !isWhiteSpaceCollapsed) {
             p = this.collapseWhiteSpace(p, true);
           }
         } else if (bp.contentType.includes("plain")) {
