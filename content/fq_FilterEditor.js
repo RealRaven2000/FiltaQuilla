@@ -678,56 +678,62 @@
         const button = es.querySelector(".fq-regexbody"),
           buttonRect = button.getBoundingClientRect();
         let popupPanel = MozXULElement.parseXULToFragment(`
-            <div class="fq_bodyRegexOptions" style="background:white;color:black;position:fixed;border: 1px solid gray;box-shadow: 3px 3px 3px rgba(40,40,40,0.3);">
-<vbox>
-  <hbox style="display: grid; grid-template-columns: 0.5em auto 0.5em auto; column-gap: 3px; row-gap: 0; margin-block:0.3em;">
-  <label value="" />
-  <hbox style="grid-column: 2;">
-    <label class="filtaquilla_topinput" value="${util.getBundleString("regex.expression")}"  />
-    <toolbarbutton class="filtaquilla_help" id="fq_help_regex" tooltiptext="${util.getBundleString(
-      "regex.btnHelp.tooltip"
-    )}"></toolbarbutton>  
-  </hbox>
-  <label value="" />
-  <label class="filtaquilla_topinput" value="${util.getBundleString(
-    "regex.switches"
-  )}" style="grid-column: 4;" />
+<div class="fq_bodyRegexOptions" style="background:white;color:black;position:fixed;border: 1px solid gray;box-shadow: 3px 3px 3px rgba(40,40,40,0.3);">
+  <vbox>
+    <hbox style="display: grid; grid-template-columns: 0.5em auto 0.5em auto; column-gap: 3px; row-gap: 0; margin-block:0.3em;">
+    <label value="" />
+    <hbox style="grid-column: 2;">
+      <label class="filtaquilla_topinput" value="${util.getBundleString("regex.expression")}"  />
+      <toolbarbutton class="filtaquilla_build" id="fq_build_regex" tooltiptext="${util.getBundleString(
+        "regex.btnBuilder.tooltip"
+      )}"></toolbarbutton>  
+    </hbox>
+    <label value="" />
+    <label class="filtaquilla_topinput" value="${util.getBundleString(
+      "regex.switches"
+    )}" style="grid-column: 4;" />
 
-  <label value="/" style="align-self: center; text-align:right;" />
-  <html:input type="text" id="fq_editregex"></html:input>
-  <label value="/" style="align-self: center; text-align:right;" />
-  <html:input type="text" id="fq_editregexswitches" style="width: 7em;"></html:input>
-  </hbox>
-  <hr />
-  <hbox class="fq_regex_switches" style="margin-block:0.3em;">
-    <vbox>
-      <checkbox label="${util.getBundleString("regex.exclude.html")}" switch="-html"/><br/>
-      <checkbox label="${util.getBundleString("regex.exclude.style")}" switch="-style"/><br/>
-      <checkbox label="${util.getBundleString("regex.exclude.quotes")}" switch="-quotes"/><br/>
-      <checkbox label="${util.getBundleString(
-        "regex.collapseWhiteSpace"
-      )}" switch="-whitespace"/><br/>
-    </vbox>
-    <vbox>
-      <label value="${util.getBundleString("regex.contentfilter")}" />
-      <checkbox label="${util.getBundleString(
-        "regex.content.plaintext"
-      )}" switch="type:plain"/><br/>
-      <checkbox label="${util.getBundleString("regex.content.html")}" switch="type:html"/><br/>
-      <checkbox label="${util.getBundleString("regex.content.vcard")}" switch="type:vcard"/><br/>
-    </vbox>
-  </hbox>
-  <span class="fq_regex_switches">
-    <checkbox id="filtaquilla_raw" label="${util.getBundleString(
-      "regex.content.raw"
-    )}" switch="text:raw"/><br/>
-  </span>
-  <hr />
-  <hbox style="justify-content:right;">
-    <button label="${util.getBundleString("regex.accept")}" id="fq_body_accept"/> 
-    <button label="${util.getBundleString("regex.cancel")}" id="fq_body_close"/>
-  </hbox>
-</vbox>
+    <label value="/" style="align-self: center; text-align:right;" />
+    <html:input type="text" id="fq_editregex"></html:input>
+    <label value="/" style="align-self: center; text-align:right;" />
+    <html:input type="text" id="fq_editregexswitches" style="width: 7em;"></html:input>
+    </hbox>
+    <hr />
+    <hbox class="fq_regex_switches" style="margin-block:0.3em;">
+      <vbox>
+        <checkbox label="${util.getBundleString("regex.exclude.html")}" switch="-html"/><br/>
+        <checkbox label="${util.getBundleString("regex.exclude.style")}" switch="-style"/><br/>
+        <checkbox label="${util.getBundleString("regex.exclude.quotes")}" switch="-quotes"/><br/>
+        <checkbox label="${util.getBundleString(
+          "regex.collapseWhiteSpace"
+        )}" switch="-whitespace"/><br/>
+      </vbox>
+      <vbox>
+        <label value="${util.getBundleString("regex.contentfilter")}" />
+        <checkbox label="${util.getBundleString(
+          "regex.content.plaintext"
+        )}" switch="type:plain"/><br/>
+        <checkbox label="${util.getBundleString("regex.content.html")}" switch="type:html"/><br/>
+        <checkbox label="${util.getBundleString("regex.content.vcard")}" switch="type:vcard"/><br/>
+      </vbox>
+    </hbox>
+    <hbox>  
+      <span class="fq_regex_switches">
+        <checkbox id="filtaquilla_raw" label="${util.getBundleString(
+          "regex.content.raw"
+        )}" switch="text:raw"/><br/>
+      </span>
+      <toolbarbutton class="filtaquilla_help" id="fq_help_regex" tooltiptext="${util.getBundleString(
+        "regex.raw.help"
+      )}"></toolbarbutton>  
+
+    </hbox>
+    <hr />
+    <hbox style="justify-content:right;">
+      <button label="${util.getBundleString("regex.accept")}" id="fq_body_accept"/> 
+      <button label="${util.getBundleString("regex.cancel")}" id="fq_body_close"/>
+    </hbox>
+  </vbox>
 </div>
 `);
 
@@ -764,9 +770,14 @@
           }
           popupElement.parentElement.removeChild(popupElement);
         });
-        document.getElementById("fq_help_regex").addEventListener("click", (event) => {
+        document.getElementById("fq_build_regex").addEventListener("click", (event) => {
           openRegexHelpPage(event.target);
         });
+        document.getElementById("fq_help_regex").addEventListener("click", (event) => {
+          FiltaQuilla.Util.openHelpTab("regex_link");
+        });
+
+        
         rawBtn.addEventListener("click", (evt) => {
           let el = evt.target;
           while (el) {

@@ -131,7 +131,7 @@ FiltaQuilla.Util = {
     return baseURL;
   },
 
-  openHelpTab: function FiltaQuilla_openHelpTab(fragment) {
+  openHelpTab: function(fragment) {
     let f = fragment ? "#" + fragment : "",
       URL = "https://quickfilters.quickfolders.org/filtaquilla.html" + f;
     FiltaQuilla.Util.getMail3PaneWindow.window.setTimeout(function () {

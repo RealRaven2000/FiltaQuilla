@@ -328,7 +328,7 @@
   "regex.accept": {
     "message": "Accept"
   },
-  "regex.btnHelp.tooltip": {
+  "regex.btnBuilder.tooltip": {
     "message": "click here to test your regular expression"
   },
   "regex.cancel": {
@@ -366,6 +366,9 @@
   },
   "regex.popup": {
     "message": "Search Options…"
+  },
+  "regex.raw.help": {
+    "message": "FiltaQuilla by default prepares plain text parts by contracting all paragraphs, i.e. removing line breaks which are caused by reflow, this will also remove trailing quote marks {>} inside a paragraph. Activate this option if you want to search the unprocessed message instead."
   },
   "regex.switches": {
     "message": "Search switches"

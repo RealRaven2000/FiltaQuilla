@@ -328,7 +328,7 @@
   "regex.accept": {
     "message": "Akzeptieren"
   },
-  "regex.btnHelp.tooltip": {
+  "regex.btnBuilder.tooltip": {
     "message": "Klicken Sie hier, um Ihren regulären Ausdruck zu testen"
   },
   "regex.cancel": {
@@ -363,6 +363,9 @@
   },
   "regex.popup": {
     "message": "Suchoptionen…"
+  },
+  "regex.raw.help": {
+    "message": "FiltaQuilla verarbeitet standardmäßig Klartextteile, indem alle Absätze zusammengeführt werden, d. h. Zeilenumbrüche entfernt werden, die durch den Zeilenumbruch verursacht wurden. Dadurch werden auch nachfolgende Anführungszeichen {>} innerhalb eines Absatzes entfernt. Aktivieren Sie diese Option, wenn Sie die unverarbeitete Nachricht durchsuchen möchten."
   },
   "regex.switches": {
     "message": "Suchschalter"

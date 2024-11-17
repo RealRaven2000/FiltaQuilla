@@ -316,7 +316,7 @@
   "regex.accept": {
     "message": "Acceptera"
   },
-  "regex.btnHelp.tooltip": {
+  "regex.btnBuilder.tooltip": {
     "message": "Klicka här för att testa ditt reguljära uttryck"
   },
   "regex.cancel": {
@@ -351,6 +351,9 @@
   },
   "regex.popup": {
     "message": "Sök alternativ…"
+  },
+  "regex.raw.help": {
+    "message": "FiltaQuilla bearbetar som standard ren text genom att slå ihop alla stycken, dvs. ta bort radbrytningar som orsakas av textflöde. Detta tar också bort citattecken {>} i slutet av ett stycke. Aktivera detta alternativ om du vill söka i det obehandlade meddelandet."
   },
   "regex.switches": {
     "message": "Sök inställningar"

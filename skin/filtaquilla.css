@@ -72,8 +72,13 @@ menulist.flexinput {
 }
 
 .filtaquilla_help {
-  list-style-image: url("chrome://messenger/skin/icons/help.svg");
+  list-style-image: url("resource://filtaquilla-skin/help.svg");
 }
+.filtaquilla_build {
+  list-style-image: url("resource://filtaquilla-skin/pencil.svg");
+}
+
+
 /* push down the text */
 .filtaquilla_topinput {
   align-items: end;

@@ -319,7 +319,7 @@
   "regex.accept": {
     "message": "Accepteren"
   },
-  "regex.btnHelp.tooltip": {
+  "regex.btnBuilder.tooltip": {
     "message": "Klik hier om je reguliere expressie te testen"
   },
   "regex.cancel": {
@@ -354,6 +354,9 @@
   },
   "regex.popup": {
     "message": "Zoekopties…"
+  },
+  "regex.raw.help": {
+    "message": "FiltaQuilla verwerkt standaard platte-tekstonderdelen door alle alinea's samen te voegen, d.w.z. het verwijderen van regeleinden die door tekstterugloop zijn veroorzaakt. Dit verwijdert ook eventuele aanhalingstekens {>} aan het einde van een alinea. Activeer deze optie als je in het onbewerkte bericht wilt zoeken."
   },
   "regex.switches": {
     "message": "Zoekopties"
