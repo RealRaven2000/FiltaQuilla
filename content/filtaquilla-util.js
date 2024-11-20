@@ -30,6 +30,14 @@ FiltaQuilla.TabURIregexp = {
 };
 
 
+  var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
+  FiltaQuilla.ESM = parseInt(AppConstants.MOZ_APP_VERSION, 10) >= 128;
+
+  var { MailStringUtils } = FiltaQuilla.ESM
+    ? ChromeUtils.importESModule("resource:///modules/MailStringUtils.sys.mjs")
+    : ChromeUtils.import("resource:///modules/MailStringUtils.jsm");
+
+
 FiltaQuilla.Util = {
   mAppName: null,
   mAppver: null,
@@ -529,183 +537,6 @@ FiltaQuilla.Util = {
     stream.close();
 
     return data;
-  },
-
-  stripQuotes: function (val) {
-    if (!isNaN(val)) {
-      return val;
-    }
-    if (val.startsWith("'")) {
-      return val.substring(1, val.lastIndexOf("'"));
-    }
-    if (val.startsWith('"')) {
-      return val.substring(1, val.lastIndexOf('"'));
-    }
-    return val.trim();
-  },
-
-  // Helper function to get content type and attributes
-  getContentAttributes: function (line) {
-    const conData = line.split(":")[1];
-    if (!conData) {
-      return ["?", {}]; // no attributes found
-    }
-    const attributes = {};
-    const contArray = conData.trim().split(";");
-    for (let i = 1; i < contArray.length; i++) {
-      let keyval = contArray[i].split("=");
-      if (keyval.length > 1) {
-        attributes[keyval[0].trim()] = FiltaQuilla.Util.stripQuotes(keyval[1]); // attribute = value
-      }
-    }
-
-    return [contArray[0].trim(), attributes];
-  },
-
-  // Main function to split MIME parts
-  splitBodyParts: function (raw) {
-    if (!raw) return [];
-
-    const bodies = []; // Array of objects containing each type + raw MIME part.
-    const xxlines = raw
-      .replaceAll("\r\n", "\n")
-      .replaceAll(/(Content-.*:.*;)(\n)(.*=.*)/g, "$1$3")
-      .split("\n")
-      .filter((line) => line.trim() !== "");
-    // remove empty elements (if email starts with line breaks)
-    while (!xxlines[0] && xxlines.length) {
-      xxlines.splice(0, 1);
-    }
-
-    if (!xxlines.length) return [];
-    if (xxlines[0].startsWith("This is an OpenPGP/MIME signed message")) {
-    } else if (
-      !xxlines[0].startsWith("This is a multi-part message") &&
-      !xxlines[0].startsWith("--")
-    ) {
-      FiltaQuilla.Util.logDebugOptional("mimeBody", "not a multipart message:" + subject);
-      return [{ contentType: "?", body: raw }];
-    }
-
-    // Regex to identify boundaries
-    const boundaryRegex = /--+[_\=\.A-Za-z0-9]+$/;
-    let part = "",
-      contentType = "",
-      contentEncoding = "",
-      contentAttributes = {},
-      isAttachment = false;
-
-    // Helper to reset part attributes
-    const resetPartAttributes = () => {
-      part = "";
-      contentEncoding = "";
-      contentType = "";
-      contentAttributes = {};
-      isAttachment = false;
-    };
-
-    // Helper to push a complete part
-    const pushPart = () => {
-      if (part && !part.startsWith("This is a multi-part message")) {
-        bodies.push({
-          contentType: contentType || "?",
-          encoding: contentEncoding,
-          contentAttributes,
-          isAttachment,
-          body: part.trim(),
-        });
-      }
-    };
-
-    let isBoundaryLine = false;
-
-    for (let l = 0; l < xxlines.length; l++) {
-      const line = xxlines[l].trim();
-      // Boundary check
-      if (boundaryRegex.test(line)) {
-        pushPart(); // Push the current part before starting a new one
-        resetPartAttributes();
-        continue;
-      }
-
-      // Content-Type header
-      if (line.startsWith("Content-Type:")) {
-        [contentType, contentAttributes] = FiltaQuilla.Util.getContentAttributes(line);
-        continue;
-      }
-
-      if (line.startsWith("Content-Transfer-Encoding:")) {
-        contentEncoding = line.split(":")[1]?.trim();
-        continue;
-      }
-
-      // Content-Disposition header
-      if (line.startsWith("Content-Disposition")) {
-        const [cDis, cAtt] = FiltaQuilla.Util.getContentAttributes(
-          line + (xxlines[l + 1]?.startsWith("\t") ? xxlines[++l] : "")
-        );
-        contentAttributes.contentDisposition = cDis.toLowerCase();
-        if (cAtt.filename) contentAttributes.fileName = cAtt.filename;
-        isAttachment = contentAttributes.contentDisposition === "attachment";
-        continue;
-      }
-
-      // Skip unwanted types (e.g., images, vCard)
-      if (contentType.startsWith("image/") || contentType.startsWith("text/vcard")) {
-        continue;
-      }
-
-      // Accumulate the part content
-      part += (part ? "\n" : "") + line; // Add newline for the part body
-    }
-
-    // Push the last part if it exists
-    pushPart();
-
-    return bodies;
-  },
-
-  // Helper to check whether source has quoted printable attribute
-  isQuotedPrintable: function (raw) {
-    if (!raw) {
-      return false;
-    }
-    let cte; // line beginning "content transfer encoding"
-    if (typeof raw == "object") {
-      if (raw?.encoding == "Content-Transfer-Encoding") {
-        return true;
-      }
-      return false;
-    }
-    const xxlines = raw.split("\n");
-    if (!xxlines) return false;
-    if (!xxlines.length) return false;
-
-    cte = xxlines.find((l) => l.startsWith("Content-Transfer-Encoding"));
-    if (!cte) return false;
-    const vals = cte.split(":");
-    if (vals.length < 2) return false;
-    const contentType = vals[1].trim();
-    var result = contentType == "quoted-printable";
-    FiltaQuilla.Util.logDebug(
-      `subject=${subject}\n` +
-        `content type from raw message: ${contentType}\n` +
-        `isQuotedPrintable=${result}`
-    );
-    return result;
-  },
-
-  // reflow decoded printabl
-  decodeQuotedPrintable: function (cleanedInput) {
-    // Step 1: Remove soft line breaks (=`\n` or `=` at the end of lines)
-    // let cleanedInput = input.replace(/=\r?\n/g, "");
-
-    // Step 2: Decode quoted-printable characters
-    let decoded = cleanedInput.replace(/=([A-Fa-f0-9]{2})/g, (match, hex) => {
-      return String.fromCharCode(parseInt(hex, 16));
-    });
-
-    return decoded;
   },
 
   // remove all STYLE blacks:
@@ -1214,12 +1045,13 @@ FiltaQuilla.Util = {
           }
         }
 
+        // log the part contents?
         if (FiltaQuilla.Util.isDebug && isDebugParts) {
           if (p) {
-            console.log(p);
+            console.log(`====> ${bp.contentType}:\n`, p);
           }
           if (q) {
-            console.log("---quoted part:---\n", q);
+            console.log(`====> ${bp.contentType} ---quoted part:---\n:`, q);
           }
         }
 
