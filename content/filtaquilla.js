@@ -1496,7 +1496,7 @@
         FiltaQuilla.Util.logHighlightDebug(`subjectRegex RESULT: ${retVal}`,
           "white",
           "rgb(0,100,0)",
-          `\n search term: Subject ${operand} ${searchValue}`);
+          `\n search term: Subject ${operand} '${searchValue}'`);
         return retVal;
   },
     };
@@ -1684,7 +1684,7 @@
         FiltaQuilla.Util.logHighlightDebug(`headerRegEx[${headerName}] RESULT: ${result}`,
           "white",
           "rgb(0,100,0)",
-          `\n search term: Header ${operand} ${searchValue}`);
+          `\n search term: Header ${operand} '${searchValue}'`);
         return result;
       }
     };
@@ -1730,7 +1730,7 @@
         FiltaQuilla.Util.logHighlightDebug(`bodyRegex RESULT: ${result}`,
           "white",
           "rgb(0,100,0)",
-          `\n search term: Body ${operand} ${searchValue}`);
+          `\n search term: Body ${operand} '${searchValue}'`);
 
         return result;
 
