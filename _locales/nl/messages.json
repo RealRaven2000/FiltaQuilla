@@ -193,6 +193,9 @@
   "fq.regex.caseInsensitive": {
     "message": "Regex hoofdletterongevoelige Match"
   },
+  "fq.regex.multilineanchors": {
+    "message": "Ondersteuning voor ankertekens '^' en '$' bij adreskoppen,"
+  },
   "fq.removeflagged": {
     "message": "Ster verwijderen"
   },

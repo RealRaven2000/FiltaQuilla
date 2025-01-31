@@ -950,49 +950,57 @@
       needsBody: false
     }; // end add Sender
 
-    self.saveAttachment =
-    {
+    self.saveAttachment = {
       id: "filtaquilla@mesquilla.com#saveAttachment",
       name: util.getBundleString("fq.saveAttachment"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let directory = Cc["@mozilla.org/file/local;1"]
-                           .createInstance(Ci.nsILocalFile || Ci.nsIFile);
-				try {
-					directory.initWithPath(aActionValue);
-					if (directory.exists()) {
-						util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
-					}
-					let callbackObject = new SaveAttachmentCallback(directory, false);
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        let directory = Cc["@mozilla.org/file/local;1"].createInstance(
+          Ci.nsILocalFile || Ci.nsIFile
+        );
+        try {
+          directory.initWithPath(aActionValue);
+          if (directory.exists()) {
+            util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
+          }
+          let callbackObject = new SaveAttachmentCallback(directory, false);
 
-					for (let i = 0; i < aMsgHdrs.length; i++) {
-						try {
-							var msgHdr = aMsgHdrs[i];
-							self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
-																								false /* allowDownload */);
-						}
-						catch (ex) {
-							util.logException("FiltaQuilla.saveAttachment - converting message headers failed.", ex);
-						}
-					}
-				}
-				catch (ex) {
-					util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
-				}
+          for (let i = 0; i < aMsgHdrs.length; i++) {
+            try {
+              var msgHdr = aMsgHdrs[i];
+              self._mimeMsg.MsgHdrToMimeMessage(
+                msgHdr,
+                callbackObject,
+                callbackObject.callback,
+                false /* allowDownload */
+              );
+            } catch (ex) {
+              util.logException(
+                "FiltaQuilla.saveAttachment - converting message headers failed.",
+                ex
+              );
+            }
+          }
+        } catch (ex) {
+          util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
+        }
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let msgHdrs = [];
         for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
+          msgHdrs.push(aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
         }
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
-      
-      isValidForType: function(type, scope) {return saveAttachmentEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+
+      isValidForType: function (type, scope) {
+        return saveAttachmentEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
       needsBody: true,
+      isAsync: false,
     };
 
     // local object used for callback
@@ -1005,7 +1013,7 @@
     }
 
     SaveAttachmentCallback.prototype = {
-      callback: function saveAttachmentCallback_callback(aMsgHdr, aMimeMessage) {
+      callback: function(aMsgHdr, aMimeMessage) {
 				let txtStackedDump = "";
         this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
         this.attachments = aMimeMessage.allAttachments;
@@ -1015,7 +1023,7 @@
               msgDate = new Date(ds),  // this is cast to string for some stupid reason, so it's not useful.
               msgSubject = aMsgHdr.subject;
           if (util.isDebug) {
-            util.logDebug('saveAttachmentCallback_callback');
+            util.logDebug('saveAttachmentCallback.callback');
           }
           // note: for some reason I could not use msgDate as it is treated here as a string not a Date object...
           // the only workaround was to create new date objects at each step and call its functions directly:
@@ -1668,6 +1676,13 @@
           headerValue = mimeConvert.decodeMimeHeader(headerValue, null, false, true);
         }
         let result, operand; 
+
+        const isMultiLine = prefs.getBoolPref("regexpHeader.addressMultiLine");
+
+        if (isMultiLine && ["ccList", "bccList", "recipients"].includes(propertyRealName)) {
+          // make sure we can use anchor tokens ^ and $
+          headerValue = headerValue.split(", ").join("\n");
+        }
 
         switch (aSearchOp) {
           case Matches:

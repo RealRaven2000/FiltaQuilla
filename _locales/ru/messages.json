@@ -193,6 +193,9 @@
   "fq.regex.caseInsensitive": {
     "message": "Регэксп совпадение без учета регистра"
   },
+  "fq.regex.multilineanchors": {
+    "message": "Поддержка анкерных символов '^' и '$' в заголовках адресов,"
+  },
   "fq.removeflagged": {
     "message": "Удалить звездочку"
   },

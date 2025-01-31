@@ -196,6 +196,9 @@
   "fq.regex.caseInsensitive": {
     "message": "Regex case-insensitive Match"
   },
+  "fq.regex.multilineanchors": {
+    "message": "Support anchor tokens '^' and '$' with address headers"
+  },
   "fq.removeflagged": {
     "message": "Remove Star"
   },

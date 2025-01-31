@@ -196,6 +196,9 @@
   "fq.regex.caseInsensitive": {
     "message": "Regulärer Ausdruck ohne Beachtung der Groß-/Kleinschreibung"
   },
+  "fq.regex.multilineanchors": {
+    "message": "Unterstützung für Anker-Tokens '^' und '$' bei Adressheadern,"
+  },
   "fq.removeflagged": {
     "message": "Stern entfernen"
   },

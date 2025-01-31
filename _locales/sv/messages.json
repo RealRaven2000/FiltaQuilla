@@ -190,6 +190,9 @@
   "fq.regex.caseInsensitive": {
     "message": "Regex skiftlägeskänslig Match"
   },
+  "fq.regex.multilineanchors": {
+    "message": "Stöd för ankartoken '^' och '$' i adressrubriker,"
+  },
   "fq.removeflagged": {
     "message": "Ta bort stjärna"
   },
