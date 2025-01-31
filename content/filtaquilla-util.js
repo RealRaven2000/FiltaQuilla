@@ -413,8 +413,13 @@ FiltaQuilla.Util = {
       searchOptions = [];
     if (aSearchValue.charAt(0) == "/") {
       let lastSlashIndex = aSearchValue.lastIndexOf("/");
-      searchValue = aSearchValue.substring(1, lastSlashIndex);
-      searchFlags = aSearchValue.substring(lastSlashIndex + 1);
+      if (!lastSlashIndex) {
+        console.log(`invalid regex - missing second '/' ! ${aSearchValue}`);
+        searchValue = aSearchValue.substring(1);
+      } else {
+        searchFlags = aSearchValue.substring(lastSlashIndex + 1);
+        searchValue = aSearchValue.substring(1, lastSlashIndex);
+      }
       let sw = searchFlags.match(/{.*}/) || [];
       if (sw && sw.length) {
         const startOptions = searchFlags.indexOf(sw[0]),
