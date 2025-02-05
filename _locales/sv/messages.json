@@ -2,6 +2,9 @@
   "aboutAndSupport": {
     "message": "Om FiltaQuilla / Hjälp"
   },
+  "applyIncomingMails": {
+    "message": "Kör filter på inkommande e-post"
+  },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "c"
   },

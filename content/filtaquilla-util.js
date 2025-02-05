@@ -400,7 +400,7 @@ FiltaQuilla.Util = {
       s = localized;
     } else {
       s = defaultText;
-      this.logToConsole("Could not retrieve bundle string: " + id + "");
+      this.logToConsole(`Could not retrieve bundle string: ${id}`);
     }
     return s;
   },

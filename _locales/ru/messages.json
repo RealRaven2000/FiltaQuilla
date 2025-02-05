@@ -2,6 +2,9 @@
   "aboutAndSupport": {
     "message": "О FiltaQuilla / Помощь"
   },
+  "applyIncomingMails": {
+    "message": "Применять фильтры к входящим письмам"
+  },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "Y"
   },

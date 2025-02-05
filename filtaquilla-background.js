@@ -42,6 +42,12 @@
   messenger.DomContentScript.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
   messenger.WindowListener.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
   
+  messenger.WindowListener.registerWindow(
+    "chrome://messenger/content/folderProps.xhtml",
+    "content/scripts/filtaquilla-folderProps.js"
+  );
+
+
   messenger.NotifyTools.onNotifyBackground.addListener(async (data) => {
     const Legacy_Root = "extensions.filtaquilla.",
           PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net",

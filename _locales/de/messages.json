@@ -2,6 +2,9 @@
   "aboutAndSupport": {
     "message": "Über FiltaQuilla / Hilfe"
   },
+  "applyIncomingMails": {
+    "message": "Filter für eingehende E-Mails ausführen"
+  },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "Y"
   },
