@@ -22,8 +22,9 @@ function onLoad(activatedWhileWindowOpen) {
   // only inject this for IMAP folders:
   if (!folder) return;
   if (folder.incomingServerType != "imap") return;
+  const Ci = Components.interfaces;
+  if (Ci.nsMsgFolderFlags.Inbox & folder.flags) return;  // no need to patch inbox!
   const previousCheck = document.querySelector("#folderCheckForNewMessages");
-  debugger;
   if (previousCheck) {
     const applyIncomingCb = document.createXULElement("checkbox");
     applyIncomingCb.setAttribute("id", "filtaquilla-applyIncomingFilters");
