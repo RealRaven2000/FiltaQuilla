@@ -31,8 +31,6 @@
  * InheritedPropertiesGrid: User interface for setting inherited folder properties
  */
 
-var EXPORTED_SYMBOLS = ["InheritedPropertiesGrid"];
-
 const Cc = Components.classes,
       Ci = Components.interfaces,
       Cu = Components.utils,
@@ -42,8 +40,8 @@ var Services = globalThis.Services || ChromeUtils.import(
 	"resource://gre/modules/Services.jsm"
 ).Services;
 
-var InheritedPropertiesGrid = {
-	getInheritedProperties: function getInheritedProperties() {
+export const InheritedPropertiesGrid = {
+	getInheritedProperties: function () {
     let inheritedProperties =
 		  Services.prefs.getStringPref ?
 		  Services.prefs.getStringPref("mesquillaInheritedProperties", "{}") :
@@ -52,11 +50,11 @@ var InheritedPropertiesGrid = {
 		return JSON.parse(inheritedProperties);
 	},
 
-	setInheritedProperties: function setInheritedProperties(props) {
+	setInheritedProperties: function (props) {
 		let sData = JSON.stringify(props);
-		if (Services.prefs.setStringPref)
+		if (Services.prefs.setStringPref) {
 			Services.prefs.setStringPref("mesquillaInheritedProperties", sData);
-		else {
+		} else {
 			var str = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
 			str.data = sData;
 			Services.prefs.setComplexValue("mesquillaInheritedProperties", Ci.nsISupportsString, str);
@@ -76,7 +74,7 @@ var InheritedPropertiesGrid = {
    */
 
   // register a new property object
-  addPropertyObject: function addPropertyObject(aPropertyObject) {
+  addPropertyObject: function (aPropertyObject) {
     /*
      * New method: we store the object containing inherited properties using
      *             Services.prefs
@@ -100,7 +98,7 @@ var InheritedPropertiesGrid = {
   },
 
   // unregister a property object
-  removePropertyObject: function removePropertyObject(aPropertyObject) {
+  removePropertyObject: function (aPropertyObject) {
     /*
      * New method: we store the object containing inherited properties using
      *             Services.prefs
@@ -121,7 +119,7 @@ var InheritedPropertiesGrid = {
   },
 
   // given the property key, return the registered property object
-  getPropertyObject: function getPropertyObject(aProperty) {
+  getPropertyObject: function (aProperty) {
     // new method: shared global context
     try {
 			let inheritedProperties = this.getInheritedProperties();
@@ -135,7 +133,7 @@ var InheritedPropertiesGrid = {
 
   // This function implements most of the onPreInit function for setting
   //  up an account manager extension for inherited properties.
-  onPreInit: function onPreInit(account, accountValues, window)  {
+  onPreInit: function (account, accountValues, window)  {
 		try {
 			let server = account.incomingServer;
 			window.gInheritTarget = server;
@@ -159,7 +157,7 @@ var InheritedPropertiesGrid = {
 
   // Create or get a 3-column grid to describe inherited variables for the
   //  folder properties xul. Account Manager uses an overlay.
-  getInheritRows: function getInheritRows(document) {
+  getInheritRows: function (document) {
 	  try {
 			/* this is what we are creating, and adding to the GeneralPanel
 			<vbox id="inheritBox">

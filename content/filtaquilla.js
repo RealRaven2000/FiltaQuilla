@@ -33,15 +33,22 @@
 (function filtaQuilla()
 {
   try {
-    var {InheritedPropertiesGrid} = ChromeUtils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
+    var { InheritedPropertiesGrid } = ChromeUtils.importESModule(
+      "resource://filtaquilla/inheritedPropertiesGrid.sys.mjs"
+    );
   } catch (ex) {
     FiltaQuilla.Util.logException("Importing inheritedPropertiesGrid.jsm failed.", ex);
   }
   var Services = globalThis.Services || ChromeUtils.import(
     "resource://gre/modules/Services.jsm"
   ).Services;
-  var { MailUtils } = ChromeUtils.import("resource:///modules/MailUtils.jsm");
-  var { MessageArchiver } =  ChromeUtils.import("resource:///modules/MessageArchiver.jsm");
+  var { MailUtils } = FiltaQuilla.ESM
+    ? ChromeUtils.importESModule("resource:///modules/MailUtils.sys.mjs")
+    : ChromeUtils.import("resource:///modules/MailUtils.jsm");
+
+  var { MessageArchiver } = FiltaQuilla.ESM
+    ? ChromeUtils.importESModule("resource:///modules/MessageArchiver.sys.mjs")
+    : ChromeUtils.import("resource:///modules/MessageArchiver.jsm");
   //  VirtualFolderHelper -  "resource:///modules/VirtualFolderWrapper.jsm",
   
 
@@ -70,9 +77,10 @@
   self.initialized = false;
   self.name = filtaQuilla;
   
-  var { MailServices } = ChromeUtils.import(
-    "resource:///modules/MailServices.jsm"
-  );
+  var { MailServices } = FiltaQuilla.ESM
+    ? ChromeUtils.importESModule("resource:///modules/MailServices.sys.mjs")
+    : ChromeUtils.import("resource:///modules/MailServices.jsm");
+
   const headerParser = MailServices.headerParser,
         tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
         abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager),
@@ -128,14 +136,14 @@
 
   // Enabling of search terms.
   let SubjectRegexEnabled = false,
-      HeaderRegexEnabled = false,
-      JavascriptEnabled = false,
-      SearchBccEnabled = false,
-      ThreadHeadTagEnabled = false,
-      ThreadAnyTagEnabled = false,
-      FolderNameEnabled = false,
-      BodyRegexEnabled = false,
-      SubjectBodyRegexEnabled = false;
+    HeaderRegexEnabled = false,
+    JavascriptEnabled = false,
+    SearchBccEnabled = false,
+    ThreadHeadTagEnabled = false,
+    ThreadAnyTagEnabled = false,
+    FolderNameEnabled = false,
+    BodyRegexEnabled = false,
+    SubjectBodyRegexEnabled = false;
 	// [#5] AG new condition - attachment name regex
 	let AttachmentRegexEnabled = false,
       moveLaterTimers = {}, // references to timers used in moveLater action
@@ -156,10 +164,9 @@
   };
 
   // javascript mime emitter functions
-  //self._mimeMsg = {};
-  //Cu.import("resource:///modules/gloda/mimemsg.js", self._mimeMsg);
-  
-  self._mimeMsg = ChromeUtils.import("resource:///modules/gloda/MimeMessage.jsm"); // Tb78
+  self._mimeMsg = FiltaQuilla.ESM
+    ? ChromeUtils.importESModule("resource:///modules/gloda/MimeMessage.sys.mjs")
+    : ChromeUtils.import("resource:///modules/gloda/MimeMessage.jsm");  
 
   self._init = async function() {
     // self.strings = filtaquillaStrings;
@@ -1986,7 +1993,11 @@
     };
 
     
-    var { ToneQuillaPlay } = ChromeUtils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
+    
+    var { ToneQuillaPlay } = ChromeUtils.importESModule(
+      "resource://filtaquilla/ToneQuillaPlay.sys.mjs"
+    );
+     
     try {
       await ToneQuillaPlay.init();
       ToneQuillaPlay.window = window;

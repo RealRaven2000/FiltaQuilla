@@ -2,7 +2,13 @@
 /* replacement for folderPropsOverlay.js */
 
 function getBundleString(id, defaultText="no default text!", substitions = []) {
-  var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+
+  var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
+  const ESM = parseInt(AppConstants.MOZ_APP_VERSION, 10) >= 128;
+  var { ExtensionParent } = ESM
+    ? ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs")
+    : ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+
   let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
   let localized = extension.localeData.localizeMessage(id, substitions);
 

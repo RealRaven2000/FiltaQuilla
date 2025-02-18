@@ -24,7 +24,9 @@
     "resource://gre/modules/Services.jsm"
   ).Services;
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
-  var { ToneQuillaPlay } = ChromeUtils.import("resource://filtaquilla/ToneQuillaPlay.jsm");
+  var { ToneQuillaPlay } = ChromeUtils.importESModule(
+    "resource://filtaquilla/ToneQuillaPlay.sys.mjs"
+  );
 
   const util = FiltaQuilla.Util,
         Ci = Components.interfaces,
@@ -1053,7 +1055,7 @@
             });
           });
           break;
-          case "attributes":
+        case "attributes":
           {
             let es = mutation.target;
             if (es.classList.contains("search-value-custom")) {

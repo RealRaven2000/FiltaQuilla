@@ -31,8 +31,6 @@
  // use Cu.importESModule(...)
  // To Do: create an issue for this [ESMification]
 
-var EXPORTED_SYMBOLS = ["ToneQuillaPlay"];
-
 const Cc = Components.classes,
       Ci = Components.interfaces,
       Cu = Components.utils;
@@ -50,11 +48,10 @@ function re(e) {
 }
 
 
-var ToneQuillaPlay = {
-  
+export const ToneQuillaPlay = {
   logDebug: function logDebug(txt) {
     const Prefix = "extensions.filtaquilla.";
-    let isDebug = Services.prefs.getBoolPref(Prefix + 'debug');
+    let isDebug = Services.prefs.getBoolPref(Prefix + "debug");
     if (isDebug) {
       Services.console.logStringMessage("FiltaQuilla (toneQuillaPlay module)\n" + txt);
     }
@@ -93,39 +90,42 @@ var ToneQuillaPlay = {
   MY_ID: "tonequilla@mesquilla.com",
 
   //function to initialize variables
-  init: async function() { 
+  init: async function () {
     // new utility function to unpack a file from the xpi
     function copyDataURLToFile(aURL, file, callback) {
       let step = 0;
       try {
         let uri = Services.io.newURI(aURL),
-            newChannelFun = Services.io.newChannelFromURI.bind(Services.io);
-        let securityFlags = Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_INHERITS  // Tb78
-          || Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_INHERITS_SEC_CONTEXT;  // Tb91 + SEC_ALLOW_CHROME ?
+          newChannelFun = Services.io.newChannelFromURI.bind(Services.io);
+        let securityFlags =
+          Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_INHERITS || // Tb78
+          Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_INHERITS_SEC_CONTEXT; // Tb91 + SEC_ALLOW_CHROME ?
         step = 1;
-        let channel = newChannelFun(uri,
-                      null,
-                      Services.scriptSecurityManager.getSystemPrincipal(),
-                      null,
-                      securityFlags,
-                      Ci.nsIContentPolicy.TYPE_OTHER);      
-        
+        let channel = newChannelFun(
+          uri,
+          null,
+          Services.scriptSecurityManager.getSystemPrincipal(),
+          null,
+          securityFlags,
+          Ci.nsIContentPolicy.TYPE_OTHER
+        );
+
         step = 2;
-        NetUtil.asyncFetch(channel, function(istream) {
-          var ostream = Cc["@mozilla.org/network/file-output-stream;1"].
-                        createInstance(Ci.nsIFileOutputStream);
+        NetUtil.asyncFetch(channel, function (istream) {
+          var ostream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(
+            Ci.nsIFileOutputStream
+          );
           ostream.init(file, -1, -1, Ci.nsIFileOutputStream.DEFER_OPEN);
-          NetUtil.asyncCopy(istream, ostream, function(result) {
+          NetUtil.asyncCopy(istream, ostream, function (result) {
             callback && callback(file, result);
           });
         });
-      }
-      catch(ex) {
+      } catch (ex) {
         let msg = "ToneQuillaPlay_init failed at step " + step;
         ToneQuillaPlay.logDebug(msg);
       }
-    }  
-  
+    }
+
     function makePath() {
       // let path = new Array("extensions", "filtaquilla"); // was: tonequilla
       // return FileUtils.getDir("ProfD", path, true);
@@ -133,7 +133,7 @@ var ToneQuillaPlay = {
       let path = PathUtils.join(profileDir, "extensions", "filtaquilla");
       return path;
     }
-  
+
     async function getLocalFile(fileName) {
       // get the "menuOnTop.json" file in the profile/extensions directory
       const profileDir = PathUtils.profileDir;
@@ -145,32 +145,51 @@ var ToneQuillaPlay = {
       const stat = await IOUtils.stat(path); // returns FileInfo
       return {
         path,
-        fileInfo: stat
-      };      
-    } 
+        fileInfo: stat,
+      };
+    }
 
-    const { NetUtil }  = Cu.import("resource://gre/modules/NetUtil.jsm"),
-          { FileUtils } = Cu.import("resource://gre/modules/FileUtils.jsm"),
-          Services = globalThis.Services || Cu.import(
-            'resource://gre/modules/Services.jsm'
-          ).Services;
-  
+
+    var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
+    var ESM = parseInt(AppConstants.MOZ_APP_VERSION, 10) >= 128;    
+    const { NetUtil } = ESM
+      ? ChromeUtils.importESModule("resource://gre/modules/NetUtil.sys.mjs")
+      : ChromeUtils.import("resource://gre/modules/NetUtil.jsm");  
+    // Services is already global
+    // const { Services } =
+    //   globalThis.Services || ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
+
     try {
       that._playTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       that._ignoreTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       // that._nsIIOService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
       that._nsISound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
       that._nsIMIMEService = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
-      // new code to unpack sounds...    
-      
+      // new code to unpack sounds...
+
       let dir = makePath();
       if (dir) {
         that.soundsDirectory = dir;
-        let fileList = ["applause.ogg", "duogourd.ogg", "Freedom.ogg", "nightingale.ogg", 
-          "squishbeat.ogg", "TheBrightestStar.ogg", "squeak.wav", "notify-1.wav", "pour-1.wav",
-          "maybe-one-day-584.ogg", "hold-your-horses-468.ogg", "scratch-389.ogg", "your-turn-491.ogg", "knob-458.ogg", "worthwhile-438.ogg", "scissors-423.ogg"];
-        
-        for (let i=0; i<fileList.length; i++) {
+        let fileList = [
+          "applause.ogg",
+          "duogourd.ogg",
+          "Freedom.ogg",
+          "nightingale.ogg",
+          "squishbeat.ogg",
+          "TheBrightestStar.ogg",
+          "squeak.wav",
+          "notify-1.wav",
+          "pour-1.wav",
+          "maybe-one-day-584.ogg",
+          "hold-your-horses-468.ogg",
+          "scratch-389.ogg",
+          "your-turn-491.ogg",
+          "knob-458.ogg",
+          "worthwhile-438.ogg",
+          "scissors-423.ogg",
+        ];
+
+        for (let i = 0; i < fileList.length; i++) {
           //Services.dirsvc.get("TmpD", Ci.nsIFile);
           // file.append("applause.wav");
           try {
@@ -179,46 +198,43 @@ var ToneQuillaPlay = {
             if (file && !file.fileInfo) {
               ToneQuillaPlay.logDebug("Try to copy " + name + " to " + file.path + "...");
               copyDataURLToFile("chrome://filtaquilla/content/sounds/" + name, file); // was  tonequilla/content/sounds/
-            }
-            else {
+            } else {
               ToneQuillaPlay.logDebug("File exists: " + file.path);
             }
-          }
-          catch(ex) {
+          } catch (ex) {
             re(ex);
           }
         }
       }
-    } 
-    catch (e) {re(e);}
+    } catch (e) {
+      re(e);
+    }
   },
 
   // function to play the next queued sound
   _nextSound: function ToneQuillaPlay_nextSound() {
     that.logDebug("nextSound()");
     let soundSpec = that._playQueue.shift();
-    if (soundSpec)
-    {
+    if (soundSpec) {
       that._status = kStatusStart;
-      that._playTimer.initWithCallback(that._nextSound,
-                                       kDelayToNext,
-                                       Ci.nsITimer.TYPE_ONE_SHOT);
+      that._playTimer.initWithCallback(that._nextSound, kDelayToNext, Ci.nsITimer.TYPE_ONE_SHOT);
       that.play(soundSpec);
-    }
-    else
-    {
-      that._ignoreTimer.initWithCallback(that._clearIgnore,
-                                         kDelayToClear,
-                                         Ci.nsITimer.TYPE_ONE_SHOT);
+    } else {
+      that._ignoreTimer.initWithCallback(
+        that._clearIgnore,
+        kDelayToClear,
+        Ci.nsITimer.TYPE_ONE_SHOT
+      );
       that._status = kStatusIdle;
     }
   },
 
   play: function ToneQuillaPlay_play(aSpec) {
-    if (!that.window) { // [issue 258]
+    if (!that.window) {
+      // [issue 258]
       console.log("ToneQuillaPlay.play() - window instance not initialized!;");
       that.window = Services.wm.getMostRecentWindow("mail:3pane");
-      console.log("initialized 'that.window' with Servies", {window: that.window, that: that});
+      console.log("initialized 'that.window' with Servies", { window: that.window, that: that });
     }
     that.logDebug("play() ...");
     // initialize module if needed
@@ -227,27 +243,22 @@ var ToneQuillaPlay = {
     }
 
     let dotIndex = aSpec.lastIndexOf("."),
-        extension = "";
-    if (dotIndex >= 0)
-      extension = aSpec.substr(dotIndex + 1).toLowerCase();
+      extension = "";
+    if (dotIndex >= 0) extension = aSpec.substr(dotIndex + 1).toLowerCase();
     let mimeType = "";
     if (extension == "wav") {
       mimeType = "audio/wav";
-    }
-    else {
+    } else {
       try {
         mimeType = that._nsIMIMEService.getTypeFromExtension(extension);
-      }
-      catch (e) {
-      }  // ignore errors, since that probably means not defined
+      } catch (e) {} // ignore errors, since that probably means not defined
     }
     let uriSpec = aSpec.startsWith("file:") ? aSpec : "file:///" + aSpec,
-        nsIFileURL = Services.io.newURI(uriSpec).QueryInterface(Ci.nsIFileURL)
+      nsIFileURL = Services.io.newURI(uriSpec).QueryInterface(Ci.nsIFileURL);
     // that._nsIIOService.newURI(uriSpec, null, null);
     //nsIFileURL = nsIFileURL.QueryInterface(Ci.nsIFileURL);
 
-    if (!nsIFileURL.file.exists())
-    {
+    if (!nsIFileURL.file.exists()) {
       Cu.reportError("FiltaQuilla cannot play sound file  " + aSpec + " - it does not exist");
       return;
     }
@@ -256,7 +267,7 @@ var ToneQuillaPlay = {
     if (that.window.navigator.platform.indexOf("Mac") >= 0 && mimeType == "audio/aiff") {
       mimeType = "audio/wav";
     }
-    
+
     that.logDebug("determined mimeType = " + mimeType);
 
     let url = Services.io.newURI(uriSpec);
@@ -265,9 +276,9 @@ var ToneQuillaPlay = {
       case "audio/ogg":
       case "audio/mpeg":
         that._audioElement = new that.window.Audio(uriSpec);
-        that._audioElement.setAttribute("autoplay","true");
+        that._audioElement.setAttribute("autoplay", "true");
         that._audioElement.setAttribute("type", mimeType);
-        that._audioElement.load(); 
+        that._audioElement.load();
         // that._nsISound.play(Services.io.newURI(uriSpec));
         // that._nsISound.play(url);
         break;
@@ -277,22 +288,18 @@ var ToneQuillaPlay = {
         break;
       default:
         // We're going to blindly let the OS handle this
-        nsIFileURL.file
-                  .QueryInterface(Ci.nsIFile)
-                  .launch();
+        nsIFileURL.file.QueryInterface(Ci.nsIFile).launch();
     }
   },
 
   // clear all file references from the ignore queue
-  _clearIgnore: function ToneQuillaPlay_clearIgnore()
-  {
+  _clearIgnore: function ToneQuillaPlay_clearIgnore() {
     that.logDebug("_clearIgnore()");
-    while (that._ignoreQueue.pop())
-      ;
+    while (that._ignoreQueue.pop());
   },
 
   // add a file URL spec to the play queue, unless already queued or ignored
-  queueToPlay: function ToneQuillaPlay_queueToPlay(aSpec)  {
+  queueToPlay: function ToneQuillaPlay_queueToPlay(aSpec) {
     that.logDebug("_queueToPlay(" + aSpec + ")");
     // This function is designed to allow multiple emails to request playing
     // a sound, without getting the same sound multiple times, nor overlapping.
@@ -300,32 +307,28 @@ var ToneQuillaPlay = {
     // that recur during an ignore period are ignored.
 
     // initialize module if needed
-    if (!that._playTimer)
-      that.init();
+    if (!that._playTimer) that.init();
 
     // ignore recently queued sounds
-    if (that._ignoreQueue.indexOf(aSpec) >= 0)
-    {
+    if (that._ignoreQueue.indexOf(aSpec) >= 0) {
       that.logDebug("ignoring this sound, it was already played recently.");
       return;
     }
 
     let urlIndex = that._playQueue.indexOf(aSpec);
-    if (urlIndex < 0)
-    {
+    if (urlIndex < 0) {
       that.logDebug("queueing sound, status = " + that._status);
       that._playQueue.push(aSpec);
       that._ignoreQueue.push(aSpec);
     }
 
-    if (that._status == kStatusIdle)
-    {
+    if (that._status == kStatusIdle) {
       that.logDebug("starting next sound...");
       that._status = kStatusStart;
       that._nextSound();
     }
   },
-}
+};
 
 // shorthand notation for the current module
 var that = ToneQuillaPlay;

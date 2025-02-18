@@ -27,7 +27,9 @@
  * ***** END LICENSE BLOCK *****
  */
 
-var {InheritedPropertiesGrid} = ChromeUtils.import("resource://filtaquilla/inheritedPropertiesGrid.jsm");
+var { InheritedPropertiesGrid } = ChromeUtils.importESModule(
+  "resource://filtaquilla/inheritedPropertiesGrid.sys.mjs"
+);
 
 function onPreInit(account, accountValues)
 {

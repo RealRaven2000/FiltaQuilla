@@ -28,7 +28,10 @@
 (function (exports) {
 
   // Get various parts of the WebExtension framework that we need.
-  var { ExtensionCommon } = ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
+  var { ExtensionCommon } = ChromeUtils.importESModule(
+    "resource://gre/modules/ExtensionCommon.sys.mjs"
+  );
+
   var Services = globalThis.Services || 
     ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
 
