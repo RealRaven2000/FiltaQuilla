@@ -1,0 +1,28 @@
+[
+  {
+    "namespace": "FiltaQuilla",
+    "functions": [
+      {
+        "name": "saveFile",
+        "type": "function",
+        "async": true,
+        "description": "saves a file.",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "object",
+            "isInstanceOf": "File",
+            "additionalProperties": true,
+            "description": "a binary file object"
+          },
+          {
+            "name": "path",
+            "type": "string",
+            "description": "target path of file to save"
+          }
+        ]
+      }
+
+    ]
+  }
+]
