@@ -278,11 +278,11 @@ FiltaQuilla.Util = {
     }
   },
 
-  isDebug: function isDebug() {
+  isDebug: function () {
     return this.prefs.getBoolPref("debug");
   },
 
-  isDebugOption: function isDebugOption(o) {
+  isDebugOption: function (o) {
     if (!this.isDebug) return false;
     try {
       return this.prefs.getBoolPref("debug." + o);
@@ -291,7 +291,7 @@ FiltaQuilla.Util = {
     }
   },
 
-  logWithOption: function logWithOption(a) {
+  logWithOption: function (a) {
     arguments[0] =
       "FiltaQuilla " + "{" + arguments[0].toUpperCase() + "} " + QuickFolders.Util.logTime() + "\n";
     console.log(...arguments);
@@ -331,8 +331,7 @@ FiltaQuilla.Util = {
     const name = "Preferences:ConfigManager";
 
     let mediator = Services.wm,
-      isTbModern = FiltaQuilla.Util.versionGreaterOrEqual(FiltaQuilla.Util.AppverFull, "85"),
-      uri = isTbModern ? "about:config" : "chrome://global/content/config.xhtml?debug";
+      uri = "about:config";
 
     let w = mediator.getMostRecentWindow(name),
       win = clickedElement
@@ -352,7 +351,7 @@ FiltaQuilla.Util = {
     }
     w.focus();
     w.addEventListener("load", function () {
-      let id = isTbModern ? "about-config-search" : "textbox",
+      let id = "about-config-search",
         flt = w.document.getElementById(id);
       if (flt) {
         flt.value = filter;

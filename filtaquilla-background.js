@@ -124,14 +124,14 @@
         }
         break;
       case "saveAttachments":
-        console.log("FiltaQuilla.saveAttachment()", data);
         const attachments = await browser.messages.listAttachments(data.messageHeader.id);
         const results = [];
+        const isDebugAttachments = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.attachments");
         // (filter out inline attachments)
         for (const at of attachments.filter(a=>a.contentDisposition === "attachment")) {
-          console.log(at);
+          if (isDebugAttachments) console.log(at);
           let file = await browser.messages.getAttachmentFile(data.messageHeader.id, at.partName);
-          console.log(file);
+          if (isDebugAttachments) console.log(file);
           let savedItem = {
             fileName: file.name,
             fileType: file.type,

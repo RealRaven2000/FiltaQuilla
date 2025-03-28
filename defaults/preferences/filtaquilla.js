@@ -50,6 +50,7 @@ pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
 
 // debug
 pref("extensions.filtaquilla.debug", false);
+pref("extensions.filtaquilla.debug.attachments", false);
 pref("extensions.filtaquilla.debug.firstrun", false);
 pref("extensions.filtaquilla.debug.notifications", false);
 pref("extensions.filtaquilla.debug.PrintingToolsNG", false);

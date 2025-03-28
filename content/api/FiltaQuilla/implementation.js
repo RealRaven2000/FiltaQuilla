@@ -15,17 +15,22 @@ const christophers_code = async () => {
 // Using a closure to not leak anything but the API to the outside world.
 (function (exports) {
 
+  function sanitizeName(aName, includesExtension = false) {
+    const win = Services.wm.getMostRecentWindow("mail:3pane");
+    return win.FiltaQuilla.sanitizeName(aName, includesExtension);
+  }  
+
   var FiltaQuilla = class extends ExtensionCommon.ExtensionAPI {
     getAPI(context) {
       return {
         FiltaQuilla: {
           async saveFile(file, path) {
+            const newName = sanitizeName(file.name, true);
+            const win = Services.wm.getMostRecentWindow("mail:3pane");
+            const util = win.FiltaQuilla.Util;
+            util.logDebug(`new file name would be: ${newName}`, win.FiltaQuilla.Util);
 
-            const pathFile = await IOUtils.createUniqueFile(
-              path,
-              file.name.replaceAll(/[/:*?\"<>|]/g, "_"),
-              0o600
-            );
+            const pathFile = await IOUtils.createUniqueFile(path, newName, 0o600);
 
             const saveFile = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
             saveFile.initWithPath(pathFile);
@@ -39,16 +44,15 @@ const christophers_code = async () => {
                 reader.readAsArrayBuffer(file);
               });
 
-              await IOUtils.write(pathFile, bytes);              
+              await IOUtils.write(pathFile, bytes);
               return true;
-            } catch(ex) {
-              console.error(ex, path)
+            } catch (ex) {
+              console.error(ex, "FiltaQuilla.saveFile()", path);
               return false;
             } finally {
-
-             
             }
-          },
+          }
+
         },
       };
     }

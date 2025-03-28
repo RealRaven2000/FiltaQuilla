@@ -2545,6 +2545,9 @@
     }
   },"filtaquilla-options-changed", false);
 
+  /* functions to move to experiment API in the future */
+  FiltaQuilla.sanitizeName = _sanitizeName; 
+
 })();
 
 // vim: set expandtab tabstop=2 shiftwidth=2:
