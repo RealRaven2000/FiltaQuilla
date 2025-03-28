@@ -1,12 +1,23 @@
-<b>Version 4.3.2</b>
+<b>Version 5.0</b>
 
 FiltaQuilla had to have some necessary changes for Thunderbird 128, especially custom search terms and actions could not be edited anymore. If you find any new problems, related to the update to ESR128, please report them at the <a href="https://github.com/RealRaven2000/FiltaQuilla/issues"> FiltaQuilla Github</a>
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>
 
+In order to move forward with the current release cycle (monthly releases) I decided to
 
 <b>Improvements</b>
 <ul>
+  <li>
+    Made compatible with Thunderbird 137.*. 
+    Minimum version going forward will now be Thunderbird128
+  </li>
+  <li>
+    The helper function saveAllAttachments() was removed and had to be reimplemented going through
+    web extension layer. The save attachments action is now set to beind asynchronous.
+    This might potentially improve overall performance in Thunderbird.
+    <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/XXX">[issue XXX]</a>.
+  </li>
   <li>
     header Regex match: Support using anchor tokens ^ and $ for address lists 
     <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/329">[issue 329]</a>.
@@ -14,9 +25,6 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
   <li>
     Allow automatic running of filters ouside of Inbox (IMAP only)
     <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/318">[issue 318]</a>.
-  </li>
-  <li>
-    Made compatible with Thunderbird 136.*
   </li>
   <li>
     Thunderbird 136 retires ChromeUtils.import - replace with importESModule.
