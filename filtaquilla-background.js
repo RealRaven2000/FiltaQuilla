@@ -9,12 +9,7 @@
   messenger.WindowListener.registerChromeUrl([ 
       ["resource", "filtaquilla",           "content/"],  // resource://
       ["resource", "filtaquilla-skin",      "skin/"],     // make a separate resource (we can't have 2 different resources mapped to to the same name)
-      ["content",  "filtaquilla",           "content/"],  // chrome://path
-      ["locale",   "filtaquilla", "en",     "locale/en/"],
-      ["locale",   "filtaquilla", "sv",     "locale/sv/"],
-      ["locale",   "filtaquilla", "de",     "locale/de/"],
-      ["locale",   "filtaquilla", "nl",     "locale/nl/"],
-      ["locale",   "filtaquilla", "ru",     "locale/ru/"]
+      ["content",  "filtaquilla",           "content/"]  // chrome://path
     ]
   );  
   
@@ -128,8 +123,27 @@
           );        
         }
         break;
-        
-    }
+      case "saveAttachments":
+        console.log("FiltaQuilla.saveAttachment()", data);
+        const attachments = await browser.messages.listAttachments(data.messageHeader.id);
+        const results = [];
+        // (filter out inline attachments)
+        for (const at of attachments.filter(a=>a.contentDisposition === "attachment")) {
+          console.log(at);
+          let file = await browser.messages.getAttachmentFile(data.messageHeader.id, at.partName);
+          console.log(file);
+          let savedItem = {
+            fileName: file.name,
+            fileType: file.type,
+            size: file.size,
+            modified: file.lastModified,
+          };
+          // experimental api, async!
+          savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
+          results.push(savedItem);
+        }
+        return results; 
+    } // switch
   });
   
   
