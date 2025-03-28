@@ -59,6 +59,7 @@ pref("extensions.filtaquilla.debug.regexHeader", false);
 pref("extensions.filtaquilla.debug.regexBody", false);
 pref("extensions.filtaquilla.debug.regexBody_parts", false);
 pref("extensions.filtaquilla.debug.mimeBody", false);
+pref("extensions.filtaquilla.debug.isLocal", false);
 
 
 // upgrade handling stuff
