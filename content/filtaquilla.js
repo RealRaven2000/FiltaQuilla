@@ -29,37 +29,38 @@
  * ***** END LICENSE BLOCK *****
  */
 
+ 
+
 
 (function filtaQuilla()
 {
+
+  const { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
+  const extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
+
+  var Services = globalThis.Services;
+  var { MailUtils } = ChromeUtils.importESModule("resource:///modules/MailUtils.sys.mjs");
+  var { MessageArchiver } = ChromeUtils.importESModule(
+    "resource:///modules/MessageArchiver.sys.mjs"
+  );
+
   try {
     var { InheritedPropertiesGrid } = ChromeUtils.importESModule(
       "resource://filtaquilla/inheritedPropertiesGrid.sys.mjs"
     );
   } catch (ex) {
-    FiltaQuilla.Util.logException("Importing inheritedPropertiesGrid.jsm failed.", ex);
+    FiltaQuilla.Util.logException("Importing inheritedPropertiesGrid.sys.mjs failed.", ex);
   }
-  var Services = globalThis.Services || ChromeUtils.import(
-    "resource://gre/modules/Services.jsm"
-  ).Services;
-  var { MailUtils } = FiltaQuilla.ESM
-    ? ChromeUtils.importESModule("resource:///modules/MailUtils.sys.mjs")
-    : ChromeUtils.import("resource:///modules/MailUtils.jsm");
-
-  var { MessageArchiver } = FiltaQuilla.ESM
-    ? ChromeUtils.importESModule("resource:///modules/MessageArchiver.sys.mjs")
-    : ChromeUtils.import("resource:///modules/MessageArchiver.jsm");
   //  VirtualFolderHelper -  "resource:///modules/VirtualFolderWrapper.jsm",
   
-
   
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
 
 
   const Cc = Components.classes,
-        Ci = Components.interfaces,
-        Cu = Components.utils,
-				util = FiltaQuilla.Util;
+    Ci = Components.interfaces,
+    Cu = Components.utils,
+    util = FiltaQuilla.Util;
 
 
   // parameters for MoveLater
@@ -77,9 +78,7 @@
   self.initialized = false;
   self.name = filtaQuilla;
   
-  var { MailServices } = FiltaQuilla.ESM
-    ? ChromeUtils.importESModule("resource:///modules/MailServices.sys.mjs")
-    : ChromeUtils.import("resource:///modules/MailServices.jsm");
+  var { MailServices } = ChromeUtils.importESModule("resource:///modules/MailServices.sys.mjs");
 
   const headerParser = MailServices.headerParser,
         tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
@@ -105,32 +104,32 @@
   
   // Enabling of filter actions.
   let subjectAppendEnabled = false,
-      subjectSuffixEnabled = false,
-      removeKeywordEnabled = false,
-      removeFlaggedEnabled = false,
-      noBiffEnabled = false,
-      markUnreadEnabled = false,
-      markRepliedEnabled = false,
-      copyAsReadEnabled = false,
-      launchFileEnabled = false,
-      runFileEnabled = false,
-      runFileUnicode = false,
-      trainAsJunkEnabled = false,
-      trainAsGoodEnabled = false,
-      printEnabled = false,
-      addSenderEnabled = false,
-      saveAttachmentEnabled = false,
-      detachAttachmentsEnabled = false,
-      javascriptActionEnabled = false,
-      javascriptActionBodyEnabled = false,
-      tonequillaEnabled = false,
-      saveMessageAsFileEnabled = false,
-      moveLaterEnabled = false, 
-      regexpCaseInsensitiveEnabled = false,
-      archiveMessageEnabled = false,
-      fwdSmartTemplatesEnabled = false,
-      rspSmartTemplatesEnabled = false,
-      fileNamesSpaceCharacter = " ";
+    subjectSuffixEnabled = false,
+    removeKeywordEnabled = false,
+    removeFlaggedEnabled = false,
+    noBiffEnabled = false,
+    markUnreadEnabled = false,
+    markRepliedEnabled = false,
+    copyAsReadEnabled = false,
+    launchFileEnabled = false,
+    runFileEnabled = false,
+    runFileUnicode = false,
+    trainAsJunkEnabled = false,
+    trainAsGoodEnabled = false,
+    printEnabled = false,
+    addSenderEnabled = false,
+    saveAttachmentEnabled = false,
+    detachAttachmentsEnabled = false,
+    javascriptActionEnabled = false,
+    javascriptActionBodyEnabled = false,
+    tonequillaEnabled = false,
+    saveMessageAsFileEnabled = false,
+    moveLaterEnabled = false, 
+    regexpCaseInsensitiveEnabled = false,
+    archiveMessageEnabled = false,
+    fwdSmartTemplatesEnabled = false,
+    rspSmartTemplatesEnabled = false,
+    fileNamesSpaceCharacter = " ";
       
       
 
@@ -144,6 +143,7 @@
     FolderNameEnabled = false,
     BodyRegexEnabled = false,
     SubjectBodyRegexEnabled = false;
+
 	// [#5] AG new condition - attachment name regex
 	let AttachmentRegexEnabled = false,
       moveLaterTimers = {}, // references to timers used in moveLater action
@@ -164,9 +164,7 @@
   };
 
   // javascript mime emitter functions
-  self._mimeMsg = FiltaQuilla.ESM
-    ? ChromeUtils.importESModule("resource:///modules/gloda/MimeMessage.sys.mjs")
-    : ChromeUtils.import("resource:///modules/gloda/MimeMessage.jsm");  
+  self._mimeMsg = ChromeUtils.importESModule("resource:///modules/gloda/MimeMessage.sys.mjs");  
 
   self._init = async function() {
     // self.strings = filtaquillaStrings;
@@ -188,15 +186,6 @@
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, true);
           msgHdr.subject = appSubject;
         }
-      },
-      
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
 
       isValidForType: function(type, scope) {return subjectAppendEnabled;},
@@ -222,15 +211,6 @@
           msgHdr.subject = appSubject;
         }
       },
-      
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
  
       isValidForType: function(type, scope) {return subjectSuffixEnabled;},
 
@@ -250,15 +230,6 @@
         aMsgHdrs[0].folder.removeKeywordsFromMessages(aMsgHdrs, aActionValue);
       },
 
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
-      
       isValidForType: function(type, scope) {return removeKeywordEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
@@ -273,14 +244,6 @@
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs[0].folder.markMessagesFlagged(aMsgHdrs, false);
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
       isValidForType: function(type, scope) { return removeFlaggedEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
 
@@ -293,14 +256,6 @@
       name: util.getBundleString("fq.markUnread"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs[0].folder.markMessagesRead(aMsgHdrs, false);
-      },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
       isValidForType: function(type, scope) {return markUnreadEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -318,14 +273,6 @@
           msgHdr.folder.addMessageDispositionState(msgHdr, Ci.nsIMsgFolder.nsMsgDispositionState_Replied);
         }
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
       isValidForType: function(type, scope) {return markRepliedEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
     }; // end markUnread
@@ -341,14 +288,6 @@
             hdrCount = aMsgHdrs.length;
         numNewMessages = numNewMessages - hdrCount;
         folder.setNumNewMessages(numNewMessages);
-      },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
       isValidForType: function(type, scope) { return noBiffEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -374,15 +313,7 @@
           MailServices.copy.copyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
             _localListener, aMsgWindow, false /*allowUndo*/);
 
-        },
-        apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-        {
-          let msgHdrs = [];
-          for (var i = 0; i < aMsgHdrs.length; i++) {
-            msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-          }
-          this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-        },        
+        },      
         
         isValidForType: function(type, scope) { return type == Ci.nsMsgFilterType.Manual && copyAsReadEnabled;},
         validateActionValue: function(aActionValue, aFilterFolder, type) {
@@ -491,16 +422,7 @@
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
         file.initWithPath(aActionValue);
         file.launch();
-      },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = []; // not used in this case...
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        if (util.isDebug) debugger;
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },        
+      },     
 
       isValidForType: function(type, scope) {return launchFileEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -590,16 +512,6 @@
           }
         }
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        if (util.isDebug) debugger;
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },        
-      
 
       isValidForType: function(type, scope) {return runFileEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -642,14 +554,6 @@
           console.log(`FQ: processed array of ${aMsgHdrs.length} messages for forwarding to SmartTemplates!`);
         }
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },        
 
       isValidForType: function(type, scope) {
         return fwdSmartTemplatesEnabled;
@@ -685,14 +589,7 @@
           // 
         }
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },        
+      
 
       isValidForType: function(type, scope) {
         return rspSmartTemplatesEnabled;
@@ -861,14 +758,7 @@
         }
         printNextMessage();
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
+
       isValidForType: function(type, scope) {return printEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: false,
@@ -943,14 +833,7 @@
           }
         }
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
+
       isValidForType: function(type, scope) {return addSenderEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
@@ -970,6 +853,8 @@
             util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
           }
           let callbackObject = new SaveAttachmentCallback(directory, false);
+          // we need to find out whether we can pass async callback grunctions by 
+          // adding async: true to the action.
 
           for (let i = 0; i < aMsgHdrs.length; i++) {
             try {
@@ -991,13 +876,6 @@
           util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
         }
       },
-      apply: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push(aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
 
       isValidForType: function (type, scope) {
         return saveAttachmentEnabled;
@@ -1007,7 +885,7 @@
       },
       allowDuplicates: true,
       needsBody: true,
-      isAsync: false,
+      isAsync: true,
     };
 
     // local object used for callback
@@ -1020,7 +898,7 @@
     }
 
     SaveAttachmentCallback.prototype = {
-      callback: function(aMsgHdr, aMimeMessage) {
+      callback: async function(aMsgHdr, aMimeMessage) {
 				let txtStackedDump = "";
         this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
         this.attachments = aMimeMessage.allAttachments;
@@ -1036,6 +914,17 @@
           // the only workaround was to create new date objects at each step and call its functions directly:
           let nicedate = " " + (new Date(ds)).getFullYear() + "-" + ((new Date(ds)).getMonth()+1) + "-" + (new Date(ds)).getDate()  + " " +  (new Date(ds)).getHours() + ":" + (new Date(ds)).getMinutes();
 					if (!this.detach) {
+            const messageHeader = extension.messageManager.convert(aMsgHdr);
+            const results = await FiltaQuilla.Util.notifyTools.notifyBackground({
+              func: "saveAttachments",
+              messageHeader: messageHeader,
+              path: this.directory.path,
+            });
+
+            console.log("after saveAttachments: ", results);
+            debugger;
+
+/*          Old code (pre 128) - saveAttachmentToFile() was removed in 136.
 						for (let j = 0; j < this.attachments.length; j++) {
               try {
                 let attachment = this.attachments[j];
@@ -1063,7 +952,8 @@
                 util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
               }
 						}
-					} else {
+*/
+          } else {
 						if (this.attachments.length > 0) {
 							let msgURIs = [],
 							    contentTypes = [],
@@ -1134,14 +1024,6 @@
 					util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
 				}
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
       isValidForType: function(type, scope) {return detachAttachmentsEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: false,
@@ -1164,14 +1046,6 @@
 					return false;
 				}
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
       isValidForType: function(type, scope) {return javascriptActionEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
@@ -1193,14 +1067,6 @@
 					util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
 					return false;
 				}
-      },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
       isValidForType: function(type, scope) {return javascriptActionBodyEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -1231,14 +1097,6 @@
           _saveAs(msgHdr, directory, type);
         }
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
-      },
       isValidForType: function(type, scope) {return saveMessageAsFileEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
@@ -1258,17 +1116,8 @@
         moveLaterTimers[currentIndex] = timer;
         // the message headers array gets cleared by Thunderbird 78! we need to save it elswhere
         
-        
         let callback = new MoveLaterNotify(aMsgHdrs, srcFolder, dstFolder, currentIndex);
         timer.initWithCallback(callback, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
-      },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        let msgHdrs = [];
-        for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
       isValidForType: function(type, scope) {return moveLaterEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -1285,13 +1134,6 @@
         let archiver = new MessageArchiver(); // [issue 241]
         archiver.archiveMessages(aMsgHdrs);
       },      
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        let a = [];
-        for (let index = 0; index < aMsgHdrs.length; index++) {
-          a.push(aMsgHdrs.queryElementAt(index, Ci.nsIMsgDBHdr));
-        }
-        this.applyAction(a, aActionValue, aListener, aType, aMsgWindow);
-      },
       isValidForType: function(type, scope) { return archiveMessageEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
     }; // end archiveMessage
@@ -1467,7 +1309,6 @@
       },
       needsBody: false,
       getAvailable: function subjectRegEx_getAvailable(scope, op) {
-        FiltaQuilla.Util.logDebug("subjectRegex - getAvailable()...");
         return _isLocalSearch(scope) && SubjectRegexEnabled;
       },
       getAvailableOperators: function subjectRegEx_getAvailableOperators(scope) {
@@ -2014,11 +1855,6 @@
           util.logDebug("ToneQuillaPlay.queueToPlay", aActionValue);
           ToneQuillaPlay.queueToPlay(aActionValue);
         },
-        apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-        {
-          this.applyAction(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow);
-        },
-
         isValidForType: function(type, scope) {return tonequillaEnabled;},
 
         validateActionValue: function(value, folder, type) { return null;},
@@ -2313,7 +2149,7 @@
       case Ci.nsMsgSearchScope.newsFilter:
         return true;
       default:
-        FiltaQuilla.Util.logDebug("isLocalSearch = FALSE!", aSearchScope);  // test!!!
+        FiltaQuilla.Util.logDebugOptional("isLocal","isLocalSearch = FALSE!", aSearchScope);  // test!!!
         return false; 
     }
   }
