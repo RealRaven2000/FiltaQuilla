@@ -31,11 +31,7 @@ FiltaQuilla.TabURIregexp = {
 
 
   var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
-  FiltaQuilla.ESM = parseInt(AppConstants.MOZ_APP_VERSION, 10) >= 128;
-
-  var { MailStringUtils } = FiltaQuilla.ESM
-    ? ChromeUtils.importESModule("resource:///modules/MailStringUtils.sys.mjs")
-    : ChromeUtils.import("resource:///modules/MailStringUtils.jsm");
+  var { MailStringUtils } = ChromeUtils.importESModule("resource:///modules/MailStringUtils.sys.mjs");
 
 
 FiltaQuilla.Util = {
@@ -391,9 +387,7 @@ FiltaQuilla.Util = {
 
   // l10n
   getBundleString: function getBundleString(id, defaultText, substitions = []) {
-    var { ExtensionParent } = FiltaQuilla.ESM
-      ? ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs")
-      : ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+    var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
 
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     let localized = extension.localeData.localizeMessage(id, substitions);
@@ -448,9 +442,7 @@ FiltaQuilla.Util = {
     var Services = globalThis.Services || 
       ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
       
-    var { ExtensionParent } = FiltaQuilla.ESM
-      ? ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs")
-      : ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+    var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
 
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     Services.scriptloader.loadSubScript(
@@ -1281,13 +1273,8 @@ var Services = globalThis.Services || ChromeUtils.import(
   "resource://gre/modules/Services.jsm"
 ).Services;
 
-var { ExtensionParent } = FiltaQuilla.ESM
-  ? ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs")
-  : ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
-
-var { MimeParser } = FiltaQuilla.ESM
-  ? ChromeUtils.importESModule("resource:///modules/mimeParser.sys.mjs")
-  : ChromeUtils.import("resource:///modules/mimeParser.jsm");
+var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
+var { MimeParser } = ChromeUtils.importESModule("resource:///modules/mimeParser.sys.mjs");
 FiltaQuilla.Util.extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
 Services.scriptloader.loadSubScript(
   FiltaQuilla.Util.extension.rootURI.resolve("content/scripts/notifyTools.js"),

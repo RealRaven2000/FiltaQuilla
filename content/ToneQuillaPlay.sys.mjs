@@ -151,10 +151,8 @@ export const ToneQuillaPlay = {
 
 
     var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
-    var ESM = parseInt(AppConstants.MOZ_APP_VERSION, 10) >= 128;    
-    const { NetUtil } = ESM
-      ? ChromeUtils.importESModule("resource://gre/modules/NetUtil.sys.mjs")
-      : ChromeUtils.import("resource://gre/modules/NetUtil.jsm");  
+    const { NetUtil } = ChromeUtils.importESModule("resource://gre/modules/NetUtil.sys.mjs");
+
     // Services is already global
     // const { Services } =
     //   globalThis.Services || ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
