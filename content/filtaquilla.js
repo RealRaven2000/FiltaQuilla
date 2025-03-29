@@ -1077,22 +1077,47 @@
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
       name: util.getBundleString("fq.saveMsgAsFile"),
       applyAction: async function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
+        const CONCURRENCY_LIMIT = 10; // maximum # file handles to be handled at the same time.
         // allow specifying directory with suffix of |htm
-        let type = "eml";
-        let path = actionValue;
+        let type = "eml"; //default
+        const path = actionValue;
         if (/\|/.test(actionValue)) {
           let matches = /(^[^\|]*)\|(.*$)/.exec(actionValue);
           path = matches[1];
           type = matches[2];
         }
 
-        let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
+        const directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         directory.initWithPath(path);
-        for (let i = 0; i < msgHdrs.length; i++) {
-          var msgHdr = msgHdrs[i];
-          _incrementMoveLaterCount(msgHdr);
-          await _saveAs(msgHdr, directory, type);
+
+        // queue and save files asynchronously:
+        let activePromises = new Set();
+
+        for (const msgHdr of msgHdrs) {
+          // Start the save operation and add its promise to the active set
+          const savePromise = async () => {
+            try {
+              _incrementMoveLaterCount(msgHdr);
+              await _saveAs(msgHdr, directory, type);
+            } catch (error) {
+              console.error("Error saving message:", error, msgHdr);
+            } finally {
+              // When a promise completes, remove it from the active set
+              activePromises.delete(savePromise);
+            }
+          };
+
+          // Invoke the promise and handle errors
+          activePromises.add(savePromise());
+
+          // If the active set reaches the concurrency limit, wait for one to complete
+          if (activePromises.size >= CONCURRENCY_LIMIT) {
+            await Promise.race(activePromises); // fastest finish first
+          }
         }
+
+        // Wait for any remaining operations to complete
+        await Promise.all(activePromises);
       },
       isValidForType: function(type, scope) {return saveMessageAsFileEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
@@ -2316,7 +2341,6 @@
         searchFlags = searchFlags.substring(0, startOptions);
       }
     }
-    
     if (regexpCaseInsensitiveEnabled && !searchFlags.includes("i") && !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)){
       searchFlags += "i";
     }
@@ -2334,23 +2358,28 @@
     file.append(fullFileName);
     try {
       file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
-      let service = MailServices.messageServiceFromURI(msgSpec);
+      const service = MailServices.messageServiceFromURI(msgSpec);
 
-      // asyncify:
-      const savedPromise = new Promise((resolve) => {
-        service.saveMessageToDisk(msgSpec, file, false, _urlListener, true, null);
+      return new Promise((resolve, reject) => {
+        let urlListener = createUrlListener(resolve);
+
+        try {
+          // in Tb115 this used to be called SaveMessageToDisk
+          if (service.saveMessageToDisk) {
+            service.saveMessageToDisk(msgSpec, file, false, urlListener, true, null);
+          } else {
+            reject(new Error("No valid saveMessageToDisk method found."));
+          }
+        } catch (ex) {
+          console.error("Error saving message:", ex);
+          reject(ex);
+        }
       });
-      const status = await savedPromise;
-      if (!Components.isSuccessCode(status) || file.fileSize <= 0) {
-        console.warn(`Could not open ${url.href}`);
-        return null;
-      }      
     }
     catch (ex) {
       console.log("Could not create file with name:" + fullFileName);
       throw(ex);
     }
-
   }
 
   // OBSOLETE from http://mxr.mozilla.org/comm-1.9.2/source/mozilla/toolkit/components/search/nsSearchService.js#677
@@ -2508,21 +2537,25 @@
     return name;
   }
 
-  var _urlListener = { // nsIUrlListener
-    OnStartRunningUrl: function (aUrl) {},
-    OnStopRunningUrl: async function (aUrl, status) {
-      let messageUri;
-      if (aUrl instanceof Ci.nsIMsgMessageUrl) {
-        messageUri = aUrl.uri;
-      }
-      let msgHdr = messenger.msgHdrFromURI(messageUri),
-          moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
-      if (moveLaterCount) {
-        msgHdr.setUint32Property("moveLaterCount", moveLaterCount - 1);
-      }
-      resolve(status);
-    }
-  };
+  function createUrlListener(resolve) {
+    // returns a nsIUrlListener
+    return {
+      OnStartRunningUrl: function (aUrl) {},
+      OnStopRunningUrl: function (aUrl, status) {
+        let messageUri;
+        if (aUrl instanceof Ci.nsIMsgMessageUrl) messageUri = aUrl.uri;
+        const msgHdr = messenger.msgHdrFromURI(messageUri);
+        const moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
+        if (moveLaterCount) {
+          msgHdr.setUint32Property("moveLaterCount", moveLaterCount - 1);
+        }
+        // By passing this status to the resolve function, we effectively allow the Promise 
+        // to be settled with the operation's outcome, enabling subsequent 
+        // handling of success or failure states.
+        resolve(status); // Resolve the Promise when saving completes
+      },
+    };
+  }
 
   function dl(text) {dump(text + '\n');}
 
