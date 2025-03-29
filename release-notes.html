@@ -10,7 +10,7 @@ In order to move forward with the current release cycle (monthly releases) I dec
 <ul>
   <li>
     Made compatible with Thunderbird 137.*. 
-    Minimum version going forward will now be Thunderbird128
+    Minimum version going forward will now be Thunderbird 128.
   </li>
   <li>
     The helper function saveAllAttachments() was removed and had to be reimplemented going through
@@ -18,6 +18,12 @@ In order to move forward with the current release cycle (monthly releases) I dec
     This might potentially improve overall performance in Thunderbird.
     <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/XXX">[issue XXX]</a>.
   </li>
+  <li>
+    save Messages: Made file operations asynchronous. This should avoid significant slowdowns
+    when Thunderbird starts and tries to execute filters that potentially save many files 
+    or attachments.
+    <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/335">[issue 335]</a>.
+  </li>    
   <li>
     header Regex match: Support using anchor tokens ^ and $ for address lists 
     <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/329">[issue 329]</a>.
@@ -40,7 +46,9 @@ In order to move forward with the current release cycle (monthly releases) I dec
 
 <b>Bug Fixes</b>
 <ul>
-  <li>Replace deprecated nsILocalFile with nsIFile </li>
+  <li>
+    Replace deprecated nsILocalFile with nsIFile 
+  </li>
 </ul>
 
 
