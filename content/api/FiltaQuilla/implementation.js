@@ -34,6 +34,7 @@ const christophers_code = async () => {
 
             const saveFile = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
             saveFile.initWithPath(pathFile);
+            util.logDebugOptional("debug.attachments", `Saving to path: ${pathFile}...`);
 
             try {
               const bytes = await new Promise(function (resolve) {
