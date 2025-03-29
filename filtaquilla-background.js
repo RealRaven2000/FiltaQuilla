@@ -128,6 +128,8 @@
         const results = [];
         const isDebugAttachments = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.attachments");
         // (filter out inline attachments)
+        // we need to be careful already detach attachments are not included. 
+        // what contentDisposition do they have?
         for (const at of attachments.filter(a=>a.contentDisposition === "attachment")) {
           if (isDebugAttachments) console.log(at);
           let file = await browser.messages.getAttachmentFile(data.messageHeader.id, at.partName);
@@ -137,8 +139,23 @@
             fileType: file.type,
             size: file.size,
             modified: file.lastModified,
+            headers: at.headers,
           };
           // experimental api, async!
+          const altered = savedItem.headers["x-mozilla-altered"];
+          const detachedInfo = (altered && altered.length) ?
+            altered.find((x) => x.startsWith("AttachmentDetached")) :
+            null;
+          let attachmentURL;
+          if (detachedInfo) {
+            const attUrls = savedItem.headers["x-mozilla-external-attachment-url"];
+            if (attUrls && attUrls.length) {
+              attachmentURL = attUrls[0];
+            }
+          }
+          if (attachmentURL) {
+            console.log(`trying to save detached attachment: ${attachmentURL}`);
+          }
           savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
           results.push(savedItem);
         }
