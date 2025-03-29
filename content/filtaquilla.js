@@ -843,7 +843,7 @@
     self.saveAttachment = {
       id: "filtaquilla@mesquilla.com#saveAttachment",
       name: util.getBundleString("fq.saveAttachment"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: async function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(
           Ci.nsILocalFile || Ci.nsIFile
         );
@@ -897,6 +897,7 @@
       this.saveAttachmentListener = null;
     }
 
+    // we probably need to set up a promise to be resolved in callback!
     SaveAttachmentCallback.prototype = {
       callback: async function(aMsgHdr, aMimeMessage) {
 				let txtStackedDump = "";
@@ -1078,7 +1079,7 @@
     {
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
       name: util.getBundleString("fq.saveMsgAsFile"),
-      applyAction: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
+      applyAction: async function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         // allow specifying directory with suffix of |htm
         let type = "eml";
         let path = actionValue;
@@ -1094,13 +1095,14 @@
         for (let i = 0; i < msgHdrs.length; i++) {
           var msgHdr = msgHdrs[i];
           _incrementMoveLaterCount(msgHdr);
-          _saveAs(msgHdr, directory, type);
+          await _saveAs(msgHdr, directory, type);
         }
       },
       isValidForType: function(type, scope) {return saveMessageAsFileEnabled;},
       validateActionValue: function(value, folder, type) { return null;},
       allowDuplicates: true,
-      needsBody: true
+      needsBody: true,
+      isAsync: true
     };
 
     self.moveLater =
@@ -2326,27 +2328,27 @@
     return [searchValue, searchFlags, searchOptions];
   }
 
-  function _saveAs(aMsgHdr, aDirectory, aType) {
-    let msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr),
-        subject = MailServices.mimeConverter.decodeMimeHeader(aMsgHdr.subject, null, false, true), // [issue 53]
-        fileName = _sanitizeName(subject),
-        fullFileName = fileName + "." + aType,
-        file = aDirectory.clone();
+  async function _saveAs(aMsgHdr, aDirectory, aType) {
+    const msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr),
+      subject = MailServices.mimeConverter.decodeMimeHeader(aMsgHdr.subject, null, false, true), // [issue 53]
+      fileName = _sanitizeName(subject),
+      fullFileName = fileName + "." + aType,
+      file = aDirectory.clone();
          
     file.append(fullFileName);
     try {
       file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
       let service = MailServices.messageServiceFromURI(msgSpec);
-      if (service.SaveMessageToDisk) { // TB115
-        let aURL = {};
-        service.SaveMessageToDisk(msgSpec, file, false, _urlListener, aURL, true, null);
-      }
-      if (service.saveMessageToDisk) { // TB128 [issue 270]
-        // converted to camelcase
-        // 5th parameter was dropped
-        // nsIUrlListener is unchanged
+
+      // asyncify:
+      const savedPromise = new Promise((resolve) => {
         service.saveMessageToDisk(msgSpec, file, false, _urlListener, true, null);
-      }
+      });
+      const status = await savedPromise;
+      if (!Components.isSuccessCode(status) || file.fileSize <= 0) {
+        console.warn(`Could not open ${url.href}`);
+        return null;
+      }      
     }
     catch (ex) {
       console.log("Could not create file with name:" + fullFileName);
@@ -2511,15 +2513,18 @@
   }
 
   var _urlListener = { // nsIUrlListener
-    OnStartRunningUrl: function _onStartRunningUrl(aUrl) {},
-    OnStopRunningUrl: function _onStopRunningUrl(aUrl, aStatus) {
+    OnStartRunningUrl: function (aUrl) {},
+    OnStopRunningUrl: async function (aUrl, status) {
       let messageUri;
-      if (aUrl instanceof Ci.nsIMsgMessageUrl)
+      if (aUrl instanceof Ci.nsIMsgMessageUrl) {
         messageUri = aUrl.uri;
+      }
       let msgHdr = messenger.msgHdrFromURI(messageUri),
           moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
-      if (moveLaterCount)
+      if (moveLaterCount) {
         msgHdr.setUint32Property("moveLaterCount", moveLaterCount - 1);
+      }
+      resolve(status);
     }
   };
 
