@@ -174,7 +174,7 @@
       fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilters(nsIFilePicker.filterAll);
       try {
-        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         file.initWithPath(this.textbox.value);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
@@ -200,7 +200,7 @@
     }
 
     launch() {
-      var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+      var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
       file.initWithPath(this.textbox.value);
       file.launch();
     }
@@ -248,7 +248,7 @@
       fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilter("Template Files", "*.htm;*.html;*.txt");
       try {
-        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         file.initWithPath(this.textbox.value);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
@@ -309,7 +309,7 @@
       fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilters(nsIFilePicker.filterAll);
       try {
-        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         // the file url is the first comma-separated parameter
         var filePath = this.textbox.value.split(',')[0];
         file.initWithPath(filePath);
@@ -455,7 +455,7 @@
       fp.init(util.getFileInitArg(window), this.dialogTitle, nsIFilePicker.modeGetFolder);
       fp.appendFilters(nsIFilePicker.filterAll);
       try {
-        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         // the file url is the first comma-separated parameter
         var filePath = this.textbox.value;
         file.initWithPath(filePath);
@@ -569,7 +569,7 @@
 
       if (pathBox.value)  {
         try {
-          var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+          var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
           var filePath = pathBox.value;
           file.initWithPath(filePath);
           fp.displayDirectory = file.parent;

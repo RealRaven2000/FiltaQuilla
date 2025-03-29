@@ -419,7 +419,7 @@
       name: util.getBundleString("fq.launchFile"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
-        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         file.initWithPath(aActionValue);
         file.launch();
       },     
@@ -437,7 +437,7 @@
       name: util.getBundleString("fq.runFile"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"]
-                     .createInstance(Ci.nsILocalFile || Ci.nsIFile);
+                     .createInstance(Ci.nsIFile);
         // the action value string consists of comma-separated fields. The
         // first field is the file URL for the process to run. Subsequent
         // fields are parameter strings to pass to the file. These parameters
@@ -524,8 +524,7 @@
       id: "filtaquilla@mesquilla.com#fwdSmart",
       name: util.getBundleString("fq.smartTemplate.fwd"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        var file = Cc["@mozilla.org/file/local;1"]
-                     .createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         var args = aActionValue.split(','),
             fileURL = args[0],
             parmCount = args.length - 1;
@@ -569,8 +568,7 @@
       id: "filtaquilla@mesquilla.com#rspSmart",
       name: util.getBundleString("fq.smartTemplate.rsp"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        var file = Cc["@mozilla.org/file/local;1"]
-                     .createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         var args = aActionValue.split(','),
             fileURL = args[0],
             parmCount = args.length - 1;
@@ -845,7 +843,7 @@
       name: util.getBundleString("fq.saveAttachment"),
       applyAction: async function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(
-          Ci.nsILocalFile || Ci.nsIFile
+          Ci.nsIFile
         );
         try {
           directory.initWithPath(aActionValue);
@@ -1001,8 +999,7 @@
       name: util.getBundleString("fq.detachAttachments"),
       applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
       {
-        let directory = Cc["@mozilla.org/file/local;1"]
-                           .createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
 				try {
 					directory.initWithPath(aActionValue);
 					if (directory.exists()) {
@@ -1089,8 +1086,7 @@
           type = matches[2];
         }
 
-        let directory = Cc["@mozilla.org/file/local;1"]
-                           .createInstance(Ci.nsILocalFile || Ci.nsIFile);
+        let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         directory.initWithPath(path);
         for (let i = 0; i < msgHdrs.length; i++) {
           var msgHdr = msgHdrs[i];
