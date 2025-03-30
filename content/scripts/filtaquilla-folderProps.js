@@ -2,8 +2,6 @@
 /* replacement for folderPropsOverlay.js */
 
 function getBundleString(id, defaultText="no default text!", substitions = []) {
-
-  var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
   var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
 
   let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");

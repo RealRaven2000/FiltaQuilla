@@ -60,6 +60,7 @@
   const Cc = Components.classes,
     Ci = Components.interfaces,
     Cu = Components.utils,
+    Cr = Components.results,
     util = FiltaQuilla.Util;
 
 
@@ -174,151 +175,171 @@
      */
 
     // prepend to subject. This was called "append" due to an earlier bug
-    self.subjectAppend =
-    {
+    self.subjectAppend = {
       id: "filtaquilla@mesquilla.com#subjectAppend",
       name: util.getBundleString("fq.subjectprepend"),
 
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        for (let msgHdr of aMsgHdrs)
-        {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        for (let msgHdr of aMsgHdrs) {
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, true);
           msgHdr.subject = appSubject;
         }
       },
 
-      isValidForType: function(type, scope) {return subjectAppendEnabled;},
+      isValidForType: function (type, scope) {
+        return subjectAppendEnabled;
+      },
 
-      validateActionValue: function(value, folder, type) { return null;},
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
 
       allowDuplicates: false,
       needsBody: false,
-      isAsync: false
+      isAsync: false,
     };
 
     // Suffix to subject
-    self.subjectSuffix =
-    {
+    self.subjectSuffix = {
       id: "filtaquilla@mesquilla.com#subjectSuffix",
       name: util.getBundleString("fq.subjectappend"),
 
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
-        for (let msgHdr of aMsgHdrs)
-        {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        for (let msgHdr of aMsgHdrs) {
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, false);
           msgHdr.subject = appSubject;
         }
       },
- 
-      isValidForType: function(type, scope) {return subjectSuffixEnabled;},
 
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return subjectSuffixEnabled;
+      },
+
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
 
       allowDuplicates: false,
       needsBody: false,
-      isAsync: false
+      isAsync: false,
     };
 
     // remove keyword
-    self.removeKeyword =
-    {
+    self.removeKeyword = {
       id: "filtaquilla@mesquilla.com#removeTag",
       name: util.getBundleString("fq.removekeyword"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs[0].folder.removeKeywordsFromMessages(aMsgHdrs, aActionValue);
       },
 
-      isValidForType: function(type, scope) {return removeKeywordEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return removeKeywordEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
-      needsBody: false
+      needsBody: false,
     };
 
     // remove star
-    self.removeFlagged =
-    {
+    self.removeFlagged = {
       id: "filtaquilla@mesquilla.com#removeStar",
       name: util.getBundleString("fq.removeflagged"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs[0].folder.markMessagesFlagged(aMsgHdrs, false);
       },
-      isValidForType: function(type, scope) { return removeFlaggedEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
-
+      isValidForType: function (type, scope) {
+        return removeFlaggedEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
     }; // end removeFlagged
 
     // mark as unread
-    self.markUnread =
-    {
+    self.markUnread = {
       id: "filtaquilla@mesquilla.com#markUnread",
       name: util.getBundleString("fq.markUnread"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         aMsgHdrs[0].folder.markMessagesRead(aMsgHdrs, false);
       },
-      isValidForType: function(type, scope) {return markUnreadEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return markUnreadEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
     }; // end markUnread
 
     // mark as replied
-    self.markReplied =
-    {
+    self.markReplied = {
       id: "filtaquilla@mesquilla.com#markReplied",
       name: util.getBundleString("fq.markReplied"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // what a pain, the folder function does not take an array like all others!
-        for (let msgHdr of aMsgHdrs)
-        {
-          msgHdr.folder.addMessageDispositionState(msgHdr, Ci.nsIMsgFolder.nsMsgDispositionState_Replied);
+        for (let msgHdr of aMsgHdrs) {
+          msgHdr.folder.addMessageDispositionState(
+            msgHdr,
+            Ci.nsIMsgFolder.nsMsgDispositionState_Replied
+          );
         }
       },
-      isValidForType: function(type, scope) {return markRepliedEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return markRepliedEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
     }; // end markUnread
 
     // noBiff action
-    self.noBiff =
-    {
+    self.noBiff = {
       id: "filtaquilla@mesquilla.com#noBiff",
       name: util.getBundleString("fq.nobiff"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let folder = aMsgHdrs[0].folder,
-            numNewMessages = folder.getNumNewMessages(false);
-            hdrCount = aMsgHdrs.length;
+          numNewMessages = folder.getNumNewMessages(false);
+        hdrCount = aMsgHdrs.length;
         numNewMessages = numNewMessages - hdrCount;
         folder.setNumNewMessages(numNewMessages);
       },
-      isValidForType: function(type, scope) { return noBiffEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
-
+      isValidForType: function (type, scope) {
+        return noBiffEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
     }; // end noBiff
 
     // copyAsRead action
-    (function()
-    {
-      self.copyAsRead =
-      {
+    (function () {
+      self.copyAsRead = {
         id: "filtaquilla@mesquilla.com#copyAsRead",
         name: util.getBundleString("fq.copyAsRead"),
-        applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
           _aListener = aListener;
           var srcFolder = aMsgHdrs[0].folder;
           _dstFolder = MailUtils.getExistingFolder(aActionValue, false);
           // store the messages Ids to use post-copy
           _messageIds = [];
-          for (let msgHdr of aMsgHdrs)
-            _messageIds.push(msgHdr.messageId); // are these used later?
+          for (let msgHdr of aMsgHdrs) _messageIds.push(msgHdr.messageId); // are these used later?
 
-          MailServices.copy.copyMessages(srcFolder, aMsgHdrs, _dstFolder, false /*isMove*/,
-            _localListener, aMsgWindow, false /*allowUndo*/);
+          MailServices.copy.copyMessages(
+            srcFolder,
+            aMsgHdrs,
+            _dstFolder,
+            false /*isMove*/,
+            _localListener,
+            aMsgWindow,
+            false /*allowUndo*/
+          );
+        },
 
-        },      
-        
-        isValidForType: function(type, scope) { 
+        isValidForType: function (type, scope) {
           return type == Ci.nsMsgFilterType.Manual && copyAsReadEnabled;
         },
-        validateActionValue: function(aActionValue, aFilterFolder, type) {
+        validateActionValue: function (aActionValue, aFilterFolder, type) {
           const msgFolder = MailUtils.getExistingFolder(aActionValue, false);
           if (!msgFolder || !msgFolder.canFileMessages) {
             return util.getBundleString("fq.filtaquilla.mustSelectFolder");
@@ -327,84 +348,75 @@
         },
         allowDuplicates: true,
         needsBody: false,
-        isAsync: true
-      }
+        isAsync: true,
+      };
 
       // local variables and methods
       var _messageIds = null,
-          _dstFolder = null,
-          _aListener = null;
+        _dstFolder = null,
+        _aListener = null;
 
-      var _localListener =
-      {
-        OnStartCopy: function() {
-          if (_aListener)
-            _aListener.OnStartCopy();
+      var _localListener = {
+        OnStartCopy: function () {
+          if (_aListener) _aListener.OnStartCopy();
         },
-        OnProgress: function(aProgress, aProgressMax) {
-          if (_aListener)
-            _aListener.OnProgress(aProgress, aProgressMax);
+        OnProgress: function (aProgress, aProgressMax) {
+          if (_aListener) _aListener.OnProgress(aProgress, aProgressMax);
         },
-        SetMessageKey: function(aKey) {
-          if (_aListener)
-            _aListener.SetMessageKey(aKey);
+        SetMessageKey: function (aKey) {
+          if (_aListener) _aListener.SetMessageKey(aKey);
         },
-        SetMessageId: function(aMessageId) {
-          if (_aListener)
-            _aListener.SetMessageId(aMessageId);
+        SetMessageId: function (aMessageId) {
+          if (_aListener) _aListener.SetMessageId(aMessageId);
         },
-        OnStopCopy: function(aStatus) {
+        OnStopCopy: function (aStatus) {
           // local folders can be set unread now. Imap folders must be loaded
-          if (_dstFolder.URI.substr(0, 4) == "imap")
-          {
-            var mailSession = Cc["@mozilla.org/messenger/services/session;1"]
-                                .getService(Ci.nsIMsgMailSession);
+          if (_dstFolder.URI.substr(0, 4) == "imap") {
+            var mailSession = Cc["@mozilla.org/messenger/services/session;1"].getService(
+              Ci.nsIMsgMailSession
+            );
             mailSession.AddFolderListener(_folderListener, Ci.nsIFolderListener.event);
             _dstFolder.updateFolder(null);
-          }
-          else
-          {
+          } else {
             _setRead(aStatus);
           }
         },
       };
 
       var _setRead = function (aStatus) {
-        var dstMessages = Cc["@mozilla.org/array;1"]
-                          .createInstance(Ci.nsIMutableArray);
+        var dstMessages = Cc["@mozilla.org/array;1"].createInstance(Ci.nsIMutableArray);
         var dstDb = _dstFolder.msgDatabase;
         for (var i = 0; i < _messageIds.length; i++) {
           var hdr = dstDb.getMsgHdrForMessageID(_messageIds[i]);
-          if (hdr)
-            dstMessages.appendElement(dstDb.getMsgHdrForMessageID(_messageIds[i]), false);
+          if (hdr) dstMessages.appendElement(dstDb.getMsgHdrForMessageID(_messageIds[i]), false);
           else
-            throw("Couldn't find messageId <" + _messageIds[i] + "> in Copy as Unread custom action");
+            throw (
+              "Couldn't find messageId <" + _messageIds[i] + "> in Copy as Unread custom action"
+            );
         }
 
         _dstFolder.markMessagesRead(dstMessages, true);
         _dstFolder = null;
         _messageIds = null;
-        if (_aListener)
-          _aListener.OnStopCopy(aStatus);
+        if (_aListener) _aListener.OnStopCopy(aStatus);
       };
 
-      var _folderListener =
-      {
-        OnItemAdded: function(parentItem, item) {},
-        OnItemRemoved: function(parentItem, item) {},
-        OnItemPropertyChanged: function(item, property, oldValue, newValue) {},
-        OnItemIntPropertyChanged: function(item, property, oldValue, newValue) {},
-        OnItemBoolPropertyChanged: function(item, property, oldValue, newValue) {},
-        OnItemUnicharPropertyChanged: function(item, property, oldValue, newValue){},
-        OnItemPropertyFlagChanged: function(item, property, oldFlag, newFlag) {},
-        OnItemEvent: function(folder, event) {
+      var _folderListener = {
+        OnItemAdded: function (parentItem, item) {},
+        OnItemRemoved: function (parentItem, item) {},
+        OnItemPropertyChanged: function (item, property, oldValue, newValue) {},
+        OnItemIntPropertyChanged: function (item, property, oldValue, newValue) {},
+        OnItemBoolPropertyChanged: function (item, property, oldValue, newValue) {},
+        OnItemUnicharPropertyChanged: function (item, property, oldValue, newValue) {},
+        OnItemPropertyFlagChanged: function (item, property, oldFlag, newFlag) {},
+        OnItemEvent: function (folder, event) {
           var eventType = event.toString();
 
           if (eventType == "FolderLoaded") {
-            if (_dstFolder && folder && folder.URI == _dstFolder.URI)
-            {
-              var mailSession = Cc["@mozilla.org/messenger/services/session;1"]
-                                .getService(Ci.nsIMsgMailSession);
+            if (_dstFolder && folder && folder.URI == _dstFolder.URI) {
+              var mailSession = Cc["@mozilla.org/messenger/services/session;1"].getService(
+                Ci.nsIMsgMailSession
+              );
               mailSession.RemoveFolderListener(_folderListener);
               _setRead(null);
             }
@@ -414,31 +426,31 @@
     })(); // end copyAsRead
 
     // launch file
-    self.launchFile =
-    {
+    self.launchFile = {
       id: "filtaquilla@mesquilla.com#launchFile",
       name: util.getBundleString("fq.launchFile"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         file.initWithPath(aActionValue);
         file.launch();
-      },     
+      },
 
-      isValidForType: function(type, scope) {return launchFileEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return launchFileEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
-      needsBody: false
+      needsBody: false,
     }; // end launchFile
 
     // run file
-    self.runFile =
-    {
+    self.runFile = {
       id: "filtaquilla@mesquilla.com#runFile",
       name: util.getBundleString("fq.runFile"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        var file = Cc["@mozilla.org/file/local;1"]
-                     .createInstance(Ci.nsIFile);
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         // the action value string consists of comma-separated fields. The
         // first field is the file URL for the process to run. Subsequent
         // fields are parameter strings to pass to the file. These parameters
@@ -454,17 +466,17 @@
         //   @PROPERTY@somedbproperty@ uses .getStringProperty("somedbproperty")
 
         // TO DO: add @BODY@ support [issue 41]
-        
+
         /**
          * Convert a UTF8 string to UTF16.
          * @param {String} input
          * @returns {String}
          */
         function utf8To16(input) {
-          var _escape = function(s) {
+          var _escape = function (s) {
             function q(c) {
               c = c.charCodeAt();
-              return '%' + (c<16 ? '0' : '') + c.toString(16).toUpperCase();
+              return "%" + (c < 16 ? "0" : "") + c.toString(16).toUpperCase();
             }
             return s.replace(/[\x00-),:-?[-^`{-\xFF]/g, q);
           };
@@ -474,28 +486,26 @@
             //include invalid character, cannot convert
             return input;
           }
-        }       
+        }
 
-        let args = aActionValue.split(','),
-            fileURL = args[0],
-            isUnicode = runFileUnicode;
-            
+        let args = aActionValue.split(","),
+          fileURL = args[0],
+          isUnicode = runFileUnicode;
+
         if (args.includes("@UTF16@")) {
           isUnicode = true;
-          args = args.filter((f) => f!="@UTF16@");
-        }
-        else if (args.includes("@UTF8@")) {
+          args = args.filter((f) => f != "@UTF16@");
+        } else if (args.includes("@UTF8@")) {
           isUnicode = false;
-          args = args.filter((f) => f!="@UTF8@");
+          args = args.filter((f) => f != "@UTF8@");
         }
         let parmCount = args.length - 1;
 
         file.initWithPath(fileURL);
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
-          let theProcess = Cc["@mozilla.org/process/util;1"]
-                           .createInstance(Ci.nsIProcess);
+          let theProcess = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
           theProcess.init(file);
-          
+
           // convert parameters
           let parameters = new Array(parmCount);
           if (isUnicode) {
@@ -504,8 +514,7 @@
               parameters[i] = utf8To16(pRaw);
             }
             theProcess.runw(false, parameters, parmCount); // [issue 102] decoding problems -  UTF-16
-          }
-          else {
+          } else {
             for (let i = 0; i < parmCount; i++) {
               parameters[i] = _replaceParameters(aMsgHdrs[messageIndex], args[i + 1]);
             }
@@ -514,66 +523,75 @@
         }
       },
 
-      isValidForType: function(type, scope) {return runFileEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return runFileEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
-      needsBody: false
+      needsBody: false,
     }; // end runFile
-    
-    self.fwdSmartTemplates =
-    {
+
+    self.fwdSmartTemplates = {
       id: "filtaquilla@mesquilla.com#fwdSmart",
       name: util.getBundleString("fq.smartTemplate.fwd"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
-        var args = aActionValue.split(','),
-            fileURL = args[0],
-            parmCount = args.length - 1;
-            
+        var args = aActionValue.split(","),
+          fileURL = args[0],
+          parmCount = args.length - 1;
+
         file.initWithPath(fileURL); // check whether template exists!
         if (!file.exists()) {
           console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
         }
         const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
-              isDebug = prefs.getBoolPref("debug.SmartTemplates");
-            
+          isDebug = prefs.getBoolPref("debug.SmartTemplates");
+
         // then send a message to SmartTemplates
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           // pass on the message header - similar to printingTools NG
-          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(aMsgHdrs[messageIndex]),
-              count = messageIndex+1,
-              length = aMsgHdrs.length;
-          FiltaQuilla.Util.notifyTools.notifyBackground(
-            { func: "forwardMessageST", msgKey: MessageHeader, fileURL }
-          );
+          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(
+              aMsgHdrs[messageIndex]
+            ),
+            count = messageIndex + 1,
+            length = aMsgHdrs.length;
+          FiltaQuilla.Util.notifyTools.notifyBackground({
+            func: "forwardMessageST",
+            msgKey: MessageHeader,
+            fileURL,
+          });
           if (isDebug) {
-            console.log(`FQ: after notifyBackground(forwardMessageST) - ${count} of ${length} `); 
-          }          
+            console.log(`FQ: after notifyBackground(forwardMessageST) - ${count} of ${length} `);
+          }
         }
         if (isDebug) {
-          console.log(`FQ: processed array of ${aMsgHdrs.length} messages for forwarding to SmartTemplates!`);
+          console.log(
+            `FQ: processed array of ${aMsgHdrs.length} messages for forwarding to SmartTemplates!`
+          );
         }
       },
 
-      isValidForType: function(type, scope) {
+      isValidForType: function (type, scope) {
         return fwdSmartTemplatesEnabled;
       },
-      validateActionValue: function(value, folder, type) { return null;},
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
-      needsBody: true
-    }; // end fwdSmartTemplates    
-    
+      needsBody: true,
+    }; // end fwdSmartTemplates
 
-    self.replySmartTemplates =
-    {
+    self.replySmartTemplates = {
       id: "filtaquilla@mesquilla.com#rspSmart",
       name: util.getBundleString("fq.smartTemplate.rsp"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
-        var args = aActionValue.split(','),
-            fileURL = args[0],
-            parmCount = args.length - 1;
-            
+        var args = aActionValue.split(","),
+          fileURL = args[0],
+          parmCount = args.length - 1;
+
         file.initWithPath(fileURL); // check whether template exists!
         if (!file.exists()) {
           console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
@@ -581,86 +599,93 @@
         // then send a message to SmartTemplates
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           // pass on the message header - similar to printingTools NG
-          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(aMsgHdrs[messageIndex]);
-          FiltaQuilla.Util.notifyTools.notifyBackground(
-            { func: "replyMessageST", msgKey: MessageHeader, fileURL }
+          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(
+            aMsgHdrs[messageIndex]
           );
-          // 
+          FiltaQuilla.Util.notifyTools.notifyBackground({
+            func: "replyMessageST",
+            msgKey: MessageHeader,
+            fileURL,
+          });
+          //
         }
       },
-      
 
-      isValidForType: function(type, scope) {
+      isValidForType: function (type, scope) {
         return rspSmartTemplatesEnabled;
       },
-      validateActionValue: function(value, folder, type) { return null;},
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
-      needsBody: true
-    }; // end fwdSmartTemplates    
-    
+      needsBody: true,
+    }; // end fwdSmartTemplates
 
     // train as junk
-    self.trainAsJunk =
-    {
+    self.trainAsJunk = {
       id: "filtaquilla@mesquilla.com#trainAsJunk",
       name: util.getBundleString("fq.trainJunk"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         _trainJunkFilter(true, aMsgHdrs, aMsgWindow);
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let msgHdrs = [];
         for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
+          msgHdrs.push(aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
         }
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
-      isValidForType: function(type, scope) {return trainAsJunkEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return trainAsJunkEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: false,
-      needsBody: true
+      needsBody: true,
     }; // end trainAsJunk
 
     // train as good
-    self.trainAsGood =
-    {
+    self.trainAsGood = {
       id: "filtaquilla@mesquilla.com#trainAsGood",
       name: util.getBundleString("fq.trainGood"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         _trainJunkFilter(false, aMsgHdrs, aMsgWindow);
       },
-      apply: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      apply: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let msgHdrs = [];
         for (var i = 0; i < aMsgHdrs.length; i++) {
-          msgHdrs.push (aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
+          msgHdrs.push(aMsgHdrs.queryElementAt(i, Ci.nsIMsgDBHdr));
         }
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
-      isValidForType: function(type, scope) {return trainAsGoodEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return trainAsGoodEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: false,
-      needsBody: true
+      needsBody: true,
     }; // end trainAsJunk
 
     // print messages
-    self.print =
-    {
+    self.print = {
       id: "filtaquilla@mesquilla.com#print",
       name: util.getBundleString("fq.print"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // print me
-        const prefs = Services.prefs.getBranch("extensions.filtaquilla.");        
+        const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
         let count = aMsgHdrs.length;
         let isPrintingToolsNG = prefs.getBoolPref("print.enablePrintToolsNG"); // [issue 152] - PrintingTools NG
         let isAllowDuplicates = prefs.getBoolPref("print.allowDuplicates");
         let printDelay = prefs.getIntPref("print.delay");
-        
+
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs[i];
           FiltaQuilla.Util.logDebug("print", hdr, isAllowDuplicates);
           // no duplicates!
-          if (isAllowDuplicates  || !printQueue.includes(hdr)) {
+          if (isAllowDuplicates || !printQueue.includes(hdr)) {
             printQueue.push(hdr);
           }
         }
@@ -678,94 +703,120 @@
         async function printNextMessage() {
           if (printingMessage || !printQueue.length) {
             return;
-          }
-          else {
+          } else {
             util.logDebug("printNextMessage queue length: " + printQueue.length, printQueue);
           }
           if (!PrintUtils && !isPrintingToolsNG) {
             printingMessage = true; // old code branch
           }
-          
-          let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-          timer.initWithCallback(async function _printNextMessage() {
-            let hdr = printQueue.shift();
-            if (!hdr) return; // triggered too often?
-            util.logDebug("_printNextMessage(). Remaining queue length=" + printQueue.length, hdr);
-            if (isPrintingToolsNG) {
-              let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(hdr);
-              if (MessageHeader) {
-                FiltaQuilla.Util.notifyTools.notifyBackground({ func: "printMessage", msgKey: MessageHeader });
-              }
-              else {
-                util.logDebug("_printNextMessage() - couldn't convert message header: ", hdr);
-              }
-              await printNextMessage();
-            }
-            else {
-              let uri = hdr.folder.generateMessageURI(hdr.messageKey);
-              Services.console.logStringMessage("Queue filter request to print message: " + hdr.subject);
-              let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
-              rootprefs.setBoolPref("print.always_print_silent", true);
-              if (!PrintUtils) {
-                var { PrintUtils } = window.ownerGlobal;
-                  // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
-              }
-              
-              // Tb 91
-              // let uri = gFolderDisplay.selectedMessageUris[0];
-              if (PrintUtils  && PrintUtils.startPrintWindow) { // && PrintUtils.loadPrintBrowser MISSING IN TB 91.3.2 ???
-                let messageService = MailServices.messageServiceFromURI(uri),
-                    messageURL = messageService.getUrlForUri(uri).spec;
-                if (PrintUtils.loadPrintBrowser) {
-                  await PrintUtils.loadPrintBrowser(messageURL);
-                  PrintUtils.startPrintWindow(PrintUtils.printBrowser.browsingContext, {});     
-                }
-                else {
-                  if (gMessageDisplay.visible && 
-                      hdr == gFolderDisplay.selectedMessage &&
-                      gFolderDisplay.selectedMessage == gMessageDisplay.displayedMessage) {
-                    let messagePaneBrowser = document.getElementById("messagepane");
-                    PrintUtils.startPrintWindow(messagePaneBrowser.browsingContext, {});              
-                  }
-                  else {
-                    console.log ("CANNOT PRINT, PrintUtils IS MISSING THE METHOD loadPrintBrowser !!");
-                  }
-                }
-                printingMessage = false;
-                rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
-                await printNextMessage();
-              }
-              else { // older Thunderbird versions.
-                let printDialog =
-                  window.openDialog("chrome://messenger/content/msgPrintEngine.xhtml", "",
-                                    "chrome,dialog=no,all,centerscreen",
-                                    1, [uri], statusFeedback,
-                                    false, Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG, window);
-                printDialog.addEventListener("DOMWindowClose", async function (e) {
-                  Services.console.logStringMessage("Finished printing message: " + hdr.subject);
-                  printingMessage = false;
-                  // [issue 97] try to restore the setting
-                  rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
-                  
-                  await printNextMessage();
-                }, true);
-              }              
-            }
-            
 
-          }, printDelay, Ci.nsITimer.TYPE_ONE_SHOT); // was hard coded to 10ms
+          let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+          timer.initWithCallback(
+            async function _printNextMessage() {
+              let hdr = printQueue.shift();
+              if (!hdr) return; // triggered too often?
+              util.logDebug(
+                "_printNextMessage(). Remaining queue length=" + printQueue.length,
+                hdr
+              );
+              if (isPrintingToolsNG) {
+                let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(hdr);
+                if (MessageHeader) {
+                  FiltaQuilla.Util.notifyTools.notifyBackground({
+                    func: "printMessage",
+                    msgKey: MessageHeader,
+                  });
+                } else {
+                  util.logDebug("_printNextMessage() - couldn't convert message header: ", hdr);
+                }
+                await printNextMessage();
+              } else {
+                let uri = hdr.folder.generateMessageURI(hdr.messageKey);
+                Services.console.logStringMessage(
+                  "Queue filter request to print message: " + hdr.subject
+                );
+                let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
+                rootprefs.setBoolPref("print.always_print_silent", true);
+                if (!PrintUtils) {
+                  var { PrintUtils } = window.ownerGlobal;
+                  // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
+                }
+
+                // Tb 91
+                // let uri = gFolderDisplay.selectedMessageUris[0];
+                if (PrintUtils && PrintUtils.startPrintWindow) {
+                  // && PrintUtils.loadPrintBrowser MISSING IN TB 91.3.2 ???
+                  let messageService = MailServices.messageServiceFromURI(uri),
+                    messageURL = messageService.getUrlForUri(uri).spec;
+                  if (PrintUtils.loadPrintBrowser) {
+                    await PrintUtils.loadPrintBrowser(messageURL);
+                    PrintUtils.startPrintWindow(PrintUtils.printBrowser.browsingContext, {});
+                  } else {
+                    if (
+                      gMessageDisplay.visible &&
+                      hdr == gFolderDisplay.selectedMessage &&
+                      gFolderDisplay.selectedMessage == gMessageDisplay.displayedMessage
+                    ) {
+                      let messagePaneBrowser = document.getElementById("messagepane");
+                      PrintUtils.startPrintWindow(messagePaneBrowser.browsingContext, {});
+                    } else {
+                      console.log(
+                        "CANNOT PRINT, PrintUtils IS MISSING THE METHOD loadPrintBrowser !!"
+                      );
+                    }
+                  }
+                  printingMessage = false;
+                  rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
+                  await printNextMessage();
+                } else {
+                  // older Thunderbird versions.
+                  let printDialog = window.openDialog(
+                    "chrome://messenger/content/msgPrintEngine.xhtml",
+                    "",
+                    "chrome,dialog=no,all,centerscreen",
+                    1,
+                    [uri],
+                    statusFeedback,
+                    false,
+                    Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG,
+                    window
+                  );
+                  printDialog.addEventListener(
+                    "DOMWindowClose",
+                    async function (e) {
+                      Services.console.logStringMessage(
+                        "Finished printing message: " + hdr.subject
+                      );
+                      printingMessage = false;
+                      // [issue 97] try to restore the setting
+                      rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
+
+                      await printNextMessage();
+                    },
+                    true
+                  );
+                }
+              }
+            },
+            printDelay,
+            Ci.nsITimer.TYPE_ONE_SHOT
+          ); // was hard coded to 10ms
         }
         printNextMessage();
       },
 
-      isValidForType: function(type, scope) {return printEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return printEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: false,
-      needsBody: true
+      needsBody: true,
     }; // end print messages
     // reset the always_print_silent value at startup
     // XXX to do : add a hook to base so that this is not needed
-/*    
+    /*    
     // [issue 97] do not reset this setting generally!!!
     let rootprefs = Services.prefs.getBranch("");
     try {
@@ -774,12 +825,10 @@
     */
 
     // add sender to a specific address book
-    self.addSender =
-    {
+    self.addSender = {
       id: "filtaquilla@mesquilla.com#addSender",
       name: util.getBundleString("fq.addSender"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         // Helper function, removed in Tb78
         function parseHeadersWithArray(aHeader, aAddrs, aNames, aFullNames) {
           let addrs = [],
@@ -802,7 +851,7 @@
           aFullNames.value = fullNames;
           return allAddresses.length;
         }
-        
+
         let dir = abManager.getDirectory(aActionValue);
         if (!dir) {
           Cu.reportError("During filter action, can't find directory: " + aActionValue);
@@ -812,20 +861,19 @@
         let count = aMsgHdrs.length;
         for (let i = 0; i < count; i++) {
           let hdr = aMsgHdrs[i];
-          let addresses = {}, names = {};
+          let addresses = {},
+            names = {};
           parseHeadersWithArray(hdr.mime2DecodedAuthor, addresses, names, {});
           names = names.value;
           addresses = addresses.value;
-          if (addresses.length)
-          {
+          if (addresses.length) {
             // don't add the address if it already exists. Mailing lists seem to
             // detect this themselves.
             if (!dir.isMailList && dir.cardForEmailAddress(addresses[0])) {
               continue;
             }
 
-            let card = Cc["@mozilla.org/addressbook/cardproperty;1"]
-                          .createInstance(Ci.nsIAbCard);
+            let card = Cc["@mozilla.org/addressbook/cardproperty;1"].createInstance(Ci.nsIAbCard);
             card.primaryEmail = addresses[0];
             card.displayName = names[0];
             dir.addCard(card);
@@ -833,26 +881,156 @@
         }
       },
 
-      isValidForType: function(type, scope) {return addSenderEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return addSenderEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
-      needsBody: false
+      needsBody: false,
     }; // end add Sender
+
+    // local object used for callback
+    class SaveAttachmentCallback {
+      constructor(aDirectory, aDetach, copyListener) {
+        this.directory = aDirectory;
+        this.detach = aDetach;
+        this.msgURI = null;
+        this.attachments = null;
+        this.saveAttachmentListener = null;
+        this.copyListener = copyListener; // More explicit name
+      }
+
+      async callback(msgHdr, aMimeMessage) {
+        const messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
+        let txtStackedDump = "";
+        this.msgURI = msgHdr.folder.generateMessageURI(msgHdr.messageKey);
+        this.attachments = aMimeMessage.allAttachments;
+        try {
+          const ds = msgHdr.date / 1000;
+          if (util.isDebug) {
+            util.logDebug("saveAttachmentCallback.callback");
+          }
+          // note: for some reason I could not use msgDate as it is treated here as a string not a Date object...
+          // the only workaround was to create new date objects at each step and call its functions directly:
+          const mDate = new Date(ds);
+          let nicedate =
+            `${mDate.getFullYear()}-${mDate.getMonth() + 1}-` +
+            `${mDate.getDate()} ${mDate.getHours()}:${mDate.getMinutes()}`;
+
+          console.assert(
+            this.copyListener instanceof Ci.nsIMsgCopyServiceListener,
+            "copyListener is not an instance of nsIMsgCopyServiceListener"
+          );
+
+
+          // save attachment code
+          if (!this.detach) {
+            const messageHeader = extension.messageManager.convert(msgHdr);
+            const results = await FiltaQuilla.Util.notifyTools.notifyBackground({
+              func: "saveAttachments",
+              messageHeader: messageHeader,
+              path: this.directory.path,
+            });
+
+            // Process each saved item individually
+            const successes = [],
+              failures = [];
+            for (let savedItem of results) {
+              if (savedItem.success) {
+                successes.push(
+                  `Attachment ${savedItem.fileName} saved successfully in ${this.directory.path}`
+                );
+              } else {
+                failures.push(`Failed to save attachment: ${savedItem.fileName}`);
+              }
+            }
+            // Concatenate successes and failures with a separator if both are present
+            const separator = successes.length * failures.length ? "----------\n" : "";
+            const heading = `SaveAttachmentCallback()\n${msgHdr.subject} AT ${nicedate}\n`;
+            util.logDebug(heading + successes.join("\n") + separator + failures.join("\n"));
+
+            // Call onStopCopy once for the entire message
+            this.copyListener.onStopCopy(
+              this.msgURI,
+              failures.length ? Cr.NS_ERROR_FAILURE : Cr.NS_OK
+            );
+            return;
+          } // save attachments, early exit
+
+          if (!this.attachments?.length) {
+            return false;
+          }
+
+          // detach attachment code
+          const msgURIs = [],
+            contentTypes = [],
+            urls = [],
+            displayNames = [];
+          for (let j = 0; j < this.attachments.length; j++) {
+            const attachment = this.attachments[j];
+            if (attachment.url.startsWith("file:")) {
+              util.logToConsole(
+                `Attachment for '${msgHdr.subject}' from ${nicedate} was already removed from mail - last seen at this location:\n` +
+                  attachment.url
+              );
+              continue;
+            }
+
+            msgURIs.push(this.msgURI);
+            contentTypes.push(attachment.contentType);
+            urls.push(attachment.url);
+            let attachmentName = _sanitizeName(attachment.name, true);
+            displayNames.push(attachmentName);
+            const txt =
+              `Detach attachment [${j}] to ${this.directory.path} ...\n`+
+              ` msgURI=${this.msgURI}\n` +
+              ` att.url=${attachment.url}\n` +
+              ` att.contentType=${attachment.contentType}`;
+            util.logDebug(txt);
+            txtStackedDump = txtStackedDump + txt + "\n";
+          }
+
+          try {
+            // Await detachment process
+            const failedUris = await _detachAttachments(
+              messenger,
+              this.directory,
+              contentTypes,
+              urls,
+              displayNames,
+              msgURIs,
+              this.copyListener
+            );
+
+            if (failedUris.length > 0) {
+              console.log("Failed to detach the following attachments:\n" + failedUris.join(", "));
+            } else {
+              util.logDebug("All attachments detached successfully.");
+            }
+          } catch (error) {
+            util.logException("DetachAttachments failed", error);
+          }
+        } catch (ex) {
+          util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
+        }
+      }
+    }
 
     self.saveAttachment = {
       id: "filtaquilla@mesquilla.com#saveAttachment",
       name: util.getBundleString("fq.saveAttachment"),
-      applyAction: async function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
-        let directory = Cc["@mozilla.org/file/local;1"].createInstance(
-          Ci.nsIFile
-        );
+      applyAction: async function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
+        // async functions pass in a nsIMsgCopyServiceListener
+        let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         try {
           directory.initWithPath(aActionValue);
           if (directory.exists()) {
             util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
           }
-          let callbackObject = new SaveAttachmentCallback(directory, false);
-          // we need to find out whether we can pass async callback grunctions by 
+          let callbackObject = new SaveAttachmentCallback(directory, false, copyListener);
+          // we need to find out whether we can pass async callback grunctions by
           // adding async: true to the action.
 
           for (let i = 0; i < aMsgHdrs.length; i++) {
@@ -886,167 +1064,113 @@
       needsBody: true,
       isAsync: true,
     };
+    // end save Attachments
 
-    // local object used for callback
-    function SaveAttachmentCallback(aDirectory, aDetach) {
-      this.directory = aDirectory;
-      this.detach = aDetach;
-      this.msgURI = null;
-      this.attachments = null;
-      this.saveAttachmentListener = null;
-    }
-
-    // we probably need to set up a promise to be resolved in callback!
-    SaveAttachmentCallback.prototype = {
-      callback: async function(aMsgHdr, aMimeMessage) {
-				let txtStackedDump = "";
-        this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
-        this.attachments = aMimeMessage.allAttachments;
-        let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
-				try {
-          let ds = aMsgHdr.date / 1000,
-              msgDate = new Date(ds),  // this is cast to string for some stupid reason, so it's not useful.
-              msgSubject = aMsgHdr.subject;
-          if (util.isDebug) {
-            util.logDebug('saveAttachmentCallback.callback');
-          }
-          // note: for some reason I could not use msgDate as it is treated here as a string not a Date object...
-          // the only workaround was to create new date objects at each step and call its functions directly:
-          let nicedate = " " + (new Date(ds)).getFullYear() + "-" + ((new Date(ds)).getMonth()+1) + "-" + (new Date(ds)).getDate()  + " " +  (new Date(ds)).getHours() + ":" + (new Date(ds)).getMinutes();
-					if (!this.detach) {
-            const messageHeader = extension.messageManager.convert(aMsgHdr);
-            const results = await FiltaQuilla.Util.notifyTools.notifyBackground({
-              func: "saveAttachments",
-              messageHeader: messageHeader,
-              path: this.directory.path,
-            });
-
-            console.log("after saveAttachments: ", results);
-          } else {
-						if (this.attachments.length > 0) {
-							let msgURIs = [],
-							    contentTypes = [],
-							    urls = [],
-							    displayNames = [];
-							for (let j = 0; j < this.attachments.length; j++) {
-								let attachment = this.attachments[j];
-                if (attachment.url.startsWith("file:")) {
-                  util.logToConsole("Attachment for '" + msgSubject + "' from " + nicedate 
-                    + " was already removed from mail - last seen at this location:\n" 
-                    + attachment.url);
-                  continue;
-                }
-                
-								msgURIs.push(this.msgURI);
-								contentTypes.push(attachment.contentType);
-								urls.push(attachment.url);
-                let attachmentName = _sanitizeName(attachment.name, true);
-								displayNames.push(attachmentName);
-								let txt = "Detach attachment [" + j + "] to " + this.directory.path +
-										"...\n msgURI=" + this.msgURI +
-										"\n att.url=" + attachment.url +
-										"\n att.ncontentType=" + attachment.contentType;
-								util.logDebug(txt);
-								txtStackedDump += txtStackedDump + txt + "\n";
-
-							}
-							messenger.detachAttachmentsWOPrompts(this.directory,
-																			contentTypes, urls, displayNames, msgURIs, null);
-              // await trackDeletionMessageListener.promise;
-						}
-					}
-				}
-				catch (ex) {
-					util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
-				}
-      }
-    };
-    // end save Attachment
-
-    self.detachAttachments =
-    {
+    self.detachAttachments = {
       id: "filtaquilla@mesquilla.com#detachAttachments",
       name: util.getBundleString("fq.detachAttachments"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-      {
+      applyAction: async function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
+        // async functions pass in a nsIMsgCopyServiceListener
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
-				try {
-					directory.initWithPath(aActionValue);
-					if (directory.exists()) {
-						util.logDebug("detachAttachments() - target directory exists:\n" + aActionValue);
-					}
+        try {
+          directory.initWithPath(aActionValue);
+          if (directory.exists()) {
+            util.logDebug("detachAttachments() - target directory exists:\n" + aActionValue);
+          } else {
+            util.logDebug(
+              "detachAttachments() - target directory does not exist:\n" + aActionValue
+            );
+            return; // Exit early if directory doesn't exist
+          }
 
-					let callbackObject = new SaveAttachmentCallback(directory, true);
-					for (let i = 0; i < aMsgHdrs.length; i++) {
-						try {
-							var msgHdr = aMsgHdrs[i];
-							self._mimeMsg.MsgHdrToMimeMessage(msgHdr, callbackObject, callbackObject.callback,
-																								false /* allowDownload */);
-						}
-						catch (ex) {
-							util.logException("FiltaQuilla.detachAttachments - converting message headers failed.", ex);
-						}
-					}
-				}
-				catch (ex) {
-					util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
-				}
+          let callbackObject = new SaveAttachmentCallback(directory, true, copyListener);
+
+          // Process all message headers asynchronously
+          for (let i = 0; i < aMsgHdrs.length; i++) {
+            try {
+              let msgHdr = aMsgHdrs[i];
+              await self._mimeMsg.MsgHdrToMimeMessage(
+                msgHdr,
+                callbackObject,
+                callbackObject.callback,
+                false /* allowDownload */
+              );
+            } catch (ex) {
+              util.logException(
+                "FiltaQuilla.detachAttachments - converting message headers failed.",
+                ex
+              );
+            }
+          }
+        } catch (ex) {
+          util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
+        }
       },
-      isValidForType: function(type, scope) {return detachAttachmentsEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return detachAttachmentsEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: false,
-      needsBody: true
+      needsBody: true,
+      isAsync: true,
     };
     // end detach Attachments
 
-    self.javascriptAction =
-    {
+    self.javascriptAction = {
       id: "filtaquilla@mesquilla.com#javascriptAction",
       name: util.getBundleString("filtaquilla.javascriptAction.name"),
-      applyAction: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
-		    try {
-    	    return eval(actionValue);
-				}  catch (ex) { 
-          // Galantha: javascript eval action error triggered a bug report 
-					let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
-					util.logToConsole(msg);
-					util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
-					return false;
-				}
+      applyAction: function (msgHdrs, actionValue, copyListener, filterType, msgWindow) {
+        try {
+          return eval(actionValue);
+        } catch (ex) {
+          // Galantha: javascript eval action error triggered a bug report
+          let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
+          util.logToConsole(msg);
+          util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
+          return false;
+        }
       },
-      isValidForType: function(type, scope) {return javascriptActionEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return javascriptActionEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
       needsBody: false,
-      isAsync: false
+      isAsync: false,
     };
 
-    self.javascriptActionBody =
-    {
+    self.javascriptActionBody = {
       id: "filtaquilla@mesquilla.com#javascriptActionBody",
       name: util.getBundleString("filtaquilla.javascriptActionBody.name"),
-      applyAction: function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
-		    try {
-    	    return eval(actionValue);
-				}  catch (ex) { 
-          // Galantha: javascript eval action error triggered a bug report 
-					let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
-					util.logToConsole(msg);
-					util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
-					return false;
-				}
+      applyAction: function (msgHdrs, actionValue, copyListener, filterType, msgWindow) {
+        try {
+          return eval(actionValue);
+        } catch (ex) {
+          // Galantha: javascript eval action error triggered a bug report
+          let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
+          util.logToConsole(msg);
+          util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
+          return false;
+        }
       },
-      isValidForType: function(type, scope) {return javascriptActionBodyEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return javascriptActionBodyEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
-      needsBody: true
+      needsBody: true,
     };
 
-    self.saveMessageAsFile =
-    {
+    self.saveMessageAsFile = {
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
       name: util.getBundleString("fq.saveMsgAsFile"),
-      applyAction: async function(msgHdrs, actionValue, copyListener, filterType, msgWindow) {
+      applyAction: async function (msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         const CONCURRENCY_LIMIT = 10; // maximum # file handles to be handled at the same time.
         // allow specifying directory with suffix of |htm
         let type = "eml"; //default
@@ -1089,18 +1213,21 @@
         // Wait for any remaining operations to complete
         await Promise.all(activePromises);
       },
-      isValidForType: function(type, scope) {return saveMessageAsFileEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return saveMessageAsFileEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: true,
       needsBody: true,
-      isAsync: true
+      isAsync: true,
     };
 
-    self.moveLater =
-    {
+    self.moveLater = {
       id: "filtaquilla@mesquilla.com#moveLater",
       name: util.getBundleString("fq.moveLater"),
-      applyAction: function(aMsgHdrs, aActionValue, copyListener, filterType, msgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, copyListener, filterType, msgWindow) {
         let srcFolder = aMsgHdrs[0].folder;
         let dstFolder = MailUtils.getExistingFolder(aActionValue, false);
         // store the messages uris to use later
@@ -1108,37 +1235,42 @@
         let currentIndex = moveLaterIndex++;
         moveLaterTimers[currentIndex] = timer;
         // the message headers array gets cleared by Thunderbird 78! we need to save it elswhere
-        
+
         let callback = new MoveLaterNotify(aMsgHdrs, srcFolder, dstFolder, currentIndex);
         timer.initWithCallback(callback, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
       },
-      isValidForType: function(type, scope) {return moveLaterEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      isValidForType: function (type, scope) {
+        return moveLaterEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
       allowDuplicates: false,
-      needsBody: true
+      needsBody: true,
     };
-    
-	  // archiveMessage [issue 126] 
-    self.archiveMessage =
-    {
+
+    // archiveMessage [issue 126]
+    self.archiveMessage = {
       id: "filtaquilla@mesquilla.com#archiveMessage",
       name: util.getBundleString("fq.archiveMessage"),
-      applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         let archiver = new MessageArchiver(); // [issue 241]
         archiver.archiveMessages(aMsgHdrs);
-      },      
-      isValidForType: function(type, scope) { return archiveMessageEnabled;},
-      validateActionValue: function(value, folder, type) { return null;},
+      },
+      isValidForType: function (type, scope) {
+        return archiveMessageEnabled;
+      },
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
     }; // end archiveMessage
-       
-    
+
     /*
      * Custom searches
      */
 
     // search of folder name
-    self.folderName =
-    {
+    self.folderName = {
       id: "filtaquilla@mesquilla.com#folderName",
       name: util.getBundleString("fq.folderName"),
       getEnabled: function folderName_getEnabled(scope, op) {
@@ -1149,52 +1281,45 @@
         return _isLocalSearch(scope) && FolderNameEnabled;
       },
       getAvailableOperators: function folderName_getAvailableOperators(scope) {
-        if (!_isLocalSearch(scope))
-        {
+        if (!_isLocalSearch(scope)) {
           return [];
         }
         return [Contains, DoesntContain, Is, Isnt, BeginsWith, EndsWith];
       },
       match: function folderName_match(aMsgHdr, aSearchValue, aSearchOp) {
         let folderName = aMsgHdr.folder.name,
-            matches = false;
+          matches = false;
 
         switch (aSearchOp) {
           case Contains:
           case DoesntContain:
-            if (folderName.indexOf(aSearchValue) != -1)
-              matches = true;
+            if (folderName.indexOf(aSearchValue) != -1) matches = true;
             break;
 
           case Is:
           case Isnt:
-            if (folderName == aSearchValue)
-              matches = true;
+            if (folderName == aSearchValue) matches = true;
             break;
 
           case BeginsWith:
-            if (folderName.indexOf(aSearchValue) == 0)
-              matches = true;
+            if (folderName.indexOf(aSearchValue) == 0) matches = true;
             break;
 
           case EndsWith:
             let index = folderName.lastIndexOf(aSearchValue);
-            if (index != -1 && index == (folderName.length - aSearchValue.length))
-              matches = true;
+            if (index != -1 && index == folderName.length - aSearchValue.length) matches = true;
             break;
 
-            default:
-              Cu.reportError("invalid search operator in folder name custom search term");
+          default:
+            Cu.reportError("invalid search operator in folder name custom search term");
         }
-        if (aSearchOp == DoesntContain || aSearchOp == Isnt)
-          return !matches;
+        if (aSearchOp == DoesntContain || aSearchOp == Isnt) return !matches;
         return matches;
       },
     };
 
     // search of BCC field
-    self.searchBcc =
-    {
+    self.searchBcc = {
       id: "filtaquilla@mesquilla.com#searchBcc",
       name: util.getBundleString("fq.Bcc"),
       getEnabled: function searchBcc_getEnabled(scope, op) {
@@ -1205,23 +1330,20 @@
         return _isLocalSearch(scope) && SearchBccEnabled;
       },
       getAvailableOperators: function searchBcc_getAvailableOperators(scope) {
-        if (!_isLocalSearch(scope))
-        {
+        if (!_isLocalSearch(scope)) {
           return [];
         }
-        return [Contains, DoesntContain, Is, Isnt, IsEmpty, IsntEmpty,
-                BeginsWith, EndsWith];
+        return [Contains, DoesntContain, Is, Isnt, IsEmpty, IsntEmpty, BeginsWith, EndsWith];
       },
       match: function searchBcc_match(aMsgHdr, aSearchValue, aSearchOp) {
         let bccList = aMsgHdr.bccList;
-        if (aSearchOp == IsEmpty)
-          return (bccList.length == 0);
-        if (aSearchOp == IsntEmpty)
-          return (bccList.length != 0);
+        if (aSearchOp == IsEmpty) return bccList.length == 0;
+        if (aSearchOp == IsntEmpty) return bccList.length != 0;
 
-        let addresses = {}, names = {}, fullAddresses = {};
-        headerParser.parseHeadersWithArray(bccList, addresses,
-                                           names, fullAddresses);
+        let addresses = {},
+          names = {},
+          fullAddresses = {};
+        headerParser.parseHeadersWithArray(bccList, addresses, names, fullAddresses);
         names = names.value;
         addresses = addresses.value;
         let matches = false;
@@ -1248,8 +1370,7 @@
                 matches = true;
                 break;
               }
-              if (addresses[i].indexOf(aSearchValue) != -1)
-                matches = true;
+              if (addresses[i].indexOf(aSearchValue) != -1) matches = true;
               break;
 
             case Is:
@@ -1258,8 +1379,7 @@
                 matches = true;
                 break;
               }
-              if (addresses[i] == aSearchValue)
-                matches = true;
+              if (addresses[i] == aSearchValue) matches = true;
               break;
 
             case BeginsWith:
@@ -1267,34 +1387,30 @@
                 matches = true;
                 break;
               }
-              if (addresses[i].indexOf(aSearchValue) == 0)
-                matches = true;
+              if (addresses[i].indexOf(aSearchValue) == 0) matches = true;
               break;
 
             case EndsWith:
               let index = names[i].lastIndexOf(aSearchValue);
-              if (index != -1 && index == (names[i].length - aSearchValue.length)) {
+              if (index != -1 && index == names[i].length - aSearchValue.length) {
                 matches = true;
                 break;
               }
               index = addresses[i].lastIndexOf(aSearchValue);
-              if (index != -1 && index == (addresses[i].length - aSearchValue.length))
-                matches = true;
+              if (index != -1 && index == addresses[i].length - aSearchValue.length) matches = true;
               break;
 
-              default:
-                Cu.reportError("invalid search operator in bcc custom search term");
+            default:
+              Cu.reportError("invalid search operator in bcc custom search term");
           }
         }
-        if (aSearchOp == DoesntContain || aSearchOp == Isnt)
-          return !matches;
+        if (aSearchOp == DoesntContain || aSearchOp == Isnt) return !matches;
         return matches;
       },
     };
 
     // search subject with regular expression
-    self.subjectRegex =
-    {
+    self.subjectRegex = {
       id: "filtaquilla@mesquilla.com#subjectRegex",
       name: util.getBundleString("fq.subjectRegex"),
       getEnabled: function subjectRegEx_getEnabled(scope, op) {
@@ -1306,15 +1422,12 @@
       },
       getAvailableOperators: function subjectRegEx_getAvailableOperators(scope) {
         try {
-          if (!_isLocalSearch(scope))
-          {
+          if (!_isLocalSearch(scope)) {
             return [];
           }
-        }
-        catch(ex) {
+        } catch (ex) {
           console.logException(ex);
-        }
-        finally {
+        } finally {
           return [Matches, DoesntMatch];
         }
       },
@@ -1326,10 +1439,9 @@
           "regexSubject",
           `decoded subject: ${subject}\nRegex String:${searchValue}`
         );
-            
+
         let retVal, operand;
-        switch (aSearchOp)
-        {
+        switch (aSearchOp) {
           case Matches:
             retVal = RegExp(searchValue, searchFlags).test(subject);
             operand = "matches";
@@ -1341,69 +1453,71 @@
           default:
             retVal = null;
         }
-        
-        FiltaQuilla.Util.logHighlightDebug(`subjectRegex RESULT: ${retVal}`,
+
+        FiltaQuilla.Util.logHighlightDebug(
+          `subjectRegex RESULT: ${retVal}`,
           "white",
           "rgb(0,100,0)",
-          `\n search term: Subject ${operand} '${searchValue}'`);
+          `\n search term: Subject ${operand} '${searchValue}'`
+        );
         return retVal;
-  },
+      },
     };
 
-   // local object used for callback
+    // local object used for callback
     function ReadAttachmentCallback(matchRegex) {
       this.regex = matchRegex;
       this.found = false;
-			this.processed = false;
+      this.processed = false;
       this.msgURI = null;
       this.attachments = null;
     }
 
     ReadAttachmentCallback.prototype = {
       callback: function readAttachmentCallback_callback(aMsgHdr, aMimeMessage) {
-				if (aMimeMessage==null) { // failure parsing during MsgHdrToMimeMessage
-					this.processed = true;
-					return;
-				}
-				try {
-					this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
-					this.attachments = aMimeMessage.allAttachments;
-					let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
-					{
-						if (this.attachments.length > 0) {
-							let msgURIs = [],
-							    contentTypes = [],
-							    urls = [],
-							    displayNames = [];
-                  
-							for (let j = 0; j < this.attachments.length; j++) {
-								let attachment = this.attachments[j];
-								msgURIs.push(this.msgURI);
-								contentTypes.push(attachment.contentType);
-								urls.push(attachment.url);
-								displayNames.push(attachment.name);
-								if (this.regex.test(attachment.name)) {
-									this.found = true;
-									break;
-								}
-							}
-							// messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length, contentTypes, urls, displayNames, msgURIs, null);
-						}
-						else
-							this.found = false;
-						this.processed = true;
-					}
-				} catch(ex) {
-					Services.console.logStringMessage("readAttachmentCallback_callback failed: " + ex.toString());
-					this.processed = true;
-				}
-      }
+        if (aMimeMessage == null) {
+          // failure parsing during MsgHdrToMimeMessage
+          this.processed = true;
+          return;
+        }
+        try {
+          this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
+          this.attachments = aMimeMessage.allAttachments;
+          let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
+          {
+            if (this.attachments.length > 0) {
+              let msgURIs = [],
+                contentTypes = [],
+                urls = [],
+                displayNames = [];
+
+              for (let j = 0; j < this.attachments.length; j++) {
+                let attachment = this.attachments[j];
+                msgURIs.push(this.msgURI);
+                contentTypes.push(attachment.contentType);
+                urls.push(attachment.url);
+                displayNames.push(attachment.name);
+                if (this.regex.test(attachment.name)) {
+                  this.found = true;
+                  break;
+                }
+              }
+              // messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length, contentTypes, urls, displayNames, msgURIs, null);
+            } else this.found = false;
+            this.processed = true;
+          }
+        } catch (ex) {
+          Services.console.logStringMessage(
+            "readAttachmentCallback_callback failed: " + ex.toString()
+          );
+          this.processed = true;
+        }
+      },
     };
     // end read Attachment
 
-		// search attachment names with regular expression
-		self.attachmentRegex =
-		{
+    // search attachment names with regular expression
+    self.attachmentRegex = {
       id: "filtaquilla@mesquilla.com#attachmentRegex",
       name: util.getBundleString("fq.attachmentRegex"),
       getEnabled: function attachRegEx_getEnabled(scope, op) {
@@ -1413,56 +1527,65 @@
         return _isLocalSearch(scope) && AttachmentRegexEnabled;
       },
       getAvailableOperators: function attachRegEx_getAvailableOperators(scope) {
-        if (!_isLocalSearch(scope))
-        {
+        if (!_isLocalSearch(scope)) {
           return [];
         }
         return [Matches, DoesntMatch];
       },
       match: function attachRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
-				// attach Regexp
+        // attach Regexp
         // var subject = aMsgHdr.mime2DecodedSubject;
-        let searchValue, searchFlags,
-				    isMatched = false;
-				//
+        let searchValue,
+          searchFlags,
+          isMatched = false;
+        //
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
 
-				if (!aMsgHdr.folder.msgDatabase.HasAttachments(aMsgHdr.messageKey))  {
-					switch (aSearchOp) {
-						case Matches: return false;
-						case DoesntMatch: return true; // or false? no attachment means we cannot really say...
-					}
-				}
+        if (!aMsgHdr.folder.msgDatabase.HasAttachments(aMsgHdr.messageKey)) {
+          switch (aSearchOp) {
+            case Matches:
+              return false;
+            case DoesntMatch:
+              return true; // or false? no attachment means we cannot really say...
+          }
+        }
 
-				let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr),
-				    callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
-				// message must be available offline!
-				try {
-					self._mimeMsg.MsgHdrToMimeMessage(hdr, callbackObject, callbackObject.callback, false /* allowDownload */);
+        let hdr = aMsgHdr.QueryInterface(Ci.nsIMsgDBHdr),
+          callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
+        // message must be available offline!
+        try {
+          self._mimeMsg.MsgHdrToMimeMessage(
+            hdr,
+            callbackObject,
+            callbackObject.callback,
+            false /* allowDownload */
+          );
 
-					// we need a listener for "processed" flag. is match called synchronously though?
-					/*
+          // we need a listener for "processed" flag. is match called synchronously though?
+          /*
 					while (!callbackObject.processed) {
 						// we need to yield ...
 					}
 					*/
-					if (!callbackObject.processed)
-						alert("sorry, we cannot read attachments without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this.");
-					isMatched = callbackObject.found;
-					switch (aSearchOp) {
-						case Matches: return isMatched;
-						case DoesntMatch: return !isMatched;
-					}
-				}
-				catch (ex) {
-					Services.console.logStringMessage("could not attachRegEx_match" + ex.toString());
-				}
+          if (!callbackObject.processed)
+            alert(
+              "sorry, we cannot read attachments without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."
+            );
+          isMatched = callbackObject.found;
+          switch (aSearchOp) {
+            case Matches:
+              return isMatched;
+            case DoesntMatch:
+              return !isMatched;
+          }
+        } catch (ex) {
+          Services.console.logStringMessage("could not attachRegEx_match" + ex.toString());
+        }
       },
       needsBody: true,
-		};
+    };
 
-    self.headerRegex =
-    {
+    self.headerRegex = {
       id: "filtaquilla@mesquilla.com#headerRegex",
       name: util.getBundleString("fq.hdrRegex"),
       getEnabled: function headerRegEx_getEnabled(scope, op) {
@@ -1473,8 +1596,7 @@
         return _isLocalSearch(scope) && HeaderRegexEnabled;
       },
       getAvailableOperators: function headerRegEx_getAvailableOperators(scope) {
-        if (!_isLocalSearch(scope))
-        {
+        if (!_isLocalSearch(scope)) {
           return [];
         }
         return [Matches, DoesntMatch];
@@ -1482,23 +1604,28 @@
       match: function headerRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
         // the header and its regex are separated by a ':' in aSearchValue
         const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
-              isDebug = prefs.getBoolPref("debug.regexHeader");
-        let colonIndex = aSearchValue.indexOf(':');
-        if (colonIndex == -1) // not found, default to does not match
+          isDebug = prefs.getBoolPref("debug.regexHeader");
+        let colonIndex = aSearchValue.indexOf(":");
+        if (colonIndex == -1)
+          // not found, default to does not match
           return aSearchOp != Matches;
         let headerName = aSearchValue.slice(0, colonIndex),
-            regex = aSearchValue.slice(colonIndex + 1);
+          regex = aSearchValue.slice(colonIndex + 1);
         let searchValue, searchFlags, options;
         [searchValue, searchFlags, options] = _getRegEx(regex);
 
         // find the property with the correct case (in case it was misspelled):
-        let propertyRealName =
-          aMsgHdr.properties.find(e => e.toLowerCase() == headerName.toLowerCase());
+        let propertyRealName = aMsgHdr.properties.find(
+          (e) => e.toLowerCase() == headerName.toLowerCase()
+        );
 
         if (!propertyRealName) {
           if (isDebug) {
-            util.logDebugOptional("regexHeader", `Header ${headerName} not found. The following properties are available in\n"${aMsgHdr.subject}":\n`
-              + `${aMsgHdr.properties.join(", ")}\n`);
+            util.logDebugOptional(
+              "regexHeader",
+              `Header ${headerName} not found. The following properties are available in\n"${aMsgHdr.subject}":\n` +
+                `${aMsgHdr.properties.join(", ")}\n`
+            );
           }
           // property not found!
           switch (aSearchOp) {
@@ -1506,17 +1633,18 @@
               return false;
             case DoesntMatch:
               return true;
-          }          
-        } 
+          }
+        }
 
         var headerValue = aMsgHdr.getStringProperty(propertyRealName);
-        if (headerValue) { // [issue 308]
+        if (headerValue) {
+          // [issue 308]
           const mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(
             Ci.nsIMimeConverter
           );
           headerValue = mimeConvert.decodeMimeHeader(headerValue, null, false, true);
         }
-        let result, operand; 
+        let result, operand;
 
         const isMultiLine = prefs.getBoolPref("regexpHeader.addressMultiLine");
 
@@ -1534,19 +1662,20 @@
             result = !RegExp(searchValue, searchFlags).test(headerValue);
             operand = "doesn't match";
             break;
-          default: 
+          default:
             result = null;
         }
-        FiltaQuilla.Util.logHighlightDebug(`headerRegEx[${headerName}] RESULT: ${result}`,
+        FiltaQuilla.Util.logHighlightDebug(
+          `headerRegEx[${headerName}] RESULT: ${result}`,
           "white",
           "rgb(0,100,0)",
-          `\n search term: Header ${operand} '${searchValue}'`);
+          `\n search term: Header ${operand} '${searchValue}'`
+        );
         return result;
-      }
+      },
     };
-    
-    self.bodyRegex =
-    {
+
+    self.bodyRegex = {
       id: "filtaquilla@mesquilla.com#bodyRegex",
       name: util.getBundleString("fq.bodyRegex"),
       getEnabled: function bodyRegEx_getEnabled(scope, op) {
@@ -1558,8 +1687,7 @@
         return _isLocalSearch(scope) && BodyRegexEnabled;
       },
       getAvailableOperators: function bodyRegEx_getAvailableOperators(scope) {
-        if (!_isLocalSearch(scope))
-        {
+        if (!_isLocalSearch(scope)) {
           return [];
         }
         return [Matches, DoesntMatch];
@@ -1568,10 +1696,10 @@
         /*** SEARCH INIT  **/
         let searchValue, searchFlags, options;
         [searchValue, searchFlags, options] = _getRegEx(aSearchValue);
-        
+
         let result = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags, options);
         let operand;
-        
+
         switch (aSearchOp) {
           case Matches:
             operand = "matches";
@@ -1580,21 +1708,21 @@
             operand = "doesn't match";
             result = !result;
             break;
-          default: 
+          default:
             result = null;
         }
-        FiltaQuilla.Util.logHighlightDebug(`bodyRegex RESULT: ${result}`,
+        FiltaQuilla.Util.logHighlightDebug(
+          `bodyRegex RESULT: ${result}`,
           "white",
           "rgb(0,100,0)",
-          `\n search term: Body ${operand} '${searchValue}'`);
+          `\n search term: Body ${operand} '${searchValue}'`
+        );
 
         return result;
-
-      }
+      },
     };
-    
-    self.subjectBodyRegex =
-    {
+
+    self.subjectBodyRegex = {
       id: "filtaquilla@mesquilla.com#subjectBodyRegex",
       name: util.getBundleString("fq.subjectBodyRegex"),
       getEnabled: function subjectBodyRegex_getEnabled(scope, op) {
@@ -1605,48 +1733,48 @@
         return _isLocalSearch(scope) && SubjectBodyRegexEnabled;
       },
       getAvailableOperators: function subjectBodyRegex_getAvailableOperators(scope) {
-        if (!_isLocalSearch(scope)){  return [];  }
+        if (!_isLocalSearch(scope)) {
+          return [];
+        }
         return [Matches, DoesntMatch];
       },
       match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
         var subject = aMsgHdr.mime2DecodedSubject,
-            subResult = false;
+          subResult = false;
         let isMatched = false;
-        
+
         /*** SEARCH INIT  **/
         let searchValue, searchFlags, options, reg;
         [searchValue, searchFlags, options] = _getRegEx(aSearchValue);
-        
-        subResult = RegExp(searchValue, searchFlags).test(subject); // find in subject
-            
 
-        const mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
-          decodedMessageId =  mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
+        subResult = RegExp(searchValue, searchFlags).test(subject); // find in subject
+
+        const mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(
+            Ci.nsIMimeConverter
+          ),
+          decodedMessageId = mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
         var subject = aMsgHdr.mime2DecodedSubject;
 
         // early exit (only when found, not when not found!)
-        if((aSearchOp == Matches) && subResult){
+        if (aSearchOp == Matches && subResult) {
           return true;
         }
-        
+
         let bodyResult = FiltaQuilla.Util.bodyMimeMatch(aMsgHdr, searchValue, searchFlags, options);
-        
-        switch (aSearchOp)
-        {
+
+        switch (aSearchOp) {
           case Matches:
             return bodyResult || subResult;
           case DoesntMatch:
             return !(bodyResult || subResult);
         }
-				
-        return false;//not matched or failed
-      }
+
+        return false; //not matched or failed
+      },
     };
-    
 
     // search using arbitrary javascript
-    self.javascript =
-    {
+    self.javascript = {
       id: "filtaquilla@mesquilla.com#javascript",
       name: util.getBundleString("fq.javascript"),
       getEnabled: function javascript_getEnabled(scope, op) {
@@ -1662,18 +1790,16 @@
       match: function javascript_match(message, aSearchValue, aSearchOp) {
         // the javascript stored in aSearchValue should use "message" to
         // reference the nsIMsgDBHdr objst for the message
-        switch (aSearchOp)
-        {
+        switch (aSearchOp) {
           case Matches:
             return eval(aSearchValue);
           case DoesntMatch:
             return !eval(aSearchValue);
         }
-      }
+      },
     };
 
-    self.threadHeadTag =
-    {
+    self.threadHeadTag = {
       id: "filtaquilla@mesquilla.com#threadheadtag",
       name: util.getBundleString("fq.threadHeadTag"),
       getEnabled: function threadHeadTag_getEnabled(scope, op) {
@@ -1702,40 +1828,34 @@
 
         // special-case empty for performance reasons
         if (msgKeyArray.length == 0)
-          return aSearchOp == DoesntContain ||
-                 aSearchOp == Isnt || aSearchOp == IsEmpty;
-        else if (aSearchOp == IsEmpty)
-          return false;
-        else if (aSearchOp == IsntEmpty)
-          return true;
+          return aSearchOp == DoesntContain || aSearchOp == Isnt || aSearchOp == IsEmpty;
+        else if (aSearchOp == IsEmpty) return false;
+        else if (aSearchOp == IsntEmpty) return true;
 
         // loop through all message keywords
         let matches = false;
         for (let i = 0; i < msgKeyArray.length; i++) {
-          let isValue = (aSearchValue == msgKeyArray[i]);
+          let isValue = aSearchValue == msgKeyArray[i];
           switch (aSearchOp) {
             case Is:
               return isValue && msgKeyArray.length == 1;
             case Isnt:
               return !(isValue && msgKeyArray.length == 1);
             case Contains:
-              if (isValue)
-                return true;
+              if (isValue) return true;
               break;
             case DoesntContain:
-              if (isValue)
-                return false;
+              if (isValue) return false;
               break;
           }
         }
         // We got through a non-empty list with no match. Only Contains and
         // DoesntContain can do this.
-        return (aSearchOp == DoesntContain);
+        return aSearchOp == DoesntContain;
       },
     };
 
-    self.threadAnyTag =
-    {
+    self.threadAnyTag = {
       id: "filtaquilla@mesquilla.com#threadanytag",
       name: util.getBundleString("fq.threadAnyTag"),
       getEnabled: function threadAnyTag_getEnabled(scope, op) {
@@ -1750,88 +1870,77 @@
       },
       match: function threadAnyTag_matches(message, aSearchValue, aSearchOp) {
         let tagArray = tagService.getAllTags({}),
-            tagKeys = {};
+          tagKeys = {};
         for (let tagInfo of tagArray) {
-          if (tagInfo.tag)
-            tagKeys[tagInfo.key] = true;
-				}
+          if (tagInfo.tag) tagKeys[tagInfo.key] = true;
+        }
 
         let thread = message.folder.msgDatabase.getThreadContainingMsgHdr(message),
-            // we limit the number of thread items that we look at, but we always look at the thread root
-            threadCount = Math.min(thread.numChildren, maxThreadScan),
-            myKey = message.messageKey,
-            threadStart = 0;
-            
+          // we limit the number of thread items that we look at, but we always look at the thread root
+          threadCount = Math.min(thread.numChildren, maxThreadScan),
+          myKey = message.messageKey,
+          threadStart = 0;
+
         if (threadCount < thread.numChildren) {
           // find this message in the thread, and use that as the center of the search
           let threadIndex = 0;
           for (; threadIndex < thread.numChildren; threadIndex++) {
-            if (myKey == thread.getChildKeyAt(threadIndex))
-              break;
+            if (myKey == thread.getChildKeyAt(threadIndex)) break;
           }
           threadStart = threadIndex - maxThreadScan / 2;
           if (threadStart + threadCount > thread.numChildren)
             threadStart = thread.numChildren - threadCount;
-          if (threadStart < 0)
-            threadStart = 0;
+          if (threadStart < 0) threadStart = 0;
         }
 
         for (let index = 0; index < threadCount; index++) {
           // always examine the thread head
-          let useIndex = (index == 0) ? 0 : threadStart + index,
-              hdr = thread.getChildHdrAt(useIndex); // was getChildAt
+          let useIndex = index == 0 ? 0 : threadStart + index,
+            hdr = thread.getChildHdrAt(useIndex); // was getChildAt
           //  -- Get and cleanup the list of message headers following code from
           //  -- msgHdrViewOverlay.js SetTagHeader()
 
           // extract the tag keys from the msgHdr
           let msgKeyArray = hdr.getStringProperty("keywords").split(" "),
-              // attach legacy label to the front if not already there
-              label = hdr.label;
+            // attach legacy label to the front if not already there
+            label = hdr.label;
           if (label) {
             let labelKey = "$label" + label;
-            if (msgKeyArray.indexOf(labelKey) < 0)
-              msgKeyArray.unshift(labelKey);
+            if (msgKeyArray.indexOf(labelKey) < 0) msgKeyArray.unshift(labelKey);
           }
 
           // Rebuild the keywords string with just the keys that are actual tags or
           // legacy labels and not other keywords like Junk and NonJunk.
           // Retain their order, though, with the label as oldest element.
           for (let i = msgKeyArray.length - 1; i >= 0; --i) {
-            if (!(msgKeyArray[i] in tagKeys))
-              msgKeyArray.splice(i, 1); // remove non-tag key
+            if (!(msgKeyArray[i] in tagKeys)) msgKeyArray.splice(i, 1); // remove non-tag key
           }
 
           // -- Now try to match the search term
 
           // special-case empty for performance reasons
-          if (msgKeyArray.length == 0)
-            continue;
+          if (msgKeyArray.length == 0) continue;
 
           // there is at least one tag
-          if (aSearchOp == IsntEmpty)
-            return true;
+          if (aSearchOp == IsntEmpty) return true;
 
           // loop through all message keywords
           for (let i = 0; i < msgKeyArray.length; i++) {
             if (aSearchValue == msgKeyArray[i]) {
-              if (aSearchOp == Contains)
-                return true;
-              if (aSearchOp == DoesntContain)
-                return false;
+              if (aSearchOp == Contains) return true;
+              if (aSearchOp == DoesntContain) return false;
             }
           }
         }
         // We got through all messages with no match.
-        return (aSearchOp == DoesntContain);
+        return aSearchOp == DoesntContain;
       },
     };
 
-    
-    
     var { ToneQuillaPlay } = ChromeUtils.importESModule(
       "resource://filtaquilla/ToneQuillaPlay.sys.mjs"
     );
-     
+
     try {
       await ToneQuillaPlay.init();
       ToneQuillaPlay.window = window;
@@ -1839,24 +1948,24 @@
       FiltaQuilla.Util.logException("ToneQuillaPlay.init failed.", ex);
     }
     let tonequilla_name = util.getBundleString("filtaquilla.playSound");
-    self.playSound = 
-    {
-        id: "tonequilla@mesquilla.com#playSound",
-        name: tonequilla_name, 
-        applyAction: function(aMsgHdrs, aActionValue, aListener, aType, aMsgWindow)
-        {
-          util.logDebug("ToneQuillaPlay.queueToPlay", aActionValue);
-          ToneQuillaPlay.queueToPlay(aActionValue);
-        },
-        isValidForType: function(type, scope) {return tonequillaEnabled;},
+    self.playSound = {
+      id: "tonequilla@mesquilla.com#playSound",
+      name: tonequilla_name,
+      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+        util.logDebug("ToneQuillaPlay.queueToPlay", aActionValue);
+        ToneQuillaPlay.queueToPlay(aActionValue);
+      },
+      isValidForType: function (type, scope) {
+        return tonequillaEnabled;
+      },
 
-        validateActionValue: function(value, folder, type) { return null;},
+      validateActionValue: function (value, folder, type) {
+        return null;
+      },
 
-        allowDuplicates: true
+      allowDuplicates: true,
     };
-    
-
- };
+  };
  
  
   self.setOptions = function () {
@@ -2128,8 +2237,9 @@
       if (this.messages.clear)
         this.messages.clear(); // release all objects, just in case.
     }
-    else // reschedule another check
+    else { // reschedule another check
       moveLaterTimers[this.timerIndex].initWithCallback(this, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
+    }
   };
 
   // is this search scope local, and therefore valid for db-based terms?
@@ -2528,6 +2638,83 @@
       },
     };
   }
+
+  function _detachAttachments(
+    messenger,
+    directory,
+    contentTypes,
+    urls,
+    displayNames,
+    msgURIs,
+    copyListener
+  ) {
+    return new Promise((resolve, reject) => {
+      const totalCount = urls.length; // Total URLs to process
+      const failedUris = []; // Array to collect failed URLs
+      let processedCount = 0;
+      const uriListenerImpl = {
+        OnStartRunningUrl(url) {
+          if (copyListener && typeof copyListener.onStartCopy === "function") {
+            copyListener.onStartCopy(); // Call onStartCopy of copyListener
+          }
+          if (!url) {
+            util.logError("URL is null or undefined in OnStartRunningUrl");
+          } else {
+            util.logDebug("Starting to detach attachment: " + url?.spec);
+          }          
+        },
+
+        OnStopRunningUrl(url, status) {
+          processedCount++;
+
+          // If status is 0, it means success (NS_OK)
+          const resultStatus = status === 0 ? Cr.NS_OK : Cr.NS_ERROR_FAILURE;
+          const urlSpec = url?.spec || "n/a";
+
+          if (status === 0) {
+            util.logDebug("Attachment detached successfully: " + urlSpec);
+          } else {
+            util.logDebug("Failed to detach attachment: " + urlSpec + " with status: " + status);
+            failedUris.push(urlSpec); // Collect the failed URL
+          }
+
+          // Call onStopCopy method of copyListener if it exists, passing the status
+          if (copyListener && typeof copyListener.onStopCopy === "function") {
+            copyListener.onStopCopy(resultStatus); // Pass the status to onStopCopy
+          }
+
+          // If all URLs are processed, resolve the promise
+          if (processedCount === totalCount) {
+            if (failedUris.length > 0) {
+              reject(new Error("Some attachments failed to detach: " + failedUris.join(", ")));
+            } else {
+              // Resolve the promise once all URLs are processed, returning the failedUris array
+              resolve(failedUris); // Resolve with empty array if all attachments succeed
+            }
+          }
+        },
+      };
+
+      try {
+        // Pass the uriListenerImpl to detachAttachmentsWOPrompts
+        messenger.detachAttachmentsWOPrompts(
+          directory,
+          contentTypes,
+          urls,
+          displayNames,
+          msgURIs,
+          uriListenerImpl
+        );
+
+      } catch (ex) {
+        // If an error occurs in the try block, reject the promise and pass the error
+        reject(ex);
+      }
+    });
+  }
+
+
+
 
   function dl(text) {dump(text + '\n');}
 
