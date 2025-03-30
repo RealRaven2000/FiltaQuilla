@@ -315,11 +315,12 @@
 
         },      
         
-        isValidForType: function(type, scope) { return type == Ci.nsMsgFilterType.Manual && copyAsReadEnabled;},
+        isValidForType: function(type, scope) { 
+          return type == Ci.nsMsgFilterType.Manual && copyAsReadEnabled;
+        },
         validateActionValue: function(aActionValue, aFilterFolder, type) {
-          var msgFolder = MailUtils.getExistingFolder(aActionValue, false);
-          if (!msgFolder || !msgFolder.canFileMessages)
-          {
+          const msgFolder = MailUtils.getExistingFolder(aActionValue, false);
+          if (!msgFolder || !msgFolder.canFileMessages) {
             return util.getBundleString("fq.filtaquilla.mustSelectFolder");
           }
           return null;
@@ -921,37 +922,6 @@
             });
 
             console.log("after saveAttachments: ", results);
-            debugger;
-
-/*          Old code (pre 128) - saveAttachmentToFile() was removed in 136.
-						for (let j = 0; j < this.attachments.length; j++) {
-              try {
-                let attachment = this.attachments[j];
-                if (attachment.url.startsWith("file:")) {
-                  util.logToConsole("Attachment for '" + msgSubject + "' from " 
-                    + nicedate + " was already removed from mail - last seen at this location:\n" 
-                    + attachment.url);
-                  continue;
-                }
-                // create a unique file for this attachment
-                let uniqueFile = this.directory.clone();
-                let attachmentName = _sanitizeName(attachment.name, true); // allow "." for the extension
-                uniqueFile.append(attachmentName);
-                let txt = "Save attachment [" + j + "] to " + uniqueFile.path +
-                    "...\n msgURI=" + this.msgURI +
-                    "\n att.url=" + attachment.url +
-                    "\n att.ncontentType=" + attachment.contentType;
-                util.logDebug(txt);
-                txtStackedDump += txtStackedDump + txt + "\n";
-                uniqueFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
-                messenger.saveAttachmentToFile(uniqueFile, attachment.url, this.msgURI,
-                                               attachment.contentType, null);
-              }
-              catch (ex) {
-                util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
-              }
-						}
-*/
           } else {
 						if (this.attachments.length > 0) {
 							let msgURIs = [],
@@ -1098,7 +1068,7 @@
           const savePromise = async () => {
             try {
               _incrementMoveLaterCount(msgHdr);
-              await _saveAs(msgHdr, directory, type);
+              await _saveAs(msgHdr, directory, type, copyListener);
             } catch (error) {
               console.error("Error saving message:", error, msgHdr);
             } finally {
@@ -2348,20 +2318,20 @@
     return [searchValue, searchFlags, searchOptions];
   }
 
-  async function _saveAs(aMsgHdr, aDirectory, aType) {
+  async function _saveAs(aMsgHdr, aDirectory, aType, copyListener) {
     const msgSpec = aMsgHdr.folder.getUriForMsg(aMsgHdr),
       subject = MailServices.mimeConverter.decodeMimeHeader(aMsgHdr.subject, null, false, true), // [issue 53]
       fileName = _sanitizeName(subject),
       fullFileName = fileName + "." + aType,
       file = aDirectory.clone();
-         
+
     file.append(fullFileName);
     try {
       file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0o600);
       const service = MailServices.messageServiceFromURI(msgSpec);
 
       return new Promise((resolve, reject) => {
-        let urlListener = createUrlListener(resolve);
+        let urlListener = createUrlListener(resolve, copyListener);
 
         try {
           // in Tb115 this used to be called SaveMessageToDisk
@@ -2375,10 +2345,9 @@
           reject(ex);
         }
       });
-    }
-    catch (ex) {
+    } catch (ex) {
       console.log("Could not create file with name:" + fullFileName);
-      throw(ex);
+      throw ex;
     }
   }
 
@@ -2537,10 +2506,12 @@
     return name;
   }
 
-  function createUrlListener(resolve) {
+  function createUrlListener(resolve, copyListener) {
     // returns a nsIUrlListener
     return {
-      OnStartRunningUrl: function (aUrl) {},
+      OnStartRunningUrl: function (aUrl) {
+        copyListener.onStartCopy();
+      },
       OnStopRunningUrl: function (aUrl, status) {
         let messageUri;
         if (aUrl instanceof Ci.nsIMsgMessageUrl) messageUri = aUrl.uri;
@@ -2552,6 +2523,7 @@
         // By passing this status to the resolve function, we effectively allow the Promise 
         // to be settled with the operation's outcome, enabling subsequent 
         // handling of success or failure states.
+        copyListener.onStopCopy(status);
         resolve(status); // Resolve the Promise when saving completes
       },
     };
