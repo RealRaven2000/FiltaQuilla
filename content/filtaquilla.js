@@ -924,7 +924,6 @@
             "copyListener is not an instance of nsIMsgCopyServiceListener"
           );
 
-
           // save attachment code
           if (!this.detach) {
             const messageHeader = extension.messageManager.convert(msgHdr);
@@ -991,6 +990,11 @@
             util.logDebug(txt);
             txtStackedDump = txtStackedDump + txt + "\n";
           }
+          if (!urls.length) {
+            util.logDebug("no attachments left to detach, exiting...");
+            return true;
+          }
+
 
           try {
             // Await detachment process
@@ -1040,7 +1044,7 @@
                 msgHdr,
                 callbackObject,
                 callbackObject.callback,
-                false /* allowDownload */
+                false /* allowDownload - means we force local message or throw */
               );
             } catch (ex) {
               util.logException(
@@ -2648,72 +2652,38 @@
     msgURIs,
     copyListener
   ) {
+    const failedUris = [];
+
     return new Promise((resolve, reject) => {
-      const totalCount = urls.length; // Total URLs to process
-      const failedUris = []; // Array to collect failed URLs
-      let processedCount = 0;
-      const uriListenerImpl = {
+      messenger.detachAttachmentsWOPrompts(directory, contentTypes, urls, displayNames, msgURIs, {
         OnStartRunningUrl(url) {
-          if (copyListener && typeof copyListener.onStartCopy === "function") {
-            copyListener.onStartCopy(); // Call onStartCopy of copyListener
-          }
-          if (!url) {
-            util.logError("URL is null or undefined in OnStartRunningUrl");
-          } else {
-            util.logDebug("Starting to detach attachment: " + url?.spec);
-          }          
+          copyListener?.onStartCopy?.();
+          util.logDebug(`Starting to detach attachment: ${url?.spec ?? "unknown URL"}`);
         },
-
         OnStopRunningUrl(url, status) {
-          processedCount++;
-
-          // If status is 0, it means success (NS_OK)
-          const resultStatus = status === 0 ? Cr.NS_OK : Cr.NS_ERROR_FAILURE;
-          const urlSpec = url?.spec || "n/a";
-
+          const urlSpec = url?.spec ?? "unknown URL";
           if (status === 0) {
-            util.logDebug("Attachment detached successfully: " + urlSpec);
+            util.logDebug(`Attachment detached successfully: ${urlSpec}`);
+            resolve([]); // No failures
           } else {
-            util.logDebug("Failed to detach attachment: " + urlSpec + " with status: " + status);
-            failedUris.push(urlSpec); // Collect the failed URL
+            failedUris.push(urlSpec);
+            util.logDebug(`Failed to detach attachment: ${urlSpec}`);
+            reject(new Error(`Failed to detach attachment: ${url?.spec}`));
           }
-
-          // Call onStopCopy method of copyListener if it exists, passing the status
-          if (copyListener && typeof copyListener.onStopCopy === "function") {
-            copyListener.onStopCopy(resultStatus); // Pass the status to onStopCopy
-          }
-
-          // If all URLs are processed, resolve the promise
-          if (processedCount === totalCount) {
-            if (failedUris.length > 0) {
-              reject(new Error("Some attachments failed to detach: " + failedUris.join(", ")));
-            } else {
-              // Resolve the promise once all URLs are processed, returning the failedUris array
-              resolve(failedUris); // Resolve with empty array if all attachments succeed
-            }
-          }
+          resolve(failedUris); // return failedUri
         },
-      };
-
-      try {
-        // Pass the uriListenerImpl to detachAttachmentsWOPrompts
-        messenger.detachAttachmentsWOPrompts(
-          directory,
-          contentTypes,
-          urls,
-          displayNames,
-          msgURIs,
-          uriListenerImpl
-        );
-
-      } catch (ex) {
-        // If an error occurs in the try block, reject the promise and pass the error
-        reject(ex);
-      }
-    });
+      });
+    })
+      .then((failedUris) => {
+        //  Pass failedUris through
+        copyListener.onStopCopy(failedUris.length ? Cr.NS_ERROR_FAILURE : Cr.NS_OK);
+        return failedUris;
+      })
+      .catch((error) => {
+        copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+        return Promise.reject(error);
+      });
   }
-
-
 
 
   function dl(text) {dump(text + '\n');}
