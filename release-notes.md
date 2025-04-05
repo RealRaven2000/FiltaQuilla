@@ -1,4 +1,9 @@
-**Version 5.0** In order to move forward with the current release cycle (monthly releases) I decided to raise minimum version to Thunderbird 128, I am doing regular testing with the current beta versions but they may only be a single version number ahead! To help test new versions and be ahead of the curve, you can subscribe to issue #262. If you would like to support FiltaQuilla with donation you can now [do so here](https://quickfilters.quickfolders.org/filtaquilla.html#donate) **Improvements**
+**Version 5.0** 
+
+In order to move forward with the current release cycle (monthly releases) I decided to raise minimum version to Thunderbird 128, I am doing regular testing with the current beta versions but they may only be a single version number ahead! To help test new versions and be ahead of the curve, you can subscribe to issue #262. If you would like to support FiltaQuilla with donation you can now [do so here](https://quickfilters.quickfolders.org/filtaquilla.html#donate) 
+
+
+**Improvements**
 
 *   Made compatible with Thunderbird 137.\*. Minimum version going forward will now be **Thunderbird 128**.
 *   The helper function saveAllAttachments() was removed and had to be reimplemented going through web extension layer. The save attachments action is now set to beind asynchronous. This might potentially improve overall performance in Thunderbird. \[issue #319\].
