@@ -891,170 +891,214 @@
       needsBody: false,
     }; // end add Sender
 
-    // local object used for callback
-    class SaveAttachmentCallback {
-      constructor(aDirectory, aDetach, copyListener) {
-        this.directory = aDirectory;
-        this.detach = aDetach;
-        this.msgURI = null;
-        this.attachments = null;
-        this.saveAttachmentListener = null;
-        this.copyListener = copyListener; // More explicit name
-      }
+    function _extractAttachmentDetail(mimeMsg, msgHdr, directory, msgURI) {
+      const attachments = mimeMsg.allAttachments;
+      const msgURIs = [],
+        contentTypes = [],
+        urls = [],
+        displayNames = [];
 
-      async callback(msgHdr, aMimeMessage) {
-        const messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
-        let txtStackedDump = "";
-        this.msgURI = msgHdr.folder.generateMessageURI(msgHdr.messageKey);
-        this.attachments = aMimeMessage.allAttachments;
-        try {
+      for (let j = 0; j < attachments.length; j++) {
+        const attachment = attachments[j];
+        if (attachment.url.startsWith("file:")) {
+          util.logToConsole(
+            `Attachment for '${msgHdr.subject}'was already removed: check \n { attachment.url}`
+          );
+          continue;
+        }
+
+        msgURIs.push(msgURI);
+        contentTypes.push(attachment.contentType);
+        urls.push(attachment.url);
+        let attachmentName = _sanitizeName(attachment.name, true);
+        displayNames.push(attachmentName);
+        const txt =
+          `Detach attachment [${j}] to ${directory.path} ...\n` +
+          ` msgURI=${msgURI}\n` +
+          ` att.url=${attachment.url}\n` +
+          ` att.contentType=${attachment.contentType}`;
+        util.logDebug(txt);
+      }
+      return { msgURIs, contentTypes, urls, displayNames };
+    }
+
+    async function _detachAttachments(aMsgHdrs, directory) {
+      const failedUris = [];
+      try {
+        // Process all message headers asynchronously
+        for (let i = 0; i < aMsgHdrs.length; i++) {
+          let { msgHdr, mimeMsg } = await new Promise((resolve) =>
+            self._mimeMsg.MsgHdrToMimeMessage(
+              aMsgHdrs[i],
+              null,
+              function (msgHdr, mimeMsg) {
+                resolve({ msgHdr, mimeMsg });
+              },
+              false /* allowDownload */
+            )
+          );
+
+          // do something with mimeMsg
+          const msgURI = msgHdr.folder.generateMessageURI(msgHdr.messageKey);
+          const attachments = mimeMsg.allAttachments;
+          const messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
           const ds = msgHdr.date / 1000;
-          if (util.isDebug) {
-            util.logDebug("saveAttachmentCallback.callback");
-          }
-          // note: for some reason I could not use msgDate as it is treated here as a string not a Date object...
-          // the only workaround was to create new date objects at each step and call its functions directly:
           const mDate = new Date(ds);
           let nicedate =
             `${mDate.getFullYear()}-${mDate.getMonth() + 1}-` +
             `${mDate.getDate()} ${mDate.getHours()}:${mDate.getMinutes()}`;
 
-          console.assert(
-            this.copyListener instanceof Ci.nsIMsgCopyServiceListener,
-            "copyListener is not an instance of nsIMsgCopyServiceListener"
+          if (!attachments?.length) {
+            // nothing to do
+            continue;
+          }
+
+          const { msgURIs, contentTypes, urls, displayNames } = _extractAttachmentDetail(
+            mimeMsg,
+            msgHdr,
+            directory,
+            msgURI,
+            nicedate
           );
-
-          // save attachment code
-          if (!this.detach) {
-            const messageHeader = extension.messageManager.convert(msgHdr);
-            const results = await FiltaQuilla.Util.notifyTools.notifyBackground({
-              func: "saveAttachments",
-              messageHeader: messageHeader,
-              path: this.directory.path,
-            });
-
-            // Process each saved item individually
-            const successes = [],
-              failures = [];
-            for (let savedItem of results) {
-              if (savedItem.success) {
-                successes.push(
-                  `Attachment ${savedItem.fileName} saved successfully in ${this.directory.path}`
-                );
-              } else {
-                failures.push(`Failed to save attachment: ${savedItem.fileName}`);
-              }
-            }
-            // Concatenate successes and failures with a separator if both are present
-            const separator = successes.length * failures.length ? "----------\n" : "";
-            const heading = `SaveAttachmentCallback()\n${msgHdr.subject} AT ${nicedate}\n`;
-            util.logDebug(heading + successes.join("\n") + separator + failures.join("\n"));
-
-            // Call onStopCopy once for the entire message
-            this.copyListener.onStopCopy(
-              this.msgURI,
-              failures.length ? Cr.NS_ERROR_FAILURE : Cr.NS_OK
-            );
-            return;
-          } // save attachments, early exit
-
-          if (!this.attachments?.length) {
-            return false;
+          if (!msgURIs.length) {
+            // nothing to do
+            util.logDebug("No attachments left to process.");
+            continue;
           }
-
-          // detach attachment code
-          const msgURIs = [],
-            contentTypes = [],
-            urls = [],
-            displayNames = [];
-          for (let j = 0; j < this.attachments.length; j++) {
-            const attachment = this.attachments[j];
-            if (attachment.url.startsWith("file:")) {
-              util.logToConsole(
-                `Attachment for '${msgHdr.subject}' from ${nicedate} was already removed from mail - last seen at this location:\n` +
-                  attachment.url
-              );
-              continue;
-            }
-
-            msgURIs.push(this.msgURI);
-            contentTypes.push(attachment.contentType);
-            urls.push(attachment.url);
-            let attachmentName = _sanitizeName(attachment.name, true);
-            displayNames.push(attachmentName);
-            const txt =
-              `Detach attachment [${j}] to ${this.directory.path} ...\n`+
-              ` msgURI=${this.msgURI}\n` +
-              ` att.url=${attachment.url}\n` +
-              ` att.contentType=${attachment.contentType}`;
-            util.logDebug(txt);
-            txtStackedDump = txtStackedDump + txt + "\n";
-          }
-          if (!urls.length) {
-            util.logDebug("no attachments left to detach, exiting...");
-            return true;
-          }
-
 
           try {
-            // Await detachment process
-            const failedUris = await _detachAttachments(
-              messenger,
-              this.directory,
-              contentTypes,
-              urls,
-              displayNames,
-              msgURIs,
-              this.copyListener
-            );
+            util.logDebug("calling detachAttachmentsWOPrompts", urls);
+            await new Promise((resolve, reject) => {
+              messenger.detachAttachmentsWOPrompts(
+                directory,
+                contentTypes,
+                urls,
+                displayNames,
+                msgURIs,
+                {
+                  OnStartRunningUrl(url) {
+                    util.logDebug(
+                      `Starting to detach attachment: ${url?.spec ?? "unknown URL"}\n` +
+                        `from ${nicedate}`
+                    );
+                  },
+                  OnStopRunningUrl(url, status) {
+                    const urlSpec = url?.spec ?? "unknown URL";
+                    if (status === 0) {
+                      util.logDebug(`Attachment detached successfully: ${urlSpec}`, url || "");
+                      resolve(); // No failures
+                    } else {
+                      failedUris.push(urlSpec);
+                      util.logDebug(
+                        `---------------\nFailed to detach attachment: ${urlSpec}`, url || ""
+                      );
+                      // reject(new Error(`Failed to detach attachment: ${url?.spec}`));
+                      resolve();
+                    }
+                  },
+                }
+              );
+            });
 
-            if (failedUris.length > 0) {
-              console.log("Failed to detach the following attachments:\n" + failedUris.join(", "));
-            } else {
+            if (!failedUris.length) {
               util.logDebug("All attachments detached successfully.");
             }
-          } catch (error) {
-            util.logException("DetachAttachments failed", error);
+          } catch (ex) {
+            failedUris.push("General detachAttachmentsWOPrompts exception");
+            util.logException("FiltaQuilla._detachAttachments - detachAttachmentsWOPrompts()", ex);
           }
-        } catch (ex) {
-          util.logException("SaveAttachmentCallback\n" + txtStackedDump, ex);
         }
+      } catch (ex) {
+        util.logException("FiltaQuilla._detachAttachments()", ex);
+        return Cr.NS_ERROR_FAILURE;
+      }
+      return failedUris.length ? Cr.NS_ERROR_FAILURE : Cr.NS_OK;
+    }
+
+    async function _saveAttachments(aMsgHdrs, directory) {
+      try {
+        // Process all message headers asynchronously
+        for (let i = 0; i < aMsgHdrs.length; i++) {
+          let { msgHdr, mimeMsg } = await new Promise((resolve) =>
+            self._mimeMsg.MsgHdrToMimeMessage(
+              aMsgHdrs[i],
+              null,
+              function (msgHdr, mimeMsg) {
+                resolve({ msgHdr, mimeMsg });
+              },
+              false /* allowDownload */
+            )
+          );
+
+          // do something with mimeMsg
+          const ds = msgHdr.date / 1000;
+          const mDate = new Date(ds);
+          let nicedate =
+            `${mDate.getFullYear()}-${mDate.getMonth() + 1}-` +
+            `${mDate.getDate()} ${mDate.getHours()}:${mDate.getMinutes()}`;
+
+          // save attachment code
+          const messageHeader = extension.messageManager.convert(msgHdr);
+          const results = await FiltaQuilla.Util.notifyTools.notifyBackground({
+            func: "saveAttachments",
+            messageHeader: messageHeader,
+            path: directory.path,
+          });
+
+          // Process each saved item individually
+          const successes = [],
+            failures = [];
+          for (let savedItem of results) {
+            if (savedItem.success) {
+              successes.push(
+                `Attachment ${savedItem.fileName} saved successfully in ${directory.path}`
+              );
+            } else {
+              failures.push(`Failed to save attachment: ${savedItem.fileName}`);
+            }
+          }
+          // Concatenate successes and failures with a separator if both are present
+          const separator = successes.length * failures.length ? "----------\n" : "";
+          const heading = `_saveAttachments()\n${msgHdr.subject} at ${nicedate}\n`;
+          util.logDebug(heading + successes.join("\n") + separator + failures.join("\n"));
+          let result = failures.length == 0 ? Cr.NS_OK : Cr.NS_ERROR_FAILURE;
+          return result;
+        }
+      } catch (ex) {
+        util.logException("FiltaQuilla._saveAttachments()", ex);
+        console.error(ex);
+        return Cr.NS_ERROR_FAILURE;
       }
     }
 
     self.saveAttachment = {
       id: "filtaquilla@mesquilla.com#saveAttachment",
       name: util.getBundleString("fq.saveAttachment"),
-      applyAction: async function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
         // async functions pass in a nsIMsgCopyServiceListener
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         try {
           directory.initWithPath(aActionValue);
           if (directory.exists()) {
             util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
+          } else {
+            util.logDebug("saveAttachment() - target directory does not exist:\n" + aActionValue);
+            copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+            return;
           }
-          let callbackObject = new SaveAttachmentCallback(directory, false, copyListener);
-          // we need to find out whether we can pass async callback grunctions by
-          // adding async: true to the action.
 
-          for (let i = 0; i < aMsgHdrs.length; i++) {
-            try {
-              var msgHdr = aMsgHdrs[i];
-              self._mimeMsg.MsgHdrToMimeMessage(
-                msgHdr,
-                callbackObject,
-                callbackObject.callback,
-                false /* allowDownload - means we force local message or throw */
-              );
-            } catch (ex) {
-              util.logException(
-                "FiltaQuilla.saveAttachment - converting message headers failed.",
-                ex
-              );
-            }
-          }
+          // pass in message array, returns result status
+          _saveAttachments(aMsgHdrs, directory)
+            .then((rv) => {
+              copyListener.onStopCopy(rv);
+            })
+            .catch((ex) => {
+              util.logException("FiltaQuilla.saveAttachment", ex);
+              copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+            });
         } catch (ex) {
-          util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
+          util.logException("FiltaQuilla.saveAttachment", ex);
+          copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
         }
       },
 
@@ -1084,30 +1128,23 @@
             util.logDebug(
               "detachAttachments() - target directory does not exist:\n" + aActionValue
             );
+            copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
             return; // Exit early if directory doesn't exist
           }
 
-          let callbackObject = new SaveAttachmentCallback(directory, true, copyListener);
-
-          // Process all message headers asynchronously
-          for (let i = 0; i < aMsgHdrs.length; i++) {
-            try {
-              let msgHdr = aMsgHdrs[i];
-              await self._mimeMsg.MsgHdrToMimeMessage(
-                msgHdr,
-                callbackObject,
-                callbackObject.callback,
-                false /* allowDownload */
-              );
-            } catch (ex) {
-              util.logException(
-                "FiltaQuilla.detachAttachments - converting message headers failed.",
-                ex
-              );
-            }
-          }
+          // pass in message array
+          await _detachAttachments(aMsgHdrs, directory)
+            .then(async (rv) => {
+              util.logDebug(`detachAttachments() - copyListener.onStopCopy(${rv});`);
+              copyListener.onStopCopy(rv);
+            })
+            .catch((ex) => {
+              util.logException("FiltaQuilla.detachAttachments(", ex);
+              copyListener.onStopCopy(Cr.NS_ERROR_FAILURE); // this will stop filter flow
+            });
         } catch (ex) {
-          util.logException("FiltaQuilla.saveAttachment - initWithPath", ex);
+          util.logException("FiltaQuilla.detachAttachments(", ex);
+          copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
         }
       },
       isValidForType: function (type, scope) {
@@ -2643,7 +2680,7 @@
     };
   }
 
-  function _detachAttachments(
+  function _detachAttachments_old(
     messenger,
     directory,
     contentTypes,
@@ -2657,29 +2694,31 @@
     return new Promise((resolve, reject) => {
       messenger.detachAttachmentsWOPrompts(directory, contentTypes, urls, displayNames, msgURIs, {
         OnStartRunningUrl(url) {
-          copyListener?.onStartCopy?.();
+          copyListener.onStartCopy();
           util.logDebug(`Starting to detach attachment: ${url?.spec ?? "unknown URL"}`);
         },
         OnStopRunningUrl(url, status) {
           const urlSpec = url?.spec ?? "unknown URL";
           if (status === 0) {
-            util.logDebug(`Attachment detached successfully: ${urlSpec}`);
-            resolve([]); // No failures
+            util.logDebug(`Attachment detached successfully: ${urlSpec}`, url);
+            resolve(failedUris); // No failures
           } else {
             failedUris.push(urlSpec);
-            util.logDebug(`Failed to detach attachment: ${urlSpec}`);
+            util.logDebug(`---------------\nFailed to detach attachment: ${urlSpec}`, url);
             reject(new Error(`Failed to detach attachment: ${url?.spec}`));
           }
-          resolve(failedUris); // return failedUri
         },
       });
     })
       .then((failedUris) => {
         //  Pass failedUris through
-        copyListener.onStopCopy(failedUris.length ? Cr.NS_ERROR_FAILURE : Cr.NS_OK);
+        const result = failedUris.length ? Cr.NS_ERROR_FAILURE : Cr.NS_OK;
+        util.logDebug(`calling copyListener.onStopCopy(${result}) ...`);
+        copyListener.onStopCopy(result);
         return failedUris;
       })
       .catch((error) => {
+        util.logDebug("exception: calling copyListener.onStopCopy() with failure");
         copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
         return Promise.reject(error);
       });
