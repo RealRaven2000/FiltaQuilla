@@ -1,6 +1,10 @@
 
 /* replacement for folderPropsOverlay.js */
 
+/* 
+// Not permitted in Tb UI anymore
+// will be replaced with wx-compatible UI (folder context-menu) for future proofing
+
 function getBundleString(id, defaultText="no default text!", substitions = []) {
   var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
 
@@ -47,3 +51,5 @@ function onLoad(activatedWhileWindowOpen) {
 function onUnload(isAddOnShutown) {
   console.log(`Filtaquilla Folderprops\nonUnload(${isAddOnShutown})`);
 }
+
+*/

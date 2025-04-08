@@ -30,6 +30,9 @@
  // folder properties overlay. Unfortunately there are not adequate ids in the
  // filter properties xul to make a normal overlay possible, so instead we have
  // to add our xul dynamically.
+ // will be replaced with wx-compatible UI (folder context-menu) for future proofing
+
+ /*
 
  var { InheritedPropertiesGrid } = ChromeUtils.importESModule(
    "resource://filtaquilla/inheritedPropertiesGrid.sys.mjs"
@@ -90,4 +93,4 @@
 
 window.addEventListener("load", function(e) { filtaquillaFolderProps.onLoad(e); }, false);
 
-// vim: set expandtab tabstop=2 shiftwidth=2:
+*/

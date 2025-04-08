@@ -34,8 +34,9 @@
 
 (function filtaQuilla()
 {
-
-  const { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
+  const { ExtensionParent } = ChromeUtils.importESModule(
+    "resource://gre/modules/ExtensionParent.sys.mjs"
+  );
   const extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
 
   var Services = globalThis.Services;
@@ -44,6 +45,9 @@
     "resource:///modules/MessageArchiver.sys.mjs"
   );
 
+  /*
+  // [issue 318] REMOVED
+
   try {
     var { InheritedPropertiesGrid } = ChromeUtils.importESModule(
       "resource://filtaquilla/inheritedPropertiesGrid.sys.mjs"
@@ -51,11 +55,9 @@
   } catch (ex) {
     FiltaQuilla.Util.logException("Importing inheritedPropertiesGrid.sys.mjs failed.", ex);
   }
-  //  VirtualFolderHelper -  "resource:///modules/VirtualFolderWrapper.jsm",
-  
-  
-  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
+  */
 
+  Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
 
   const Cc = Components.classes,
     Ci = Components.interfaces,
@@ -63,12 +65,11 @@
     Cr = Components.results,
     util = FiltaQuilla.Util;
 
-
   // parameters for MoveLater
   //  delay (in milliseconds) between calls to move later
   const MOVE_LATER_DELAY = 5000,
-        //  Maximum number of callbacks before we just go ahead and move it.
-        MOVE_LATER_LIMIT = 12;
+    //  Maximum number of callbacks before we just go ahead and move it.
+    MOVE_LATER_LIMIT = 12;
 
   // global scope variables
   this.filtaquilla = {}; // use strict leads to "this is undefined" error
@@ -78,31 +79,31 @@
 
   self.initialized = false;
   self.name = filtaQuilla;
-  
+
   var { MailServices } = ChromeUtils.importESModule("resource:///modules/MailServices.sys.mjs");
 
   const headerParser = MailServices.headerParser,
-        tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
-        abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager),
-        // cache the values of commonly used search operators
-        nsMsgSearchOp = Ci.nsMsgSearchOp,
-				Contains = nsMsgSearchOp.Contains,
-				DoesntContain = nsMsgSearchOp.DoesntContain,
-				Is = nsMsgSearchOp.Is,
-				Isnt = nsMsgSearchOp.Isnt,
-				IsEmpty = nsMsgSearchOp.IsEmpty,
-				IsntEmpty = nsMsgSearchOp.IsntEmpty,
-				BeginsWith = nsMsgSearchOp.BeginsWith,
-				EndsWith = nsMsgSearchOp.EndsWith,
-				Matches = nsMsgSearchOp.Matches,
-				DoesntMatch = nsMsgSearchOp.DoesntMatch;
-        
-  const REGEX_CASE_SENSITIVE_FLAG = "c"; //use this to override global case insensitive flag 
-                                         //(js doesnt have that, but tcl does)
-        // REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
+    tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
+    abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager),
+    // cache the values of commonly used search operators
+    nsMsgSearchOp = Ci.nsMsgSearchOp,
+    Contains = nsMsgSearchOp.Contains,
+    DoesntContain = nsMsgSearchOp.DoesntContain,
+    Is = nsMsgSearchOp.Is,
+    Isnt = nsMsgSearchOp.Isnt,
+    IsEmpty = nsMsgSearchOp.IsEmpty,
+    IsntEmpty = nsMsgSearchOp.IsntEmpty,
+    BeginsWith = nsMsgSearchOp.BeginsWith,
+    EndsWith = nsMsgSearchOp.EndsWith,
+    Matches = nsMsgSearchOp.Matches,
+    DoesntMatch = nsMsgSearchOp.DoesntMatch;
+
+  const REGEX_CASE_SENSITIVE_FLAG = "c"; //use this to override global case insensitive flag
+  //(js doesnt have that, but tcl does)
+  // REGEX_SHOW_ALERT_SUCCESS_VALUE = "a" //use this to trigger dialog box with matched value
 
   let maxThreadScan = 20; // the largest number of thread messages that we will examine
-  
+
   // Enabling of filter actions.
   let subjectAppendEnabled = false,
     subjectSuffixEnabled = false,
@@ -125,14 +126,12 @@
     javascriptActionBodyEnabled = false,
     tonequillaEnabled = false,
     saveMessageAsFileEnabled = false,
-    moveLaterEnabled = false, 
+    moveLaterEnabled = false,
     regexpCaseInsensitiveEnabled = false,
     archiveMessageEnabled = false,
     fwdSmartTemplatesEnabled = false,
     rspSmartTemplatesEnabled = false,
     fileNamesSpaceCharacter = " ";
-      
-      
 
   // Enabling of search terms.
   let SubjectRegexEnabled = false,
@@ -145,15 +144,18 @@
     BodyRegexEnabled = false,
     SubjectBodyRegexEnabled = false;
 
-	// [#5] AG new condition - attachment name regex
-	let AttachmentRegexEnabled = false,
-      moveLaterTimers = {}, // references to timers used in moveLater action
-      moveLaterIndex = 0; // next index to use to store timers
+  // [#5] AG new condition - attachment name regex
+  let AttachmentRegexEnabled = false,
+    moveLaterTimers = {}, // references to timers used in moveLater action
+    moveLaterIndex = 0; // next index to use to store timers
 
   let printQueue = [],
-      printingMessage = false;
+    printingMessage = false;
 
   // inherited property object
+  // [issue 318]
+  // REMOVED. this was stored in a json object in
+  /*
   let applyIncomingFilters = {
     defaultValue: function defaultValue(aFolder) {
       return false;
@@ -163,11 +165,12 @@
     property: "applyIncomingFilters",
     hidefor: "nntp,none,pop3,rss" // That is, this is only valid for imap.
   };
+  */
 
   // javascript mime emitter functions
-  self._mimeMsg = ChromeUtils.importESModule("resource:///modules/gloda/MimeMessage.sys.mjs");  
+  self._mimeMsg = ChromeUtils.importESModule("resource:///modules/gloda/MimeMessage.sys.mjs");
 
-  self._init = async function() {
+  self._init = async function () {
     // self.strings = filtaquillaStrings;
 
     /*
@@ -990,7 +993,8 @@
                     } else {
                       failedUris.push(urlSpec);
                       util.logDebug(
-                        `---------------\nFailed to detach attachment: ${urlSpec}`, url || ""
+                        `---------------\nFailed to detach attachment: ${urlSpec}`,
+                        url || ""
                       );
                       // reject(new Error(`Failed to detach attachment: ${url?.spec}`));
                       resolve();
@@ -2007,16 +2011,17 @@
       allowDuplicates: true,
     };
   };
- 
- 
+
   self.setOptions = function () {
-    // enable features from acbout:config    
+    // enable features from acbout:config
     const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
 
-    // 1. Enable Actions      
+    // 1. Enable Actions
     try {
       maxThreadScan = prefs.getIntPref("maxthreadscan");
-    } catch (e) { maxThreadScan = 20;}
+    } catch (e) {
+      maxThreadScan = 20;
+    }
 
     try {
       subjectAppendEnabled = prefs.getBoolPref("subjectAppend.enabled");
@@ -2057,11 +2062,11 @@
     try {
       runFileEnabled = prefs.getBoolPref("runFile.enabled");
     } catch (e) {}
-    
+
     try {
       runFileUnicode = prefs.getBoolPref("runFile.unicode");
     } catch (e) {}
-    
+
     try {
       trainAsJunkEnabled = prefs.getBoolPref("trainAsJunk.enabled");
     } catch (e) {}
@@ -2093,11 +2098,11 @@
     try {
       javascriptActionBodyEnabled = prefs.getBoolPref("javascriptActionBody.enabled");
     } catch (e) {}
-    
+
     try {
       regexpCaseInsensitiveEnabled = prefs.getBoolPref("regexpCaseInsensitive.enabled");
     } catch (e) {}
-       
+
     try {
       tonequillaEnabled = prefs.getBoolPref("tonequilla.enabled");
     } catch (e) {}
@@ -2108,76 +2113,73 @@
 
     try {
       moveLaterEnabled = prefs.getBoolPref("moveLater.enabled");
-    } catch(e) {}
-    
+    } catch (e) {}
+
     try {
       archiveMessageEnabled = prefs.getBoolPref("archiveMessage.enabled");
     } catch (e) {}
-    
+
     try {
       fwdSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.fwd.enabled");
     } catch (e) {}
-    
+
     try {
       rspSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.rsp.enabled");
     } catch (e) {}
-    
+
     // 2. Enable conditions
     try {
       SubjectRegexEnabled = prefs.getBoolPref("SubjectRegexEnabled");
-    } catch(e) {}
+    } catch (e) {}
 
     try {
       HeaderRegexEnabled = prefs.getBoolPref("HeaderRegexEnabled");
-    } catch(e) {}
-    
+    } catch (e) {}
+
     try {
       JavascriptEnabled = prefs.getBoolPref("JavascriptEnabled");
-    } catch(e) {}
-    
+    } catch (e) {}
+
     try {
       SearchBccEnabled = prefs.getBoolPref("SearchBccEnabled");
-    } catch(e) {}
+    } catch (e) {}
     try {
       ThreadHeadTagEnabled = prefs.getBoolPref("ThreadHeadTagEnabled");
-    } catch(e) {}
+    } catch (e) {}
     try {
       ThreadAnyTagEnabled = prefs.getBoolPref("ThreadAnyTagEnabled");
-    } catch(e) {}
+    } catch (e) {}
 
     try {
       FolderNameEnabled = prefs.getBoolPref("FolderNameEnabled");
-    } catch(e) {}
-    
-		try {
-			AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
-		} catch(e) {}
- 
-		try {
-			BodyRegexEnabled = prefs.getBoolPref("BodyRegexEnabled");
-		} catch(e) {}
+    } catch (e) {}
 
     try {
-			SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
-		} catch(e) {}
-    
+      AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
+    } catch (e) {}
+
+    try {
+      BodyRegexEnabled = prefs.getBoolPref("BodyRegexEnabled");
+    } catch (e) {}
+
+    try {
+      SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
+    } catch (e) {}
+
     fileNamesSpaceCharacter = prefs.getStringPref("fileNames.spaceCharacter");
-
-
   };
 
   // extension initialization
-  self.onLoad = async function() {
-    if (self.initialized)
-      return;
-      
+  self.onLoad = async function () {
+    if (self.initialized) return;
+
     await self._init();
-    
+
     self.setOptions();
 
-
-    var filterService = Cc["@mozilla.org/messenger/services/filters;1"]
-                        .getService(Ci.nsIMsgFilterService);
+    var filterService = Cc["@mozilla.org/messenger/services/filters;1"].getService(
+      Ci.nsIMsgFilterService
+    );
     filterService.addCustomAction(self.subjectAppend);
     filterService.addCustomAction(self.subjectSuffix);
     filterService.addCustomAction(self.removeKeyword);
@@ -2206,8 +2208,7 @@
     filterService.addCustomAction(self.archiveMessage);
     filterService.addCustomAction(self.trainAsJunk);
 
-
-    // search terms 
+    // search terms
     filterService.addCustomTerm(self.subjectRegex);
     filterService.addCustomTerm(self.headerRegex);
     filterService.addCustomTerm(self.bodyRegex);
@@ -2218,30 +2219,32 @@
     filterService.addCustomTerm(self.threadAnyTag);
     filterService.addCustomTerm(self.folderName);
 
-		if (AttachmentRegexEnabled) {
-			filterService.addCustomTerm(self.attachmentRegex);
-		}
-
+    if (AttachmentRegexEnabled) {
+      filterService.addCustomTerm(self.attachmentRegex);
+    }
 
     // Inherited properties setup
     // standard format for inherited property rows
     //   defaultValue:  value if inherited property missing (boolean true or false)
     //   name:          localized display name
     //   property:      inherited property name
+    /*    
+    // [issue 318] REMOVED
     if (typeof InheritedPropertiesGrid !== "undefined") {
       InheritedPropertiesGrid.addPropertyObject(applyIncomingFilters);
     }
+*/
 
     self.initialized = true;
   };
 
   // local private functions
   // constructor for the MoveLaterNotify object
-  function MoveLaterNotify(aMessages, aSource, aDestination, aTimerIndex)  {
+  function MoveLaterNotify(aMessages, aSource, aDestination, aTimerIndex) {
     // thunderbird 78 tidies up the aMessages array during apply, so we need to make a copy:
     this.messages = [];
     // clone the messages array
-    for (let i=0; i<aMessages.length; i++) {
+    for (let i = 0; i < aMessages.length; i++) {
       this.messages.push(aMessages[i]);
     }
     util.logDebug("MoveLaterNotify ()", aMessages, aSource, aDestination, aTimerIndex);
@@ -2255,31 +2258,37 @@
     // Check the moveLater values for the headers. If this is set by a routine
     //  with a reliable finish listener, then we will wait until that is done to
     //  move. For others, we move on the first callback after the delay.
-    const isMove = true, allowUndo = false;
+    const isMove = true,
+      allowUndo = false;
     let moveLaterCount = -1;
     this.recallCount--;
     for (let i = 0; i < this.messages.length; i++) {
       let msgHdr = this.messages[i];
       try {
         let localCount = msgHdr.getUint32Property("moveLaterCount");
-        if (localCount > moveLaterCount)
-          moveLaterCount = localCount;
-      } catch(e) {}
+        if (localCount > moveLaterCount) moveLaterCount = localCount;
+      } catch (e) {}
     }
-    if ( (moveLaterCount <= 0) || (this.recallCount <= 0)) { // execute move    
-      MailServices.copy.copyMessages(this.source, 
-              this.messages,
-              this.destination, 
-              isMove,
-              null, 
-              null, 
-              allowUndo);
+    if (moveLaterCount <= 0 || this.recallCount <= 0) {
+      // execute move
+      MailServices.copy.copyMessages(
+        this.source,
+        this.messages,
+        this.destination,
+        isMove,
+        null,
+        null,
+        allowUndo
+      );
       moveLaterTimers[this.timerIndex] = null;
-      if (this.messages.clear)
-        this.messages.clear(); // release all objects, just in case.
-    }
-    else { // reschedule another check
-      moveLaterTimers[this.timerIndex].initWithCallback(this, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
+      if (this.messages.clear) this.messages.clear(); // release all objects, just in case.
+    } else {
+      // reschedule another check
+      moveLaterTimers[this.timerIndex].initWithCallback(
+        this,
+        MOVE_LATER_DELAY,
+        Ci.nsITimer.TYPE_ONE_SHOT
+      );
     }
   };
 
@@ -2293,8 +2302,8 @@
       case Ci.nsMsgSearchScope.newsFilter:
         return true;
       default:
-        FiltaQuilla.Util.logDebugOptional("isLocal","isLocalSearch = FALSE!", aSearchScope);  // test!!!
-        return false; 
+        FiltaQuilla.Util.logDebugOptional("isLocal", "isLocalSearch = FALSE!", aSearchScope); // test!!!
+        return false;
     }
   }
 
@@ -2303,11 +2312,9 @@
   function _mimeAppend(utf8Append, subject, direction) {
     // append a UTF8 string to a mime-encoded subject
     var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
-        decodedSubject =  mimeConvert.decodeMimeHeader(subject, null, false, true);
+      decodedSubject = mimeConvert.decodeMimeHeader(subject, null, false, true);
 
-    appendedSubject = direction ? 
-                      utf8Append + decodedSubject :
-                      decodedSubject + utf8Append;
+    appendedSubject = direction ? utf8Append + decodedSubject : decodedSubject + utf8Append;
     recodedSubject = mimeConvert.encodeMimePartIIStr_UTF8(appendedSubject, false, "UTF-8", 0, 72);
     return recodedSubject;
   }
@@ -2322,29 +2329,24 @@
       unicodeConverter.charset = "UTF-8";
       return unicodeConverter.ConvertFromUnicode(aSrc);
     }
-    
+
     if (/@SUBJECT@/.test(parameter)) {
       // let str = convertFromUnicode(hdr.mime2DecodedSubject);
       return parameter.replace(/@SUBJECT@/, hdr.mime2DecodedSubject);
     }
-    if (/@AUTHOR@/.test(parameter))
-      return parameter.replace(/@AUTHOR@/, hdr.mime2DecodedAuthor);
-    if (/@MESSAGEID@/.test(parameter))
-      return parameter.replace(/@MESSAGEID@/, hdr.messageId);
-    if (/@DATE@/.test(parameter))
-      return parameter.replace(/@DATE@/, Date(hdr.date/1000));
+    if (/@AUTHOR@/.test(parameter)) return parameter.replace(/@AUTHOR@/, hdr.mime2DecodedAuthor);
+    if (/@MESSAGEID@/.test(parameter)) return parameter.replace(/@MESSAGEID@/, hdr.messageId);
+    if (/@DATE@/.test(parameter)) return parameter.replace(/@DATE@/, Date(hdr.date / 1000));
     if (/@RECIPIENTS@/.test(parameter))
       return parameter.replace(/@RECIPIENTS@/, hdr.mime2DecodedRecipients);
-    if (/@CCLIST@/.test(parameter))
-      return parameter.replace(/@CCLIST@/, hdr.ccList);
+    if (/@CCLIST@/.test(parameter)) return parameter.replace(/@CCLIST@/, hdr.ccList);
     if (/@DATEINSECONDS@/.test(parameter))
       return parameter.replace(/@DATEINSECONDS@/, hdr.dateInSeconds);
     if (/@MESSAGEURI@/.test(parameter))
       return parameter.replace(/@MESSAGEURI@/, hdr.folder.generateMessageURI(hdr.messageKey));
     if (/@FOLDERNAME@/.test(parameter))
       return parameter.replace(/@FOLDERNAME@/, hdr.folder.prettyName);
-    if (/@PROPERTY@.+@/.test(parameter))
-    {
+    if (/@PROPERTY@.+@/.test(parameter)) {
       // This is a little different, the actual property (which is typically a
       // custom db header) is stored like @PROPERTY@X-SPAM@
       // You'll need to add the custom db header manually though.
@@ -2354,8 +2356,7 @@
         try {
           var value = hdr.getStringProperty(property.toLowerCase());
           return matches[1] + value + matches[3];
-        }
-        catch (e) {}
+        } catch (e) {}
       }
     }
     return parameter;
@@ -2368,9 +2369,8 @@
     let tagArray = tagService.getAllTags({});
     let tagKeys = {};
     for (let tagInfo of tagArray) {
-      if (tagInfo.tag)
-        tagKeys[tagInfo.key] = true;
-		}
+      if (tagInfo.tag) tagKeys[tagInfo.key] = true;
+    }
 
     // extract the tag keys from the msgHdr
     let msgKeyArray = aMsgHdr.getStringProperty("keywords").split(" ");
@@ -2379,16 +2379,14 @@
     let label = aMsgHdr.label;
     if (label) {
       let labelKey = "$label" + label;
-      if (msgKeyArray.indexOf(labelKey) < 0)
-        msgKeyArray.unshift(labelKey);
+      if (msgKeyArray.indexOf(labelKey) < 0) msgKeyArray.unshift(labelKey);
     }
 
     // Rebuild the keywords string with just the keys that are actual tags or
     // legacy labels and not other keywords like Junk and NonJunk.
     // Retain their order, though, with the label as oldest element.
     for (let i = msgKeyArray.length - 1; i >= 0; --i) {
-      if (!(msgKeyArray[i] in tagKeys))
-        msgKeyArray.splice(i, 1); // remove non-tag key
+      if (!(msgKeyArray[i] in tagKeys)) msgKeyArray.splice(i, 1); // remove non-tag key
     }
     return msgKeyArray;
   }
@@ -2396,23 +2394,23 @@
   var gJunkService;
   function _trainJunkFilter(aIsJunk, aMsgHdrs, aMsgWindow) {
     if (!gJunkService)
-      gJunkService = Cc["@mozilla.org/messenger/filter-plugin;1?name=bayesianfilter"]
-                      .getService(Ci.nsIJunkMailPlugin);
+      gJunkService = Cc["@mozilla.org/messenger/filter-plugin;1?name=bayesianfilter"].getService(
+        Ci.nsIJunkMailPlugin
+      );
     for (var i = 0; i < aMsgHdrs.length; i++) {
       hdr = aMsgHdrs[i];
       // get the old classification
       let junkscore = hdr.getStringProperty("junkscore"),
-          junkscoreorigin = hdr.getStringProperty("junkscoreorigin"),
-          oldClassification = Ci.nsIJunkMailPlugin.UNCLASSIFIED;
-      if (junkscoreorigin == "user") {  // which is a proxy for "trained in bayes"
-        if (junkscore == "100")
-          oldClassification = Ci.nsIJunkMailPlugin.JUNK;
-        else if (junkscore == "0")
-          oldClassification = Ci.nsIJunkMailPlugin.GOOD;
+        junkscoreorigin = hdr.getStringProperty("junkscoreorigin"),
+        oldClassification = Ci.nsIJunkMailPlugin.UNCLASSIFIED;
+      if (junkscoreorigin == "user") {
+        // which is a proxy for "trained in bayes"
+        if (junkscore == "100") oldClassification = Ci.nsIJunkMailPlugin.JUNK;
+        else if (junkscore == "0") oldClassification = Ci.nsIJunkMailPlugin.GOOD;
       }
       let msgURI = hdr.folder.generateMessageURI(hdr.messageKey) + "?fetchCompleteMessage=true",
-          newClassification = aIsJunk ? Ci.nsIJunkMailPlugin.JUNK : Ci.nsIJunkMailPlugin.GOOD,
-          db = hdr.folder.msgDatabase;
+        newClassification = aIsJunk ? Ci.nsIJunkMailPlugin.JUNK : Ci.nsIJunkMailPlugin.GOOD,
+        db = hdr.folder.msgDatabase;
       // Set the message classification and origin
       db.setStringPropertyByHdr(hdr, "junkscore", aIsJunk ? "100" : "0");
       db.setStringPropertyByHdr(hdr, "junkscoreorigin", "user");
@@ -2421,23 +2419,31 @@
       // can use to tell the difference
       db.setStringPropertyByHdr(hdr, "junktrainorigin", "filter");
       if (oldClassification != newClassification)
-        gJunkService.setMessageClassification(msgURI, oldClassification,
-            newClassification, aMsgWindow, null);
+        gJunkService.setMessageClassification(
+          msgURI,
+          oldClassification,
+          newClassification,
+          aMsgWindow,
+          null
+        );
     }
 
     // For IMAP, we need to set the junk flag
     // We'll assume this is a single folder
     hdr = aMsgHdrs[0];
     var folder = hdr.folder;
-    if (folder instanceof Ci.nsIMsgImapMailFolder) {  // need to update IMAP custom flags
+    if (folder instanceof Ci.nsIMsgImapMailFolder) {
+      // need to update IMAP custom flags
       if (aMsgHdrs.length) {
         let msgKeys = new Array();
-        for (let i = 0; i < aMsgHdrs.length; i++)
-          msgKeys[i] = aMsgHdrs[i].messageKey;
-        folder.storeCustomKeywords(null,
+        for (let i = 0; i < aMsgHdrs.length; i++) msgKeys[i] = aMsgHdrs[i].messageKey;
+        folder.storeCustomKeywords(
+          null,
           aIsJunk ? "Junk" : "NonJunk",
           aIsJunk ? "NonJunk" : "Junk",
-          msgKeys, msgKeys.length);
+          msgKeys,
+          msgKeys.length
+        );
       }
     }
   }
@@ -2448,7 +2454,9 @@
      * / delimiters. If we detect a / though, we will look for flags and
      * add them to the regex search. See bug m165.
      */
-    let searchValue = aSearchValue, searchFlags = "", searchOptions =[];
+    let searchValue = aSearchValue,
+      searchFlags = "",
+      searchOptions = [];
     if (aSearchValue.charAt(0) == "/") {
       let lastSlashIndex = aSearchValue.lastIndexOf("/");
       searchValue = aSearchValue.substring(1, lastSlashIndex);
@@ -2456,16 +2464,20 @@
       let sw = searchFlags.match(/{.*}/) || [];
       if (sw && sw.length) {
         const startOptions = searchFlags.indexOf(sw[0]),
-          optionString = searchFlags.substring(startOptions+1, startOptions+sw[0].length-1);
+          optionString = searchFlags.substring(startOptions + 1, startOptions + sw[0].length - 1);
         searchOptions = optionString.split(",");
 
         searchFlags = searchFlags.substring(0, startOptions);
       }
     }
-    if (regexpCaseInsensitiveEnabled && !searchFlags.includes("i") && !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)){
+    if (
+      regexpCaseInsensitiveEnabled &&
+      !searchFlags.includes("i") &&
+      !searchFlags.includes(REGEX_CASE_SENSITIVE_FLAG)
+    ) {
       searchFlags += "i";
     }
-    
+
     return [searchValue, searchFlags, searchOptions];
   }
 
@@ -2510,27 +2522,27 @@
    *          if a sanitized name cannot be obtained (if aName contains
    *          no valid characters).
    */
-  function _sanitizeName(aName, includesExtension=false) {
-    const prefs = Services.prefs.getBranch("extensions.filtaquilla."); 
-    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()_-+'!%" + (includesExtension ? "." : ""),
-        maxLength = prefs.getIntPref("fileNames.maxLength") || 60,
-        whiteList = prefs.getStringPref("fileNames.whiteList") || "";
-        
+  function _sanitizeName(aName, includesExtension = false) {
+    const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
+    let chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()_-+'!%" +
+        (includesExtension ? "." : ""),
+      maxLength = prefs.getIntPref("fileNames.maxLength") || 60,
+      whiteList = prefs.getStringPref("fileNames.whiteList") || "";
+
     let replaceMap = new Map();
     function addItems(keys, val) {
       let list = keys.split("|");
       for (let x of list) {
         replaceMap.set(x, val);
       }
-        
     }
-    
-    let spaceChar = fileNamesSpaceCharacter.substring(0,1);
+
+    let spaceChar = fileNamesSpaceCharacter.substring(0, 1);
     if (!chars.includes(spaceChar)) {
       chars += spaceChar;
     }
-          
-    
+
     let str = aName; // .toLowerCase();
     // diacritics
     if (true) {
@@ -2607,49 +2619,47 @@
       addItems("Щ", "Shch");
       addItems("щ", "shch");
       addItems("Ж", "Zh");
-      addItems("ж", "zh");  
+      addItems("ж", "zh");
       addItems("&", "+"); // improve readability
-      
+
       // 2. remove whitelisted characters
-      [...whiteList].forEach(l=>replaceMap.delete(l));
-      
+      [...whiteList].forEach((l) => replaceMap.delete(l));
+
       // 3. replace stuff
-      replaceMap.forEach(
-        (value, key) => {
-          str = str.replace(new RegExp(key, "g"), value);
-        }      
-      );
-        
+      replaceMap.forEach((value, key) => {
+        str = str.replace(new RegExp(key, "g"), value);
+      });
     }
-    
-    // special characters    
+
+    // special characters
     let name = str.trim().replace(/ /g, spaceChar); // used to be "-"
     name = name.replace(/[@:\|\/\\\*\?]/g, "-");
     name = name.replace(/[\$"<>,]/g, "").trim();
     let finalWhiteList = chars + whiteList; // add user white listed characters
-    name = name.split("").filter(function (el) {
-                                   return finalWhiteList.indexOf(el) != -1;
-                                 }).join("");
+    name = name
+      .split("")
+      .filter(function (el) {
+        return finalWhiteList.indexOf(el) != -1;
+      })
+      .join("");
 
     if (!name) {
       // Our input had no valid characters - use a random name
       let cl = chars.length - 1;
-      for (let i = 0; i < 8; ++i)
-        name += chars.charAt(Math.round(Math.random() * cl));
+      for (let i = 0; i < 8; ++i) name += chars.charAt(Math.round(Math.random() * cl));
     }
 
     if (name.length > maxLength) {
       let ext;
       if (includesExtension) {
         let i = name.lastIndexOf(".");
-        if (i>0) {
+        if (i > 0) {
           ext = name.substr(i);
         }
       }
       if (ext) {
-        name = name.substring(0, maxLength-ext.length) + ext;
-      }
-      else {
+        name = name.substring(0, maxLength - ext.length) + ext;
+      } else {
         name = name.substring(0, maxLength);
       }
     }
@@ -2671,8 +2681,8 @@
         if (moveLaterCount) {
           msgHdr.setUint32Property("moveLaterCount", moveLaterCount - 1);
         }
-        // By passing this status to the resolve function, we effectively allow the Promise 
-        // to be settled with the operation's outcome, enabling subsequent 
+        // By passing this status to the resolve function, we effectively allow the Promise
+        // to be settled with the operation's outcome, enabling subsequent
         // handling of success or failure states.
         copyListener.onStopCopy(status);
         resolve(status); // Resolve the Promise when saving completes
@@ -2724,8 +2734,9 @@
       });
   }
 
-
-  function dl(text) {dump(text + '\n');}
+  function dl(text) {
+    dump(text + "\n");
+  }
 
   // actions that need the body can conflict with a move. These should
   //  set the MoveLaterCount to prevent problems, and then use a MoveLater
@@ -2734,22 +2745,25 @@
     let moveLaterCount = 0;
     try {
       moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
-    } catch(e) {}
+    } catch (e) {}
     moveLaterCount++;
     msgHdr.setUint32Property("moveLaterCount", moveLaterCount);
   }
 
   // use this for instant feedback after configuring through the options window
   let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-  observerService.addObserver({
-    observe: function() {
-      self.setOptions();
-    }
-  },"filtaquilla-options-changed", false);
+  observerService.addObserver(
+    {
+      observe: function () {
+        self.setOptions();
+      },
+    },
+    "filtaquilla-options-changed",
+    false
+  );
 
   /* functions to move to experiment API in the future */
-  FiltaQuilla.sanitizeName = _sanitizeName; 
-
+  FiltaQuilla.sanitizeName = _sanitizeName;
 })();
 
 // vim: set expandtab tabstop=2 shiftwidth=2:

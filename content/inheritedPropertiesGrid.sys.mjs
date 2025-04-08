@@ -27,6 +27,9 @@
  * ***** END LICENSE BLOCK *****
  */
 
+ // [issue 318] THIS MODULE WILL BE REMOVED once it has been rewritten using the API
+ // also the about:config setting mesquillaInheritedProperties needs to be purged!
+
 /**
  * InheritedPropertiesGrid: User interface for setting inherited folder properties
  */
