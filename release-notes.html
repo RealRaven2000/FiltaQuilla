@@ -1,4 +1,4 @@
-<b>Version 5.0</b>
+<b>Version 5.0.1</b>
 
 In order to move forward with the current release cycle (monthly releases) I decided to raise minimum version to Thunderbird 128, I am doing regular testing with the current beta versions but they may only be a single version number ahead! To help test new versions and be ahead of the curve, you can subscribe to issue #262.
 
@@ -10,13 +10,17 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
   <li> The helper function saveAllAttachments() was removed and had to be reimplemented going through web extension layer. The save attachments action is now set to beind asynchronous. This might potentially improve overall performance in Thunderbird. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/319">[issue 319]</a>.  </li>
   <li> Save Messages: Made file operations asynchronous. This should avoid significant slowdowns when Thunderbird starts and tries to execute filters that potentially save many files  or attachments. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/335">[issue 335]</a>.  </li>    
   <li> Header Regex match: Support using anchor tokens ^ and $ for address lists <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/329">[issue 329]</a>. </li>
-  <li> Allow automatic running of filters ouside of Inbox (IMAP only) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/318">[issue 318]</a>. </li>
   <li> Thunderbird 136 retires ChromeUtils.import - replace with importESModule. Also converted all jsm modules to ESM modules. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/331">[issue 331]</a>.</li>
 </ul>
 
 <b>Miscellaneus</b>
 <ul>
   <li> Replaced deprecated nsILocalFile with nsIFile </li>
+</ul>
+
+<b>To do</b>
+<ul>
+  <li>  Work in progress: Allow automatic running of filters outside of Inbox (IMAP only) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/318">[issue 318]</a>. As adding the checkbox in folder properties didn't meet policy restrictions, we plan to add a web extension compatible interface for this at a later stage, possible through the folder tree context menu.</li>
 </ul>
 
 
