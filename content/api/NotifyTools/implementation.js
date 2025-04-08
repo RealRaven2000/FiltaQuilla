@@ -32,9 +32,6 @@
     "resource://gre/modules/ExtensionCommon.sys.mjs"
   );
 
-  var Services = globalThis.Services || 
-    ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
-
   var observerTracker = new Set();
 
   class NotifyTools extends ExtensionCommon.ExtensionAPI {

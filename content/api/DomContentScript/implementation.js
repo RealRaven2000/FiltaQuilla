@@ -11,10 +11,6 @@ var { ExtensionUtils } = DomContent_ESM
   ? ChromeUtils.importESModule("resource://gre/modules/ExtensionUtils.sys.mjs")
   : ChromeUtils.import("resource://gre/modules/ExtensionUtils.jsm");
 
-var Services = globalThis.Services || ChromeUtils.import(
-  "resource://gre/modules/Services.jsm"
-).Services;
-
 var { ExtensionError } = ExtensionUtils;
 
 var registeredWindows = new Map();

@@ -438,9 +438,6 @@ FiltaQuilla.Util = {
   },
 
   localize: function (window, buttons = null) {
-    var Services = globalThis.Services || 
-      ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
-      
     var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
 
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
@@ -1268,9 +1265,6 @@ FiltaQuilla.Util = {
 
 // the following adds the notifyTools API as a util method to communicate with the background page
 // this mechanism will be used to replace legacy code with API calls.
-var Services = globalThis.Services || ChromeUtils.import(
-  "resource://gre/modules/Services.jsm"
-).Services;
 
 var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
 var { MimeParser } = ChromeUtils.importESModule("resource:///modules/mimeParser.sys.mjs");

@@ -19,9 +19,6 @@ var { ExtensionCommon } = ChromeUtils.importESModule(
 );
 var { ExtensionSupport } = ChromeUtils.importESModule("resource:///modules/ExtensionSupport.sys.mjs");
 
-var Services = globalThis.Services || 
-  ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
-
 function getThunderbirdVersion() {
   let parts = Services.appinfo.version.split(".");
   return {

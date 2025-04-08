@@ -39,7 +39,6 @@
   );
   const extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
 
-  var Services = globalThis.Services;
   var { MailUtils } = ChromeUtils.importESModule("resource:///modules/MailUtils.sys.mjs");
   var { MessageArchiver } = ChromeUtils.importESModule(
     "resource:///modules/MessageArchiver.sys.mjs"
