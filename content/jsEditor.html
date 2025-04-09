@@ -26,32 +26,14 @@
   </style>
 </head>
 <body>
-  <h2>Edit JavaScript</h2>
+  <h2 id="pageHead">Edit JavaScript</h2>
   <textarea id="jscode"></textarea>
   <div class="buttons">
     <button id="cancel">Cancel</button>
     <button id="accept">OK</button>
   </div>
 
-  <script src="jsEditor.js"></script>  
-  <script>
-    const textarea = document.getElementById("jscode");
-
-    // Load initial code passed from the opener
-    if (window.opener?.initialCode) {
-      textarea.value = window.opener.initialCode;
-    }
-
-    document.getElementById("accept").addEventListener("click", () => {
-      if (window.opener?.onCodeAccept) {
-        window.opener.onCodeAccept(textarea.value);
-      }
-      window.close();
-    });
-
-    document.getElementById("cancel").addEventListener("click", () => {
-      window.close();
-    });
-  </script>
+  <script type="application/javascript" src="i18n.js"></script>
+  <script type="application/javascript" src="jsEditor.js"></script>  
 </body>
 </html>

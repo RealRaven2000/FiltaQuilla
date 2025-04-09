@@ -55,9 +55,10 @@ function sendUpdatedScript(textarea) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const textarea = document.getElementById("jscode");
   const accept = document.getElementById("accept");
+  const cancel = document.getElementById("cancel");
 
   accept.addEventListener("click", () => {
     sendUpdatedScript(textarea);
@@ -67,6 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("cancel").addEventListener("click", () => {
     window.close();
   });
+
+  const manifest = await messenger.runtime.getManifest(),
+    addonName = manifest.name;    
+  document.getElementById("pageHead").textContent = messenger.i18n.getMessage(
+    "filtaquilla.editJavascript",
+    addonName
+  );
+  cancel.textContent = messenger.i18n.getMessage("regex.cancel", addonName);
 });
 
 browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {

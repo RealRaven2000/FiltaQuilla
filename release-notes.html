@@ -19,9 +19,15 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
   <li> Remove declaration of Services <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/337">[issue 337]</a></li>
 </ul>
 
-<b>Bug Fixes (5.0.2)</b>
+<b>Bug Fixes (5.1)</b>
 <ul>
-  <li>Error when using Javascript for a Saved Search criteria (Tb 137) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/338">[issue 338]</a></li>
+  <li>Error when using Javascript for a Saved Search criteria (Tb 137) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/338">[issue 338]</a>. The existing xhtml window for editing javascript stopped working in Thunderbird 136, therefore I rewrote the feature using a standard HTML window and more modern back-end code.
+  Also, in later versions of Thunderbird 128, the use of eval() triggers a CSP exception and thus does not work at all anymore. I reimplemented the scripting using the more restricted (and safer) evalInSandbox, which only gives a limited, controlled scope to the environment that is accessible from the script.
+  
+  I regard Thunderbird as a database fat client, with limited tools. Add-ons make the data access much more accessible. The mail store, address books and the Global Database are data the users own. I want to empower my users to access this data in the way they choose, therefore local scripts running in a sandbox environment should be allowed. However we will not suport remote script to be executed as it opens up big security problems.
+  
+  There may be corporate users of Thunderbird who have a different view on data access, but they can (and usually do) enforce company policies by controlling which apps or Add-ons are allowed to be installed.
+  </li>
 </ul>
 
 <b>To do</b>
