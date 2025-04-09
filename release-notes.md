@@ -14,7 +14,7 @@ In order to move forward with the current release cycle (monthly releases) I dec
 **Miscellaneus**
 
 *   Replace deprecated nsILocalFile with nsIFile
-
+*   Remove declaration of Services \[issue #337\]
 
 **TO DO**
 *    Work in progress: Allow automatic running of filters ouside of Inbox (IMAP only) \[issue #318\].

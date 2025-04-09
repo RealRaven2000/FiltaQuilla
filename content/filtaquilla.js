@@ -1167,7 +1167,16 @@
       name: util.getBundleString("filtaquilla.javascriptAction.name"),
       applyAction: function (msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         try {
-          return eval(actionValue);
+          // [issue 338] eval rejected by CSP
+          //             we only pass in a controlled set of data using the "context" parameter
+          const script = actionValue;
+          const context = {
+            msgHdrs,
+            filterType,
+            msgWindow,
+            fq_method: "javascriptAction",
+          };
+          return util.saferEval(script, context);
         } catch (ex) {
           // Galantha: javascript eval action error triggered a bug report
           let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
@@ -1192,7 +1201,16 @@
       name: util.getBundleString("filtaquilla.javascriptActionBody.name"),
       applyAction: function (msgHdrs, actionValue, copyListener, filterType, msgWindow) {
         try {
-          return eval(actionValue);
+          // [issue 338] eval rejected by CSP
+          //             we only pass in a controlled set of data using the "context" parameter
+          const script = actionValue;
+          const context = {
+            msgHdrs,
+            filterType,
+            msgWindow,
+            fq_method: "javascriptAction",
+          };
+          return util.saferEval(script, context);
         } catch (ex) {
           // Galantha: javascript eval action error triggered a bug report
           let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
@@ -1832,13 +1850,23 @@
         return [Matches, DoesntMatch];
       },
       match: function javascript_match(message, aSearchValue, aSearchOp) {
+        const script = aSearchValue;
         // the javascript stored in aSearchValue should use "message" to
         // reference the nsIMsgDBHdr objst for the message
+        // we only pass in a controlled set of data using the "context" parameter
+        const context = {
+          message,
+          fq_operator: aSearchOp,
+          fq_method: "javascript",
+        };
+
         switch (aSearchOp) {
           case Matches:
-            return eval(aSearchValue);
+            // [issue 338] eval rejected by CSP
+            return util.saferEval(script, context);
           case DoesntMatch:
-            return !eval(aSearchValue);
+            // [issue 338] eval rejected by CSP
+            return !util.saferEval(script, context);
         }
       },
     };

@@ -1109,6 +1109,45 @@ FiltaQuilla.Util = {
     return win;
   },
 
+  saferEval: (script, context = {}) => {
+    const util = FiltaQuilla.Util;
+    let result = null;
+    try {
+      // eval(script); // CSP forbids it. (they are right)
+      const Cu = Components.utils;
+
+      let sandbox = Cu.Sandbox(window, {
+        sandboxPrototype: window, // Access to window and its properties
+        wantXrays: false,         // Allows deeper access to underlying objects; safer without and possibly faster.
+        metadata: { name: "FiltaQuillaSandbox" },
+      });
+
+      // Dynamically inject context properties into the sandbox
+      // for actions, this will at least add: msgHdrs, copyListener, filterType
+      // for search terms it will add: message
+      for (let [key, value] of Object.entries(context)) {
+        sandbox[key] = value;
+      }
+      // useful globals
+      sandbox.console = console;
+      sandbox.Services = Services;
+      sandbox.Util = FiltaQuilla.Util; // (test)
+
+      script = script.replace(/[\u2028\u2029]/g, "\n"); // fix the storage quirk
+
+      result = Cu.evalInSandbox(script, sandbox);
+      // Cu.nukeSandbox(sandbox); /* throws */
+    } catch (ex) {
+      let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
+      util.logToConsole(msg);
+      util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
+      return false;      
+    } finally {
+      return result;
+    }
+    
+  },
+
   redirectRegex101({ expression = null, flags = "", exampleId = "MfQBZT" }) {
     let encodedRegex = "";
     const flagParam = flags ? `&flags=${flags}` : "";
@@ -1126,6 +1165,8 @@ FiltaQuilla.Util = {
     // Construct the URL with regex and flags only if expression is provided
     this.openLinkInBrowser(targetUrl);
   },
+
+
 }; // Util
 
 // some scoping for globals

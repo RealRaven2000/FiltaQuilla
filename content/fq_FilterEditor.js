@@ -911,10 +911,37 @@
     
     try {
       es.onCommand = function() {
-        let textbox = es.children[1]; // document.getAnonymousNodes(es)[1];
-        window.openDialog("chrome://filtaquilla/content/jsEditor.xhtml", "", "chrome,dialog,centerscreen,modal,resizable=yes", textbox);
+        const textbox = es.children[1]; // document.getAnonymousNodes(es)[1];
+        // const textbox = this.parentNode.firstChild;
+        /* OLD CODE:
+          window.openDialog(
+            "chrome://filtaquilla/content/jsEditor.xhtml",
+            "",
+            "chrome,dialog,centerscreen,modal,resizable=yes",
+            textbox
+          );
+        */
+        const updateScript = (data) => {
+          console.log(data);
+          window.removeEventListener("updateFilterScript", updateScript);
+          const script = data?.detail.script;
+          if (script == null || typeof script == "undefined") return;
+          // change textbox to the new script contents
+          textbox.value = script;
+          textbox.parentNode.setAttribute("value", script);
+          textbox.parentNode.value = script;
+        };
+
+        // open new jsEditor.html through background page
+        FiltaQuilla.Util.notifyTools.notifyBackground({
+          func: "scriptEditor",
+          script: textbox.value,
+        });
+        window.addEventListener("updateFilterScript", updateScript);
       };
       
+
+
       
       es.textContent = "";
       es.appendChild(MozXULElement.parseXULToFragment(`
