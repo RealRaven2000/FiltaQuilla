@@ -27,54 +27,56 @@
  * ***** END LICENSE BLOCK *****
  */
 
+
 // The unicode line separator \u2028 is recognized by js as a line terminator,
 //  but survives the storage in a filter editor file without getting
 //  truncated. So we use it to store the newlines.
-const LS = '\u2028';
+const LS = "\u2028"; // this is used to encode linebreaks.
 
-function onLoad() {
-  let rootTextbox = window.arguments[0],
-      displayValue = "",
-      rawString = rootTextbox.value;
-      
-  for (let i = 0; i < rawString.length; i++)
-  {
-    let character = rawString.charAt(i);
-    // replace new lines with line separators
-    if (character == LS)
-      character = '\n';
-    displayValue += character;
-  }
-  let textbox = document.getElementById("jscode");
-  textbox.value = displayValue;
-  sizeToContent();
-  window.addEventListener('dialogaccept', 
-    function () { 
-      onAccept(); 
-    }
-  );
+function encodeScript(script) {
+  // Re-encode (newlines to LS) before returning
+  return script.replace(/\n/g, LS);
 }
 
-function onAccept() {
-  let rootTextbox = window.arguments[0],
-      textbox = document.getElementById("jscode"),
-      // replace all new lines with line separators
-      displayValue = textbox.value,
-      rawValue = "";
-      
-  for (let i = 0; i < displayValue.length; i++)
-  {
-    let character = displayValue.charAt(i);
-    if (character == '\n')
-      character = LS;
-    rawValue += character;
-  }
-  rootTextbox.value = rawValue;
-  // the textbox forward of value to its parent does not seem to work when
-  // I am setting the value from js, so do it manually here.
-  rootTextbox.parentNode.setAttribute("value", rawValue);
-  rootTextbox.parentNode.value = rawValue;
-  return true;
+function decodeScript(script) {
+  // Replace the line separator (LS) with actual newlines
+  return script.replace(new RegExp(LS, "g"), "\n");
 }
 
-// vim: set expandtab tabstop=2 shiftwidth=2:
+// Function to send the updated script to the background page
+function sendUpdatedScript(textarea) {
+  const rawScript = textarea.value;
+  const encodedScript = encodeScript(rawScript); // Encode if needed: replace line breaks!
+
+  // Send the updated script back to the background page
+  messenger.runtime.sendMessage({
+    command: "updateActionScript",
+    script: encodedScript,
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const textarea = document.getElementById("jscode");
+  const accept = document.getElementById("accept");
+
+  accept.addEventListener("click", () => {
+    sendUpdatedScript(textarea);
+    window.close();
+  });
+
+  document.getElementById("cancel").addEventListener("click", () => {
+    window.close();
+  });
+});
+
+browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action === "initActionScript") {
+    // Decode stored string (replace LS with real newlines)
+    // textarea.value = rawString.replace(new RegExp(LS, "g"), "\n");
+
+    const script = decodeScript(request.script);
+    document.getElementById("jscode").value = script || ""; // Set the initial script value
+  }
+});
+
+

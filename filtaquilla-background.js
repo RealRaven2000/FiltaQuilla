@@ -61,29 +61,36 @@
         {
           // third "options" parameter must be passed to be able to have extensionId as 1st parameter , not sure whether it requires a particular format, or null is allowed
           let options = {},
-              msgKey = data.msgKey;
-          let isPrintLog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.PrintingToolsNG");
+            msgKey = data.msgKey;
+          let isPrintLog = await messenger.LegacyPrefs.getPref(
+            Legacy_Root + "debug.PrintingToolsNG"
+          );
           if (isPrintLog) {
-            console.log("printMessage", `( '${msgKey.subject}' - ${msgKey.date.toLocaleDateString()} ${msgKey.date.toLocaleTimeString()} )`);
+            console.log(
+              "printMessage",
+              `( '${
+                msgKey.subject
+              }' - ${msgKey.date.toLocaleDateString()} ${msgKey.date.toLocaleTimeString()} )`
+            );
           }
           let result = await messenger.runtime.sendMessage(
-            PrintingTools_Addon_Name, 
-            { 
-              command: "printMessage", 
-              messageHeader: msgKey 
+            PrintingTools_Addon_Name,
+            {
+              command: "printMessage",
+              messageHeader: msgKey,
             },
-            options 
+            options
           );
         }
         break;
       case "forwardMessageST": // [issue 153] - Implement new filter action "Forward with SmartTemplate"
         {
-          
           let isSTlog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.SmartTemplates");
-          let result = await messenger.runtime.sendMessage(
-            SmartTemplates_Name, 
-            { command: "forwardMessageWithTemplate", messageHeader: data.msgKey, templateURL: data.fileURL }
-          );
+          let result = await messenger.runtime.sendMessage(SmartTemplates_Name, {
+            command: "forwardMessageWithTemplate",
+            messageHeader: data.msgKey,
+            templateURL: data.fileURL,
+          });
           if (isSTlog) {
             console.log("FQ: after sending forwardMessageWithTemplate");
           }
@@ -92,10 +99,11 @@
       case "replyMessageST": // [issue 153]
         {
           let isSTlog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.SmartTemplates");
-          let result = await messenger.runtime.sendMessage(
-            SmartTemplates_Name, 
-            { command: "replyMessageWithTemplate", messageHeader: data.msgKey, templateURL: data.fileURL }
-          );
+          let result = await messenger.runtime.sendMessage(SmartTemplates_Name, {
+            command: "replyMessageWithTemplate",
+            messageHeader: data.msgKey,
+            templateURL: data.fileURL,
+          });
           if (isSTlog) {
             console.log("FQ: after sending replyMessageWithTemplate");
           }
@@ -103,7 +111,7 @@
         break;
       case "getAddonInfo": // needed for version no.
         {
-          let info = await messenger.management.getSelf()
+          let info = await messenger.management.getSelf();
           return info;
         }
         break;
@@ -111,28 +119,25 @@
         // https://webextension-api.thunderbird.net/en/stable/tabs.html#query-queryinfo
         {
           let baseURI = data.baseURI || data.URL;
-          let found = await browser.tabs.query( { url:baseURI } );
+          let found = await browser.tabs.query({ url: baseURI });
           if (found.length) {
             let tab = found[0]; // first result
-            await browser.tabs.update(
-              tab.id, 
-              {active:true, url: data.URL}
-            );
+            await browser.tabs.update(tab.id, { active: true, url: data.URL });
             return;
           }
-          browser.tabs.create(
-            { active:true, url: data.URL }
-          );        
+          browser.tabs.create({ active: true, url: data.URL });
         }
         break;
       case "saveAttachments":
         const attachments = await browser.messages.listAttachments(data.messageHeader.id);
         const results = [];
-        const isDebugAttachments = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.attachments");
+        const isDebugAttachments = await messenger.LegacyPrefs.getPref(
+          Legacy_Root + "debug.attachments"
+        );
         // (filter out inline attachments)
-        // we need to be careful already detach attachments are not included. 
+        // we need to be careful already detach attachments are not included.
         // what contentDisposition do they have?
-        for (const at of attachments.filter(a=>a.contentDisposition === "attachment")) {
+        for (const at of attachments.filter((a) => a.contentDisposition === "attachment")) {
           if (isDebugAttachments) console.log(at);
           let file = await browser.messages.getAttachmentFile(data.messageHeader.id, at.partName);
           if (isDebugAttachments) console.log(file);
@@ -145,9 +150,10 @@
           };
           // experimental api, async!
           const altered = savedItem.headers["x-mozilla-altered"];
-          const detachedInfo = (altered && altered.length) ?
-            altered.find((x) => x.startsWith("AttachmentDetached")) :
-            null;
+          const detachedInfo =
+            altered && altered.length
+              ? altered.find((x) => x.startsWith("AttachmentDetached"))
+              : null;
           let attachmentURL;
           if (detachedInfo) {
             const attUrls = savedItem.headers["x-mozilla-external-attachment-url"];
@@ -161,10 +167,54 @@
           savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
           results.push(savedItem);
         }
-        return results; 
+        return results;
+      case "scriptEditor":
+        {
+          let editorWindow;
+          // First, set up the tab update listener to catch the tab creation or update
+          browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+            if (tab.windowId === editorWindow.id && changeInfo.status === "complete") {
+              // Send the initial script content to the popup's tab once it's fully loaded
+              browser.tabs.sendMessage(tabId, {
+                action: "initActionScript",
+                script: data.script,
+              });
+            }
+          });
+
+          // Open the editor in a popup window
+          const url = browser.runtime.getURL("content/jsEditor.html");
+          let screenH = window.screen.height,
+            windowHeight = screenH / 2 > 600 ? 600 : screenH / 2;
+          editorWindow = await browser.windows.create({
+            url,
+            type: "popup",
+            width: 600,
+            height: windowHeight, // Or use your desired height
+            allowScriptsToClose: true, // Optional, allows script to close the window from within
+          });
+
+          // After the window is created, bring it into focus (using `browser.windows.update`)
+          await browser.windows.update(editorWindow.id, { focused: true });
+        }
+        break;
     } // switch
   });
-  
+
+  // modern message handler (from content script)
+  // avoid notifytools in the future!
+  messenger.runtime.onMessage.addListener(async (data, sender, sendResponse) => {
+    switch (data.command) {
+      case "updateActionScript":
+        // => send this to fq_FilterEditor.js
+        console.log(`Send edited Script to Filter Editor:\n---------------\n${data.script}`);
+        messenger.NotifyTools.notifyExperiment({
+          event: "updateFilterScript",
+          script: data.script,
+        });
+        break;
+    }
+  });
   
   messenger.WindowListener.startListening();
 

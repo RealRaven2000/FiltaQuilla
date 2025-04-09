@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Edit JavaScript</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 1em;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      font-family: monospace;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .buttons {
+      margin-top: 10px;
+      text-align: right;
+    }
+    button {
+      padding: 6px 12px;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Edit JavaScript</h2>
+  <textarea id="jscode"></textarea>
+  <div class="buttons">
+    <button id="cancel">Cancel</button>
+    <button id="accept">OK</button>
+  </div>
+
+  <script src="jsEditor.js"></script>  
+  <script>
+    const textarea = document.getElementById("jscode");
+
+    // Load initial code passed from the opener
+    if (window.opener?.initialCode) {
+      textarea.value = window.opener.initialCode;
+    }
+
+    document.getElementById("accept").addEventListener("click", () => {
+      if (window.opener?.onCodeAccept) {
+        window.opener.onCodeAccept(textarea.value);
+      }
+      window.close();
+    });
+
+    document.getElementById("cancel").addEventListener("click", () => {
+      window.close();
+    });
+  </script>
+</body>
+</html>

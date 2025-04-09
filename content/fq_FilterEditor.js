@@ -30,6 +30,32 @@
         Cc = Components.classes;
 
   util.logDebug("fq_FilterEditor.js - start...");
+
+  // glue code:
+  try {
+    const { ExtensionParent } = ChromeUtils.importESModule(
+      "resource://gre/modules/ExtensionParent.sys.mjs"
+    );
+
+    const extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
+    Services.scriptloader.loadSubScript(
+      extension.rootURI.resolve("content/scripts/notifyTools.js"),
+      util,
+      "UTF-8"
+    );
+
+    util.notifyTools.addListener((data) => {
+      if (data.event === "updateFilterScript") {
+        // Now dispatch to the local window, e.g.:
+        const event = new CustomEvent("updateFilterScript", {
+          detail: { script: data.script },
+        });
+        window.dispatchEvent(event);
+      }
+    });  
+  } catch (ex) {
+    util.logException("Adding notifyTools failed!", ex)
+  }
   
   function getAddressBooklists(node) {
     // if legacy code / enum (Tb78):
@@ -507,10 +533,30 @@
 
     }
 
+    // clicking the edit button
     onCommand() {
-      let textbox = this.parentNode.firstChild;
+      /* OLD CODE:
       window.openDialog("chrome://filtaquilla/content/jsEditor.xhtml", "",
         "chrome,dependent,centerscreen,dialog,modal,resizable=yes", textbox);
+      */
+      const textbox = this.parentNode.firstChild;
+      const updateScript = (data) => {
+        console.log(data);
+        window.removeEventListener("updateFilterScript", updateScript);
+        const script = data?.detail.script;
+        if (script == null || typeof script == "undefined") return;
+        // change textbox to the new script contents
+        textbox.value = script;
+        textbox.parentNode.setAttribute("value", script);
+        textbox.parentNode.value = script;
+      };
+
+      // open new jsEditor.html through background page
+      FiltaQuilla.Util.notifyTools.notifyBackground({
+        func: "scriptEditor",
+        script: textbox.value,
+      });
+      window.addEventListener("updateFilterScript", updateScript);
     }
   }
 
