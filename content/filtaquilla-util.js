@@ -258,12 +258,13 @@ FiltaQuilla.Util = {
     Services.console.logMessage(scriptError);
   },
 
-  logException: function logException(aMessage, ex) {
+  logException: function (aMessage, ex) {
     let stack = "";
     if (typeof ex.stack != "undefined") stack = ex.stack.replace("@", "\n  ");
 
     let srcName = ex.fileName ? ex.fileName : "";
-    this.logError(aMessage + "\n" + ex.message, srcName, stack, ex.lineNumber, 0, 0x1); // use warning flag, as this is an exception we caught ourselves
+    // use warning flag, as this is an exception we caught ourselves
+    this.logError(aMessage + "\n" + ex.message, srcName, stack, ex.lineNumber, 0, 0x1);
   },
 
   logDebug: function logDebug(msg) {

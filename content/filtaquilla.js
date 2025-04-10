@@ -1081,6 +1081,10 @@
         // async functions pass in a nsIMsgCopyServiceListener
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         try {
+          if (!copyListener) {
+            throw ("saveAttachment: no copyListener!");
+          }
+
           directory.initWithPath(aActionValue);
           if (directory.exists()) {
             util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
@@ -1089,6 +1093,7 @@
             copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
             return;
           }
+          
 
           // pass in message array, returns result status
           _saveAttachments(aMsgHdrs, directory)
@@ -1097,11 +1102,15 @@
             })
             .catch((ex) => {
               util.logException("FiltaQuilla.saveAttachment", ex);
-              copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+              if (copyListener) {
+                copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+              }
             });
         } catch (ex) {
           util.logException("FiltaQuilla.saveAttachment", ex);
-          copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+          if (copyListener) {
+            copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+          }
         }
       },
 

@@ -1,42 +1,66 @@
 
 
 (async () => {
-
   // main background script for FiltaQuilla
   messenger.WindowListener.registerDefaultPrefs("defaults/preferences/filtaquilla.js");
   // dropped ["resource", "filtaquilla",           "skin/"],
 
-  messenger.WindowListener.registerChromeUrl([ 
-      ["resource", "filtaquilla",           "content/"],  // resource://
-      ["resource", "filtaquilla-skin",      "skin/"],     // make a separate resource (we can't have 2 different resources mapped to to the same name)
-      ["content",  "filtaquilla",           "content/"]  // chrome://path
-    ]
-  );  
-  
-  messenger.WindowListener.registerOptionsPage("chrome://filtaquilla/content/options.xhtml"); 
-    
-  
+  messenger.WindowListener.registerChromeUrl([
+    ["resource", "filtaquilla", "content/"], // resource://
+    ["resource", "filtaquilla-skin", "skin/"], // make a separate resource (we can't have 2 different resources mapped to to the same name)
+    ["content", "filtaquilla", "content/"], // chrome://path
+  ]);
+
+  messenger.WindowListener.registerOptionsPage("chrome://filtaquilla/content/options.xhtml");
+
   /* OVERLAY CONVERSIONS */
-  
-  // overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul 
-  messenger.WindowListener.registerWindow("chrome://messenger/content/messenger.xhtml", "content/scripts/filtaquilla-messenger.js");
-  
+
+  // overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul
+  messenger.WindowListener.registerWindow(
+    "chrome://messenger/content/messenger.xhtml",
+    "content/scripts/filtaquilla-messenger.js"
+  );
+
   // overlay  chrome://messenger/content/FilterEditor.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.DomContentScript.registerWindow("chrome://messenger/content/FilterEditor.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
-  messenger.WindowListener.registerWindow("chrome://messenger/content/FilterEditor.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
-  
+  messenger.DomContentScript.registerWindow(
+    "chrome://messenger/content/FilterEditor.xhtml",
+    "chrome://filtaquilla/content/fq_FilterEditor.js"
+  );
+  messenger.WindowListener.registerWindow(
+    "chrome://messenger/content/FilterEditor.xhtml",
+    "content/scripts/filtaquilla-filterEditor-css.js"
+  );
+
   // overlay  chrome://messenger/content/SearchDialog.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.DomContentScript.registerWindow("chrome://messenger/content/SearchDialog.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
-  messenger.WindowListener.registerWindow("chrome://messenger/content/SearchDialog.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
-  
+  messenger.DomContentScript.registerWindow(
+    "chrome://messenger/content/SearchDialog.xhtml",
+    "chrome://filtaquilla/content/fq_FilterEditor.js"
+  );
+  messenger.WindowListener.registerWindow(
+    "chrome://messenger/content/SearchDialog.xhtml",
+    "content/scripts/filtaquilla-filterEditor-css.js"
+  );
+
   // overlay  chrome://messenger/content/mailViewSetup.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.DomContentScript.registerWindow("chrome://messenger/content/mailViewSetup.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
-  messenger.WindowListener.registerWindow("chrome://messenger/content/mailViewSetup.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
-  
+  messenger.DomContentScript.registerWindow(
+    "chrome://messenger/content/mailViewSetup.xhtml",
+    "chrome://filtaquilla/content/fq_FilterEditor.js"
+  );
+  messenger.WindowListener.registerWindow(
+    "chrome://messenger/content/mailViewSetup.xhtml",
+    "content/scripts/filtaquilla-filterEditor-css.js"
+  );
+
   // overlay  chrome://messenger/content/virtualFolderProperties.xul chrome://filtaquilla/content/filterEditorOverlay.xul
-  messenger.DomContentScript.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "chrome://filtaquilla/content/fq_FilterEditor.js");
-  messenger.WindowListener.registerWindow("chrome://messenger/content/virtualFolderProperties.xhtml", "content/scripts/filtaquilla-filterEditor-css.js");
-  
+  messenger.DomContentScript.registerWindow(
+    "chrome://messenger/content/virtualFolderProperties.xhtml",
+    "chrome://filtaquilla/content/fq_FilterEditor.js"
+  );
+  messenger.WindowListener.registerWindow(
+    "chrome://messenger/content/virtualFolderProperties.xhtml",
+    "content/scripts/filtaquilla-filterEditor-css.js"
+  );
+
   /*
   messenger.WindowListener.registerWindow(
     "chrome://messenger/content/folderProps.xhtml",
@@ -44,17 +68,52 @@
   );
   */
 
+  function greaterThan(versionA, versionB) {
+    const clean = (v) =>
+      v
+        .split(/[^\d]+/)
+        .filter(Boolean)
+        .map(Number);
+    const a = clean(versionA);
+    const b = clean(versionB);
+
+    for (let i = 0; i < Math.max(a.length, b.length); i++) {
+      const numA = a[i] || 0;
+      const numB = b[i] || 0;
+      if (numA > numB) return true;
+      if (numA < numB) return false;
+    }
+    return false; // equal
+  }
+
+  // recursively fetches a header of matching partName. pass in the msg.parts
+  // attachments should have a "content-disposition" header
+  function getHeaders(parts, partName) {
+    for (let part of parts) {
+      if (part.partName == partName) {
+        return part.headers;
+      }
+      if (partName.startsWith(part.partName)) {
+        return getHeaders(part.parts, partName);
+      }
+    }
+    return null;
+  }
 
   messenger.NotifyTools.onNotifyBackground.addListener(async (data) => {
     const Legacy_Root = "extensions.filtaquilla.",
-          PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net",
-          SmartTemplates_Name = "smarttemplate4@thunderbird.extension";
-    
+      PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net",
+      SmartTemplates_Name = "smarttemplate4@thunderbird.extension";
+
     let isLog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.notifications");
     if (isLog && data.func) {
-      console.log ("================================\n" +
-                   "FQ BACKGROUND LISTENER received: " + data.func + "\n" +
-                   "================================");
+      console.log(
+        "================================\n" +
+          "FQ BACKGROUND LISTENER received: " +
+          data.func +
+          "\n" +
+          "================================"
+      );
     }
     switch (data.func) {
       case "printMessage": // [issue 152] - PrintingTools NG support
@@ -137,6 +196,30 @@
         // (filter out inline attachments)
         // we need to be careful already detach attachments are not included.
         // what contentDisposition do they have?
+        // this attribute is not supported by the MessageAttachment API in Tb 128!
+        const info = await browser.runtime.getBrowserInfo();
+        const isPrerelease = !greaterThan(info.version, "135.0");
+        if (isPrerelease) {
+          // only release version supports the contentDisposition attribute
+          // so we add it manually in 128esr
+          const msg = await browser.messages.getFull(data.messageHeader.id);
+          for (const a of attachments) {
+            const headers = getHeaders(msg.parts, a?.partName);
+            if (
+              !a.contentDisposition &&
+              headers["content-disposition"] &&
+              headers["content-disposition"].length &&
+              headers["content-disposition"][0]?.startsWith("attachment")
+            ) {
+              a.contentDisposition = "attachment";
+            }
+
+            if(!a.headers) {
+              a.headers = headers;
+            }
+          }
+        }
+
         for (const at of attachments.filter((a) => a.contentDisposition === "attachment")) {
           if (isDebugAttachments) console.log(at);
           let file = await browser.messages.getAttachmentFile(data.messageHeader.id, at.partName);
@@ -159,10 +242,8 @@
             const attUrls = savedItem.headers["x-mozilla-external-attachment-url"];
             if (attUrls && attUrls.length) {
               attachmentURL = attUrls[0];
+              console.log(`trying to save detached attachment: ${attachmentURL}`);
             }
-          }
-          if (attachmentURL) {
-            console.log(`trying to save detached attachment: ${attachmentURL}`);
           }
           savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
           results.push(savedItem);
@@ -215,8 +296,7 @@
         break;
     }
   });
-  
-  messenger.WindowListener.startListening();
 
+  messenger.WindowListener.startListening();
 })();
 
