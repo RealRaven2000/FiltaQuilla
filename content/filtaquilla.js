@@ -1019,6 +1019,7 @@
     }
 
     async function _saveAttachments(aMsgHdrs, directory) {
+      const resultArray = [];
       try {
         // Process all message headers asynchronously
         for (let i = 0; i < aMsgHdrs.length; i++) {
@@ -1064,13 +1065,32 @@
           const separator = successes.length * failures.length ? "----------\n" : "";
           const heading = `_saveAttachments()\n${msgHdr.subject} at ${nicedate}\n`;
           util.logDebug(heading + successes.join("\n") + separator + failures.join("\n"));
-          let result = failures.length == 0 ? Cr.NS_OK : Cr.NS_ERROR_FAILURE;
-          return result;
+          // Push ONE result per message
+          resultArray.push({
+            messageSubject: msgHdr.subject,
+            messageDate: nicedate,
+            success: failures.length === 0,
+            details: { successes, failures },
+          });
         }
+        return resultArray;
       } catch (ex) {
         util.logException("FiltaQuilla._saveAttachments()", ex);
         console.error(ex);
-        return Cr.NS_ERROR_FAILURE;
+        // Append a final failure message to whatever was already processed
+        resultArray.push({
+          messageSubject: null,
+          messageDate: null,
+          success: false,
+          details: {
+            successes: [],
+            failures: ["Unhandled exception: " + ex?.message || String(ex)],
+            internalError: true,
+            code: Cr.NS_ERROR_FAILURE,
+          },
+        });
+
+        return resultArray;
       }
     }
 
@@ -1093,12 +1113,13 @@
             copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
             return;
           }
-          
 
-          // pass in message array, returns result status
+          // pass in message array, returns result status array!
           _saveAttachments(aMsgHdrs, directory)
             .then((rv) => {
-              copyListener.onStopCopy(rv);
+              // look at array of results, if there was one failure we consider the filter failed (?)
+              const failed = rv.some((r) => !r.success);
+              copyListener.onStopCopy(failed ? Cr.NS_ERROR_FAILURE : Cr.NS_OK);
             })
             .catch((ex) => {
               util.logException("FiltaQuilla.saveAttachment", ex);

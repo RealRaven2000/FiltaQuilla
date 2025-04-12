@@ -219,11 +219,14 @@
             }
           }
         }
+        let attachmentsToSave = attachments.filter((a) => a.contentDisposition === "attachment");
+        if (isDebugAttachments) {
+          console.log(`FILTAQUILLA - saveAttachments(): ${attachmentsToSave.length} attachments to save...`);
+        }
 
-        for (const at of attachments.filter((a) => a.contentDisposition === "attachment")) {
+        for (const at of attachmentsToSave) {
           if (isDebugAttachments) console.log(at);
           let file = await browser.messages.getAttachmentFile(data.messageHeader.id, at.partName);
-          if (isDebugAttachments) console.log(file);
           let savedItem = {
             fileName: file.name,
             fileType: file.type,
@@ -231,6 +234,7 @@
             modified: file.lastModified,
             headers: at.headers,
           };
+          if (isDebugAttachments) console.log(`Save Item: ${file.name}`, {savedItem});
           // experimental api, async!
           const altered = savedItem.headers["x-mozilla-altered"];
           const detachedInfo =
@@ -242,7 +246,7 @@
             const attUrls = savedItem.headers["x-mozilla-external-attachment-url"];
             if (attUrls && attUrls.length) {
               attachmentURL = attUrls[0];
-              console.log(`trying to save detached attachment: ${attachmentURL}`);
+              console.log(`trying to save detached attachment, from: ${attachmentURL}`);
             }
           }
           savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
