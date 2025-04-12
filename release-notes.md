@@ -16,6 +16,18 @@ In order to move forward with the current release cycle (monthly releases) I dec
 *   Replace deprecated nsILocalFile with nsIFile
 *   Remove declaration of Services \[issue #337\]
 
+**Bug Fixes**
+
+*   Error when using Javascript for a Saved Search criteria (Tb 137) [issue #338]. The existing xhtml window for editing javascript stopped working in Thunderbird 136, therefore I rewrote the feature using a standard HTML window and more modern back-end code.
+
+  Also, in later versions of Thunderbird 128, the use of eval() triggers a CSP exception and thus does not work at all anymore. I reimplemented the scripting using the more restricted (and safer) evalInSandbox, which only gives a limited, controlled scope to the environment that is accessible from the script.
+
+  I regard Thunderbird as a database fat client, with limited tools. Add-ons make the data access much more accessible. The mail store, address books and the Global Database are data the users own. I want to empower my users to access this data in the way they choose, therefore local scripts running in a sandbox environment should be allowed. However we will not support remote script to be executed as it opens up big security problems.
+  
+  There may be corporate users of Thunderbird who have a different view on data access, but they can (and usually do) enforce company policies by controlling which apps or Add-ons are allowed to be installed.
+*  Fixed: Save Attachments To no longer working in Thunderbird 128 [issue #339]. This was a regression caused by modernizing the code which worked well with the current API of the release version Thunderbird 137. I had to add some missing data to the attachments array in order to be able to filter the correct attachments (excluding inline images and other such data).
+
+
 **TO DO**
 *    Work in progress: Allow automatic running of filters ouside of Inbox (IMAP only) \[issue #318\].
      As adding the checkbox in folder properties didn't meet policy restrictions, we plan to add a web extension compatible interface for this at a later stage, possible through the folder tree context menu.
