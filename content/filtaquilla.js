@@ -81,6 +81,12 @@
 
   var { MailServices } = ChromeUtils.importESModule("resource:///modules/MailServices.sys.mjs");
 
+  // javascript mime emitter functions
+  // self._mimeMsg = ChromeUtils.importESModule("resource:///modules/gloda/MimeMessage.sys.mjs");
+  var { MsgHdrToMimeMessage } = ChromeUtils.importESModule(
+    "resource:///modules/gloda/MimeMessage.sys.mjs"
+  );
+
   const headerParser = MailServices.headerParser,
     tagService = Cc["@mozilla.org/messenger/tagservice;1"].getService(Ci.nsIMsgTagService),
     abManager = Cc["@mozilla.org/abmanager;1"].getService(Ci.nsIAbManager),
@@ -165,9 +171,6 @@
     hidefor: "nntp,none,pop3,rss" // That is, this is only valid for imap.
   };
   */
-
-  // javascript mime emitter functions
-  self._mimeMsg = ChromeUtils.importESModule("resource:///modules/gloda/MimeMessage.sys.mjs");
 
   self._init = async function () {
     // self.strings = filtaquillaStrings;
@@ -930,16 +933,17 @@
         // Process all message headers asynchronously
         for (let i = 0; i < aMsgHdrs.length; i++) {
           let { msgHdr, mimeMsg } = await new Promise((resolve) =>
-            self._mimeMsg.MsgHdrToMimeMessage(
+            MsgHdrToMimeMessage(
               aMsgHdrs[i],
               null,
               function (msgHdr, mimeMsg) {
                 resolve({ msgHdr, mimeMsg });
               },
-              false /* allowDownload */
+              false /* allowDownload */,
+              { saneBodySize: true, examineEncryptedParts: false }
             )
           );
-
+ 
           // do something with mimeMsg
           const msgURI = msgHdr.folder.generateMessageURI(msgHdr.messageKey);
           const attachments = mimeMsg.allAttachments;
@@ -1021,19 +1025,17 @@
     async function _saveAttachments(aMsgHdrs, directory) {
       const resultArray = [];
       try {
+        let testErr = false; // set to testErr to cause exception  in debugger
+        if (testErr) {
+          const context = "_saveAttachments";
+          throw new Error(`Exception test in: ${context}`);
+        }
         // Process all message headers asynchronously
         for (let i = 0; i < aMsgHdrs.length; i++) {
-          let { msgHdr, mimeMsg } = await new Promise((resolve) =>
-            self._mimeMsg.MsgHdrToMimeMessage(
-              aMsgHdrs[i],
-              null,
-              function (msgHdr, mimeMsg) {
-                resolve({ msgHdr, mimeMsg });
-              },
-              false /* allowDownload */
-            )
-          );
-
+          let msgHdr = aMsgHdrs[i];
+          if (!msgHdr) {
+            continue; // Skip if no data
+          }
           // do something with mimeMsg
           const ds = msgHdr.date / 1000;
           const mDate = new Date(ds);
@@ -1043,6 +1045,9 @@
 
           // save attachment code
           const messageHeader = extension.messageManager.convert(msgHdr);
+          if (testErr) {
+            throw new Error(`Exception test in: saveAttachments background call`);
+          }
           const results = await FiltaQuilla.Util.notifyTools.notifyBackground({
             func: "saveAttachments",
             messageHeader: messageHeader,
@@ -1094,15 +1099,65 @@
       }
     }
 
+    function describeMsgHdr(msgHdr) {
+      let subject = msgHdr.subject || "[no subject]";
+      let author = msgHdr.author || "[unknown sender]";
+      let date = msgHdr.date ? new Date(msgHdr.date / 1000).toLocaleString() : "[no date]";
+      return `"${subject}" from ${author} on ${date}`;
+    }
+
+    // Helper function to deal with missing copyListener object
+    function waitForPromise(promise, msgHdr) {
+      const startTime = Date.now();
+      let result = null;
+      // return a status of each promise
+
+      promise.then(
+        (value) => {
+          result = { value, success: true };
+        },
+        (error) => {
+          console.error(`waitForPromise: promise rejected after ${elapsed} ms:`, error);
+          result = { value: null, success: false, message: error.message };
+        }
+      );
+
+      // const messageSize = Math.floor((msgHdr.messageSize || 0) / 1024); // Convert to KB
+      // Heuristic calculation for the timeout
+      const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
+        MAX_ATTACHMENT_TIME = prefs.getIntPref("attachmentTimeoutMs");
+
+      // Synchronously wait for the promise to resolve/reject
+      // we removed code that used nsIThreadManager.processNextEvent();
+      while (!result) {
+        const timeSpent = Date.now() - startTime;
+        if (timeSpent > MAX_ATTACHMENT_TIME) {
+          console.error(
+            `Attachment processing took too long for message ${describeMsgHdr(msgHdr)}. Aborting.`
+          );
+          console.warn(`waitForPromise: operation timed out after ${timeSpent} ms!`);
+          return { value: null, success: false, message: "Operation timed out" }; // Exit early if too much time is spent
+        }
+      }
+      return result;
+    }
+
+
     self.saveAttachment = {
       id: "filtaquilla@mesquilla.com#saveAttachment",
       name: util.getBundleString("fq.saveAttachment"),
       applyAction: function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
         // async functions pass in a nsIMsgCopyServiceListener
+        const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
+          isDebug = prefs.getBoolPref("debug.attachments");
+
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         try {
           if (!copyListener) {
-            throw ("saveAttachment: no copyListener!");
+            util.logDebug("saveAttachment: no copyListener, proceeding without it");
+            if (isDebug) {
+              debugger;
+            }
           }
 
           directory.initWithPath(aActionValue);
@@ -1110,8 +1165,29 @@
             util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
           } else {
             util.logDebug("saveAttachment() - target directory does not exist:\n" + aActionValue);
-            copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
-            return;
+            if (copyListener) {
+              copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+            }
+            return Cr.NS_ERROR_FAILURE;
+          }
+
+          if (!copyListener) {
+            // Wait for the async operation to complete
+            let anyFailures = false;
+
+            for (let msgHdr of aMsgHdrs) {
+              const info = `subject="${msgHdr.subject}",\nauthor="${msgHdr.author}"`;
+              const result = waitForPromise(_saveAttachments([msgHdr], directory), msgHdr);
+
+              if (!result.success) {
+                anyFailures = true;
+                util.logError(`Attachment save failed for: ${info} - ${result?.message}`);
+              } else {
+                util.logDebug("Attachment saved for: " + info);
+              }
+            }
+
+            return anyFailures ? Cr.NS_ERROR_FAILURE : Cr.NS_OK;
           }
 
           // pass in message array, returns result status array!
@@ -1119,13 +1195,17 @@
             .then((rv) => {
               // look at array of results, if there was one failure we consider the filter failed (?)
               const failed = rv.some((r) => !r.success);
-              copyListener.onStopCopy(failed ? Cr.NS_ERROR_FAILURE : Cr.NS_OK);
+              if (copyListener) {
+                copyListener.onStopCopy(failed ? Cr.NS_ERROR_FAILURE : Cr.NS_OK);
+              }
             })
             .catch((ex) => {
               util.logException("FiltaQuilla.saveAttachment", ex);
               if (copyListener) {
                 copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
               }
+              // Log the error for cases where copyListener is null
+              util.logError("Error saving attachment: " + ex.message);
             });
         } catch (ex) {
           util.logException("FiltaQuilla.saveAttachment", ex);
@@ -1266,7 +1346,7 @@
         const CONCURRENCY_LIMIT = 10; // maximum # file handles to be handled at the same time.
         // allow specifying directory with suffix of |htm
         let type = "eml"; //default
-        const path = actionValue;
+        let path = actionValue;
         if (/\|/.test(actionValue)) {
           let matches = /(^[^\|]*)\|(.*$)/.exec(actionValue);
           path = matches[1];
@@ -1646,7 +1726,7 @@
           callbackObject = new ReadAttachmentCallback(new RegExp(searchValue));
         // message must be available offline!
         try {
-          self._mimeMsg.MsgHdrToMimeMessage(
+          MsgHdrToMimeMessage(
             hdr,
             callbackObject,
             callbackObject.callback,

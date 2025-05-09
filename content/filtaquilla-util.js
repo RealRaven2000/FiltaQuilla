@@ -135,7 +135,7 @@ FiltaQuilla.Util = {
     return baseURL;
   },
 
-  openHelpTab: function(fragment) {
+  openHelpTab: function (fragment) {
     let f = fragment ? "#" + fragment : "",
       URL = "https://quickfilters.quickfolders.org/filtaquilla.html" + f;
     FiltaQuilla.Util.getMail3PaneWindow.window.setTimeout(function () {
@@ -234,7 +234,7 @@ FiltaQuilla.Util = {
   // warningFlag    0x1   Warning messages.
   // exceptionFlag  0x2   An exception was thrown for this case - exception-aware hosts can ignore this.
   // strictFlag     0x4
-  logError: function logError(
+  logError: function (
     aMessage,
     aSourceName,
     aSourceLine,
@@ -244,27 +244,36 @@ FiltaQuilla.Util = {
   ) {
     const Ci = Components.interfaces,
       Cc = Components.classes;
-    let aCategory = "",
-      scriptError = Cc["@mozilla.org/scripterror;1"].createInstance(Ci.nsIScriptError);
-    scriptError.init(
-      aMessage,
-      aSourceName,
-      aSourceLine,
-      aLineNumber,
-      aColumnNumber,
-      aFlags,
-      aCategory
-    );
-    Services.console.logMessage(scriptError);
+    try {
+      let scriptError = Cc["@mozilla.org/scripterror;1"].createInstance(Ci.nsIScriptError);
+      scriptError.init(
+        aMessage,
+        aSourceName,
+        aSourceLine,
+        aLineNumber,
+        aColumnNumber,
+        aFlags
+      );
+      Services.console.logMessage(scriptError);
+    } catch(x) {
+      console.warn("Error in FiltaQuilla:", `${aMessage}\n`, {
+        source: `${aSourceName} : ${aSourceLine} : ${aColumnNumber}`,
+        flags: aFlags
+      });
+    }
   },
 
   logException: function (aMessage, ex) {
-    let stack = "";
-    if (typeof ex.stack != "undefined") stack = ex.stack.replace("@", "\n  ");
-
-    let srcName = ex.fileName ? ex.fileName : "";
+    let stack = "",
+      srcName = "",
+      line = "";
+    try {
+      stack = ex?.stack?.replace("@", "\n  ") || "";
+      srcName = ex?.fileName || "";
+      line = ex?.lineNumber || "";
+    } catch (x) {;}
     // use warning flag, as this is an exception we caught ourselves
-    this.logError(aMessage + "\n" + ex.message, srcName, stack, ex.lineNumber, 0, 0x1);
+    this.logError(aMessage + "\n" + ex.message, srcName, stack, line, 0, 0x1);
   },
 
   logDebug: function logDebug(msg) {
@@ -387,7 +396,9 @@ FiltaQuilla.Util = {
 
   // l10n
   getBundleString: function getBundleString(id, defaultText, substitions = []) {
-    var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
+    var { ExtensionParent } = ChromeUtils.importESModule(
+      "resource://gre/modules/ExtensionParent.sys.mjs"
+    );
 
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     let localized = extension.localeData.localizeMessage(id, substitions);
@@ -439,7 +450,9 @@ FiltaQuilla.Util = {
   },
 
   localize: function (window, buttons = null) {
-    var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
+    var { ExtensionParent } = ChromeUtils.importESModule(
+      "resource://gre/modules/ExtensionParent.sys.mjs"
+    );
 
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
     Services.scriptloader.loadSubScript(
@@ -1009,8 +1022,8 @@ FiltaQuilla.Util = {
           }
           if (searchOptions.includes("-html")) {
             // remove html tags (must include contents of style, as such rules are not content!)
-            p = this.collapseWhiteSpace(this.removeHTML(
-              (isStylesRemoved ? p : this.removeStyleTags(p))), 
+            p = this.collapseWhiteSpace(
+              this.removeHTML(isStylesRemoved ? p : this.removeStyleTags(p)),
               true
             );
             isWhiteSpaceCollapsed = true;
@@ -1026,7 +1039,8 @@ FiltaQuilla.Util = {
           }
           isFoundContentParts = true;
 
-          if (!isRaw) { // bypass all plaintext processing
+          if (!isRaw) {
+            // bypass all plaintext processing
             if (searchOptions.includes("-quotes")) {
               p = this.extractQuotesPlainText(p, "u"); // only the unquoted part (optimize out quoted parts)
               // we don't want to extract whitespace as paragraphs are in single lines anyway. (optimized out)
@@ -1119,7 +1133,7 @@ FiltaQuilla.Util = {
 
       let sandbox = Cu.Sandbox(window, {
         sandboxPrototype: window, // Access to window and its properties
-        wantXrays: false,         // Allows deeper access to underlying objects; safer without and possibly faster.
+        wantXrays: false, // Allows deeper access to underlying objects; safer without and possibly faster.
         metadata: { name: "FiltaQuillaSandbox" },
       });
 
@@ -1142,11 +1156,10 @@ FiltaQuilla.Util = {
       let msg = "Error: Name: " + ex.name + "\nMessage: " + ex.message + "\nCause: " + ex.cause;
       util.logToConsole(msg);
       util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
-      return false;      
+      return false;
     } finally {
       return result;
     }
-    
   },
 
   redirectRegex101({ expression = null, flags = "", exampleId = "MfQBZT" }) {
@@ -1161,13 +1174,10 @@ FiltaQuilla.Util = {
     const targetUrl = expression
       ? `https://regex101.com/?flavor=javascript&regex=${encodedRegex}${flagParam}`
       : `https://regex101.com/r/${exampleId}/1`;
-    
 
     // Construct the URL with regex and flags only if expression is provided
     this.openLinkInBrowser(targetUrl);
   },
-
-
 }; // Util
 
 // some scoping for globals

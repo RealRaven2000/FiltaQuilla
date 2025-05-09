@@ -3,6 +3,7 @@ pref("extensions.filtaquilla@mesquilla.com.description", "chrome://filtaquilla/l
 // the maximum number of items to scan in a thread search
 pref("extensions.filtaquilla.maxthreadscan", 20);
 // filter actions
+pref("extensions.filtaquilla.attachmentTimeoutMs", 25000); // sync attachment saving. timeout per email
 pref("extensions.filtaquilla.subjectAppend.enabled", false);
 pref("extensions.filtaquilla.subjectSuffix.enabled", false);
 pref("extensions.filtaquilla.removeKeyword.enabled", false);
