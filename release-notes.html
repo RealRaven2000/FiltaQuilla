@@ -1,4 +1,4 @@
-<b>Version 5.1</b>
+<b>Version 5.2</b>
 
 In order to move forward with the current release cycle (monthly releases) I decided to raise minimum version to Thunderbird 128, I am doing regular testing with the current beta versions but they may only be a single version number ahead! To help test new versions and be ahead of the curve, you can subscribe to issue #262.
 
@@ -6,38 +6,14 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 
 <b>Improvements</b>
 <ul>
-  <li> Made compatible with Thunderbird 138.*. Minimum version going forward will now be <b>Thunderbird 128</b>. </li>
-  <li> The helper function saveAllAttachments() was removed and had to be reimplemented going through web extension layer. The save attachments action is now set to beind asynchronous. This might potentially improve overall performance in Thunderbird. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/319">[issue 319]</a>.  </li>
-  <li> Save Messages: Made file operations asynchronous. This should avoid significant slowdowns when Thunderbird starts and tries to execute filters that potentially save many files  or attachments. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/335">[issue 335]</a>.  </li>    
-  <li> Header Regex match: Support using anchor tokens ^ and $ for address lists <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/329">[issue 329]</a>. </li>
-  <li> Thunderbird 136 retires ChromeUtils.import - replace with importESModule. Also converted all jsm modules to ESM modules. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/331">[issue 331]</a>.</li>
-</ul>
-
-<b>Miscellaneus</b>
-<ul>
-  <li> Replaced deprecated nsILocalFile with nsIFile </li>
-  <li> Remove declaration of Services <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/337">[issue 337]</a></li>
-</ul>
-
-<b>Bug Fixes (5.1)</b>
-<ul>
-  <li>Error when using Javascript for a Saved Search criteria (Tb 137) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/338">[issue 338]</a>. The existing xhtml window for editing javascript stopped working in Thunderbird 136, therefore I rewrote the feature using a standard HTML window and more modern back-end code.
-  Also, in later versions of Thunderbird 128, the use of eval() triggers a CSP exception and thus does not work at all anymore. I reimplemented the scripting using the more restricted (and safer) evalInSandbox, which only gives a limited, controlled scope to the environment that is accessible from the script.
-  
-  I regard Thunderbird as a database fat client, with limited tools. Add-ons make the data access much more accessible. The mail store, address books and the Global Database are data the users own. I want to empower my users to access this data in the way they choose, therefore local scripts running in a sandbox environment should be allowed. However we will not support remote script to be executed as it opens up big security problems.
-  
-  There may be corporate users of Thunderbird who have a different view on data access, but they can (and usually do) enforce company policies by controlling which apps or Add-ons are allowed to be installed.
-  </li>
   <li>
-    Fixed: Save Attachments To no longer working in Thunderbird 128 <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/339">[issue 339]</a> This was a regression caused by modernizing the code which worked well with the current API of the release version Thunderbird 137. I had to add some missing data to the attachments array in order to be able to filter the correct attachments (excluding inline images and other such data).
+    Made compatible with Thunderbird 139.*. 
+  </li>
+  <li> 
+    Make Save Attachments Asynchronous, Future Proof for Thunderbird 128, 140 and release channel 
+    <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/343">[issue 343]</a>
   </li>
 </ul>
-
-<b>To do</b>
-<ul>
-  <li>  Work in progress: Allow automatic running of filters outside of Inbox (IMAP only) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/318">[issue 318]</a>. As adding the checkbox in folder properties didn't meet policy restrictions, we plan to add a web extension compatible interface for this at a later stage, possible through the folder tree context menu.</li>
-</ul>
-
 
 <strong>Support My Work</strong>
 
