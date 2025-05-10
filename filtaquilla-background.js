@@ -100,6 +100,27 @@
     return null;
   }
 
+  async function addHeaders(attachments, messageId) {
+    // only release version supports the contentDisposition attribute
+    // so we add it manually in 128esr
+    const msg = await browser.messages.getFull(messageId);
+    for (const a of attachments) {
+      const headers = getHeaders(msg.parts, a?.partName);
+      if (
+        !a.contentDisposition &&
+        headers["content-disposition"] &&
+        headers["content-disposition"].length &&
+        headers["content-disposition"][0]?.startsWith("attachment")
+      ) {
+        a.contentDisposition = "attachment";
+      }
+
+      if (!a.headers) {
+        a.headers = headers;
+      }
+    }
+  }
+
   messenger.NotifyTools.onNotifyBackground.addListener(async (data) => {
     const Legacy_Root = "extensions.filtaquilla.",
       PrintingTools_Addon_Name = "PrintingToolsNG@cleidigh.kokkini.net",
@@ -200,33 +221,34 @@
         const info = await browser.runtime.getBrowserInfo();
         const isPrerelease = !greaterThan(info.version, "135.0");
         if (isPrerelease) {
-          // only release version supports the contentDisposition attribute
-          // so we add it manually in 128esr
-          const msg = await browser.messages.getFull(data.messageHeader.id);
-          for (const a of attachments) {
-            const headers = getHeaders(msg.parts, a?.partName);
-            if (
-              !a.contentDisposition &&
-              headers["content-disposition"] &&
-              headers["content-disposition"].length &&
-              headers["content-disposition"][0]?.startsWith("attachment")
-            ) {
-              a.contentDisposition = "attachment";
-            }
-
-            if(!a.headers) {
-              a.headers = headers;
-            }
-          }
+          await addHeaders(attachments, data.messageHeader.id);
         }
         let attachmentsToSave = attachments.filter((a) => a.contentDisposition === "attachment");
         if (isDebugAttachments) {
           console.log(`FILTAQUILLA - saveAttachments(): ${attachmentsToSave.length} attachments to save...`);
         }
+        // check for attached messages to include _their_ attachments, and append those.
+        for (const at of attachmentsToSave) {
+          if (at.message && at.message.id) {
+            let recursiveAttachments = await browser.messages.listAttachments(at.message.id);
+            for (let rA of recursiveAttachments) {
+              rA.myMessageId = at.message.id; // force msg id of attachment mail!
+            }
+            if (!recursiveAttachments?.length) continue;
+            if (isPrerelease) {
+              await addHeaders(recursiveAttachments, at.message.id);
+            }
+            // add contained attachments within attached eml.
+            attachmentsToSave.push (
+              ...recursiveAttachments.filter((a) => a.contentDisposition === "attachment")
+            )
+          }
+        }        
 
         for (const at of attachmentsToSave) {
           if (isDebugAttachments) console.log(at);
-          let file = await browser.messages.getAttachmentFile(data.messageHeader.id, at.partName);
+          // myMessageId is used to identify an attached eml that contains the found attachment
+          let file = await browser.messages.getAttachmentFile(at?.myMessageId || data.messageHeader.id, at.partName);
           let savedItem = {
             fileName: file.name,
             fileType: file.type,
