@@ -6,11 +6,12 @@ In order to move forward with the current release cycle (monthly releases) I dec
 **Improvements**
 
 *   Made compatible with Thunderbird 139.\*. Minimum version going forward will now be **Thunderbird 128**.
-*   Make Save Attachments Asynchronous, Future Proof for Thunderbrid 128, 140 and release channel [issue #347].
+*   Make Save Attachments Asynchronous, Future Proof for Thunderbrid 128, 140 and release channel [issue #347]. It is highly recommended to run filter after junk detection as this will not potentially lock up the user interface when Thunderbird starts up.
 
 **TO DO**
 *    Work in progress: Allow automatic running of filters outside of Inbox (IMAP only) \[issue #318\].
-     As adding the checkbox in folder properties didn't meet policy restrictions, we plan to add a web extension compatible interface for this at a later stage, possible through the folder tree context menu.
+     As adding the checkbox in folder properties didn't meet policy restrictions, we are planning to add a web extension compatible interface for this at a later stage, possible through the folder tree context menu.
+*    Test attachRegEx_match and see if it needs updates for Tb128 / Release
 
      
 

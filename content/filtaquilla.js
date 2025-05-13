@@ -1107,6 +1107,9 @@
     }
 
     // Helper function to deal with missing copyListener object
+    // this function is able to synchronously wait for a promis
+    // so a function that returns promise.
+    // effectively this is a way to syncronize an async function
     function waitForPromise(promise, msgHdr) {
       const startTime = Date.now();
       let result = null;
@@ -1148,16 +1151,10 @@
       name: util.getBundleString("fq.saveAttachment"),
       applyAction: function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
         // async functions pass in a nsIMsgCopyServiceListener
-        const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
-          isDebug = prefs.getBoolPref("debug.attachments");
-
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         try {
           if (!copyListener) {
             util.logDebug("saveAttachment: no copyListener, proceeding without it");
-            if (isDebug) {
-              debugger;
-            }
           }
 
           directory.initWithPath(aActionValue);
@@ -1186,9 +1183,8 @@
                 util.logDebug("Attachment saved for: " + info);
               }
             }
-
             return anyFailures ? Cr.NS_ERROR_FAILURE : Cr.NS_OK;
-          }
+          } // !copyListener
 
           // pass in message array, returns result status array!
           _saveAttachments(aMsgHdrs, directory)

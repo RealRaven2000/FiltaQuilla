@@ -232,7 +232,7 @@
           if (at.message && at.message.id) {
             let recursiveAttachments = await browser.messages.listAttachments(at.message.id);
             for (let rA of recursiveAttachments) {
-              rA.myMessageId = at.message.id; // force msg id of attachment mail!
+              rA.myMessageId = at.message.id; // stash message id of eml attachment 
             }
             if (!recursiveAttachments?.length) continue;
             if (isPrerelease) {
