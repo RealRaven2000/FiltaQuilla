@@ -77,7 +77,9 @@ menulist.flexinput {
 .filtaquilla_build {
   list-style-image: url("resource://filtaquilla-skin/pencil.svg");
 }
-
+.filtaquilla_play {
+  list-style-image: url("resource://filtaquilla-skin/media-play.svg");
+}
 
 /* push down the text */
 .filtaquilla_topinput {
