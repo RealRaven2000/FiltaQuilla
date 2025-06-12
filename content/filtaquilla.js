@@ -506,7 +506,12 @@
         }
         let parmCount = args.length - 1;
 
-        file.initWithPath(fileURL);
+        try {
+          file.initWithPath(fileURL);
+        } catch(ex) {
+          console.error(`runFile() - invalid file url: ${fileURL}`, ex);
+          return;
+        }        
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           let theProcess = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
           theProcess.init(file);
@@ -544,12 +549,16 @@
       applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         var args = aActionValue.split(","),
-          fileURL = args[0],
-          parmCount = args.length - 1;
+          fileURL = args[0];
 
-        file.initWithPath(fileURL); // check whether template exists!
+        try {
+          file.initWithPath(fileURL); // check whether template exists!
+        } catch(ex) {
+          console.error(`FiltaQuilla\nfwdSmartTemplates() - invalid file url: ${fileURL}`);
+          return;
+        }
         if (!file.exists()) {
-          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
+          console.warn("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
         }
         const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
           isDebug = prefs.getBoolPref("debug.SmartTemplates");
@@ -594,12 +603,17 @@
       applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         var args = aActionValue.split(","),
-          fileURL = args[0],
-          parmCount = args.length - 1;
+          fileURL = args[0];
 
-        file.initWithPath(fileURL); // check whether template exists!
+        try {
+          file.initWithPath(fileURL); // check whether template exists!
+        } catch(ex) {
+          console.error(`FiltaQuilla\nreplySmartTemplates() - invalid file url: ${fileURL}`, ex);
+          return;
+        }
+        
         if (!file.exists()) {
-          console.log("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
+          console.warn("FiltaQuilla cannot find SmartTemplates file: " + fileURL);
         }
         // then send a message to SmartTemplates
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
@@ -1033,6 +1047,11 @@
         // Process all message headers asynchronously
         for (let i = 0; i < aMsgHdrs.length; i++) {
           let msgHdr = aMsgHdrs[i];
+          FiltaQuilla.Util.logDebug(
+            `saveAttachements() for Message ${i + 1} of ${aMsgHdrs.length} ... `,
+            `messageKey: ${msgHdr?.messageKey}`,
+            `subject: ${msgHdr?.subject}`
+          );
           if (!msgHdr) {
             continue; // Skip if no data
           }
@@ -1132,6 +1151,7 @@
 
       // Synchronously wait for the promise to resolve/reject
       // we removed code that used nsIThreadManager.processNextEvent();
+      const thread = Services.tm.mainThread;
       while (!result) {
         const timeSpent = Date.now() - startTime;
         if (timeSpent > MAX_ATTACHMENT_TIME) {
@@ -1141,6 +1161,7 @@
           console.warn(`waitForPromise: operation timed out after ${timeSpent} ms!`);
           return { value: null, success: false, message: "Operation timed out" }; // Exit early if too much time is spent
         }
+        thread.processNextEvent(true);
       }
       return result;
     }
@@ -1157,7 +1178,13 @@
             util.logDebug("saveAttachment: no copyListener, proceeding without it");
           }
 
-          directory.initWithPath(aActionValue);
+          try {
+            directory.initWithPath(aActionValue);
+          } catch(ex) {
+            console.error(`FiltaQuilla\nsaveAttachment() - invalid directory url: ${aActionValue}`);
+            return;
+          }
+
           if (directory.exists()) {
             util.logDebug("saveAttachment() - target directory exists:\n" + aActionValue);
           } else {
@@ -1191,15 +1218,11 @@
             .then((rv) => {
               // look at array of results, if there was one failure we consider the filter failed (?)
               const failed = rv.some((r) => !r.success);
-              if (copyListener) {
-                copyListener.onStopCopy(failed ? Cr.NS_ERROR_FAILURE : Cr.NS_OK);
-              }
+              copyListener.onStopCopy(failed ? Cr.NS_ERROR_FAILURE : Cr.NS_OK);
             })
             .catch((ex) => {
               util.logException("FiltaQuilla.saveAttachment", ex);
-              if (copyListener) {
-                copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
-              }
+              copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
               // Log the error for cases where copyListener is null
               util.logError("Error saving attachment: " + ex.message);
             });
@@ -1252,8 +1275,8 @@
               copyListener.onStopCopy(Cr.NS_ERROR_FAILURE); // this will stop filter flow
             });
         } catch (ex) {
-          util.logException("FiltaQuilla.detachAttachments(", ex);
-          copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+          util.logException("FiltaQuilla.detachAttachments()", ex);
+          if (copyListener) copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
         }
       },
       isValidForType: function (type, scope) {
@@ -1350,7 +1373,12 @@
         }
 
         const directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
-        directory.initWithPath(path);
+        try {
+          directory.initWithPath(path);
+        } catch(ex) {
+          console.error(`FiltaQuilla\nsaveMessageAsFile() - invalid file url: ${path}`, ex);
+          return;
+        }        
 
         // queue and save files asynchronously:
         let activePromises = new Set();
