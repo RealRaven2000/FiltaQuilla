@@ -1,4 +1,4 @@
-<b>Version 5.2</b>
+<b>Version 5.3</b>
 
 In order to move forward with the current release cycle (monthly releases) I decided to raise minimum version to Thunderbird 128, I am doing regular testing with the current beta versions but they may only be a single version number ahead! To help test new versions and be ahead of the curve, you can subscribe to issue #262.
 
@@ -6,12 +6,9 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 
 <b>Improvements</b>
 <ul>
-  <li>
-    Made compatible with Thunderbird 139.*. 
-  </li>
-  <li> 
-    Make Save Attachments Asynchronous, to future Proof for Thunderbird 128, 140 and release channel  <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/343">[issue 343]</a>. Please restart Thunderbird to force changes to come into effect. It is highly recommended to run filter after junk detection as this will not potentially lock up the user interface when Thunderbird starts up.
-  </li>
+  <li> Made compatible with Thunderbird 140.*.  </li>
+  <li> Improvement in asynchronous Save Attachments, leading to slow down of Thunderbird when filtering POP3 mail (no copy listener) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/349">[issue 349]</a>. We are now allowed to use nsIThreadManager.processNextEvent() in order to give cycles back to the system while the attachments are processed. Please restart Thunderbird to force changes to come into effect. </li>
+  <li> Play sound improvements: Fixed open sound file button, extracting the supplied sounds to the default folder profile/extensions/filtaquilla and added a play sound button to filter editor.<a href="https://github.com/RealRaven2000/FiltaQuilla/issues/350">[issue 350]</a> </li>
 </ul>
 
 <strong>Support My Work</strong>
