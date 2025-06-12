@@ -1,12 +1,14 @@
 {
   "workbench.colorCustomizations": {
-    "activityBar.background": "#8a9703", 
+    "activityBar.background": "#8a9703",
     "activityBar.inactiveForeground": "#f9f984",
     "titleBar.activeBackground": "#7d8804",
-    "statusBar.background": "#73930b",	
+    "statusBar.background": "#73930b",
     "menu.separatorBackground": "#08661c",
     "menu.selectionBackground": "#03750d",
     "menubar.selectionBackground": "#ff0001"
-
-  }
+  },
+  "eslint.validate": ["javascript"],
+  "eslint.codeActionsOnSave.rules": null,
+  "eslint.run": "onType"
 }
