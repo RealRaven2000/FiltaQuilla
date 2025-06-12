@@ -27,6 +27,11 @@
  * ***** END LICENSE BLOCK *****
  */
 
+ /*
+   globals
+     dump
+  */
+
  // for the next ESR (140) we need to convert this to a .sys.msj file because we need to 
  // use Cu.importESModule(...)
  // To Do: create an issue for this [ESMification]
@@ -245,7 +250,6 @@ export const ToneQuillaPlay = {
     }
 
 
-    var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
     const { NetUtil } = ChromeUtils.importESModule("resource://gre/modules/NetUtil.sys.mjs");
 
     // Services is already global

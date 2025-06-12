@@ -26,6 +26,12 @@
  *
  * ***** END LICENSE BLOCK *****
  */
+
+ /* 
+   globals
+     Preferences,
+
+ */
  
 Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js") // FiltaQuilla object
 // const util = FiltaQuilla.Util;
@@ -33,10 +39,6 @@ Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-ut
 
 async function onLoad() {
   // disable items that are not valid in current core version
-  const Cc = Components.classes,
-        Ci = Components.interfaces,
-        Cu = Components.utils;
-  
   let haveActionNeedsBody = true,
       haveDetachToFile = true,
       detachElement = document.getElementById("checkDetachAttachmentsEnabled");
@@ -52,6 +54,7 @@ async function onLoad() {
   
 }
 
+// eslint-disable-next-line no-unused-vars
 function onVersionClick() {
   let pureVersion = FiltaQuilla.Util.VersionSanitized,
       versionPage = "https://quickfilters.quickfolders.org/fq-versions.html#" + pureVersion;
@@ -59,6 +62,7 @@ function onVersionClick() {
   window.close();
 }
 
+// eslint-disable-next-line no-unused-vars
 function loadPreferences() {
   if (typeof Preferences == 'undefined') {
     FiltaQuilla.Util.logToConsole("Preferences is not defined - this shouldn't happen!");
@@ -91,8 +95,9 @@ function loadPreferences() {
     
     
     FiltaQuilla.Util.logDebug("Adding " + prefArray.length + " preferences to Preferences loader…")
-    if (Preferences)
+    if (Preferences) {
       Preferences.addAll(prefArray);
+    }
   }
   
   if(!Preferences.get("extensions.filtaquilla.print.enabled").value) {
@@ -124,6 +129,7 @@ function onl10n() {
 }
 
 window.addEventListener("load", async () => {
+  // eslint-disable-next-line no-unused-vars
   let val = await onLoad(); // If this pauses, then the onload handler will move onto the next item (it doesn't block).
   // callMyAsyncFunction has been completed.
 }, { once: true });

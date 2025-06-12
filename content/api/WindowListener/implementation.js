@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /*
  * This file is provided by the addon-developer-support repository at
  * https://github.com/thundernest/addon-developer-support
@@ -10,10 +11,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+/*
+  globals
+    Cc, Ci, Cu
+    */
 
 // Import some things we need.
-var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
-
 var { ExtensionCommon } = ChromeUtils.importESModule(
   "resource://gre/modules/ExtensionCommon.sys.mjs"
 );
@@ -29,7 +32,7 @@ function getThunderbirdVersion() {
 
 var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
   log(msg) {
-    if (this.debug) console.log("WindowListener API: " + msg);
+    if (this.debug) {console.log("WindowListener API: " + msg);}
   }
 
   getCards(e) {
@@ -250,7 +253,7 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
       managerWindow[this.uniqueRandomID] = {};
       managerWindow[this.uniqueRandomID].hasAddonManagerEventListeners = true;
     }
-    if (forceLoad) this.handleEvent(managerWindow);
+    if (forceLoad) {this.handleEvent(managerWindow);}
   }
 
   getMessenger(context) {
@@ -269,6 +272,7 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
         localstorage.local.clear = (...args) =>
           localstorage.local.callMethodInParentProcess("clear", args);
       } catch (e) {
+        void e;
         console.info("Storage permission is missing");
       }
       return localstorage;
@@ -291,7 +295,7 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
   }
 
   error(msg) {
-    if (this.debug) console.error("WindowListener API: " + msg);
+    if (this.debug) {console.error("WindowListener API: " + msg);}
   }
 
   // async sleep function using Promise
@@ -299,9 +303,9 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
     let timer = Components.classes["@mozilla.org/timer;1"].createInstance(
       Components.interfaces.nsITimer
     );
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, _reject) {
       let event = {
-        notify: function (timer) {
+        notify: function (_timer) {
           resolve();
         },
       };
@@ -314,11 +318,15 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
   }
 
   getAPI(context) {
+    const Cc = Components.classes,
+      Ci = Components.interfaces,
+      Cu = Components.utils;
     // Track if this is the background/main context
-    if (context.viewType != "background")
+    if (context.viewType != "background") {
       throw new Error(
         "The WindowListener API may only be called from the background page."
       );
+    }
 
     this.context = context;
 
@@ -346,11 +354,11 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
 
     // TabMonitor to detect opening of tabs, to setup the options button in the add-on manager.
     this.tabMonitor = {
-      onTabTitleChanged(tab) { },
-      onTabClosing(tab) { },
-      onTabPersist(tab) { },
-      onTabRestored(tab) { },
-      onTabSwitched(aNewTab, aOldTab) { },
+      onTabTitleChanged(_tab) { },
+      onTabClosing(_tab) { },
+      onTabPersist(_tab) { },
+      onTabRestored(_tab) { },
+      onTabSwitched(_aNewTab, _aOldTab) { },
       async onTabOpened(tab) {
         if (tab.browser && tab.mode.name == "contentTab") {
           let { setTimeout } = Services.wm.getMostRecentWindow("mail:3pane");
@@ -432,8 +440,8 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
           let chromeData = [];
           let resourceData = [];
           for (let entry of data) {
-            if (entry[0] == "resource") resourceData.push(entry);
-            else chromeData.push(entry);
+            if (entry[0] == "resource") {resourceData.push(entry);}
+            else {chromeData.push(entry);}
           }
 
           if (chromeData.length > 0) {
@@ -761,7 +769,7 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
           }
 
           function injectChildren(elements, container) {
-            if (debug) console.log(elements);
+            if (debug) {console.log(elements);}
 
             for (let i = 0; i < elements.length; i++) {
               // take care of persists
@@ -801,13 +809,13 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
                 );
 
                 if (debug)
-                  console.log(
+                  {console.log(
                     elements[i].tagName +
                     "#" +
                     elements[i].id +
                     ": insertafter " +
                     insertAfterElement.id
-                  );
+                  );}
                 if (
                   debug &&
                   elements[i].id &&
@@ -833,13 +841,13 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
                 );
 
                 if (debug)
-                  console.log(
+                  {console.log(
                     elements[i].tagName +
                     "#" +
                     elements[i].id +
                     ": insertbefore " +
                     insertBeforeElement.id
-                  );
+                  );}
                 if (
                   debug &&
                   elements[i].id &&
@@ -862,20 +870,20 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
               ) {
                 // existing container match, dive into recursivly
                 if (debug)
-                  console.log(
+                  {console.log(
                     elements[i].tagName +
                     "#" +
                     elements[i].id +
                     " is an existing container, injecting into " +
                     elements[i].id
-                  );
+                  );}
                 injectChildren(
                   Array.from(elements[i].children),
                   window.document.getElementById(elements[i].id)
                 );
               } else if (elements[i].localName === "toolbarpalette") {
                 // These vanish from the document but still exist via the palette property
-                if (debug) console.log(elements[i].id + " is a toolbarpalette");
+                if (debug) {console.log(elements[i].id + " is a toolbarpalette");}
                 let boxes = [
                   ...window.document.getElementsByTagName("toolbox"),
                 ];
@@ -885,15 +893,17 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
                 let palette = box ? box.palette : null;
 
                 if (!palette) {
-                  if (debug)
+                  if (debug) {
                     console.log(
                       `The palette for ${elements[i].id} could not be found, deferring to later`
                     );
+                  }                  
                   continue;
                 }
 
-                if (debug)
+                if (debug) {
                   console.log(`The toolbox for ${elements[i].id} is ${box.id}`);
+                }
 
                 toolbarsToResolve.push(...box.querySelectorAll("toolbar"));
                 toolbarsToResolve.push(
@@ -908,21 +918,19 @@ var WindowListener_102 = class extends ExtensionCommon.ExtensionAPI {
                 injectChildren(Array.from(elements[i].children), palette);
               } else {
                 // append element to the current container
-                if (debug)
+                if (debug){
                   console.log(
-                    elements[i].tagName +
-                    "#" +
-                    elements[i].id +
-                    ": append to " +
-                    container.id
+                    elements[i].tagName + "#" + elements[i].id + ": append to " + container.id
                   );
+                }
+                  
                 elements[i].setAttribute("wlapi_autoinjected", uniqueRandomID);
                 container.appendChild(elements[i]);
               }
             }
           }
 
-          if (debug) console.log("Injecting into root document:");
+          if (debug) {console.log("Injecting into root document:");}
           let localizedXulString = xulString.replace(
             /__MSG_(.*?)__/g,
             localize
@@ -2096,12 +2104,13 @@ var WindowListener_115 = class extends ExtensionCommon.ExtensionAPI {
     let shutdownJS = {};
     shutdownJS.extension = this.extension;
     try {
-      if (this.pathToShutdownScript)
+      if (this.pathToShutdownScript) {
         Services.scriptloader.loadSubScript(
           this.pathToShutdownScript,
           shutdownJS,
           "UTF-8"
         );
+      }
     } catch (e) {
       Components.utils.reportError(e);
     }

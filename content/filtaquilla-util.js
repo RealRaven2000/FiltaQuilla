@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 "use strict";
 
 /*
@@ -20,6 +21,11 @@
  * License.
  */
 
+ /*
+   globals
+     Cu,
+  */
+
 var FiltaQuilla = {};
 
 FiltaQuilla.TabURIregexp = {
@@ -30,7 +36,6 @@ FiltaQuilla.TabURIregexp = {
 };
 
 
-  var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
   var { MailStringUtils } = ChromeUtils.importESModule("resource:///modules/MailStringUtils.sys.mjs");
 
 
@@ -47,15 +52,16 @@ FiltaQuilla.Util = {
   lastTime: 0,
 
   get StringBundleSvc() {
-    if (!this._stringBundleSvc)
+    if (!this._stringBundleSvc) {
       this._stringBundleSvc = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(
         Components.interfaces.nsIStringBundleService
       );
+    }
     return this._stringBundleSvc;
   },
 
   get prefs() {
-    if (this._prefs) return this._prefs;
+    if (this._prefs) {return this._prefs;}
     this._prefs = Services.prefs.getBranch("extensions.filtaquilla.");
     return this._prefs;
   },
@@ -113,14 +119,14 @@ FiltaQuilla.Util = {
   },
 
   getTabInfoLength: function getTabInfoLength(tabmail) {
-    if (tabmail.tabInfo) return tabmail.tabInfo.length;
-    if (tabmail.tabOwners) return tabmail.tabOwners.length;
+    if (tabmail.tabInfo) {return tabmail.tabInfo.length;}
+    if (tabmail.tabOwners) {return tabmail.tabOwners.length;}
     return null;
   },
 
   getTabInfoByIndex: function getTabInfoByIndex(tabmail, idx) {
-    if (tabmail.tabInfo) return tabmail.tabInfo[idx];
-    if (tabmail.tabOwners) return tabmail.tabOwners[idx]; // Postbox
+    if (tabmail.tabInfo) {return tabmail.tabInfo[idx];}
+    if (tabmail.tabOwners) {return tabmail.tabOwners[idx];} // Postbox
     return null;
   },
 
@@ -129,9 +135,9 @@ FiltaQuilla.Util = {
       queryPos = URL.indexOf("?"),
       baseURL = URL;
 
-    if (hashPos > 0) baseURL = URL.substr(0, hashPos);
-    else if (queryPos > 0) baseURL = URL.substr(0, queryPos);
-    if (baseURL.endsWith("/")) return baseURL.substr(0, baseURL.length - 1); // match "x.com" with "x.com/"
+    if (hashPos > 0) {baseURL = URL.substr(0, hashPos);}
+    else if (queryPos > 0) {baseURL = URL.substr(0, queryPos);}
+    if (baseURL.endsWith("/")) {return baseURL.substr(0, baseURL.length - 1);} // match "x.com" with "x.com/"
     return baseURL;
   },
 
@@ -210,7 +216,7 @@ FiltaQuilla.Util = {
       let elapsed = new String(endTime - this.lastTime); // time in milliseconds
       timePassed = "[" + elapsed + " ms]   ";
       this.lastTime = endTime; // remember last time
-    } catch (e) {}
+    } catch (e) {void e;}
     return (
       end.getHours() +
       ":" +
@@ -225,6 +231,7 @@ FiltaQuilla.Util = {
   },
 
   logToConsole: function logToConsole(a) {
+    void a;
     let msg = "FiltaQuilla " + this.logTime() + "\n"; // (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '') +
     console.log(msg, ...arguments);
   },
@@ -255,7 +262,8 @@ FiltaQuilla.Util = {
         aFlags
       );
       Services.console.logMessage(scriptError);
-    } catch(x) {
+    } catch(ex) {
+      void ex;
       console.warn("Error in FiltaQuilla:", `${aMessage}\n`, {
         source: `${aSourceName} : ${aSourceLine} : ${aColumnNumber}`,
         flags: aFlags
@@ -269,6 +277,7 @@ FiltaQuilla.Util = {
     console.log(aMessage, ex);
     return;
     
+    /* 
     let stack = "",
       srcName = "",
       line = "";
@@ -278,10 +287,11 @@ FiltaQuilla.Util = {
       line = ex?.lineNumber || "";
     } catch (x) {;}
     // use warning flag, as this is an exception we caught ourselves
-    this.logError(aMessage + "\n" + ex.message, srcName, stack, line, 0, 0x1);
+    this.logError(aMessage + "\n" + ex.message, srcName, stack, line, 0, 0x1); 
+    */
   },
 
-  logDebug: function logDebug(msg) {
+  logDebug: function logDebug(_msg) {
     if (this.isDebug) {
       this.logToConsole(...arguments);
     }
@@ -298,17 +308,18 @@ FiltaQuilla.Util = {
   },
 
   isDebugOption: function (o) {
-    if (!this.isDebug) return false;
+    if (!this.isDebug) {return false;}
     try {
       return this.prefs.getBoolPref("debug." + o);
     } catch (e) {
+      void e;
       return false;
     }
   },
 
-  logWithOption: function (a) {
+  logWithOption: function (_a) {
     arguments[0] =
-      "FiltaQuilla " + "{" + arguments[0].toUpperCase() + "} " + QuickFolders.Util.logTime() + "\n";
+      "FiltaQuilla " + "{" + arguments[0].toUpperCase() + "} " + FiltaQuilla.Util.logTime() + "\n";
     console.log(...arguments);
   },
 
@@ -328,7 +339,7 @@ FiltaQuilla.Util = {
           break; // only log once, in case multiple log switches are on
         }
       }
-    } catch (ex) {}
+    } catch (ex) { void ex;}
   },
 
   toggleBoolPreference: function (cb, noUpdate) {
@@ -338,7 +349,7 @@ FiltaQuilla.Util = {
     if (pref) {
       Services.prefs.setBoolPref(pref.getAttribute("name"), cb.checked);
     }
-    if (noUpdate) return true;
+    if (noUpdate) {return true;}
     return false; // this.updateMainWindow();
   },
 
@@ -371,32 +382,13 @@ FiltaQuilla.Util = {
       if (flt) {
         flt.value = filter;
         // make filter box readonly to prevent damage!
-        if (!readOnly) flt.focus();
-        else flt.setAttribute("readonly", true);
+        if (!readOnly) {flt.focus();}
+        else {flt.setAttribute("readonly", true);}
         if (w.self.FilterPrefs) {
           w.self.FilterPrefs();
         }
       }
     });
-  },
-
-  // Tb 66 compatibility.
-  loadPreferences: function fq_loadPreferences() {
-    if (typeof Preferences == "undefined") {
-      FiltaQuilla.Util.logDebug("Skipping loadPreferences - Preferences object not defined");
-      return; // older versions of Thunderbird do not need this.
-    }
-    let myprefs = document.getElementsByTagName("preference");
-    if (myprefs.length) {
-      let prefArray = [];
-      for (let i = 0; i < myprefs.length; i++) {
-        let it = myprefs.item(i),
-          p = { id: it.id, name: it.getAttribute("name"), type: it.getAttribute("type") };
-        if (it.getAttribute("instantApply") == "true") p.instantApply = true;
-        prefArray.push(p);
-      }
-      if (Preferences) Preferences.addAll(prefArray);
-    }
   },
 
   // l10n
@@ -597,7 +589,7 @@ FiltaQuilla.Util = {
             currentText = currentQuoteLevel + currentText;
           }
           if (currentQuoteLevel === "") {
-            if (type === "both" || type === "u") unquoted.push(currentText);
+            if (type === "both" || type === "u") {unquoted.push(currentText);}
           } else if (type === "both" || type === "q") {
             quoted.push(currentText);
           }
@@ -617,7 +609,7 @@ FiltaQuilla.Util = {
           currentText = currentQuoteLevel + currentText;
         }
         if (currentQuoteLevel === "") {
-          if (type === "both" || type === "u") unquoted.push(currentText);
+          if (type === "both" || type === "u") {unquoted.push(currentText);}
         } else if (type === "both" || type === "q") {
           quoted.push(currentText);
         }
@@ -645,8 +637,8 @@ FiltaQuilla.Util = {
     }
 
     // Return results based on type
-    if (type === "u") return unquoted.join("\n\n");
-    if (type === "q") return quoted.join("\n\n");
+    if (type === "u") {return unquoted.join("\n\n");}
+    if (type === "q") {return quoted.join("\n\n");}
     return [quoted.join("\n\n"), unquoted.join("\n\n")];
   },
 
@@ -689,7 +681,6 @@ FiltaQuilla.Util = {
     var data;
 
     let stream = folder.getMsgInputStream(aMsgHdr, {});
-    let isStreamError = false;
     try {
       // [issue #260]
       data = "";
@@ -702,7 +693,6 @@ FiltaQuilla.Util = {
         `NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`,
         ex
       );
-      isStreamError = true;
       return false; // shit shit shit - reading the message fails.
     } finally {
       stream.close();
@@ -890,7 +880,7 @@ FiltaQuilla.Util = {
         this.partsPath.push(newPart);
       },
 
-      endPart(partNum) {
+      endPart(_partNum) {
         let deleteBody = false;
         // Get the most recent part from the hierarchical parts stack.
         let currentPart = this.partsPath[this.partsPath.length - 1];
@@ -1122,7 +1112,7 @@ FiltaQuilla.Util = {
   getFileInitArg: function (win) {
     // [issue 265]
     // [bug 1882701] nsIFilePicker.init() first parameter changed from Tb125
-    if (!win) return null;
+    if (!win) {return null;}
     if (this.versionGreaterOrEqual(this.AppverFull, "125")) {
       return win.browsingContext;
     }
@@ -1134,9 +1124,7 @@ FiltaQuilla.Util = {
     let result = null;
     try {
       // eval(script); // CSP forbids it. (they are right)
-      const Cu = Components.utils;
-
-      let sandbox = Cu.Sandbox(window, {
+      let sandbox = Components.utils.Sandbox(window, {
         sandboxPrototype: window, // Access to window and its properties
         wantXrays: false, // Allows deeper access to underlying objects; safer without and possibly faster.
         metadata: { name: "FiltaQuillaSandbox" },
@@ -1163,8 +1151,9 @@ FiltaQuilla.Util = {
       util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
       return false;
     } finally {
-      return result;
+      ;
     }
+    return result;
   },
 
   redirectRegex101({ expression = null, flags = "", exampleId = "MfQBZT" }) {
@@ -1201,8 +1190,10 @@ FiltaQuilla.Util = {
           
       try { 
         debugFirstRun = Boolean(ssPrefs.getBoolPref("debug.firstrun")); 
-      } 
-      catch (e) { debugFirstRun = false; }
+      } catch (e) { 
+        void e;
+        debugFirstRun = false; 
+      }
       
       FiltaQuilla.Util.logDebugOptional ("firstrun","Util.FirstRun.init()");
       FiltaQuilla.Util.addonInfo = await FiltaQuilla.Util.notifyTools.notifyBackground({ func: "getAddonInfo" });
@@ -1223,7 +1214,8 @@ FiltaQuilla.Util = {
         FiltaQuilla.Util.logDebugOptional ("firstrun","try to get setting: getBoolPref(firstrun)");
         try { 
           firstrun = ssPrefs.getBoolPref("firstRun"); 
-        }  catch (e) { 
+        } catch (e) { 
+          void e;
           firstrun = true; 
 				}
 

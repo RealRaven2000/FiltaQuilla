@@ -184,18 +184,18 @@
       id: "filtaquilla@mesquilla.com#subjectAppend",
       name: util.getBundleString("fq.subjectprepend"),
 
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         for (let msgHdr of aMsgHdrs) {
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, true);
           msgHdr.subject = appSubject;
         }
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return subjectAppendEnabled;
       },
 
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
 
@@ -209,18 +209,18 @@
       id: "filtaquilla@mesquilla.com#subjectSuffix",
       name: util.getBundleString("fq.subjectappend"),
 
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         for (let msgHdr of aMsgHdrs) {
           var appSubject = _mimeAppend(aActionValue, msgHdr.subject, false);
           msgHdr.subject = appSubject;
         }
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return subjectSuffixEnabled;
       },
 
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
 
@@ -233,14 +233,14 @@
     self.removeKeyword = {
       id: "filtaquilla@mesquilla.com#removeTag",
       name: util.getBundleString("fq.removekeyword"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         aMsgHdrs[0].folder.removeKeywordsFromMessages(aMsgHdrs, aActionValue);
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return removeKeywordEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -251,13 +251,13 @@
     self.removeFlagged = {
       id: "filtaquilla@mesquilla.com#removeStar",
       name: util.getBundleString("fq.removeflagged"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, _aActionValue, _aListener, _aType, _aMsgWindow) {
         aMsgHdrs[0].folder.markMessagesFlagged(aMsgHdrs, false);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return removeFlaggedEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
     }; // end removeFlagged
@@ -266,13 +266,13 @@
     self.markUnread = {
       id: "filtaquilla@mesquilla.com#markUnread",
       name: util.getBundleString("fq.markUnread"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, _aActionValue, _aListener, _aType, _aMsgWindow) {
         aMsgHdrs[0].folder.markMessagesRead(aMsgHdrs, false);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return markUnreadEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
     }; // end markUnread
@@ -281,7 +281,7 @@
     self.markReplied = {
       id: "filtaquilla@mesquilla.com#markReplied",
       name: util.getBundleString("fq.markReplied"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, _aActionValue, _aListener, _aType, _aMsgWindow) {
         // what a pain, the folder function does not take an array like all others!
         for (let msgHdr of aMsgHdrs) {
           msgHdr.folder.addMessageDispositionState(
@@ -290,10 +290,10 @@
           );
         }
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return markRepliedEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
     }; // end markUnread
@@ -302,17 +302,17 @@
     self.noBiff = {
       id: "filtaquilla@mesquilla.com#noBiff",
       name: util.getBundleString("fq.nobiff"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, _aActionValue, _aListener, _aType, _aMsgWindow) {
         let folder = aMsgHdrs[0].folder,
           numNewMessages = folder.getNumNewMessages(false);
-        hdrCount = aMsgHdrs.length;
+        const hdrCount = aMsgHdrs.length;
         numNewMessages = numNewMessages - hdrCount;
         folder.setNumNewMessages(numNewMessages);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return noBiffEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
     }; // end noBiff
@@ -328,7 +328,9 @@
           _dstFolder = MailUtils.getExistingFolder(aActionValue, false);
           // store the messages Ids to use post-copy
           _messageIds = [];
-          for (let msgHdr of aMsgHdrs) _messageIds.push(msgHdr.messageId); // are these used later?
+          for (let msgHdr of aMsgHdrs) {
+            _messageIds.push(msgHdr.messageId); // are these used later?
+          }
 
           MailServices.copy.copyMessages(
             srcFolder,
@@ -341,10 +343,10 @@
           );
         },
 
-        isValidForType: function (type, scope) {
+        isValidForType: function (type, _scope) {
           return type == Ci.nsMsgFilterType.Manual && copyAsReadEnabled;
         },
-        validateActionValue: function (aActionValue, aFilterFolder, type) {
+        validateActionValue: function (aActionValue, _aFilterFolder, _type) {
           const msgFolder = MailUtils.getExistingFolder(aActionValue, false);
           if (!msgFolder || !msgFolder.canFileMessages) {
             return util.getBundleString("fq.filtaquilla.mustSelectFolder");
@@ -363,16 +365,16 @@
 
       var _localListener = {
         OnStartCopy: function () {
-          if (_aListener) _aListener.OnStartCopy();
+          if (_aListener) {_aListener.OnStartCopy();}
         },
         OnProgress: function (aProgress, aProgressMax) {
-          if (_aListener) _aListener.OnProgress(aProgress, aProgressMax);
+          if (_aListener) {_aListener.OnProgress(aProgress, aProgressMax);}
         },
         SetMessageKey: function (aKey) {
-          if (_aListener) _aListener.SetMessageKey(aKey);
+          if (_aListener) {_aListener.SetMessageKey(aKey);}
         },
         SetMessageId: function (aMessageId) {
-          if (_aListener) _aListener.SetMessageId(aMessageId);
+          if (_aListener) {_aListener.SetMessageId(aMessageId);}
         },
         OnStopCopy: function (aStatus) {
           // local folders can be set unread now. Imap folders must be loaded
@@ -393,27 +395,28 @@
         var dstDb = _dstFolder.msgDatabase;
         for (var i = 0; i < _messageIds.length; i++) {
           var hdr = dstDb.getMsgHdrForMessageID(_messageIds[i]);
-          if (hdr) dstMessages.appendElement(dstDb.getMsgHdrForMessageID(_messageIds[i]), false);
-          else
+          if (hdr) {dstMessages.appendElement(dstDb.getMsgHdrForMessageID(_messageIds[i]), false);}
+          else {
             throw (
               "Couldn't find messageId <" + _messageIds[i] + "> in Copy as Unread custom action"
             );
+          }
         }
 
         _dstFolder.markMessagesRead(dstMessages, true);
         _dstFolder = null;
         _messageIds = null;
-        if (_aListener) _aListener.OnStopCopy(aStatus);
+        if (_aListener) {_aListener.OnStopCopy(aStatus);}
       };
 
       var _folderListener = {
-        OnItemAdded: function (parentItem, item) {},
-        OnItemRemoved: function (parentItem, item) {},
-        OnItemPropertyChanged: function (item, property, oldValue, newValue) {},
-        OnItemIntPropertyChanged: function (item, property, oldValue, newValue) {},
-        OnItemBoolPropertyChanged: function (item, property, oldValue, newValue) {},
-        OnItemUnicharPropertyChanged: function (item, property, oldValue, newValue) {},
-        OnItemPropertyFlagChanged: function (item, property, oldFlag, newFlag) {},
+        OnItemAdded: function (_parentItem, _item) {},
+        OnItemRemoved: function (_parentItem, _item) {},
+        OnItemPropertyChanged: function (_item, _property, _oldValue, _newValue) {},
+        OnItemIntPropertyChanged: function (_item, _property, _oldValue, _newValue) {},
+        OnItemBoolPropertyChanged: function (_item, _property, _oldValue, _newValue) {},
+        OnItemUnicharPropertyChanged: function (_item, _property, _oldValue, _newValue) {},
+        OnItemPropertyFlagChanged: function (_item, _property, _oldFlag, _newFlag) {},
         OnItemEvent: function (folder, event) {
           var eventType = event.toString();
 
@@ -434,16 +437,16 @@
     self.launchFile = {
       id: "filtaquilla@mesquilla.com#launchFile",
       name: util.getBundleString("fq.launchFile"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         file.initWithPath(aActionValue);
         file.launch();
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return launchFileEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -454,7 +457,7 @@
     self.runFile = {
       id: "filtaquilla@mesquilla.com#runFile",
       name: util.getBundleString("fq.runFile"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         // the action value string consists of comma-separated fields. The
         // first field is the file URL for the process to run. Subsequent
@@ -480,13 +483,18 @@
         function utf8To16(input) {
           var _escape = function (s) {
             function q(c) {
-              c = c.charCodeAt();
-              return "%" + (c < 16 ? "0" : "") + c.toString(16).toUpperCase();
+              const code = c.charCodeAt();
+              // return "%" + (c < 16 ? "0" : "") + code.toString(16).toUpperCase();
+              return "%" + (code < 16 ? "0" : "") + code.toString(16).toUpperCase();
             }
-            return s.replace(/[\x00-),:-?[-^`{-\xFF]/g, q);
+            // Escape control and non-ASCII characters
+            // eslint-disable-next-line no-control-regex
+            return s.replace(/[\u0000-\u001F\u007F-\u00FF]/g, q);
+            /* return s.replace(/[\x00-),:-?[-^`{-\xFF]/g, q); */
           };
           try {
             return decodeURIComponent(_escape(input));
+          // eslint-disable-next-line no-unused-vars
           } catch (URIError) {
             //include invalid character, cannot convert
             return input;
@@ -533,10 +541,10 @@
         }
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return runFileEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -546,7 +554,7 @@
     self.fwdSmartTemplates = {
       id: "filtaquilla@mesquilla.com#fwdSmart",
       name: util.getBundleString("fq.smartTemplate.fwd"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         var args = aActionValue.split(","),
           fileURL = args[0];
@@ -555,6 +563,7 @@
           file.initWithPath(fileURL); // check whether template exists!
         } catch(ex) {
           console.error(`FiltaQuilla\nfwdSmartTemplates() - invalid file url: ${fileURL}`);
+          void ex;
           return;
         }
         if (!file.exists()) {
@@ -587,10 +596,10 @@
         }
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return fwdSmartTemplatesEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -600,7 +609,7 @@
     self.replySmartTemplates = {
       id: "filtaquilla@mesquilla.com#rspSmart",
       name: util.getBundleString("fq.smartTemplate.rsp"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         var args = aActionValue.split(","),
           fileURL = args[0];
@@ -630,10 +639,10 @@
         }
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return rspSmartTemplatesEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -654,10 +663,10 @@
         }
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return trainAsJunkEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: false,
@@ -678,10 +687,10 @@
         }
         this.applyAction(msgHdrs, aActionValue, aListener, aType, aMsgWindow);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return trainAsGoodEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: false,
@@ -692,7 +701,7 @@
     self.print = {
       id: "filtaquilla@mesquilla.com#print",
       name: util.getBundleString("fq.print"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, _aActionValue, _aListener, _aType, _aMsgWindow) {
         // print me
         const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
         let count = aMsgHdrs.length;
@@ -733,7 +742,7 @@
           timer.initWithCallback(
             async function _printNextMessage() {
               let hdr = printQueue.shift();
-              if (!hdr) return; // triggered too often?
+              if (!hdr) {return;} // triggered too often?
               util.logDebug(
                 "_printNextMessage(). Remaining queue length=" + printQueue.length,
                 hdr
@@ -788,32 +797,7 @@
                   rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
                   await printNextMessage();
                 } else {
-                  // older Thunderbird versions.
-                  let printDialog = window.openDialog(
-                    "chrome://messenger/content/msgPrintEngine.xhtml",
-                    "",
-                    "chrome,dialog=no,all,centerscreen",
-                    1,
-                    [uri],
-                    statusFeedback,
-                    false,
-                    Ci.nsIMsgPrintEngine.MNAB_PRINT_MSG,
-                    window
-                  );
-                  printDialog.addEventListener(
-                    "DOMWindowClose",
-                    async function (e) {
-                      Services.console.logStringMessage(
-                        "Finished printing message: " + hdr.subject
-                      );
-                      printingMessage = false;
-                      // [issue 97] try to restore the setting
-                      rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
-
-                      await printNextMessage();
-                    },
-                    true
-                  );
+                  console.warn("No PrintUtils!")
                 }
               }
             },
@@ -824,10 +808,10 @@
         printNextMessage();
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return printEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: false,
@@ -847,7 +831,7 @@
     self.addSender = {
       id: "filtaquilla@mesquilla.com#addSender",
       name: util.getBundleString("fq.addSender"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         // Helper function, removed in Tb78
         function parseHeadersWithArray(aHeader, aAddrs, aNames, aFullNames) {
           let addrs = [],
@@ -900,10 +884,10 @@
         }
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return addSenderEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -988,7 +972,7 @@
 
           try {
             util.logDebug("calling detachAttachmentsWOPrompts", urls);
-            await new Promise((resolve, reject) => {
+            await new Promise((resolve, _reject) => {
               messenger.detachAttachmentsWOPrompts(
                 directory,
                 contentTypes,
@@ -1139,6 +1123,7 @@
           result = { value, success: true };
         },
         (error) => {
+          const elapsed = Date.now() - startTime;
           console.error(`waitForPromise: promise rejected after ${elapsed} ms:`, error);
           result = { value: null, success: false, message: error.message };
         }
@@ -1170,7 +1155,7 @@
     self.saveAttachment = {
       id: "filtaquilla@mesquilla.com#saveAttachment",
       name: util.getBundleString("fq.saveAttachment"),
-      applyAction: function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, copyListener, _aType, _aMsgWindow) {
         // async functions pass in a nsIMsgCopyServiceListener
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         try {
@@ -1182,6 +1167,7 @@
             directory.initWithPath(aActionValue);
           } catch(ex) {
             console.error(`FiltaQuilla\nsaveAttachment() - invalid directory url: ${aActionValue}`);
+            void ex;
             return;
           }
 
@@ -1234,10 +1220,10 @@
         }
       },
 
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return saveAttachmentEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -1249,7 +1235,7 @@
     self.detachAttachments = {
       id: "filtaquilla@mesquilla.com#detachAttachments",
       name: util.getBundleString("fq.detachAttachments"),
-      applyAction: async function (aMsgHdrs, aActionValue, copyListener, aType, aMsgWindow) {
+      applyAction: async function (aMsgHdrs, aActionValue, copyListener, _aType, _aMsgWindow) {
         // async functions pass in a nsIMsgCopyServiceListener
         let directory = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
         try {
@@ -1276,13 +1262,13 @@
             });
         } catch (ex) {
           util.logException("FiltaQuilla.detachAttachments()", ex);
-          if (copyListener) copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+          if (copyListener) {copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);}
         }
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return detachAttachmentsEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: false,
@@ -1314,10 +1300,10 @@
           return false;
         }
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return javascriptActionEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -1348,10 +1334,10 @@
           return false;
         }
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return javascriptActionBodyEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -1361,13 +1347,13 @@
     self.saveMessageAsFile = {
       id: "filtaquilla@mesquilla.com#saveMessageAsFile",
       name: util.getBundleString("fq.saveMsgAsFile"),
-      applyAction: async function (msgHdrs, actionValue, copyListener, filterType, msgWindow) {
+      applyAction: async function (msgHdrs, actionValue, copyListener, _filterType, _msgWindow) {
         const CONCURRENCY_LIMIT = 10; // maximum # file handles to be handled at the same time.
         // allow specifying directory with suffix of |htm
         let type = "eml"; //default
         let path = actionValue;
         if (/\|/.test(actionValue)) {
-          let matches = /(^[^\|]*)\|(.*$)/.exec(actionValue);
+          let matches = /(^[^|]*)\|(.*$)/.exec(actionValue);
           path = matches[1];
           type = matches[2];
         }
@@ -1409,10 +1395,10 @@
         // Wait for any remaining operations to complete
         await Promise.all(activePromises);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return saveMessageAsFileEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: true,
@@ -1423,7 +1409,7 @@
     self.moveLater = {
       id: "filtaquilla@mesquilla.com#moveLater",
       name: util.getBundleString("fq.moveLater"),
-      applyAction: function (aMsgHdrs, aActionValue, copyListener, filterType, msgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _copyListener, _filterType, _msgWindow) {
         let srcFolder = aMsgHdrs[0].folder;
         let dstFolder = MailUtils.getExistingFolder(aActionValue, false);
         // store the messages uris to use later
@@ -1435,10 +1421,10 @@
         let callback = new MoveLaterNotify(aMsgHdrs, srcFolder, dstFolder, currentIndex);
         timer.initWithCallback(callback, MOVE_LATER_DELAY, Ci.nsITimer.TYPE_ONE_SHOT);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return moveLaterEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
       allowDuplicates: false,
@@ -1449,14 +1435,14 @@
     self.archiveMessage = {
       id: "filtaquilla@mesquilla.com#archiveMessage",
       name: util.getBundleString("fq.archiveMessage"),
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, _aActionValue, _aListener, _aType, _aMsgWindow) {
         let archiver = new MessageArchiver(); // [issue 241]
         archiver.archiveMessages(aMsgHdrs);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return archiveMessageEnabled;
       },
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
     }; // end archiveMessage
@@ -1469,11 +1455,11 @@
     self.folderName = {
       id: "filtaquilla@mesquilla.com#folderName",
       name: util.getBundleString("fq.folderName"),
-      getEnabled: function folderName_getEnabled(scope, op) {
+      getEnabled: function folderName_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function folderName_getAvailable(scope, op) {
+      getAvailable: function folderName_getAvailable(scope, _op) {
         return _isLocalSearch(scope) && FolderNameEnabled;
       },
       getAvailableOperators: function folderName_getAvailableOperators(scope) {
@@ -1489,27 +1475,27 @@
         switch (aSearchOp) {
           case Contains:
           case DoesntContain:
-            if (folderName.indexOf(aSearchValue) != -1) matches = true;
+            if (folderName.indexOf(aSearchValue) != -1) {matches = true;}
             break;
 
           case Is:
           case Isnt:
-            if (folderName == aSearchValue) matches = true;
+            if (folderName == aSearchValue) {matches = true;}
             break;
 
           case BeginsWith:
-            if (folderName.indexOf(aSearchValue) == 0) matches = true;
+            if (folderName.indexOf(aSearchValue) == 0) {matches = true;}
             break;
 
-          case EndsWith:
+          case EndsWith: {
             let index = folderName.lastIndexOf(aSearchValue);
-            if (index != -1 && index == folderName.length - aSearchValue.length) matches = true;
-            break;
+            if (index != -1 && index == folderName.length - aSearchValue.length) {matches = true;}
+          } break;
 
           default:
             Cu.reportError("invalid search operator in folder name custom search term");
         }
-        if (aSearchOp == DoesntContain || aSearchOp == Isnt) return !matches;
+        if (aSearchOp == DoesntContain || aSearchOp == Isnt) {return !matches;}
         return matches;
       },
     };
@@ -1518,11 +1504,11 @@
     self.searchBcc = {
       id: "filtaquilla@mesquilla.com#searchBcc",
       name: util.getBundleString("fq.Bcc"),
-      getEnabled: function searchBcc_getEnabled(scope, op) {
+      getEnabled: function searchBcc_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function searchBcc_getAvailable(scope, op) {
+      getAvailable: function searchBcc_getAvailable(scope, _op) {
         return _isLocalSearch(scope) && SearchBccEnabled;
       },
       getAvailableOperators: function searchBcc_getAvailableOperators(scope) {
@@ -1533,8 +1519,8 @@
       },
       match: function searchBcc_match(aMsgHdr, aSearchValue, aSearchOp) {
         let bccList = aMsgHdr.bccList;
-        if (aSearchOp == IsEmpty) return bccList.length == 0;
-        if (aSearchOp == IsntEmpty) return bccList.length != 0;
+        if (aSearchOp == IsEmpty) {return bccList.length == 0;}
+        if (aSearchOp == IsntEmpty) {return bccList.length != 0;}
 
         let addresses = {},
           names = {},
@@ -1566,7 +1552,7 @@
                 matches = true;
                 break;
               }
-              if (addresses[i].indexOf(aSearchValue) != -1) matches = true;
+              if (addresses[i].indexOf(aSearchValue) != -1) {matches = true;}
               break;
 
             case Is:
@@ -1575,7 +1561,7 @@
                 matches = true;
                 break;
               }
-              if (addresses[i] == aSearchValue) matches = true;
+              if (addresses[i] == aSearchValue) {matches = true;}
               break;
 
             case BeginsWith:
@@ -1583,24 +1569,24 @@
                 matches = true;
                 break;
               }
-              if (addresses[i].indexOf(aSearchValue) == 0) matches = true;
+              if (addresses[i].indexOf(aSearchValue) == 0) {matches = true;}
               break;
 
-            case EndsWith:
+            case EndsWith: {
               let index = names[i].lastIndexOf(aSearchValue);
               if (index != -1 && index == names[i].length - aSearchValue.length) {
                 matches = true;
                 break;
               }
               index = addresses[i].lastIndexOf(aSearchValue);
-              if (index != -1 && index == addresses[i].length - aSearchValue.length) matches = true;
-              break;
+              if (index != -1 && index == addresses[i].length - aSearchValue.length) {matches = true;}
+            } break;
 
             default:
               Cu.reportError("invalid search operator in bcc custom search term");
           }
         }
-        if (aSearchOp == DoesntContain || aSearchOp == Isnt) return !matches;
+        if (aSearchOp == DoesntContain || aSearchOp == Isnt) {return !matches;}
         return matches;
       },
     };
@@ -1609,11 +1595,11 @@
     self.subjectRegex = {
       id: "filtaquilla@mesquilla.com#subjectRegex",
       name: util.getBundleString("fq.subjectRegex"),
-      getEnabled: function subjectRegEx_getEnabled(scope, op) {
+      getEnabled: function subjectRegEx_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function subjectRegEx_getAvailable(scope, op) {
+      getAvailable: function subjectRegEx_getAvailable(scope, _op) {
         return _isLocalSearch(scope) && SubjectRegexEnabled;
       },
       getAvailableOperators: function subjectRegEx_getAvailableOperators(scope) {
@@ -1624,6 +1610,7 @@
         } catch (ex) {
           console.logException(ex);
         } finally {
+          // eslint-disable-next-line no-unsafe-finally
           return [Matches, DoesntMatch];
         }
       },
@@ -1679,29 +1666,27 @@
         try {
           this.msgURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey);
           this.attachments = aMimeMessage.allAttachments;
-          let messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
-          {
-            if (this.attachments.length > 0) {
-              let msgURIs = [],
-                contentTypes = [],
-                urls = [],
-                displayNames = [];
 
-              for (let j = 0; j < this.attachments.length; j++) {
-                let attachment = this.attachments[j];
-                msgURIs.push(this.msgURI);
-                contentTypes.push(attachment.contentType);
-                urls.push(attachment.url);
-                displayNames.push(attachment.name);
-                if (this.regex.test(attachment.name)) {
-                  this.found = true;
-                  break;
-                }
+          if (this.attachments.length > 0) {
+            let msgURIs = [],
+              contentTypes = [],
+              urls = [],
+              displayNames = [];
+
+            for (let j = 0; j < this.attachments.length; j++) {
+              let attachment = this.attachments[j];
+              msgURIs.push(this.msgURI);
+              contentTypes.push(attachment.contentType);
+              urls.push(attachment.url);
+              displayNames.push(attachment.name);
+              if (this.regex.test(attachment.name)) {
+                this.found = true;
+                break;
               }
-              // messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length, contentTypes, urls, displayNames, msgURIs, null);
-            } else this.found = false;
-            this.processed = true;
-          }
+            }
+            // messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length, contentTypes, urls, displayNames, msgURIs, null);
+          } else {this.found = false;}
+          this.processed = true;
         } catch (ex) {
           Services.console.logStringMessage(
             "readAttachmentCallback_callback failed: " + ex.toString()
@@ -1716,10 +1701,10 @@
     self.attachmentRegex = {
       id: "filtaquilla@mesquilla.com#attachmentRegex",
       name: util.getBundleString("fq.attachmentRegex"),
-      getEnabled: function attachRegEx_getEnabled(scope, op) {
+      getEnabled: function attachRegEx_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
-      getAvailable: function attachRegEx_getAvailable(scope, op) {
+      getAvailable: function attachRegEx_getAvailable(scope, _op) {
         return _isLocalSearch(scope) && AttachmentRegexEnabled;
       },
       getAvailableOperators: function attachRegEx_getAvailableOperators(scope) {
@@ -1734,7 +1719,7 @@
         let searchValue,
           searchFlags,
           isMatched = false;
-        //
+        // eslint-disable-next-line no-unused-vars
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
 
         if (!aMsgHdr.folder.msgDatabase.HasAttachments(aMsgHdr.messageKey)) {
@@ -1763,10 +1748,11 @@
 						// we need to yield ...
 					}
 					*/
-          if (!callbackObject.processed)
-            alert(
+          if (!callbackObject.processed) {
+              alert(
               "sorry, we cannot read attachments without streaming the message asynchronously - the filter mechanims in Tb is still synchronous, so it won't allow me to do this."
             );
+          }
           isMatched = callbackObject.found;
           switch (aSearchOp) {
             case Matches:
@@ -1784,11 +1770,11 @@
     self.headerRegex = {
       id: "filtaquilla@mesquilla.com#headerRegex",
       name: util.getBundleString("fq.hdrRegex"),
-      getEnabled: function headerRegEx_getEnabled(scope, op) {
+      getEnabled: function headerRegEx_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
       needsBody: false,
-      getAvailable: function headerRegEx_getAvailable(scope, op) {
+      getAvailable: function headerRegEx_getAvailable(scope, _op) {
         return _isLocalSearch(scope) && HeaderRegexEnabled;
       },
       getAvailableOperators: function headerRegEx_getAvailableOperators(scope) {
@@ -1802,12 +1788,14 @@
         const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
           isDebug = prefs.getBoolPref("debug.regexHeader");
         let colonIndex = aSearchValue.indexOf(":");
-        if (colonIndex == -1)
+        if (colonIndex == -1) {
           // not found, default to does not match
           return aSearchOp != Matches;
+        }
         let headerName = aSearchValue.slice(0, colonIndex),
           regex = aSearchValue.slice(colonIndex + 1);
         let searchValue, searchFlags, options;
+        // eslint-disable-next-line no-unused-vars
         [searchValue, searchFlags, options] = _getRegEx(regex);
 
         // find the property with the correct case (in case it was misspelled):
@@ -1874,12 +1862,12 @@
     self.bodyRegex = {
       id: "filtaquilla@mesquilla.com#bodyRegex",
       name: util.getBundleString("fq.bodyRegex"),
-      getEnabled: function bodyRegEx_getEnabled(scope, op) {
+      getEnabled: function bodyRegEx_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
       needsBody: true,
-      getAvailable: function bodyRegEx_getAvailable(scope, op) {
-        if (scope == Ci.nsMsgSearchScope.newsFilter) return false;
+      getAvailable: function bodyRegEx_getAvailable(scope, _op) {
+        if (scope == Ci.nsMsgSearchScope.newsFilter) {return false;}
         return _isLocalSearch(scope) && BodyRegexEnabled;
       },
       getAvailableOperators: function bodyRegEx_getAvailableOperators(scope) {
@@ -1921,11 +1909,11 @@
     self.subjectBodyRegex = {
       id: "filtaquilla@mesquilla.com#subjectBodyRegex",
       name: util.getBundleString("fq.subjectBodyRegex"),
-      getEnabled: function subjectBodyRegex_getEnabled(scope, op) {
+      getEnabled: function subjectBodyRegex_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
       needsBody: true,
-      getAvailable: function subjectBodyRegex_getAvailable(scope, op) {
+      getAvailable: function subjectBodyRegex_getAvailable(scope, _op) {
         return _isLocalSearch(scope) && SubjectBodyRegexEnabled;
       },
       getAvailableOperators: function subjectBodyRegex_getAvailableOperators(scope) {
@@ -1937,19 +1925,18 @@
       match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
         var subject = aMsgHdr.mime2DecodedSubject,
           subResult = false;
-        let isMatched = false;
 
         /*** SEARCH INIT  **/
-        let searchValue, searchFlags, options, reg;
+        let searchValue, searchFlags, options;
         [searchValue, searchFlags, options] = _getRegEx(aSearchValue);
 
         subResult = RegExp(searchValue, searchFlags).test(subject); // find in subject
 
         const mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(
             Ci.nsIMimeConverter
-          ),
-          decodedMessageId = mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
-        var subject = aMsgHdr.mime2DecodedSubject;
+          );
+        // eslint-disable-next-line no-unused-vars
+        const _decodedMessageId = mimeConvert.decodeMimeHeader(aMsgHdr.messageId, null, false, true);
 
         // early exit (only when found, not when not found!)
         if (aSearchOp == Matches && subResult) {
@@ -1973,14 +1960,14 @@
     self.javascript = {
       id: "filtaquilla@mesquilla.com#javascript",
       name: util.getBundleString("fq.javascript"),
-      getEnabled: function javascript_getEnabled(scope, op) {
+      getEnabled: function javascript_getEnabled(_scope, _op) {
         return true;
       },
       needsBody: false,
-      getAvailable: function javascript_getAvailable(scope, op) {
+      getAvailable: function javascript_getAvailable(_scope, _op) {
         return JavascriptEnabled;
       },
-      getAvailableOperators: function javascript_getAvailableOperators(scope) {
+      getAvailableOperators: function javascript_getAvailableOperators(_scope) {
         return [Matches, DoesntMatch];
       },
       match: function javascript_match(message, aSearchValue, aSearchOp) {
@@ -2008,14 +1995,14 @@
     self.threadHeadTag = {
       id: "filtaquilla@mesquilla.com#threadheadtag",
       name: util.getBundleString("fq.threadHeadTag"),
-      getEnabled: function threadHeadTag_getEnabled(scope, op) {
+      getEnabled: function threadHeadTag_getEnabled(_scope, _op) {
         return true;
       },
       needsBody: false,
-      getAvailable: function threadHeadTag_getAvailable(scope, op) {
+      getAvailable: function threadHeadTag_getAvailable(_scope, _op) {
         return ThreadHeadTagEnabled;
       },
-      getAvailableOperators: function threadHeadTag_getAvailableOperators(scope) {
+      getAvailableOperators: function threadHeadTag_getAvailableOperators(_scope) {
         return [Is, Isnt, Contains, DoesntContain, IsEmpty, IsntEmpty];
       },
       match: function threadHeadTag_matches(message, aSearchValue, aSearchOp) {
@@ -2025,21 +2012,22 @@
           thread = message.folder.msgDatabase.getThreadContainingMsgHdr(message);
           rootHdr = thread.getChildHdrAt(0);
         } catch (e) {
+          void e;
           rootHdr = message;
         }
+
 
         let msgKeyArray = _getTagArray(rootHdr);
 
         // -- Now try to match the search term
 
         // special-case empty for performance reasons
-        if (msgKeyArray.length == 0)
+        if (msgKeyArray.length == 0) {
           return aSearchOp == DoesntContain || aSearchOp == Isnt || aSearchOp == IsEmpty;
-        else if (aSearchOp == IsEmpty) return false;
-        else if (aSearchOp == IsntEmpty) return true;
+        } else if (aSearchOp == IsEmpty) {return false;}
+        else if (aSearchOp == IsntEmpty) {return true;}
 
         // loop through all message keywords
-        let matches = false;
         for (let i = 0; i < msgKeyArray.length; i++) {
           let isValue = aSearchValue == msgKeyArray[i];
           switch (aSearchOp) {
@@ -2048,10 +2036,10 @@
             case Isnt:
               return !(isValue && msgKeyArray.length == 1);
             case Contains:
-              if (isValue) return true;
+              if (isValue) {return true;}
               break;
             case DoesntContain:
-              if (isValue) return false;
+              if (isValue) {return false;}
               break;
           }
         }
@@ -2064,21 +2052,21 @@
     self.threadAnyTag = {
       id: "filtaquilla@mesquilla.com#threadanytag",
       name: util.getBundleString("fq.threadAnyTag"),
-      getEnabled: function threadAnyTag_getEnabled(scope, op) {
+      getEnabled: function threadAnyTag_getEnabled(_scope, _op) {
         return true;
       },
       needsBody: false,
-      getAvailable: function threadAnyTag_getAvailable(scope, op) {
+      getAvailable: function threadAnyTag_getAvailable(_scope, _op) {
         return ThreadAnyTagEnabled;
       },
-      getAvailableOperators: function threadAnyTag_getAvailableOperators(scope) {
+      getAvailableOperators: function threadAnyTag_getAvailableOperators(_scope) {
         return [Contains, DoesntContain, IsntEmpty];
       },
       match: function threadAnyTag_matches(message, aSearchValue, aSearchOp) {
         let tagArray = tagService.getAllTags({}),
           tagKeys = {};
         for (let tagInfo of tagArray) {
-          if (tagInfo.tag) tagKeys[tagInfo.key] = true;
+          if (tagInfo.tag) {tagKeys[tagInfo.key] = true;}
         }
 
         let thread = message.folder.msgDatabase.getThreadContainingMsgHdr(message),
@@ -2091,12 +2079,14 @@
           // find this message in the thread, and use that as the center of the search
           let threadIndex = 0;
           for (; threadIndex < thread.numChildren; threadIndex++) {
-            if (myKey == thread.getChildKeyAt(threadIndex)) break;
+            if (myKey == thread.getChildKeyAt(threadIndex)) {break;}
           }
           threadStart = threadIndex - maxThreadScan / 2;
-          if (threadStart + threadCount > thread.numChildren)
+          if (threadStart + threadCount > thread.numChildren) {
             threadStart = thread.numChildren - threadCount;
-          if (threadStart < 0) threadStart = 0;
+          }
+            
+          if (threadStart < 0) {threadStart = 0;}
         }
 
         for (let index = 0; index < threadCount; index++) {
@@ -2112,29 +2102,29 @@
             label = hdr.label;
           if (label) {
             let labelKey = "$label" + label;
-            if (msgKeyArray.indexOf(labelKey) < 0) msgKeyArray.unshift(labelKey);
+            if (msgKeyArray.indexOf(labelKey) < 0) {msgKeyArray.unshift(labelKey);}
           }
 
           // Rebuild the keywords string with just the keys that are actual tags or
           // legacy labels and not other keywords like Junk and NonJunk.
           // Retain their order, though, with the label as oldest element.
           for (let i = msgKeyArray.length - 1; i >= 0; --i) {
-            if (!(msgKeyArray[i] in tagKeys)) msgKeyArray.splice(i, 1); // remove non-tag key
+            if (!(msgKeyArray[i] in tagKeys)) {msgKeyArray.splice(i, 1);} // remove non-tag key
           }
 
           // -- Now try to match the search term
 
           // special-case empty for performance reasons
-          if (msgKeyArray.length == 0) continue;
+          if (msgKeyArray.length == 0) {continue;}
 
           // there is at least one tag
-          if (aSearchOp == IsntEmpty) return true;
+          if (aSearchOp == IsntEmpty) {return true;}
 
           // loop through all message keywords
           for (let i = 0; i < msgKeyArray.length; i++) {
             if (aSearchValue == msgKeyArray[i]) {
-              if (aSearchOp == Contains) return true;
-              if (aSearchOp == DoesntContain) return false;
+              if (aSearchOp == Contains) {return true;}
+              if (aSearchOp == DoesntContain) {return false;}
             }
           }
         }
@@ -2157,15 +2147,15 @@
     self.playSound = {
       id: "tonequilla@mesquilla.com#playSound",
       name: tonequilla_name,
-      applyAction: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
         util.logDebug("ToneQuillaPlay.queueToPlay", aActionValue);
         ToneQuillaPlay.queueToPlay(aActionValue);
       },
-      isValidForType: function (type, scope) {
+      isValidForType: function (_type, _scope) {
         return tonequillaEnabled;
       },
 
-      validateActionValue: function (value, folder, type) {
+      validateActionValue: function (_value, _folder, _type) {
         return null;
       },
 
@@ -2182,157 +2172,224 @@
       maxThreadScan = prefs.getIntPref("maxthreadscan");
     } catch (e) {
       maxThreadScan = 20;
+      void e;
     }
 
     try {
       subjectAppendEnabled = prefs.getBoolPref("subjectAppend.enabled");
-    } catch (e) {}
+    } catch (e) {void e;}
 
     try {
       subjectSuffixEnabled = prefs.getBoolPref("subjectSuffix.enabled");
-    } catch (e) {}
+    } catch (e) {void e;}
 
     try {
       removeKeywordEnabled = prefs.getBoolPref("removeKeyword.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       removeFlaggedEnabled = prefs.getBoolPref("removeFlagged.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       markUnreadEnabled = prefs.getBoolPref("markUnread.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       markRepliedEnabled = prefs.getBoolPref("markReplied.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       noBiffEnabled = prefs.getBoolPref("noBiff.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       copyAsReadEnabled = prefs.getBoolPref("copyAsRead.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       launchFileEnabled = prefs.getBoolPref("launchFile.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       runFileEnabled = prefs.getBoolPref("runFile.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       runFileUnicode = prefs.getBoolPref("runFile.unicode");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       trainAsJunkEnabled = prefs.getBoolPref("trainAsJunk.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       trainAsGoodEnabled = prefs.getBoolPref("trainAsGood.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       printEnabled = prefs.getBoolPref("print.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       addSenderEnabled = prefs.getBoolPref("addSender.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       saveAttachmentEnabled = prefs.getBoolPref("saveAttachment.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       detachAttachmentsEnabled = prefs.getBoolPref("detachAttachments.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       javascriptActionEnabled = prefs.getBoolPref("javascriptAction.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       javascriptActionBodyEnabled = prefs.getBoolPref("javascriptActionBody.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       regexpCaseInsensitiveEnabled = prefs.getBoolPref("regexpCaseInsensitive.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       tonequillaEnabled = prefs.getBoolPref("tonequilla.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       saveMessageAsFileEnabled = prefs.getBoolPref("saveMessageAsFile.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       moveLaterEnabled = prefs.getBoolPref("moveLater.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       archiveMessageEnabled = prefs.getBoolPref("archiveMessage.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       fwdSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.fwd.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       rspSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.rsp.enabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     // 2. Enable conditions
     try {
       SubjectRegexEnabled = prefs.getBoolPref("SubjectRegexEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       HeaderRegexEnabled = prefs.getBoolPref("HeaderRegexEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       JavascriptEnabled = prefs.getBoolPref("JavascriptEnabled");
-    } catch (e) {}
+    } catch (e) {void e;}
 
     try {
       SearchBccEnabled = prefs.getBoolPref("SearchBccEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
     try {
       ThreadHeadTagEnabled = prefs.getBoolPref("ThreadHeadTagEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
     try {
       ThreadAnyTagEnabled = prefs.getBoolPref("ThreadAnyTagEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       FolderNameEnabled = prefs.getBoolPref("FolderNameEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       BodyRegexEnabled = prefs.getBoolPref("BodyRegexEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     try {
       SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
 
     fileNamesSpaceCharacter = prefs.getStringPref("fileNames.spaceCharacter");
   };
 
   // extension initialization
   self.onLoad = async function () {
-    if (self.initialized) return;
+    if (self.initialized) {return;}
 
     await self._init();
 
@@ -2415,7 +2472,7 @@
     this.recallCount = MOVE_LATER_LIMIT;
   }
 
-  MoveLaterNotify.prototype.notify = function notify(aTimer) {
+  MoveLaterNotify.prototype.notify = function notify(_aTimer) {
     // Check the moveLater values for the headers. If this is set by a routine
     //  with a reliable finish listener, then we will wait until that is done to
     //  move. For others, we move on the first callback after the delay.
@@ -2427,8 +2484,8 @@
       let msgHdr = this.messages[i];
       try {
         let localCount = msgHdr.getUint32Property("moveLaterCount");
-        if (localCount > moveLaterCount) moveLaterCount = localCount;
-      } catch (e) {}
+        if (localCount > moveLaterCount) {moveLaterCount = localCount;}
+      } catch (e) {void e;}
     }
     if (moveLaterCount <= 0 || this.recallCount <= 0) {
       // execute move
@@ -2442,7 +2499,7 @@
         allowUndo
       );
       moveLaterTimers[this.timerIndex] = null;
-      if (this.messages.clear) this.messages.clear(); // release all objects, just in case.
+      if (this.messages.clear) {this.messages.clear();} // release all objects, just in case.
     } else {
       // reschedule another check
       moveLaterTimers[this.timerIndex].initWithCallback(
@@ -2475,13 +2532,14 @@
     var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
       decodedSubject = mimeConvert.decodeMimeHeader(subject, null, false, true);
 
-    appendedSubject = direction ? utf8Append + decodedSubject : decodedSubject + utf8Append;
-    recodedSubject = mimeConvert.encodeMimePartIIStr_UTF8(appendedSubject, false, "UTF-8", 0, 72);
+    const appendedSubject = direction ? utf8Append + decodedSubject : decodedSubject + utf8Append;
+    const recodedSubject = mimeConvert.encodeMimePartIIStr_UTF8(appendedSubject, false, "UTF-8", 0, 72);
     return recodedSubject;
   }
 
   function _replaceParameters(hdr, parameter) {
     // replace ambersand-delimited fields in a parameter
+    // eslint-disable-next-line no-unused-vars
     function convertFromUnicode(aSrc) {
       // [issue 102] Variables @SUBJECT@ and others - decoding problems - WIP!!
       let unicodeConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(
@@ -2495,18 +2553,18 @@
       // let str = convertFromUnicode(hdr.mime2DecodedSubject);
       return parameter.replace(/@SUBJECT@/, hdr.mime2DecodedSubject);
     }
-    if (/@AUTHOR@/.test(parameter)) return parameter.replace(/@AUTHOR@/, hdr.mime2DecodedAuthor);
-    if (/@MESSAGEID@/.test(parameter)) return parameter.replace(/@MESSAGEID@/, hdr.messageId);
-    if (/@DATE@/.test(parameter)) return parameter.replace(/@DATE@/, Date(hdr.date / 1000));
+    if (/@AUTHOR@/.test(parameter)) {return parameter.replace(/@AUTHOR@/, hdr.mime2DecodedAuthor);}
+    if (/@MESSAGEID@/.test(parameter)) {return parameter.replace(/@MESSAGEID@/, hdr.messageId);}
+    if (/@DATE@/.test(parameter)) {return parameter.replace(/@DATE@/, Date(hdr.date / 1000));}
     if (/@RECIPIENTS@/.test(parameter))
-      return parameter.replace(/@RECIPIENTS@/, hdr.mime2DecodedRecipients);
-    if (/@CCLIST@/.test(parameter)) return parameter.replace(/@CCLIST@/, hdr.ccList);
+      {return parameter.replace(/@RECIPIENTS@/, hdr.mime2DecodedRecipients);}
+    if (/@CCLIST@/.test(parameter)) {return parameter.replace(/@CCLIST@/, hdr.ccList);}
     if (/@DATEINSECONDS@/.test(parameter))
-      return parameter.replace(/@DATEINSECONDS@/, hdr.dateInSeconds);
+      {return parameter.replace(/@DATEINSECONDS@/, hdr.dateInSeconds);}
     if (/@MESSAGEURI@/.test(parameter))
-      return parameter.replace(/@MESSAGEURI@/, hdr.folder.generateMessageURI(hdr.messageKey));
+      {return parameter.replace(/@MESSAGEURI@/, hdr.folder.generateMessageURI(hdr.messageKey));}
     if (/@FOLDERNAME@/.test(parameter))
-      return parameter.replace(/@FOLDERNAME@/, hdr.folder.prettyName);
+      {return parameter.replace(/@FOLDERNAME@/, hdr.folder.prettyName);}
     if (/@PROPERTY@.+@/.test(parameter)) {
       // This is a little different, the actual property (which is typically a
       // custom db header) is stored like @PROPERTY@X-SPAM@
@@ -2517,7 +2575,9 @@
         try {
           var value = hdr.getStringProperty(property.toLowerCase());
           return matches[1] + value + matches[3];
-        } catch (e) {}
+        } catch (e) {
+          void e;
+        }
       }
     }
     return parameter;
@@ -2530,7 +2590,7 @@
     let tagArray = tagService.getAllTags({});
     let tagKeys = {};
     for (let tagInfo of tagArray) {
-      if (tagInfo.tag) tagKeys[tagInfo.key] = true;
+      if (tagInfo.tag) {tagKeys[tagInfo.key] = true;}
     }
 
     // extract the tag keys from the msgHdr
@@ -2540,14 +2600,14 @@
     let label = aMsgHdr.label;
     if (label) {
       let labelKey = "$label" + label;
-      if (msgKeyArray.indexOf(labelKey) < 0) msgKeyArray.unshift(labelKey);
+      if (msgKeyArray.indexOf(labelKey) < 0) {msgKeyArray.unshift(labelKey);}
     }
 
     // Rebuild the keywords string with just the keys that are actual tags or
     // legacy labels and not other keywords like Junk and NonJunk.
     // Retain their order, though, with the label as oldest element.
     for (let i = msgKeyArray.length - 1; i >= 0; --i) {
-      if (!(msgKeyArray[i] in tagKeys)) msgKeyArray.splice(i, 1); // remove non-tag key
+      if (!(msgKeyArray[i] in tagKeys)) {msgKeyArray.splice(i, 1);} // remove non-tag key
     }
     return msgKeyArray;
   }
@@ -2555,19 +2615,19 @@
   var gJunkService;
   function _trainJunkFilter(aIsJunk, aMsgHdrs, aMsgWindow) {
     if (!gJunkService)
-      gJunkService = Cc["@mozilla.org/messenger/filter-plugin;1?name=bayesianfilter"].getService(
+      {gJunkService = Cc["@mozilla.org/messenger/filter-plugin;1?name=bayesianfilter"].getService(
         Ci.nsIJunkMailPlugin
-      );
+      );}
     for (var i = 0; i < aMsgHdrs.length; i++) {
-      hdr = aMsgHdrs[i];
+      const hdr = aMsgHdrs[i];
       // get the old classification
       let junkscore = hdr.getStringProperty("junkscore"),
         junkscoreorigin = hdr.getStringProperty("junkscoreorigin"),
         oldClassification = Ci.nsIJunkMailPlugin.UNCLASSIFIED;
       if (junkscoreorigin == "user") {
         // which is a proxy for "trained in bayes"
-        if (junkscore == "100") oldClassification = Ci.nsIJunkMailPlugin.JUNK;
-        else if (junkscore == "0") oldClassification = Ci.nsIJunkMailPlugin.GOOD;
+        if (junkscore == "100") {oldClassification = Ci.nsIJunkMailPlugin.JUNK;}
+        else if (junkscore == "0") {oldClassification = Ci.nsIJunkMailPlugin.GOOD;}
       }
       let msgURI = hdr.folder.generateMessageURI(hdr.messageKey) + "?fetchCompleteMessage=true",
         newClassification = aIsJunk ? Ci.nsIJunkMailPlugin.JUNK : Ci.nsIJunkMailPlugin.GOOD,
@@ -2579,7 +2639,7 @@
       // unfortunately will look strange in JunQuilla, so let's add another field that it
       // can use to tell the difference
       db.setStringPropertyByHdr(hdr, "junktrainorigin", "filter");
-      if (oldClassification != newClassification)
+      if (oldClassification != newClassification) {
         gJunkService.setMessageClassification(
           msgURI,
           oldClassification,
@@ -2587,17 +2647,18 @@
           aMsgWindow,
           null
         );
+      }
     }
 
     // For IMAP, we need to set the junk flag
     // We'll assume this is a single folder
-    hdr = aMsgHdrs[0];
+    const hdr = aMsgHdrs[0];
     var folder = hdr.folder;
     if (folder instanceof Ci.nsIMsgImapMailFolder) {
       // need to update IMAP custom flags
       if (aMsgHdrs.length) {
         let msgKeys = new Array();
-        for (let i = 0; i < aMsgHdrs.length; i++) msgKeys[i] = aMsgHdrs[i].messageKey;
+        for (let i = 0; i < aMsgHdrs.length; i++) {msgKeys[i] = aMsgHdrs[i].messageKey;}
         folder.storeCustomKeywords(
           null,
           aIsJunk ? "Junk" : "NonJunk",
@@ -2706,6 +2767,7 @@
 
     let str = aName; // .toLowerCase();
     // diacritics
+    // eslint-disable-next-line no-constant-condition
     if (true) {
       // 1. create list of blacklisted (replaced) characters
       addItems("Ä", "Ae");
@@ -2794,8 +2856,9 @@
 
     // special characters
     let name = str.trim().replace(/ /g, spaceChar); // used to be "-"
-    name = name.replace(/[@:\|\/\\\*\?]/g, "-");
-    name = name.replace(/[\$"<>,]/g, "").trim();
+    // eslint-disable-next-line no-useless-escape
+    name = name.replace(/[@:|/\\\*\?]/g, "-");
+    name = name.replace(/[$"<>,]/g, "").trim();
     let finalWhiteList = chars + whiteList; // add user white listed characters
     name = name
       .split("")
@@ -2807,7 +2870,9 @@
     if (!name) {
       // Our input had no valid characters - use a random name
       let cl = chars.length - 1;
-      for (let i = 0; i < 8; ++i) name += chars.charAt(Math.round(Math.random() * cl));
+      for (let i = 0; i < 8; ++i) {
+        name += chars.charAt(Math.round(Math.random() * cl));
+      }
     }
 
     if (name.length > maxLength) {
@@ -2831,12 +2896,12 @@
   function createUrlListener(resolve, copyListener) {
     // returns a nsIUrlListener
     return {
-      OnStartRunningUrl: function (aUrl) {
+      OnStartRunningUrl: function (_aUrl) {
         copyListener.onStartCopy();
       },
       OnStopRunningUrl: function (aUrl, status) {
         let messageUri;
-        if (aUrl instanceof Ci.nsIMsgMessageUrl) messageUri = aUrl.uri;
+        if (aUrl instanceof Ci.nsIMsgMessageUrl) {messageUri = aUrl.uri;}
         const msgHdr = messenger.msgHdrFromURI(messageUri);
         const moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
         if (moveLaterCount) {
@@ -2895,10 +2960,6 @@
       });
   }
 
-  function dl(text) {
-    dump(text + "\n");
-  }
-
   // actions that need the body can conflict with a move. These should
   //  set the MoveLaterCount to prevent problems, and then use a MoveLater
   //  function instead of a normal move.
@@ -2906,7 +2967,9 @@
     let moveLaterCount = 0;
     try {
       moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
-    } catch (e) {}
+    } catch (e) {
+      void e;
+    }
     moveLaterCount++;
     msgHdr.setUint32Property("moveLaterCount", moveLaterCount);
   }

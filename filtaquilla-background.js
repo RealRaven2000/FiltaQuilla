@@ -80,8 +80,8 @@
     for (let i = 0; i < Math.max(a.length, b.length); i++) {
       const numA = a[i] || 0;
       const numB = b[i] || 0;
-      if (numA > numB) return true;
-      if (numA < numB) return false;
+      if (numA > numB) {return true;}
+      if (numA < numB) {return false;}
     }
     return false; // equal
   }
@@ -153,7 +153,8 @@
               }' - ${msgKey.date.toLocaleDateString()} ${msgKey.date.toLocaleTimeString()} )`
             );
           }
-          let result = await messenger.runtime.sendMessage(
+          // eslint-disable-next-line no-unused-vars
+          let _result = await messenger.runtime.sendMessage(
             PrintingTools_Addon_Name,
             {
               command: "printMessage",
@@ -166,7 +167,8 @@
       case "forwardMessageST": // [issue 153] - Implement new filter action "Forward with SmartTemplate"
         {
           let isSTlog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.SmartTemplates");
-          let result = await messenger.runtime.sendMessage(SmartTemplates_Name, {
+          // eslint-disable-next-line no-unused-vars
+          let _result = await messenger.runtime.sendMessage(SmartTemplates_Name, {
             command: "forwardMessageWithTemplate",
             messageHeader: data.msgKey,
             templateURL: data.fileURL,
@@ -179,7 +181,8 @@
       case "replyMessageST": // [issue 153]
         {
           let isSTlog = await messenger.LegacyPrefs.getPref(Legacy_Root + "debug.SmartTemplates");
-          let result = await messenger.runtime.sendMessage(SmartTemplates_Name, {
+          // eslint-disable-next-line no-unused-vars
+          let _result = await messenger.runtime.sendMessage(SmartTemplates_Name, {
             command: "replyMessageWithTemplate",
             messageHeader: data.msgKey,
             templateURL: data.fileURL,
@@ -194,7 +197,6 @@
           let info = await messenger.management.getSelf();
           return info;
         }
-        break;
       case "openLinkInTab":
         // https://webextension-api.thunderbird.net/en/stable/tabs.html#query-queryinfo
         {
@@ -208,7 +210,7 @@
           browser.tabs.create({ active: true, url: data.URL });
         }
         break;
-      case "saveAttachments":
+      case "saveAttachments": {
         const attachments = await browser.messages.listAttachments(data.messageHeader.id);
         const results = [];
         const isDebugAttachments = await messenger.LegacyPrefs.getPref(
@@ -234,7 +236,7 @@
             for (let rA of recursiveAttachments) {
               rA.myMessageId = at.message.id; // stash message id of eml attachment 
             }
-            if (!recursiveAttachments?.length) continue;
+            if (!recursiveAttachments?.length) {continue;}
             if (isPrerelease) {
               await addHeaders(recursiveAttachments, at.message.id);
             }
@@ -246,7 +248,7 @@
         }        
 
         for (const at of attachmentsToSave) {
-          if (isDebugAttachments) console.log(at);
+          if (isDebugAttachments) {console.log(at);}
           // myMessageId is used to identify an attached eml that contains the found attachment
           let file = await browser.messages.getAttachmentFile(at?.myMessageId || data.messageHeader.id, at.partName);
           let savedItem = {
@@ -256,7 +258,9 @@
             modified: file.lastModified,
             headers: at.headers,
           };
-          if (isDebugAttachments) console.log(`Save Item: ${file.name}`, {savedItem});
+          if (isDebugAttachments) {
+            console.log(`Save Item: ${file.name}`, { savedItem });
+          }
           // experimental api, async!
           const altered = savedItem.headers["x-mozilla-altered"];
           const detachedInfo =
@@ -275,42 +279,41 @@
           results.push(savedItem);
         }
         return results;
-      case "scriptEditor":
-        {
-          let editorWindow;
-          // First, set up the tab update listener to catch the tab creation or update
-          browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-            if (tab.windowId === editorWindow.id && changeInfo.status === "complete") {
-              // Send the initial script content to the popup's tab once it's fully loaded
-              browser.tabs.sendMessage(tabId, {
-                action: "initActionScript",
-                script: data.script,
-              });
-            }
-          });
+      }
+      case "scriptEditor": {
+        let editorWindow;
+        // First, set up the tab update listener to catch the tab creation or update
+        browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+          if (tab.windowId === editorWindow.id && changeInfo.status === "complete") {
+            // Send the initial script content to the popup's tab once it's fully loaded
+            browser.tabs.sendMessage(tabId, {
+              action: "initActionScript",
+              script: data.script,
+            });
+          }
+        });
 
-          // Open the editor in a popup window
-          const url = browser.runtime.getURL("content/jsEditor.html");
-          let screenH = window.screen.height,
-            windowHeight = screenH / 2 > 600 ? 600 : screenH / 2;
-          editorWindow = await browser.windows.create({
-            url,
-            type: "popup",
-            width: 600,
-            height: windowHeight, // Or use your desired height
-            allowScriptsToClose: true, // Optional, allows script to close the window from within
-          });
+        // Open the editor in a popup window
+        const url = browser.runtime.getURL("content/jsEditor.html");
+        let screenH = window.screen.height,
+          windowHeight = screenH / 2 > 600 ? 600 : screenH / 2;
+        editorWindow = await browser.windows.create({
+          url,
+          type: "popup",
+          width: 600,
+          height: windowHeight, // Or use your desired height
+          allowScriptsToClose: true, // Optional, allows script to close the window from within
+        });
 
-          // After the window is created, bring it into focus (using `browser.windows.update`)
-          await browser.windows.update(editorWindow.id, { focused: true });
-        }
-        break;
+        // After the window is created, bring it into focus (using `browser.windows.update`)
+        await browser.windows.update(editorWindow.id, { focused: true });
+      } break;
     } // switch
   });
 
   // modern message handler (from content script)
   // avoid notifytools in the future!
-  messenger.runtime.onMessage.addListener(async (data, sender, sendResponse) => {
+  messenger.runtime.onMessage.addListener(async (data, _sender, _sendResponse) => {
     switch (data.command) {
       case "updateActionScript":
         // => send this to fq_FilterEditor.js
