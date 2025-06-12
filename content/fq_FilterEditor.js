@@ -569,20 +569,27 @@
         return;
       }
       this.textContent = "";
-      this.appendChild(MozXULElement.parseXULToFragment(`
+      this.appendChild(
+        MozXULElement.parseXULToFragment(`
         <hbox flex="1" class="flexelementcontainer">
           <html:input class="ruleactionitem flexinput" onchange="this.parentNode.value = this.value;"></html:input>
           <toolbarbutton image="chrome://messenger/skin/icons/folder.svg" class="focusbutton" tooltiptext="dummy" oncommand="this.parentNode.parentNode.getURL()"></toolbarbutton>
+          <toolbarbutton class="filtaquilla_play" tooltiptext="dummy"  oncommand="this.parentNode.parentNode.play()"></toolbarbutton>
         </hbox>
-      `));
+      `)
+      );
 
       this.hbox = this.getElementsByTagName("hbox")[0]; // document.getAnonymousNodes(this)[0];
       this.textbox =  this.hbox.firstChild;             // document.getAnonymousNodes(this)[0].firstChild;
 
-      let btn = this.getElementsByTagName("toolbarbutton")[0],
+      const btn = this.getElementsByTagName("toolbarbutton")[0],
           ttext = util.getBundleString('filtaquilla.tone.select', "Select a Sound File…");
       btn.setAttribute('tooltiptext', ttext);
       this.launchtitle = ttext; // util.getBundleString('filtaquilla.runProgram.title', "Select a Program to run");
+
+      const playBtn = this.getElementsByTagName("toolbarbutton")[1],
+        ptext = "Play sound";
+      playBtn.setAttribute("tooltiptext", ptext);
 
       updateParentNode(this.closest(".ruleaction"));
       this.textbox.setAttribute('value', this.hbox.value || "");

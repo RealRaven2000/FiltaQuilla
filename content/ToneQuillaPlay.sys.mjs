@@ -92,14 +92,15 @@ export const ToneQuillaPlay = {
   //function to initialize variables
   init: async function () {
     // new utility function to unpack a file from the xpi
-    function copyDataURLToFile(aURL, file, callback) {
+    async function copyDataURLToFile(aURL, file) {
       let step = 0;
       try {
         let uri = Services.io.newURI(aURL),
           newChannelFun = Services.io.newChannelFromURI.bind(Services.io);
         let securityFlags =
-          Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_INHERITS || // Tb78
-          Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_INHERITS_SEC_CONTEXT; // Tb91 + SEC_ALLOW_CHROME ?
+          Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_INHERITS ||
+          Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_INHERITS_SEC_CONTEXT;
+
         step = 1;
         let channel = newChannelFun(
           uri,
@@ -111,20 +112,37 @@ export const ToneQuillaPlay = {
         );
 
         step = 2;
-        NetUtil.asyncFetch(channel, function (istream) {
-          var ostream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(
-            Ci.nsIFileOutputStream
-          );
-          ostream.init(file, -1, -1, Ci.nsIFileOutputStream.DEFER_OPEN);
-          NetUtil.asyncCopy(istream, ostream, function (result) {
-            callback && callback(file, result);
+        const istream = await new Promise((resolve, reject) => {
+          NetUtil.asyncFetch(channel, (inputStream, status) => {
+            if (Components.isSuccessCode(status)) {
+              resolve(inputStream);
+            } else {
+              reject(Components.Exception("Failed to fetch channel", status));
+            }
+          });
+        });
+
+        let ostream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(
+          Ci.nsIFileOutputStream
+        );
+        ostream.init(file, -1, -1, Ci.nsIFileOutputStream.DEFER_OPEN);
+
+        await new Promise((resolve, reject) => {
+          NetUtil.asyncCopy(istream, ostream, (result) => {
+            if (Components.isSuccessCode(result)) {
+              resolve();
+            } else {
+              reject(Components.Exception("Failed to copy stream", result));
+            }
           });
         });
       } catch (ex) {
-        let msg = "ToneQuillaPlay_init failed at step " + step;
+        let msg = "ToneQuillaPlay copyDataURLToFile() failed at step " + step + ": " + ex.message;
         ToneQuillaPlay.logDebug(msg);
+        throw ex; // or return false if you prefer to handle error silently
       }
     }
+    
 
     function makePath() {
       // let path = new Array("extensions", "filtaquilla"); // was: tonequilla
@@ -134,6 +152,71 @@ export const ToneQuillaPlay = {
       return path;
     }
 
+    async function ensureDirectoryExists(dir, stopAtDir) {
+      const parts = dir.split(/[\\/]/);
+      const stopAtNormalized = stopAtDir.replace(/[\\/]+$/, "").toLowerCase();
+
+      // Build the list of directories from root to target
+      let buildPath = parts[0];
+      const fullPaths = [];
+
+      for (let i = 1; i < parts.length; i++) {
+        buildPath = PathUtils.join(buildPath, parts[i]);
+        fullPaths.push(buildPath);
+      }
+
+      // Work backwards to find the first existing parent
+      let startIndex = fullPaths.length - 1;
+      for (; startIndex >= 0; startIndex--) {
+        try {
+          const stat = await IOUtils.stat(fullPaths[startIndex]);
+          if (stat.type === "directory") break;  // found the first existing parent
+        } catch (ex) {
+          console.error("Error in IOUtils.stat - throwing again:", ex);
+          if (ex.name !== "NotFoundError") throw ex;
+        }
+      }
+
+      // Now create missing folders from the first non-existing after stopAtDir
+      for (let i = startIndex + 1; i < fullPaths.length; i++) {
+        const thisDir = fullPaths[i];
+        if (thisDir.toLowerCase().startsWith(stopAtNormalized)) {
+          await IOUtils.makeDirectory(thisDir);
+        } else {
+          // Prevent going outside profileDir
+          console.warn(`Stopped creating at ${thisDir}, beyond allowed root.`);
+          break;
+        }
+      }
+
+      return true;
+    }    
+    
+    const findFirstExistingParent = async (path) => {
+      while (true) {
+        try {
+          const stat = await IOUtils.stat(path);
+          if (stat.isDir) {
+            return path; // Found the first existing parent directory
+          } else {
+            // It's a file, not a directory — go up one level
+            path = path.replace(/[/\\][^/\\]+$/, "");
+          }
+        } catch (ex) {
+          if (ex.name === "NotFoundError") {
+            // Remove the last segment of the path and try again
+            path = path.replace(/[/\\][^/\\]+$/, "");
+            if (!path || /^[a-zA-Z]:\\?$/.test(path)) {
+              // Reached root (e.g., C:\)
+              return null;
+            }
+          } else {
+            throw ex;
+          }
+        }
+      }
+    };
+
     async function getLocalFile(fileName) {
       // get the "menuOnTop.json" file in the profile/extensions directory
       const profileDir = PathUtils.profileDir;
@@ -142,11 +225,23 @@ export const ToneQuillaPlay = {
       // return FileUtils.getFile("ProfD", path); // implements nsIFile
       // [bug 920187] = getFile was deprecated. Use IOUtils / PathUtils
       let path = PathUtils.join(profileDir, "extensions", "filtaquilla", fileName);
-      const stat = await IOUtils.stat(path); // returns FileInfo
-      return {
-        path,
-        fileInfo: stat,
-      };
+      try {
+        const stat = await IOUtils.stat(path); // returns FileInfo
+        return {
+          path,
+          fileInfo: stat,
+        };
+      } catch (ex) {
+        if (ex.name === "NotFoundError") {
+          // File doesn't exist, but return the path anyway
+          return {
+            path,
+            fileInfo: null, // or undefined, depending on your logic
+          };
+        }        
+        console.warn(`ToneQuillaPlay file not found: ${path}`, ex);
+        return null;
+      }
     }
 
 
@@ -167,7 +262,12 @@ export const ToneQuillaPlay = {
 
       let dir = makePath();
       if (dir) {
-        that.soundsDirectory = dir;
+        let isDirectory = await ensureDirectoryExists(dir, PathUtils.profileDir);
+        if (!isDirectory) {
+          that.soundsDirectory = await findFirstExistingParent(dir);
+        } else {
+          that.soundsDirectory = dir;
+        }
         let fileList = [
           "applause.ogg",
           "duogourd.ogg",
@@ -187,20 +287,24 @@ export const ToneQuillaPlay = {
           "scissors-423.ogg",
         ];
 
-        for (let i = 0; i < fileList.length; i++) {
-          //Services.dirsvc.get("TmpD", Ci.nsIFile);
-          // file.append("applause.wav");
+        for (const name of fileList) {
           try {
-            // generate path from name list
-            let file = await getLocalFile(fileList[i]); // rejects with DOMException?
-            if (file && !file.fileInfo) {
-              ToneQuillaPlay.logDebug("Try to copy " + name + " to " + file.path + "...");
-              copyDataURLToFile("chrome://filtaquilla/content/sounds/" + name, file); // was  tonequilla/content/sounds/
+            const file = await getLocalFile(name);
+            if (!file) {
+              throw new Error(`Couldn't resolve local file path for: ${name}`);
+            }
+
+            if (!file.fileInfo) {
+              ToneQuillaPlay.logDebug(`Copying ${name} to ${file.path}...`);
+
+              let localFile = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
+              localFile.initWithPath(file.path);              
+              await copyDataURLToFile("chrome://filtaquilla/content/sounds/" + name, localFile);
             } else {
-              ToneQuillaPlay.logDebug("File exists: " + file.path);
+              ToneQuillaPlay.logDebug(`File already exists: ${file.path}`);
             }
           } catch (ex) {
-            re(ex);
+            re(`Error copying ${name}: ${ex.message ?? ex}`);
           }
         }
       }
@@ -251,8 +355,15 @@ export const ToneQuillaPlay = {
         mimeType = that._nsIMIMEService.getTypeFromExtension(extension);
       } catch (e) {} // ignore errors, since that probably means not defined
     }
-    let uriSpec = aSpec.startsWith("file:") ? aSpec : "file:///" + aSpec,
-      nsIFileURL = Services.io.newURI(uriSpec).QueryInterface(Ci.nsIFileURL);
+    let uriSpec = aSpec.startsWith("file:")
+      ? aSpec
+      : (() => {
+          let file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
+          file.initWithPath(aSpec);
+          return Services.io.newFileURI(file).spec;
+        })();
+
+    const nsIFileURL = Services.io.newURI(uriSpec).QueryInterface(Ci.nsIFileURL);
     // that._nsIIOService.newURI(uriSpec, null, null);
     //nsIFileURL = nsIFileURL.QueryInterface(Ci.nsIFileURL);
 
