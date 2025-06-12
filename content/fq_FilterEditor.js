@@ -19,6 +19,12 @@
  * License.
  */
 
+ /* 
+   globals
+     gFilter, 
+     MozXULElement
+*/
+
 {
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
   var { ToneQuillaPlay } = ChromeUtils.importESModule(
@@ -99,6 +105,7 @@
   function patchRuleactiontargetWrapper() {
     let wrapper = customElements.get("ruleactiontarget-wrapper");
     if (wrapper) {
+      // eslint-disable-next-line no-prototype-builtins
       let alreadyPatched = wrapper.prototype.hasOwnProperty("_patchedByFiltaQuillaExtension") ?
                            wrapper.prototype._patchedByFiltaQuillaExtension :
                            false;
@@ -139,10 +146,11 @@
    * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
   function defineIfNotPresent(element, elementClass) {
-    if (!customElements.get(element))
+    if (!customElements.get(element)) {
       customElements.define(element, elementClass);
-    else
+    } else {
       console.log ("custom Element is already defined: " + element);
+    }
   }
 
       
@@ -187,8 +195,9 @@
 
       updateParentNode(this.closest(".ruleaction"));
 
-      if (typeof(this.hbox.value) != 'undefined')
+      if (typeof(this.hbox.value) != 'undefined') {
         this.textbox.setAttribute('value', this.hbox.value);
+      }
     }
 
     getURL() {
@@ -201,7 +210,9 @@
         file.initWithPath(this.textbox.value);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (e) {}
+      } catch (_e) {
+        void _e; 
+      }
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -260,9 +271,9 @@
 
       updateParentNode(this.closest(".ruleaction"));
 
-      if (typeof(this.hbox.value) != 'undefined')
+      if (typeof(this.hbox.value) != 'undefined') {
         this.textbox.setAttribute('value', this.hbox.value);
-
+      }
     }
 
     getURL() {
@@ -275,7 +286,9 @@
         file.initWithPath(this.textbox.value);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (e) {}
+      } catch (_e) {
+        void _e; 
+      }
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -288,9 +301,10 @@
         }
       };
 
-      if (fp.open)
+      if (fp.open) {
         fp.open(fpCallback);
-      else { // old code
+      } else { 
+        // old code
         fpCallback(fp.show());
       }
     }
@@ -338,7 +352,7 @@
         file.initWithPath(filePath);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (e) {}
+      } catch (e) { void e; }
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -352,9 +366,9 @@
         }
       };
 
-      if (fp.open)
+      if (fp.open) {
         fp.open(fpCallback);
-      else { // old code
+      } else { // old code
         fpCallback(fp.show());
       }
 
@@ -407,15 +421,17 @@
       updateParentNode(this.closest(".ruleaction"));
       let value = typeof(this.hbox.value) != 'undefined' ? this.hbox.value : "";
       // set the default to the personal address book
-      if (!value || !value.length)
-        value = "moz-abmdbdirectory://abook.mab";    
+      if (!value || !value.length) {
+        value = "moz-abmdbdirectory://abook.mab";
+      }
       
       // scan all menupopup items to find the uri for the selection
       let valueElements = menupopup.getElementsByAttribute('value', value);
-      if (valueElements && valueElements.length)
+      if (valueElements && valueElements.length) {
         menulist.selectedItem = valueElements[0];
-      else
+      } else {
         menulist.selectedIndex = 0;
+      }
       this.value = menulist.selectedItem.getAttribute("value");
 
     }
@@ -429,13 +445,15 @@
           newMenuItem.setAttribute('label', displayLabel);
           newMenuItem.setAttribute('value', dir.URI);
           newMenuItem.classList.add('menuitem-iconic');
-          if (dir.isMailList)
+          if (dir.isMailList) {
             newMenuItem.classList.add('mailing-list');
+          }
           aMenupopup.appendChild(newMenuItem);
           // recursive add of child mailing lists
           let childNodes = getAddressBooklists(dir.childNodes);
-          if (childNodes.length)
+          if (childNodes.length) {
             this.addDirectories(childNodes, aMenupopup);
+          }
         }
       }
     }
@@ -465,10 +483,11 @@
                        util.getBundleString('filtaquilla.selectFolder.btn',"Pick Folder…"));
 
       updateParentNode(this.closest(".ruleaction"));
-      if (typeof(this.hbox.value) != 'undefined')
+      if (typeof(this.hbox.value) != 'undefined') {
         this.textbox.setAttribute('value', this.hbox.value);
-      else
+       } else {
         this.textbox.setAttribute('value', '');
+       }
 
     }
 
@@ -484,7 +503,7 @@
         file.initWithPath(filePath);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (e) {}
+      } catch (e) { void e;}
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -498,9 +517,9 @@
         }
       };
 
-      if (fp.open)
-        fp.open(fpCallback);
-      else { // old code
+      if (fp.open) { fp.open(fpCallback); }
+      else { 
+        // old code
         fpCallback(fp.show());
       }
 
@@ -544,7 +563,7 @@
         console.log(data);
         window.removeEventListener("updateFilterScript", updateScript);
         const script = data?.detail.script;
-        if (script == null || typeof script == "undefined") return;
+        if (script == null || typeof script == "undefined") {return;}
         // change textbox to the new script contents
         textbox.value = script;
         textbox.parentNode.setAttribute("value", script);
@@ -625,7 +644,7 @@
           fp.displayDirectory = file.parent;
           fp.defaultString = file.leafName;
         } 
-        catch (e) {;}
+        catch (e) { void e;}
         fp.open(fpCallback);
       } else  // if (!this.hBox.value)
       // if there is an empty box initialize and use default directory.
@@ -661,8 +680,8 @@
 
     
   function patchFiltaQuillaBodyRegex(es) {
-    if (es.firstChild && es.firstChild.classList.contains("fq-regexbody")) return true;
-    if (es.firstChild) es.removeChild(es.firstChild);
+    if (es.firstChild && es.firstChild.classList.contains("fq-regexbody")) {return true;}
+    if (es.firstChild) {es.removeChild(es.firstChild);}
 
     const acceptEvent = (e)=> {
       e.preventDefault();
@@ -825,7 +844,7 @@
         document.getElementById("fq_build_regex").addEventListener("click", (event) => {
           openRegexHelpPage(event.target);
         });
-        document.getElementById("fq_help_regex").addEventListener("click", (event) => {
+        document.getElementById("fq_help_regex").addEventListener("click", (_event) => {
           FiltaQuilla.Util.openHelpTab("regex_link");
         });
 
@@ -912,8 +931,8 @@
   function patchFiltaQuillaJavaScriptCondition(es) {
     // bindings.xml#javascript: inject a JS editor. Script returns true or false
     // add a class fq-js to the container element!
-    if (es.firstChild && es.firstChild.classList.contains("fq-javascript")) return true;
-    if (es.firstChild) es.removeChild(es.firstChild);
+    if (es.firstChild && es.firstChild.classList.contains("fq-javascript")) {return true;}
+    if (es.firstChild) {es.removeChild(es.firstChild);}
     
     
     try {
@@ -932,7 +951,7 @@
           console.log(data);
           window.removeEventListener("updateFilterScript", updateScript);
           const script = data?.detail.script;
-          if (script == null || typeof script == "undefined") return;
+          if (script == null || typeof script == "undefined") {return;}
           // change textbox to the new script contents
           textbox.value = script;
           textbox.parentNode.setAttribute("value", script);
@@ -976,8 +995,8 @@
   }
    
   function patchFiltaQuillaTextbox(es) {
-    if (es.firstChild && es.firstChild.classList.contains("fq-textbox")) return true;
-    if (es.firstChild) es.removeChild(es.firstChild);
+    if (es.firstChild && es.firstChild.classList.contains("fq-textbox")) {return true;}
+    if (es.firstChild) {es.removeChild(es.firstChild);}
     // patch!
     try {
       let textbox = window.MozXULElement.parseXULToFragment(
@@ -1014,8 +1033,8 @@
     
     util.logDebug("patchFiltaQuillaTagSelector()");
     
-    if (es.firstChild && es.firstChild.classList.contains("fq-tag")) return true;
-    if (es.firstChild) es.removeChild(es.firstChild);
+    if (es.firstChild && es.firstChild.classList.contains("fq-tag")) {return true;}
+    if (es.firstChild) {es.removeChild(es.firstChild);}
     try {
       let wrapper = es.closest("search-value"),
           menulistFragment = window.MozXULElement.parseXULToFragment(`
@@ -1045,8 +1064,9 @@
         newMenuItem.setAttribute('label', taginfo.tag);
         newMenuItem.setAttribute('value', taginfo.key);
         menuPopup.appendChild(newMenuItem);
-        if (taginfo.key == value)
+        if (taginfo.key == value) {
           selectedIndex = i;
+        }
       }
 
       menulist.selectedIndex = selectedIndex;
@@ -1060,11 +1080,14 @@
         if (elements.length > 0) {
           let element = elements[0];
           // hide the value if not relevant
-          if (aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
-            aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty)
-            element.setAttribute('hidden', 'true');
-          else
-            element.removeAttribute('hidden');
+          if (
+            aValue == Components.interfaces.nsMsgSearchOp.IsEmpty ||
+            aValue == Components.interfaces.nsMsgSearchOp.IsntEmpty
+          ) {
+            element.setAttribute("hidden", "true");
+          } else {
+            element.removeAttribute("hidden");
+          }
         }
         return this.oldOpParentValueSetter(aValue);
       });
@@ -1083,30 +1106,30 @@
   }
   
   
-  function callbackFiltaquillaSearchCondition(mutationList, observer) {
+  function callbackFiltaquillaSearchCondition(mutationList, _observer) {
     mutationList.forEach( (mutation) => {
       switch(mutation.type) {
-        case 'childList':
+        case 'childList': {
           /* One or more children have been added to and/or removed
              from the tree.
              (See mutation.addedNodes and mutation.removedNodes.) */
           // iterate nodelist of added nodes
           let nList = mutation.addedNodes;
           nList.forEach( (el) => {
-            if (!el.querySelectorAll) return; // leave the anonymous function, this continues with the next forEach
+            if (!el.querySelectorAll) {return;} // leave the anonymous function, this continues with the next forEach
             let hbox = el.querySelectorAll("hbox.search-value-custom");
             hbox.forEach ( (es) => {
               let attType = es.getAttribute('searchAttribute'),
                   isPatched = false;
-              if (!attType.startsWith("filtaquilla@")) return;
+              if (!attType.startsWith("filtaquilla@")) {return;}
               
               util.logDebug("Mutation observer (childList), check for patching: " + es);
               
               switch (attType) {
+                // case "filtaquilla@mesquilla.com#bodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#subjectRegex": // fall-through
                 case "filtaquilla@mesquilla.com#attachmentRegex": // fall-through
                 case "filtaquilla@mesquilla.com#headerRegex": // fall-through
-                // case "filtaquilla@mesquilla.com#bodyRegex": // fall-through
                 case "filtaquilla@mesquilla.com#searchBcc": // fall-through
                 case "filtaquilla@mesquilla.com#folderName":
                   isPatched = patchFiltaQuillaTextbox(es);
@@ -1131,66 +1154,65 @@
               
             });
           });
-          break;
-        case "attributes":
-          {
-            let es = mutation.target;
-            if (es.classList.contains("search-value-custom")) {
-              let attType = es.getAttribute('searchAttribute'),
-                  isPatched = false;
-              util.logDebug("attribute changed: " + attType);
-              if (!attType.startsWith("filtaquilla@")) return;
-              
-              
-              util.logDebug("Mutation observer (attribute), check for patching: " + es);
-              // console.log(es);
-              
-              switch (attType) {
-                case "filtaquilla@mesquilla.com#subjectRegex": // fall-through
-                case "filtaquilla@mesquilla.com#attachmentRegex": // fall-through
-                case "filtaquilla@mesquilla.com#headerRegex": // fall-through
-                // case "filtaquilla@mesquilla.com#bodyRegex" :       // fall-through
-                case "filtaquilla@mesquilla.com#searchBcc": // fall-through
-                case "filtaquilla@mesquilla.com#folderName":
-                  if (es.firstChild) {
-                    if (es.firstChild.classList.contains("fq-textbox")) return;
-                    es.removeChild(es.firstChild);
-                  }
-                  isPatched = patchFiltaQuillaTextbox(es);
-                  break;
-                case "filtaquilla@mesquilla.com#threadheadtag": // fall-through
-                case "filtaquilla@mesquilla.com#threadanytag":
-                  if (es.firstChild) {
-                    if (es.firstChild.classList.contains("fq-tag")) return;
-                    es.removeChild(es.firstChild);
-                  }
-                  isPatched = patchFiltaQuillaTagSelector(es);
-                  break;
-                case "filtaquilla@mesquilla.com#javascript":
-                  if (es.firstChild) {
-                    if (es.firstChild.classList.contains("fq-javascript")) return;
-                    es.removeChild(es.firstChild);
-                  }
-                  isPatched = patchFiltaQuillaJavaScriptCondition(es);
-                  break;
-                case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
-                case "filtaquilla@mesquilla.com#bodyRegex":
-                  if (es.firstChild) {
-                    if (es.firstChild.classList.contains("fq-regexbody")) return;
-                    es.removeChild(es.firstChild);
-                  }
-                  isPatched = patchFiltaQuillaBodyRegex(es);
-                  break;
-                default:
-                // irrelevant for FiltaQuilla
-              }
-              if (isPatched) {
-                console.log("mutation observer patched: "  + es);
-                // console.log(es);
-              }               
+        } break;
+        case "attributes":  {
+          let es = mutation.target;
+          if (es.classList.contains("search-value-custom")) {
+            let attType = es.getAttribute('searchAttribute'),
+                isPatched = false;
+            util.logDebug("attribute changed: " + attType);
+            if (!attType.startsWith("filtaquilla@")) {return;}
+            
+            
+            util.logDebug("Mutation observer (attribute), check for patching: " + es);
+            // console.log(es);
+            
+            switch (attType) {
+              case "filtaquilla@mesquilla.com#subjectRegex": // fall-through
+              case "filtaquilla@mesquilla.com#attachmentRegex": // fall-through
+              case "filtaquilla@mesquilla.com#headerRegex": // fall-through
+              // case "filtaquilla@mesquilla.com#bodyRegex" :       // fall-through
+              // eslint-disable-next-line no-fallthrough
+              case "filtaquilla@mesquilla.com#searchBcc": // fall-through
+              case "filtaquilla@mesquilla.com#folderName":
+                if (es.firstChild) {
+                  if (es.firstChild.classList.contains("fq-textbox")) {return;}
+                  es.removeChild(es.firstChild);
+                }
+                isPatched = patchFiltaQuillaTextbox(es);
+                break;
+              case "filtaquilla@mesquilla.com#threadheadtag": // fall-through
+              case "filtaquilla@mesquilla.com#threadanytag":
+                if (es.firstChild) {
+                  if (es.firstChild.classList.contains("fq-tag")) {return;}
+                  es.removeChild(es.firstChild);
+                }
+                isPatched = patchFiltaQuillaTagSelector(es);
+                break;
+              case "filtaquilla@mesquilla.com#javascript":
+                if (es.firstChild) {
+                  if (es.firstChild.classList.contains("fq-javascript")) {return;}
+                  es.removeChild(es.firstChild);
+                }
+                isPatched = patchFiltaQuillaJavaScriptCondition(es);
+                break;
+              case "filtaquilla@mesquilla.com#subjectBodyRegex": // fall-through
+              case "filtaquilla@mesquilla.com#bodyRegex":
+                if (es.firstChild) {
+                  if (es.firstChild.classList.contains("fq-regexbody")) {return;}
+                  es.removeChild(es.firstChild);
+                }
+                isPatched = patchFiltaQuillaBodyRegex(es);
+                break;
+              default:
+              // irrelevant for FiltaQuilla
             }
+            if (isPatched) {
+              console.log("mutation observer patched: "  + es);
+              // console.log(es);
+            }               
           }
-          break;          
+        } break;          
       }
     });
   }
@@ -1209,7 +1231,9 @@
   let termList = window.document.querySelector('#searchTermList');
   fq_observer.observe(termList, fq_observerOptions);
   
-  function selectCustomCondition(event) {
+  
+  // eslint-disable-next-line no-unused-vars
+  function _selectCustomCondition(event) {
     let target = event.target,
         attType = event.originalTarget.getAttribute('value'),
         p = target.parentElement; // find the richlistitem
@@ -1233,7 +1257,7 @@
           if (["filtaquilla@mesquilla.com#threadheadtag","filtaquilla@mesquilla.com#threadanytag"].includes(attType)) {
             // it is a tag, but is it?
             if (el.firstChild.classList.contains("fq-tag"))
-              foundEL = el; // reuse!
+              {foundEL = el;} // reuse!
           }
           else if (["filtaquilla@mesquilla.com#subjectRegex",
                "filtaquilla@mesquilla.com#attachmentRegex",
@@ -1242,8 +1266,9 @@
                "filtaquilla@mesquilla.com#subjectBodyRegex",
                "filtaquilla@mesquilla.com#searchBcc",
                "filtaquilla@mesquilla.com#folderName"].includes(attType)) {
-            if (el.firstChild.classList.contains("fq-textbox"))
+            if (el.firstChild.classList.contains("fq-textbox")) {
               foundEL = el; // reuse!
+            }
           }
           if (foundEL) {
             //
@@ -1252,7 +1277,6 @@
 
         });
         if (!foundEL)  { // unpatch
-          debugger;                  // we need to create a new search-value-custom item?
           // possible delete an existing one beforehand?
           if (ce.length) {
             // delete existing element

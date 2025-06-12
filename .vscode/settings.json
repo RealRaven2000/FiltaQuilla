@@ -10,5 +10,8 @@
   },
   "eslint.validate": ["javascript"],
   "eslint.codeActionsOnSave.rules": null,
-  "eslint.run": "onType"
+  "eslint.run": "onType",
+  "eslint.options": {
+    "overrideConfigFile": "E:/Dev/Mozilla/Dev/FiltaQuilla/_Github/branches/ESR128/.eslintrc.cjs"
+  }
 }

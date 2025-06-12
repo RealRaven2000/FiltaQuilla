@@ -9,6 +9,7 @@ module.exports = {
     browser: "readonly",
     messenger: "readonly",
     ChromeUtils: "readonly",
+    Components: "readonly",
     PathUtils: "readonly",
     Services: "readonly",
     FiltaQuilla: "readonly",
