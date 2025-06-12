@@ -264,6 +264,11 @@ FiltaQuilla.Util = {
   },
 
   logException: function (aMessage, ex) {
+
+    console.trace();
+    console.log(aMessage, ex);
+    return;
+    
     let stack = "",
       srcName = "",
       line = "";
