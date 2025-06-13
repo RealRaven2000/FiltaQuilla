@@ -23,7 +23,7 @@
    globals
      gFilter, 
      MozXULElement
-*/
+ */
 
 {
   Services.scriptloader.loadSubScript("chrome://filtaquilla/content/filtaquilla-util.js"); // FiltaQuilla object
@@ -617,8 +617,8 @@
 
     getURL() {
       const nsIFilePicker = Ci.nsIFilePicker,
-            wildmat = "*.wav; *.ogg; *.aiff",
-            label = ".wav, .ogg, .aiff";
+            wildmat = "*.wav; *.mp3; *.ogg; *.aiff",
+            label = ".wav, .mp3, .ogg, .aiff";
       var fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
       fp.init(util.getFileInitArg(window), this.launchtitle, nsIFilePicker.modeOpen);
       fp.appendFilter(label, wildmat);
