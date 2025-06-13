@@ -216,7 +216,9 @@ FiltaQuilla.Util = {
       let elapsed = new String(endTime - this.lastTime); // time in milliseconds
       timePassed = "[" + elapsed + " ms]   ";
       this.lastTime = endTime; // remember last time
-    } catch (e) {void e;}
+    } catch { 
+      // this shouldn't happen!
+    }
     return (
       end.getHours() +
       ":" +
@@ -262,8 +264,7 @@ FiltaQuilla.Util = {
         aFlags
       );
       Services.console.logMessage(scriptError);
-    } catch(ex) {
-      void ex;
+    } catch {
       console.warn("Error in FiltaQuilla:", `${aMessage}\n`, {
         source: `${aSourceName} : ${aSourceLine} : ${aColumnNumber}`,
         flags: aFlags
@@ -311,8 +312,7 @@ FiltaQuilla.Util = {
     if (!this.isDebug) {return false;}
     try {
       return this.prefs.getBoolPref("debug." + o);
-    } catch (e) {
-      void e;
+    } catch {
       return false;
     }
   },
@@ -339,7 +339,9 @@ FiltaQuilla.Util = {
           break; // only log once, in case multiple log switches are on
         }
       }
-    } catch (ex) { void ex;}
+    } catch(e) { 
+      console.error(e);
+    }
   },
 
   toggleBoolPreference: function (cb, noUpdate) {
@@ -1190,8 +1192,7 @@ FiltaQuilla.Util = {
           
       try { 
         debugFirstRun = Boolean(ssPrefs.getBoolPref("debug.firstrun")); 
-      } catch (e) { 
-        void e;
+      } catch { 
         debugFirstRun = false; 
       }
       
@@ -1214,8 +1215,7 @@ FiltaQuilla.Util = {
         FiltaQuilla.Util.logDebugOptional ("firstrun","try to get setting: getBoolPref(firstrun)");
         try { 
           firstrun = ssPrefs.getBoolPref("firstRun"); 
-        } catch (e) { 
-          void e;
+        } catch { 
           firstrun = true; 
 				}
 
