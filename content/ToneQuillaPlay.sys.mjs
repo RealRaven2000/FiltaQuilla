@@ -175,10 +175,10 @@ export const ToneQuillaPlay = {
       for (; startIndex >= 0; startIndex--) {
         try {
           const stat = await IOUtils.stat(fullPaths[startIndex]);
-          if (stat.type === "directory") break;  // found the first existing parent
+          if (stat.type === "directory") {break;}  // found the first existing parent
         } catch (ex) {
           console.error("Error in IOUtils.stat - throwing again:", ex);
-          if (ex.name !== "NotFoundError") throw ex;
+          if (ex.name !== "NotFoundError") {throw ex;}
         }
       }
 
@@ -335,7 +335,7 @@ export const ToneQuillaPlay = {
     }
   },
 
-  play: function ToneQuillaPlay_play(aSpec) {
+  play: function(aSpec) {
     if (!that.window) {
       // [issue 258]
       console.log("ToneQuillaPlay.play() - window instance not initialized!;");
@@ -350,14 +350,14 @@ export const ToneQuillaPlay = {
 
     let dotIndex = aSpec.lastIndexOf("."),
       extension = "";
-    if (dotIndex >= 0) extension = aSpec.substr(dotIndex + 1).toLowerCase();
+    if (dotIndex >= 0) {extension = aSpec.substr(dotIndex + 1).toLowerCase();}
     let mimeType = "";
     if (extension == "wav") {
       mimeType = "audio/wav";
     } else {
       try {
         mimeType = that._nsIMIMEService.getTypeFromExtension(extension);
-      } catch (e) {} // ignore errors, since that probably means not defined
+      } catch (e) { void e; } // ignore errors, since that probably means not defined
     }
     let uriSpec = aSpec.startsWith("file:")
       ? aSpec
@@ -382,33 +382,54 @@ export const ToneQuillaPlay = {
     }
 
     that.logDebug("determined mimeType = " + mimeType);
-
-    let url = Services.io.newURI(uriSpec);
+    const audio = that.window.document.createElement("audio");
+    const source = that.window.document.createElement("source");
+    
     switch (mimeType) {
       case "video/ogg":
       case "audio/ogg":
+      case "application/ogg":
+      case "application/mpeg":
       case "audio/mpeg":
-        that._audioElement = new that.window.Audio(uriSpec);
-        that._audioElement.setAttribute("autoplay", "true");
-        that._audioElement.setAttribute("type", mimeType);
-        that._audioElement.load();
-        // that._nsISound.play(Services.io.newURI(uriSpec));
-        // that._nsISound.play(url);
-        break;
       case "audio/wav":
       case "audio/x-wav":
-        that._nsISound.play(url);
+        source.setAttribute("type", mimeType);
+        source.setAttribute("src", uriSpec);
+        audio.appendChild(source);
+        audio.play();
         break;
       default:
-        // We're going to blindly let the OS handle this
+        // We're going to blindly let the OS handle this?
         nsIFileURL.file.QueryInterface(Ci.nsIFile).launch();
     }
   },
+  
+  fadeOut: function(audio, duration = 350) {
+    // fade out the clip, then stop it
+    const steps = 35;
+    const stepTime = duration / steps;
+    let volumeStep = audio.volume / steps;
+    
+    const fade = setInterval(() => {
+      if (audio.volume > volumeStep) {
+        audio.volume -= volumeStep;
+      } else {
+        audio.volume = 0;
+        this.stop(audio);
+        clearInterval(fade);
+      }
+    }, stepTime);
+  },
+
+  stop: function(audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }, 
 
   // clear all file references from the ignore queue
   _clearIgnore: function ToneQuillaPlay_clearIgnore() {
     that.logDebug("_clearIgnore()");
-    while (that._ignoreQueue.pop());
+    while (that._ignoreQueue.pop()) {;}
   },
 
   // add a file URL spec to the play queue, unless already queued or ignored
@@ -420,7 +441,7 @@ export const ToneQuillaPlay = {
     // that recur during an ignore period are ignored.
 
     // initialize module if needed
-    if (!that._playTimer) that.init();
+    if (!that._playTimer) {that.init();}
 
     // ignore recently queued sounds
     if (that._ignoreQueue.indexOf(aSpec) >= 0) {
