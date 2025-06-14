@@ -2916,6 +2916,7 @@
     };
   }
 
+  // eslint-disable-next-line no-unused-vars
   function _detachAttachments_old(
     messenger,
     directory,
