@@ -41,7 +41,8 @@ const Cc = Components.classes,
       Cu = Components.utils;
 
 // support variables for playing sound
-var kDelayToNext = 1200;   // was 5000
+var kDelayToNext = 1200, // was 5000
+    kFadeOut = 25;
 const kDelayToClear = 3000,  // was 15000
       kStatusIdle = 0,       // not playing anything
       kStatusStart = 1;
@@ -64,7 +65,7 @@ export const ToneQuillaPlay = {
 
   logHighlightDebugOptional: function (debugOption, txt, format={}, ...args) {
     const options = debugOption.split(",");
-    format.color = format.color ||  "white";
+    format.color = format.color || "white";
     format.background = format.background || "rgb(15, 96, 6)";
     for (let i = 0; i < options.length; i++) {
       let option = options[i];
@@ -416,6 +417,7 @@ export const ToneQuillaPlay = {
       mimeType = "audio/wav";
     }
 
+    const startTime = new Date();
     that.logDebug("determined mimeType = " + mimeType);
     const audio = that.window.document.createElement("audio");
     const source = that.window.document.createElement("source");
@@ -436,7 +438,6 @@ export const ToneQuillaPlay = {
             audio.addEventListener("loadedmetadata", resolve, { once: true });
           });          
           const duration = isNaN(audio.duration) ? 0 : audio.duration * 1000; // ms
-          const startTime = new Date();
           await audio.play();
           that.logHighlightDebugOptional("sounds", `Audio playback started: ${uriSpec} - should take ${duration}ms`);
           // Wait until the audio ends before proceeding
@@ -447,9 +448,13 @@ export const ToneQuillaPlay = {
           }
           const remainingDuration = duration - (new Date() - startTime);
           if (remainingDuration > 0) {
-            that.logHighlightDebugOptional("sounds", `After sound ended we still have ${remainingDuration} to wait!`);
+            that.logHighlightDebugOptional(
+              "sounds",
+              `After sound ended we still have ${remainingDuration} to wait!`
+            );
             const r = duration - (new Date() - startTime) + kDelayToNext;
-            await new Promise((resolve) => setTimeout(resolve, r));
+            // even with "latency compensation" - (negative kDelayToNext) enforce a min time of 20ms
+            await new Promise((resolve) => that.window.setTimeout(resolve, Math.max(20, r)));
           }
         } catch (err) {
           that.logHighlightDebugOptional("sounds", `Error playing ${uriSpec}:`, {}, err);
@@ -461,7 +466,15 @@ export const ToneQuillaPlay = {
     }
   },
 
-  fadeOut: function (audio, duration = 350) {
+  fadeOut: function (audio, duration = 150) {
+    if (!audio) {return;}
+
+    if (duration <= 0) {
+      // No fade, stop immediately
+      audio.volume = 0;
+      return;
+    }
+  
     // fade out the clip, then stop it
     const steps = 35;
     const stepTime = duration / steps;
@@ -471,15 +484,22 @@ export const ToneQuillaPlay = {
       if (audio.volume > volumeStep) {
         audio.volume -= volumeStep;
       } else {
-        audio.volume = 0;
-        this.stop(audio);
         clearInterval(fade);
+        audio.volume = 1; // reset volume
+        audio.pause();
+        audio.currentTime = 0;
       }
     }, stepTime);
   },
 
   stop: function (audio) {
-    audio.pause();
+    if (!audio) {return;}
+
+    if (kFadeOut > 0) {
+      this.fadeOut(audio, kFadeOut);
+    } else {
+      audio.pause();
+    }
     audio.currentTime = 0;
   },
 
@@ -491,11 +511,14 @@ export const ToneQuillaPlay = {
 
   // add a file URL spec to the play queue, unless already queued or ignored
   queueToPlay: function (aSpec) {
-    this.logHighlightDebugOptional("sounds", `Queueing: ${aSpec}`);
+    that.logHighlightDebugOptional("sounds", `Queueing: ${aSpec}`, {background:"rgb(146, 88, 0)", color: "yellow"});
     // This function is designed to allow multiple emails to request playing
     // a sound, without getting the same sound multiple times, nor overlapping.
     // Multiple sounds are delayed to allow each to be heard. Any sounds
     // that recur during an ignore period are ignored.
+    // refresh delay (global):
+    kDelayToNext = Services.prefs.getIntPref("extensions.filtaquilla.tonequilla.soundDelay");
+    kFadeOut = Services.prefs.getIntPref("extensions.filtaquilla.tonequilla.fadeOut");
 
     // initialize module if needed
     if (!that._playTimer) {
@@ -513,10 +536,7 @@ export const ToneQuillaPlay = {
       that._playQueue.push(aSpec);
       that._ignoreQueue.push(aSpec);
     }
-
     if (that._status == kStatusIdle) {
-      // refresh delay:
-      kDelayToNext = Services.prefs.getIntPref("extensions.filtaquilla.tonequilla.soundDelay");
       that._status = kStatusStart;
       that.nextSound(); // starts a new play queue
     } // if !idle,  then playback is already running & the queue will take care of it

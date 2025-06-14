@@ -36,6 +36,7 @@ pref("extensions.filtaquilla.javascriptAction.enabled", false);
 pref("extensions.filtaquilla.javascriptActionBody.enabled", false);
 pref("extensions.filtaquilla.tonequilla.enabled", false);
 pref("extensions.filtaquilla.tonequilla.soundDelay", 100);
+pref("extensions.filtaquilla.tonequilla.fadeOut", 25);
 pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
 pref("extensions.filtaquilla.moveLater.enabled", false);
 pref("extensions.filtaquilla.regexpCaseInsensitive.enabled", true);
