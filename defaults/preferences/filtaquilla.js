@@ -35,6 +35,7 @@ pref("extensions.filtaquilla.fileNames.whiteList", "");
 pref("extensions.filtaquilla.javascriptAction.enabled", false);
 pref("extensions.filtaquilla.javascriptActionBody.enabled", false);
 pref("extensions.filtaquilla.tonequilla.enabled", false);
+pref("extensions.filtaquilla.tonequilla.soundDelay", 100);
 pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
 pref("extensions.filtaquilla.moveLater.enabled", false);
 pref("extensions.filtaquilla.regexpCaseInsensitive.enabled", true);
@@ -67,6 +68,7 @@ pref("extensions.filtaquilla.debug.regexBody", false);
 pref("extensions.filtaquilla.debug.regexBody_parts", false);
 pref("extensions.filtaquilla.debug.mimeBody", false);
 pref("extensions.filtaquilla.debug.isLocal", false);
+pref("extensions.filtaquilla.debug.sounds", false);
 
 
 // upgrade handling stuff
