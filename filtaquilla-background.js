@@ -89,6 +89,7 @@
   // recursively fetches a header of matching partName. pass in the msg.parts
   // attachments should have a "content-disposition" header
   function getHeaders(parts, partName) {
+    if (!parts) {return null; }
     for (let part of parts) {
       if (part.partName == partName) {
         return part.headers;
@@ -104,8 +105,21 @@
     // only release version supports the contentDisposition attribute
     // so we add it manually in 128esr
     const msg = await browser.messages.getFull(messageId);
+    if (!msg) {
+      console.warn(`FiltaQuilla addHeaders()\nCould not retrieve full message ${messageId}`);
+      return;
+    }
+    if (!msg.parts) {
+      console.warn(
+        `FiltaQuilla addHeaders()\nCould not retrieve parts of ${messageId} - likely extracting attachments will fail.`
+      );
+      return;
+    }
     for (const a of attachments) {
       const headers = getHeaders(msg.parts, a?.partName);
+      if (!headers) {
+        continue;
+      }
       if (
         !a.contentDisposition &&
         headers["content-disposition"] &&
