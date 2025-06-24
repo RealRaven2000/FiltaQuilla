@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FiltaQuilla NEWS</title>
+  <link rel="stylesheet" href="fq-message.css">
+  <link rel="stylesheet" href="popup.css" type="text/css">
+  <script type="application/javascript" src="popup.js"></script>
+  <script type="application/javascript" src="fq-message.js"></script>
+  <script type="application/javascript" src="../content/i18n.js"></script>
+</head>
+<body>
+  <div id="messageCanvas">
+    <h1 id="titleBox" aria-label="FiltaQuilla News">FiltaQuilla News</h1>
+    <div class="messageContents">
+      <div id="restart" class="wrapper announcement" hidden>
+        __MSG_message.restart__
+      </div>
+      <div id="changeLogIntro" class="wrapper announcement" hidden>
+        __MSG_whats-new-intro__
+      </div>
+
+      <div id="innerMessage" class="wrapper">
+          inner message placeholder
+      </div>
+    </div>
+    <div id="commands">
+      <button id="ok">__MSG_message.btn.accept__</button>
+      <button id="yes" hidden>__MSG_message.btn.yes__</button>
+      <button id="no" hidden>__MSG_message.btn.no__</button>
+      <button id="cancel" hidden>__MSG_message.btn.cancel__</button>
+      <button id="changeLog">__MSG_message.btn.changeLog__</button>
+    </div>
+  </div>
+</body>
+</html>

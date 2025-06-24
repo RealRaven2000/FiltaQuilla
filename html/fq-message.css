@@ -1,0 +1,187 @@
+:root {
+  --canvas: rgb(245,245,245);
+  --canvastext: rgb(15,15,15);
+  --commandbar: rgba(10,10,10,0.1)
+  --actionbtn-backcolor: darkred;
+  --actionbtn-color: white;
+  color-scheme: light dark;  
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: rgb(15,15,15);
+    --canvastext:rgb(245,245,245);
+    --commandbar: rgba(250,250,250,0.1)
+  }
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--canvastext);
+}
+
+/** STYLES FOR THE MODELESS message window smarteTemplate-msg.xul ****/
+#titleBox {
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 1.8em;
+  text-align: center;
+  background-color: transparent;
+}
+
+#messageCanvas {
+	background-position: top 1em right 2em ;
+	background-repeat: no-repeat;
+	background-image: url("../skin/filtaquilla-64.png");
+  background-size: 128px 128px;
+  border: 1px solid rgba(64, 2, 2, 0.1); /* test */
+  border-radius: 0.3rem;
+  box-sizing: border-box;
+	min-width: 200px;
+	min-height: 200px;
+	width: 100%; 
+}
+
+.bottomhint {
+  text-align: center;
+}
+
+
+#commands {
+  display: flex;
+  justify-content: center; /* aligns buttons left, change as needed */
+  gap: 2em; /* spacing between buttons */
+  padding: 1em 0;
+}
+
+#commands button {
+  box-shadow: 3px 3px 2px rgba(50,0,0,0.1);
+  background-color: var(--actionbtn-backcolor,darkred);
+  color: var(--actionbtn-color,white);
+  border: none;
+  padding: 8px 16px;
+  font-size: 12pt;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#commands button:hover {
+  background-image: linear-gradient(to bottom, #6d0019 0%, #8f0222 34%, #e20425 100%);
+}
+
+#commands button:active {
+  background-image: linear-gradient(to bottom, #633b00 0%, #750202 34%, #ef8204 100%);
+}
+
+/* remove default buttons, we add our own */
+.dialog-button-box {
+	display: none;
+}
+
+#ok, #cancel, #yes, #no, #countDown  {
+	font-size: 12pt;
+}
+
+body {
+  background-color: var(--canvas) !important;
+  color: var(--canvastext) !important;
+}
+
+.wrapper {
+	font-size: 12pt;
+	margin: 0 3em 1.5em;
+	min-width: 300px;
+	width: 80%;
+}
+
+#innerMessage {
+	height: auto;
+	flex-direction: column;
+}
+
+#innerMessage p, #innerMessage br {
+	display: block;
+	line-height: 1.2em;
+}
+#innerMessage p {
+	/*! text-align: justify; */
+	/* color: rgb(2,2,2) !important; */ /* leave text color to theme! */
+	margin-bottom: 0.6em;
+	max-width: 850px;
+}
+
+#innerMessage #code {
+  background-color: #FFFFFF;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+  color: rgb(40,40,40);
+  font-size: 10pt;
+  font-family: Consolas,monaco,monospace !important;
+  min-height: 50px;
+  max-height: 250px !important;
+  overflow-y: scroll;
+}
+
+#innerMessage #code p {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+#messageCanvas {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* overwrite rules from popup.css */
+body *:not(button) {
+  background-color: unset !important;
+  color: unset !important;
+}
+body p, #innerMessage {
+  background-color: transparent !important;
+}
+
+.messageContents {
+  background-color: transparent;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#commands {
+  position: sticky;
+  bottom: 0;
+  background: var(--commandbar,rgba(250,250,250,0.1));
+  padding: 0.5rem;
+  border-top: 1px solid #ccc;
+  z-index: 10;
+}
+
+#commands button.actionlinks {
+  margin-top: 0;
+}
+
+/* use this for pringin html code */
+pre {
+  font-size: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  white-space: pre-wrap;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+
+.announcement {
+  color: white !important;
+  background-color: rgba(6, 6, 112, 0.9); 
+  background-image: linear-gradient(55deg, rgba(6, 6, 112, 0.8) 0%, rgba(115, 3, 85, 0.8) 100%);
+  border-radius: 0.5em;
+  padding-block: 0.6em !important;
+  margin-bottom: 1.2em;
+  padding: 0.1em 1em;
+}
