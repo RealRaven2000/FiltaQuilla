@@ -298,6 +298,20 @@
   "inheritedProperties": {
     "message": "Overgenomen eigenschappen"
   },
+  "message.btn.accept": { "message": "OK" },
+  "message.btn.cancel": { "message": "Annuleren" },
+  "message.btn.changeLog": { "message": "Toon laatste wijzigingen…" },
+  "message.btn.no": { "message": "Nee" },
+  "message.btn.yes": { "message": "Ja" },
+  "message.placeholder": { "message": "Bericht ontbreekt." },
+  "message.licenseScreen": { "message": "Licentie-opties weergeven…" },
+  "message.restart": {
+    "message": "FiltaQuilla heeft enkele aangepaste filteracties gewijzigd – deze kunnen pas worden toegepast na een herstart van Thunderbird. Start Thunderbird alstublieft zo snel mogelijk opnieuw op om een goede werking van de filters te garanderen."
+  },
+  "newsHead": { "message": "Laatste nieuws" },
+  "newsMsgEsr140": {
+    "message": "{P1}{boldStart} Binnenkort in de volgende grote release {boldEnd}: Thunderbird zal u binnenkort vragen om uw voorkeursupdatepad te kiezen — ofwel het jaarlijkse ESR-traject of de snellere maandelijkse releases. {ARelease}Lees meer over het nieuwe release-model{A2}.{U1} {L1}De ESR-versie blijft op v140, verhoogt alleen de subversienummers en bevat uitsluitend beveiligings- en bugfixes, wat vaak de voorkeur heeft in zakelijke omgevingen.{L2} {L1}De maandelijkse releasecyclus levert nieuwe functies en interface-updates zodra deze ontwikkeld zijn. Controleer of uw huidige add-ons dit release-model ondersteunen. Om hierbij te helpen kunt u de {AcompatCheck}Add-on Compatibiliteitscontrole{A2} installeren.{L2} {U2}{P2}{P1} We zijn blij te kunnen melden dat FiltaQuilla volledig compatibel is met Thunderbird 140, de volgende Extended Support Release (ESR). Dit betekent voortdurende betrouwbaarheid en gemoedsrust tijdens de volgende grote ondersteuningscyclus.{P2}{P1} FiltaQuilla blijft voorlopig gebruikers van Thunderbird 128 en hoger ondersteunen.{P2}{P1} We volgen de wijzigingen in Thunderbird voortdurend om te zorgen dat FiltaQuilla compatibel en betrouwbaar blijft, ongeacht het gekozen releasepad.{P2}"
+  },
   "optionsIntro": {
     "message": "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen."
   },
@@ -381,5 +395,14 @@
   },
   "supportPage_desc": {
     "message": "Deze pagina beschrijft de verschillende acties en voorwaarden die met FiltaQuilla aan e-mailfilters kunt toevoegen."
+  },
+  "whats-new-head": {
+    "message": "Belangrijke wijzigingen"
+  },
+  "whats-new-intro": {
+    "message": "FiltaQuilla wordt trots ondersteund door mijn werk aan mijn andere add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} en {A-ST}SmartTemplates{A2}. Bekijk ze in de Add-ons store!"
+  },
+  "whats-new-list": {
+    "message": "{U1} {L1}FiltaQuilla is nu compatibel met Thunderbird 140.*{L2} {L1} Verbeterde opstartprestaties bij bijlagen opslaan (POP3-mail) [issue 349]{L2} {L1} Verbeteringen en bugfixes rond het afspelen en bewerken van geluidsacties [issue 350]{L2}{U2}"
   }
 }

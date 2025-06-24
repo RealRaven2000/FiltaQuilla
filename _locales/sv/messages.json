@@ -295,6 +295,19 @@
   "inheritedProperties": {
     "message": "Ärvda egenskaper"
   },
+  "message.btn.accept": { "message": "OK" },
+  "message.btn.cancel": { "message": "Avbryt" },
+  "message.btn.changeLog": { "message": "Visa senaste ändringar…" },
+  "message.btn.no": { "message": "Nej" },
+  "message.btn.yes": { "message": "Ja" },
+  "message.placeholder": { "message": "Meddelande saknas." },
+  "message.restart": {
+    "message": "FiltaQuilla har gjort ändringar i vissa av sina anpassade filteråtgärder – dessa kan bara tillämpas efter att Thunderbird har startats om. Starta om Thunderbird så snart som möjligt för att säkerställa att filtren fungerar smidigt."
+  },
+  "newsHead": { "message": "Senaste nytt" },
+  "newsMsgEsr140": {
+    "message": "{P1}{boldStart} Kommer snart i nästa stora version {boldEnd}: Thunderbird kommer snart att be dig välja din föredragna uppdateringsväg — antingen den årliga ESR-versionen eller de snabbare månatliga utgåvorna. {ARelease}Läs mer om den nya versionsmodellen{A2}.{U1} {L1}ESR-versionen kommer att stanna på v140, öka endast mindre versionsnummer och inkludera endast säkerhetsfixar och buggfixar, vilket ofta föredras i företagsmiljöer.{L2} {L1}Den månatliga utgivningscykeln levererar nya funktioner och gränssnittsuppdateringar när de utvecklas. Kontrollera om dina nuvarande tillägg stöder denna versionsmodell. För att hjälpa till med detta kan du installera {AcompatCheck}Tilläggskompatibilitetskontrollen{A2}.{L2} {U2}{P2}{P1} Vi är glada att meddela att FiltaQuilla är fullt kompatibel med Thunderbird 140, nästa Extended Support Release (ESR). Detta innebär fortsatt tillförlitlighet och trygghet under nästa stora supportcykel.{P2}{P1} FiltaQuilla fortsätter att stödja användare på Thunderbird 128 och senare för närvarande.{P2}{P1} Vi övervakar kontinuerligt ändringar i Thunderbird för att säkerställa att FiltaQuilla förblir kompatibel och pålitlig, oavsett vilken versionsväg du väljer.{P2}"
+  },
   "optionsIntro": {
     "message": "Aktivera alla elemet du vill ha tillgängliga i dialogruan &quot;Filtreringsregler&quot;. Starta om efter ändringar."
   },
@@ -378,5 +391,14 @@
   },
   "supportPage_desc": {
     "message": "Denna sida beskriver de olika åtgärderna och villkoren du kan lägga till i e-postfilter med FiltaQuilla."
+  },
+  "whats-new-head": {
+    "message": "Viktiga ändringar"
+  },
+  "whats-new-intro": {
+    "message": "FiltaQuilla stöds stolt genom mitt arbete med mina andra tillägg: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} och {A-ST}SmartTemplates{A2}. Kolla gärna in dem i tilläggsbutiken!"
+  },
+  "whats-new-list": {
+    "message": "{U1} {L1}FiltaQuilla är nu kompatibel med Thunderbird 140.*{L2} {L1} Förbättrad startprestanda vid spara bilagor (POP3-mail) [issue 349]{L2} {L1} Förbättringar och buggfixar kring ljudåtgärder [issue 350]{L2}{U2}"
   }
 }
