@@ -8,6 +8,10 @@ In order to move forward with the current release cycle (monthly releases) I dec
 *   Improvement in asynchronous Save Attachments, leading to slow down of Thunderbird when filtering POP3 mail (no copy listener) [issue #349]. We are now allowed to use `nsIThreadManager.processNextEvent()` in order to give cycles back to the system while the attachments are processed. Please restart Thunderbird to force changes to come into effect. 
 *   Play sound improvements: Fixed open sound file button, extracting the supplied sounds to the default folder `profile/extensions/filtaquilla` and added a play sound button to filter editor. [issue #350]
 
+**Miscellaneus**
+*   Refactored internal action logic for better maintainability and consistency.
+*   Rewrote `saveMessageAsFile` to support concurrency and cleaner path handling.
+
 **TO DO NEXT**
 *    Feature Request: Notification alert \[issue #240\].
 *    Work in progress: Allow automatic running of filters outside of Inbox (IMAP only) \[issue #318\].
