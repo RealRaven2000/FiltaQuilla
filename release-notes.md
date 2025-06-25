@@ -1,6 +1,10 @@
 **Version 5.3** 
 
-In order to move forward with the current release cycle (monthly releases) I decided to raise minimum version to Thunderbird 128, I am doing regular testing with the current beta versions but they may only be a single version number ahead! To help test new versions and be ahead of the curve, you can subscribe to issue #262. If you would like to support FiltaQuilla with donation you can now [do so here](https://quickfilters.quickfolders.org/filtaquilla.html#donate) 
+_Upcoming in the next big release:_ Thunderbird will soon ask you to choose your preferred update path — either the annual ESR track or the faster monthly releases. [Learn more about the new release model](https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/)
+
+The ESR version will stay on v140, increasing minor version numbers and including only security fixes and bug patches, which is often preferable for corporate environments.
+
+The monthly release cycle will deliver new features and interface updates as they’re developed. Please check whether your current add-ons support this release model. To help with this, you can install the [Add-on Compatibility Check](https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/) extension.
 
 
 **Improvements**
