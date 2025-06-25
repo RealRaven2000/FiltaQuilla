@@ -1,9 +1,11 @@
 _locales
 content
 defaults
+html
 filtaquilla-background.js
 filtaquilla-background.html
 license.txt
 locale
 manifest.json
+readme.md
 skin
