@@ -1,3 +1,7 @@
+:root {
+  --version-background: linear-gradient(to bottom, #0380bf 0%,#006eb7 100%) !important;
+}
+
 /* styling for filtaquilla preferences dialog */
 
 .buttonLink {
@@ -13,12 +17,12 @@
   white-space: nowrap;
 }
 
-#mesquillaLink {
+#supportLink {
 	background: linear-gradient(to bottom, #67b6ce 0%,#316c8c 31%,#066dab 100%);
 	color: #FFF;
 }
 
-#mesquillaLink:hover {
+#supportLink:hover {
 	background: linear-gradient(to bottom, #6ecfec 0%,#1e98da 31%,#0492ea 100%);
 }
 
@@ -70,7 +74,7 @@ div.lineSpacer {
 
 .helpLink,
 .helpLinkDisabled {
-  -moz-appearance: none !important;
+  appearance: none !important;
   background-repeat: no-repeat;
   cursor: pointer;
   margin-top: 3px;
@@ -127,11 +131,13 @@ hbox.title spacer {
   background-color: rgba(80,80,80,0.5);
 }
 
+.linkContainer {
+	margin: 0 20px 1em 20px !important;
+	max-width: 660px;
+}
 
 .linkBox {
 	border: 1px solid rgb(230,230,230);
-	margin: 0 20px 1em 20px !important;
-	max-width: 660px;
 	padding-top: 0.75em;
 	white-space: normal !important;
 }
@@ -208,4 +214,50 @@ hbox.title spacer {
 #actionsGrid,
 #conditionsGrid {
   grid-template-columns: auto auto auto auto; /* widths of columns */
+}
+
+.showSplash, .showSplash:focus {
+  color: white !important;
+  background-color: #006EB7 !important; /* blue */
+  background-image: var(--version-background) !important;
+}
+.showSplash label, .showSplash:focus label {
+  color: white;
+}
+
+.showSplash:hover, .showSplash:focus:hover {
+  color: black !important;
+	background-color: #ffd65e !important; /* yellow */
+	background-image: linear-gradient(to bottom, #fff65e 0%,#febf04 100%) !important;
+}
+
+.showSplash:hover *, .showSplash:focus:hover * {
+  color: rgb(60,0,0) !important;
+}
+.buttonLinks { 
+  margin-block: 0.5em;
+}
+
+
+.buttonLinks button {
+	cursor: pointer;
+  padding-block: 0.5em; 
+}
+
+
+.buttonLinks button.text-link {
+	min-width: 25em;
+	padding-inline: 1.5em !important;
+}
+
+button.text-link {
+	appearance: none !important;
+  border: 1px solid rgb(100,120,120);
+	color: #ffffff !important;
+  margin-top: 0.3em !important;
+  margin-bottom: 0.3em !important;
+  max-width: 36em;
+  padding: 1px 1px !important;
+  text-decoration: none !important;
+  text-shadow:#BBBBBB 0px 0px 2px;
 }

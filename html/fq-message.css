@@ -185,3 +185,15 @@ pre {
   margin-bottom: 1.2em;
   padding: 0.1em 1em;
 }
+
+.link-visited {
+  color: #d2691e !important;
+}
+span.link-visited {
+  font-weight: bold;
+  font-size: 0.8em;
+}
+
+[hidden] {
+  display: none !important;
+}

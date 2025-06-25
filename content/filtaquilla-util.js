@@ -149,6 +149,15 @@ FiltaQuilla.Util = {
     });
   },
 
+  openChangeLog: function() {
+    FiltaQuilla.Util.notifyTools.notifyBackground({
+      func: "showMessage",
+      msgIds: "whats-new-list",
+      mode: "standard",
+      features: ["ok"],
+    });
+  },
+
   openTooltipPopup: function (el) {
     if (el.getAttribute("hasToolTip")) {
       return;

@@ -72,7 +72,7 @@ const formatAll = (txt) => {
     )
     .replace(
       /\{AcompatCheck\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/addon-info-sync-compatibility' class='native'>"
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/' class='native'>"
     )
     .replace(
       /\{A-QF\}/g,
@@ -137,17 +137,22 @@ function updateWithSafeHtml(selector, htmlString) {
 // eslint-disable-next-line no-unused-vars
 async function resizeWindow()  { // was in updateActions()
   // resize to contents if necessary...
-  const win = await browser.windows.getCurrent();
-  let wrapper = document.getElementById("innerwrapper"),
-    r = wrapper.getBoundingClientRect(),
-    newHeight = Math.round(r.height) + 80,
-    maxHeight = window.screen.height;
+  try {
+    const win = await browser.windows.getCurrent();
+    let wrapper = document.getElementById("messageCanvas"),
+      r = wrapper.getBoundingClientRect(),
+      newHeight = Math.round(r.height) + 80,
+      maxHeight = window.screen.height;
 
-  let { os } = await messenger.runtime.getPlatformInfo(); // mac / win / linux
-  wrapper.setAttribute("os", os);
+    let { os } = await messenger.runtime.getPlatformInfo(); // mac / win / linux
+    wrapper.setAttribute("os", os);
 
-  if (newHeight > maxHeight) {
-    newHeight = maxHeight - 15;
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight - 15;
+    }
+    browser.windows.update(win.id, { height: newHeight });
+    } catch(e) {
+    console.error("Failed to resize window:", e);
+    return;
   }
-  browser.windows.update(win.id, { height: newHeight });
 }

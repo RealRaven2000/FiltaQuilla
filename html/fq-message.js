@@ -175,6 +175,15 @@ window.addEventListener("load", async () => {
     if (link) {
       event.preventDefault();
       browser.tabs.create({ url: link.href });
+      link.classList.add("link-visited");
+      // Find or create the status span next to the link
+      let status = link.nextElementSibling;
+      if (!status || !status.classList.contains("link-visited")) {
+        status = document.createElement("span");
+        status.className = "link-visited";
+        link.parentNode.insertBefore(status, link.nextSibling);
+      }
+      status.textContent = " " + messenger.i18n.getMessage("message.linkInTab");
     }
   });
   resizeWindow();

@@ -303,6 +303,7 @@
   "message.btn.changeLog": { "message": "Показать последние изменения…" },
   "message.btn.no": { "message": "Нет" },
   "message.btn.yes": { "message": "Да" },
+  "message.linkInTab": { "message": "(Ссылка открыта во вкладке)" },
   "message.placeholder": { "message": "Сообщение отсутствует." },
   "message.restart": {
     "message": "FiltaQuilla внесла изменения в некоторые свои пользовательские действия фильтра — они будут применены только после перезапуска Thunderbird. Пожалуйста, перезапустите Thunderbird при первой возможности для корректной работы фильтров."

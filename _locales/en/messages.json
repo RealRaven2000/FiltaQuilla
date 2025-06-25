@@ -312,6 +312,7 @@
   "message.btn.changeLog": { "message": "Show latest Changes…" },
   "message.btn.no": { "message": "No" },
   "message.btn.yes": { "message": "Yes" },
+  "message.linkInTab": { "message": "(Link opened in Tab)" },
   "message.placeholder": { "message": "Message missing." },
   "message.restart": {
     "message": "FiltaQuilla has made modifications to some of its custom filter actions - these can only be applied after a restart of Thunderbird. Please restart Thunderbird at your earliest convenience to ensure smooth filters operation."

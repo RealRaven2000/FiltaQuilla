@@ -312,6 +312,7 @@
   "message.btn.changeLog": { "message": "Neueste Änderungen anzeigen…" },
   "message.btn.no": { "message": "Nein" },
   "message.btn.yes": { "message": "Ja" },
+  "message.linkInTab": { "message": "(Link in Tab geöffnet)" },
   "message.placeholder": { "message": "Nachricht fehlt." },
   "message.restart": {
     "message": "FiltaQuilla hat einige seiner benutzerdefinierten Filteraktionen geändert – diese können erst nach einem Neustart von Thunderbird angewendet werden. Bitte starten Sie Thunderbird so bald wie möglich neu, um einen reibungslosen Filterbetrieb zu gewährleisten."

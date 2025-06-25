@@ -303,8 +303,8 @@
   "message.btn.changeLog": { "message": "Toon laatste wijzigingen…" },
   "message.btn.no": { "message": "Nee" },
   "message.btn.yes": { "message": "Ja" },
+  "message.linkInTab": { "message": "(Link geopend in tabblad)" },
   "message.placeholder": { "message": "Bericht ontbreekt." },
-  "message.licenseScreen": { "message": "Licentie-opties weergeven…" },
   "message.restart": {
     "message": "FiltaQuilla heeft enkele aangepaste filteracties gewijzigd – deze kunnen pas worden toegepast na een herstart van Thunderbird. Start Thunderbird alstublieft zo snel mogelijk opnieuw op om een goede werking van de filters te garanderen."
   },

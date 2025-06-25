@@ -300,6 +300,7 @@
   "message.btn.changeLog": { "message": "Visa senaste ändringar…" },
   "message.btn.no": { "message": "Nej" },
   "message.btn.yes": { "message": "Ja" },
+  "message.linkInTab": { "message": "(Länk öppnad i flik)" },
   "message.placeholder": { "message": "Meddelande saknas." },
   "message.restart": {
     "message": "FiltaQuilla har gjort ändringar i vissa av sina anpassade filteråtgärder – dessa kan bara tillämpas efter att Thunderbird har startats om. Starta om Thunderbird så snart som möjligt för att säkerställa att filtren fungerar smidigt."

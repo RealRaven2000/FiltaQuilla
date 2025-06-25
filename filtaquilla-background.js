@@ -5,6 +5,42 @@
   messenger.WindowListener.registerDefaultPrefs("defaults/preferences/filtaquilla.js");
   // dropped ["resource", "filtaquilla",           "skin/"],
 
+  function compareVersions(v1, v2) {
+    const v1Parts = v1.split(".").map(Number);
+    const v2Parts = v2.split(".").map(Number);
+
+    const maxLength = Math.max(v1Parts.length, v2Parts.length);
+
+    for (let i = 0; i < maxLength; i++) {
+      const part1 = v1Parts[i] || 0; // Default to 0 if segment is missing
+      const part2 = v2Parts[i] || 0;
+
+      if (part1 > part2) {
+        return 1;
+      } // v1 > v2
+      if (part1 < part2) {
+        return -1;
+      } // v1 < v2
+    }
+
+    return 0; // v1 == v2
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  function versionGreaterOrEqual(v1, v2) {
+    return compareVersions(v1, v2) >= 0;
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  function versionGreater(v1, v2) {
+    return compareVersions(v1, v2) > 0;
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  function versionEqual(v1, v2) {
+    return compareVersions(v1, v2) === 0;
+  }
+
   messenger.WindowListener.registerChromeUrl([
     ["resource", "filtaquilla", "content/"], // resource://
     ["resource", "filtaquilla-skin", "skin/"], // make a separate resource (we can't have 2 different resources mapped to to the same name)
@@ -80,8 +116,12 @@
     for (let i = 0; i < Math.max(a.length, b.length); i++) {
       const numA = a[i] || 0;
       const numB = b[i] || 0;
-      if (numA > numB) {return true;}
-      if (numA < numB) {return false;}
+      if (numA > numB) {
+        return true;
+      }
+      if (numA < numB) {
+        return false;
+      }
     }
     return false; // equal
   }
@@ -89,7 +129,9 @@
   // recursively fetches a header of matching partName. pass in the msg.parts
   // attachments should have a "content-disposition" header
   function getHeaders(parts, partName) {
-    if (!parts) {return null; }
+    if (!parts) {
+      return null;
+    }
     for (let part of parts) {
       if (part.partName == partName) {
         return part.headers;
@@ -206,11 +248,11 @@
           }
         }
         break;
-      case "getAddonInfo": // needed for version no.
-        {
-          let info = await messenger.management.getSelf();
-          return info;
-        }
+      case "getAddonInfo": {
+        // needed for version no.
+        let info = await messenger.management.getSelf();
+        return info;
+      }
       case "openLinkInTab":
         // https://webextension-api.thunderbird.net/en/stable/tabs.html#query-queryinfo
         {
@@ -241,30 +283,39 @@
         }
         let attachmentsToSave = attachments.filter((a) => a.contentDisposition === "attachment");
         if (isDebugAttachments) {
-          console.log(`FILTAQUILLA - saveAttachments(): ${attachmentsToSave.length} attachments to save...`);
+          console.log(
+            `FILTAQUILLA - saveAttachments(): ${attachmentsToSave.length} attachments to save...`
+          );
         }
         // check for attached messages to include _their_ attachments, and append those.
         for (const at of attachmentsToSave) {
           if (at.message && at.message.id) {
             let recursiveAttachments = await browser.messages.listAttachments(at.message.id);
             for (let rA of recursiveAttachments) {
-              rA.myMessageId = at.message.id; // stash message id of eml attachment 
+              rA.myMessageId = at.message.id; // stash message id of eml attachment
             }
-            if (!recursiveAttachments?.length) {continue;}
+            if (!recursiveAttachments?.length) {
+              continue;
+            }
             if (isPrerelease) {
               await addHeaders(recursiveAttachments, at.message.id);
             }
             // add contained attachments within attached eml.
-            attachmentsToSave.push (
+            attachmentsToSave.push(
               ...recursiveAttachments.filter((a) => a.contentDisposition === "attachment")
-            )
+            );
           }
-        }        
+        }
 
         for (const at of attachmentsToSave) {
-          if (isDebugAttachments) {console.log(at);}
+          if (isDebugAttachments) {
+            console.log(at);
+          }
           // myMessageId is used to identify an attached eml that contains the found attachment
-          let file = await browser.messages.getAttachmentFile(at?.myMessageId || data.messageHeader.id, at.partName);
+          let file = await browser.messages.getAttachmentFile(
+            at?.myMessageId || data.messageHeader.id,
+            at.partName
+          );
           let savedItem = {
             fileName: file.name,
             fileType: file.type,
@@ -294,34 +345,52 @@
         }
         return results;
       }
-      case "scriptEditor": {
-        let editorWindow;
-        // First, set up the tab update listener to catch the tab creation or update
-        browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-          if (tab.windowId === editorWindow.id && changeInfo.status === "complete") {
-            // Send the initial script content to the popup's tab once it's fully loaded
-            browser.tabs.sendMessage(tabId, {
-              action: "initActionScript",
-              script: data.script,
-            });
-          }
-        });
+      case "scriptEditor":
+        {
+          let editorWindow;
+          // First, set up the tab update listener to catch the tab creation or update
+          browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+            if (tab.windowId === editorWindow.id && changeInfo.status === "complete") {
+              // Send the initial script content to the popup's tab once it's fully loaded
+              browser.tabs.sendMessage(tabId, {
+                action: "initActionScript",
+                script: data.script,
+              });
+            }
+          });
 
-        // Open the editor in a popup window
-        const url = browser.runtime.getURL("content/jsEditor.html");
-        let screenH = window.screen.height,
-          windowHeight = screenH / 2 > 600 ? 600 : screenH / 2;
-        editorWindow = await browser.windows.create({
-          url,
-          type: "popup",
-          width: 600,
-          height: windowHeight, // Or use your desired height
-          allowScriptsToClose: true, // Optional, allows script to close the window from within
-        });
+          // Open the editor in a popup window
+          const url = browser.runtime.getURL("content/jsEditor.html");
+          let screenH = window.screen.height,
+            windowHeight = screenH / 2 > 600 ? 600 : screenH / 2;
+          editorWindow = await browser.windows.create({
+            url,
+            type: "popup",
+            width: 600,
+            height: windowHeight, // Or use your desired height
+            allowScriptsToClose: true, // Optional, allows script to close the window from within
+          });
 
-        // After the window is created, bring it into focus (using `browser.windows.update`)
-        await browser.windows.update(editorWindow.id, { focused: true });
-      } break;
+          // After the window is created, bring it into focus (using `browser.windows.update`)
+          await browser.windows.update(editorWindow.id, { focused: true });
+        }
+        break;
+      case "showMessage": {
+        const message = data.msg,
+          messageIds = data.msgIds,
+          mode = data.mode || "standard",
+          features = data.features || ["ok"]; // minimum: an ok button. make array mutable
+
+        switch (mode) {
+          case "standard":
+            return showFQmessage(messageIds, features, message);
+          case "news":
+            return displayUpdateMessage();
+          default:
+            return "unknown";
+        }          
+      } 
+      
     } // switch
   });
 
@@ -341,5 +410,166 @@
   });
 
   messenger.WindowListener.startListening();
+
+  messenger.runtime.onInstalled.addListener(async (data) => {
+    let { reason, previousVersion, temporary } = data;
+    const isDebug = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.debug");
+    const manifest = await messenger.runtime.getManifest();
+
+    if (isDebug) {
+      console.log("%FiltaQuilla onInstalled:", "background: black; color: yellow;", {
+        reason,
+        previousVersion,
+        temporary,
+        installed_ver: manifest.version,
+      });
+    }    
+
+    switch(reason) {
+      case "install":
+        break;
+      case "update":
+        displayUpdateMessage();
+        break;
+    }
+  });
+  
+
+  // ************* messages  ****/
+
+  const MESSAGE_STORAGE_KEY = "FiltaQuilla_Message_Key";
+  const showFQmessage = async (messageIds, features, message = "") => {
+    const url = new URL(browser.runtime.getURL("html/fq-message.html"));
+    if (message) {
+      // Store message globally
+      await browser.storage.local.set({ [MESSAGE_STORAGE_KEY]: message });
+      url.searchParams.set("msg_storage", "true");
+    }
+    if (messageIds) {
+      url.searchParams.set("msgId", messageIds);
+    }
+    url.searchParams.set("features", features.join(","));
+    // smallest size as start
+    const windowProperties = {
+      width: 660,
+      height: 480,
+    };
+    const ids = messageIds.split(",").map((s) => s.trim());
+    if (ids.includes("newsMsgEsr140")) { // it's a long one...
+      windowProperties.height = 520;
+      windowProperties.width = 800;
+    }
+
+    if (features.includes("restart")) {
+      windowProperties.height+=60;
+    }
+
+    const createData = {
+      type: "popup",
+      url: url.toString(),
+      allowScriptsToClose: true,
+      titlePreface: "",
+      width: windowProperties.width,
+      height: windowProperties.height,
+    };
+
+    const winRet = await messenger.windows.create(createData);
+    console.log(` new FiltaQuilla Message: Tab = ${winRet.tabs[0].id}`);
+    const tabId = winRet.tabs[0].id;
+    // set up to wait for a button press. using promises/ ...
+    // we need to return "ok" when ok is pushed
+    // we need to return "cancel" (provided the feature is requested) when "cancel" button or ESC key is pushed
+    return new Promise((resolve) => {
+      const listener = async (message, sender) => {
+        if (sender.tab && sender.tab.id === tabId && message.command === "filtaquilla-message") {
+          browser.runtime.onMessage.removeListener(listener);
+          resolve(message.result);
+
+          if (winRet.id) {
+            try {
+              await messenger.windows.remove(winRet.id);
+              // eslint-disable-next-line no-unused-vars
+            } catch (_e) {
+              // Window already closed, ignore
+            }
+          }
+        }
+      };
+
+      browser.runtime.onMessage.addListener(listener);
+    });
+  };
+
+  let retryScheduled = false; // session flag to avoid repeat re-scheduling
+  const RETRY_MINUTES = 20;
+  const LATEST_UPDATEMSG = "5.3"; // latest version with update message
+  async function displayUpdateMessage() {
+    const messageIds = "newsMsgEsr140",
+      isDebug = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.debug");
+
+    const logDebug = (...args) => {
+      if (!isDebug) {
+        return;
+      }
+      console.log("FQ displayUpdateMessage()\n", ...args);
+    };
+
+    let features = ["ok", "cancel","restart","changeLog"];
+
+    // reflects last addon version installed with a msg.
+    let lastMessage =
+      (await messenger.LegacyPrefs.getPref("extensions.filtaquilla.lastUpdateMessage")) || "0";
+    logDebug(`Last update message version: ${lastMessage}`);
+
+    if (versionGreaterOrEqual(lastMessage, LATEST_UPDATEMSG)) {
+      logDebug(`Message already shown for ${LATEST_UPDATEMSG} – skipping.`);
+      return;
+    }
+    logDebug(`Preparing message for version ${LATEST_UPDATEMSG}`);
+    const transmitIds = messageIds || "";
+    logDebug(
+      "Calling showFQmessage(msgIds, features, msg='', 'displayUpdateMessage')",
+      transmitIds,
+      features
+    );
+
+    try {
+      const result = await showFQmessage(transmitIds, features, "");
+      if (result) {
+        const manifest = await messenger.runtime.getManifest();
+        const installedVersion = manifest.version.replace(/pre.*/, "").replace(/\.$/, "");
+        await messenger.LegacyPrefs.setPref(
+          "extensions.filtaquilla.lastUpdateMessage",
+          installedVersion
+        );
+        logDebug("Message shown successfully – version flag saved.");
+        switch(result) {
+          case "changeLog":
+            // display the changelog
+            await showFQmessage("whats-new-list", ["ok"]);
+            break;
+        }
+      } else {
+        logDebug("Message display was cancelled or failed (no result).");
+        scheduleRetry(); // try again later
+      }
+    } catch (ex) {
+      console.error("displayUpdateMessage() failed:", ex);
+      scheduleRetry();
+    }
+
+    function scheduleRetry() {
+      if (retryScheduled) {
+        return;
+      }
+      retryScheduled = true;
+      logDebug("Scheduling one-time retry in 20 minutes…");
+      setTimeout(() => {
+        displayUpdateMessage().catch((e) =>
+          console.error("Retry of displayUpdateMessage() failed:", e)
+        );
+      }, RETRY_MINUTES * 60 * 1000); // 20 minutes
+    }
+  }
 })();
 
