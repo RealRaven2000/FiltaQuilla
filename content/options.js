@@ -51,6 +51,29 @@ async function onLoad() {
   javascriptActionBody.disabled = haveActionNeedsBody || javascriptActionBody.checked ? false : true;
   let verPanel = document.getElementById("fq-options-header-version");
   verPanel.textContent = FiltaQuilla.Util.Version;
+  // replace inline event handlers with event listeners
+  const changeLog = document.getElementById("changeLog");
+  changeLog.addEventListener("click", (_event) => {
+    FiltaQuilla.Util.openChangeLog();
+    window.close();
+  });
+  const supportLink = document.getElementById("supportLink");
+  supportLink.addEventListener("click", (_event) => {
+    FiltaQuilla.Util.openHelpTab();
+    window.close();
+  });  
+  const quickFiltersLink = document.getElementById("quickFiltersLink");
+  quickFiltersLink.addEventListener("click", (_event) => {
+    FiltaQuilla.Util.openLinkInTab('https://addons.thunderbird.net/addon/quickfilters/');
+    window.close();
+  });
+  const licenseLink = document.getElementById("licenseLink");
+  licenseLink.addEventListener("click", (_event) => {
+    FiltaQuilla.Util.openLinkInTab("https://quickfilters.quickfolders.org/filtaquilla.html#donate");
+    window.close();
+  });
+
+  
   
 }
 

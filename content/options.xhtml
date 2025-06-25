@@ -103,7 +103,7 @@
       </tabs>
 
       <tabpanels flex="1">
-        <!-- Filter actions -->
+        <!-- Custom actions -->
         <tabpanel orient="vertical">
           <label value="__MSG_optionsIntro__"/>
           <div id="actionsGrid" class="grid-container">
@@ -327,6 +327,7 @@
             <html:input style="width: 100%;" preference="fileNameWhiteList" />
           </hbox>
         </tabpanel>
+        <!-- Search terms -->
         <tabpanel orient="vertical">
           <label value="__MSG_optionsIntro__"/>
           <div id="conditionsGrid" class="grid-container">
@@ -457,14 +458,16 @@
 
         </tabpanel>
         
+        <!-- About / Support -->
         <tabpanel orient="vertical">
-				  <vbox class="linkBox">
+          <hbox class="buttonLinks linkContainer">
+            <button id="changeLog" class="showSplash">__MSG_message.btn.changeLog__</button> 
+          </hbox>
+				  <vbox class="linkBox linkContainer">
 						<hbox>
 							<spacer flex="1" />
 							<a href="https://quickfilters.quickfolders.org/filtaquilla.html"
-								 id="mesquillaLink"
-								 class="buttonLink"
-								 onclick="FiltaQuilla.Util.openHelpTab();window.close();">
+								 id="supportLink" class="buttonLink">
 								 __MSG_supportPage__
 							</a>
 							<spacer flex="1" />
@@ -485,13 +488,11 @@
 						</table>
 					</vbox>
 				  
-          <vbox class="linkBox">
+          <vbox class="linkBox linkContainer">
 						<hbox>
 							<spacer flex="1" />
 							<a href="https://addons.thunderbird.net/addon/quickfilters/"
-								 id="quickFiltersLink"
-								 class="buttonLink"
-								 onclick="FiltaQuilla.Util.openLinkInTab('https://addons.thunderbird.net/addon/quickfilters/');window.close();">
+								 id="quickFiltersLink" class="buttonLink native">
 								 __MSG_quickFiltersPage__
 							</a>
 							<spacer flex="1" />
@@ -500,8 +501,7 @@
               <tr>
                 <td>
                   <img src="resource://filtaquilla-skin/quickfilters.png"
-                       class="customLogo"
-                       id="quickfilters_img" />
+                    id="quickfilters_img" class="customLogo"/>
                 </td>
                 <td>
                   <p class="linkDescription">
@@ -512,13 +512,11 @@
 						</table>
 					</vbox>
           
-				  <vbox class="linkBox">
+				  <vbox class="linkBox linkContainer">
 						<hbox>
 							<spacer flex="1" />
 							<a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate"
-								 id="licenseLink"
-								 class="buttonLink"
-								 onclick="FiltaQuilla.Util.openLinkInTab('https://quickfilters.quickfolders.org/filtaquilla.html#donate');window.close();">
+								 id="licenseLink" class="buttonLink">
                  __MSG_supportFiltaquilla__
 							</a>
 							<spacer flex="1" />
@@ -557,7 +555,7 @@
   </prefpane>
 	<script type="application/javascript" src="chrome://global/content/preferencesBindings.js" />
 	<script type="text/javascript">
-    loadPreferences(); /* Tb 66 compatibility. Should be called _before_ DOMcontent Loaded event */
+    loadPreferences(); 
 	</script>
 
 </dialog>
