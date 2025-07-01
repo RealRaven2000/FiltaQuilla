@@ -210,9 +210,7 @@
         file.initWithPath(this.textbox.value);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (_e) {
-        void _e; 
-      }
+      } catch {;}
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -286,9 +284,7 @@
         file.initWithPath(this.textbox.value);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (_e) {
-        void _e; 
-      }
+      } catch {;}
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -352,7 +348,7 @@
         file.initWithPath(filePath);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (e) { void e; }
+      } catch {;}
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -503,7 +499,7 @@
         file.initWithPath(filePath);
         fp.displayDirectory = file.parent;
         fp.defaultString = file.leafName;
-      } catch (e) { void e;}
+      } catch {;}
 
       //closured stuff:
       let pathBox = this.textbox,
@@ -643,8 +639,8 @@
           file.initWithPath(filePath);
           fp.displayDirectory = file.parent;
           fp.defaultString = file.leafName;
-        } 
-        catch (e) { void e;}
+        } catch {;}
+        
         fp.open(fpCallback);
       } else  // if (!this.hBox.value)
       // if there is an empty box initialize and use default directory.

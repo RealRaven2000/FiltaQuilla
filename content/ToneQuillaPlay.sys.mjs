@@ -391,9 +391,7 @@ export const ToneQuillaPlay = {
     } else {
       try {
         mimeType = that._nsIMIMEService.getTypeFromExtension(extension);
-      } catch (e) {
-        void e;
-      } // ignore errors, since that probably means not defined
+      } catch {;} // ignore errors, since that probably means not defined
     }
     let uriSpec = aSpec.startsWith("file:")
       ? aSpec
