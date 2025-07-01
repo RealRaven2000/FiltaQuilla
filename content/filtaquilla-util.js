@@ -61,7 +61,9 @@ FiltaQuilla.Util = {
   },
 
   get prefs() {
-    if (this._prefs) {return this._prefs;}
+    if (this._prefs) {
+      return this._prefs;
+    }
     this._prefs = Services.prefs.getBranch("extensions.filtaquilla.");
     return this._prefs;
   },
@@ -119,14 +121,22 @@ FiltaQuilla.Util = {
   },
 
   getTabInfoLength: function getTabInfoLength(tabmail) {
-    if (tabmail.tabInfo) {return tabmail.tabInfo.length;}
-    if (tabmail.tabOwners) {return tabmail.tabOwners.length;}
+    if (tabmail.tabInfo) {
+      return tabmail.tabInfo.length;
+    }
+    if (tabmail.tabOwners) {
+      return tabmail.tabOwners.length;
+    }
     return null;
   },
 
   getTabInfoByIndex: function getTabInfoByIndex(tabmail, idx) {
-    if (tabmail.tabInfo) {return tabmail.tabInfo[idx];}
-    if (tabmail.tabOwners) {return tabmail.tabOwners[idx];} // Postbox
+    if (tabmail.tabInfo) {
+      return tabmail.tabInfo[idx];
+    }
+    if (tabmail.tabOwners) {
+      return tabmail.tabOwners[idx];
+    } // Postbox
     return null;
   },
 
@@ -135,9 +145,14 @@ FiltaQuilla.Util = {
       queryPos = URL.indexOf("?"),
       baseURL = URL;
 
-    if (hashPos > 0) {baseURL = URL.substr(0, hashPos);}
-    else if (queryPos > 0) {baseURL = URL.substr(0, queryPos);}
-    if (baseURL.endsWith("/")) {return baseURL.substr(0, baseURL.length - 1);} // match "x.com" with "x.com/"
+    if (hashPos > 0) {
+      baseURL = URL.substr(0, hashPos);
+    } else if (queryPos > 0) {
+      baseURL = URL.substr(0, queryPos);
+    }
+    if (baseURL.endsWith("/")) {
+      return baseURL.substr(0, baseURL.length - 1);
+    } // match "x.com" with "x.com/"
     return baseURL;
   },
 
@@ -149,7 +164,7 @@ FiltaQuilla.Util = {
     });
   },
 
-  openChangeLog: function() {
+  openChangeLog: function () {
     FiltaQuilla.Util.notifyTools.notifyBackground({
       func: "showMessage",
       msgIds: "whats-new-list",
@@ -225,26 +240,18 @@ FiltaQuilla.Util = {
       let elapsed = new String(endTime - this.lastTime); // time in milliseconds
       timePassed = "[" + elapsed + " ms]   ";
       this.lastTime = endTime; // remember last time
-    } catch { 
+    } catch {
       // this shouldn't happen!
     }
     return (
-      end.getHours() +
-      ":" +
-      end.getMinutes() +
-      ":" +
-      end.getSeconds() +
-      "." +
-      end.getMilliseconds() +
-      "  " +
-      timePassed
+      `${end.getHours()}:${end.getMinutes()}:${end.getSeconds()}` + 
+      `.${end.getMilliseconds()}  ${timePassed}`
     );
   },
 
-  logToConsole: function logToConsole(a) {
-    void a;
+  logToConsole: function logToConsole(...args) {
     let msg = "FiltaQuilla " + this.logTime() + "\n"; // (optionTag ? '{' + optionTag.toUpperCase() + '} ' : '') +
-    console.log(msg, ...arguments);
+    console.log(msg, ...args);
   },
 
   // flags
@@ -252,41 +259,26 @@ FiltaQuilla.Util = {
   // warningFlag    0x1   Warning messages.
   // exceptionFlag  0x2   An exception was thrown for this case - exception-aware hosts can ignore this.
   // strictFlag     0x4
-  logError: function (
-    aMessage,
-    aSourceName,
-    aSourceLine,
-    aLineNumber,
-    aColumnNumber,
-    aFlags
-  ) {
+  logError: function (aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags) {
     const Ci = Components.interfaces,
       Cc = Components.classes;
     try {
       let scriptError = Cc["@mozilla.org/scripterror;1"].createInstance(Ci.nsIScriptError);
-      scriptError.init(
-        aMessage,
-        aSourceName,
-        aSourceLine,
-        aLineNumber,
-        aColumnNumber,
-        aFlags
-      );
+      scriptError.init(aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags);
       Services.console.logMessage(scriptError);
     } catch {
       console.warn("Error in FiltaQuilla:", `${aMessage}\n`, {
         source: `${aSourceName} : ${aSourceLine} : ${aColumnNumber}`,
-        flags: aFlags
+        flags: aFlags,
       });
     }
   },
 
   logException: function (aMessage, ex) {
-
     console.trace();
     console.log(aMessage, ex);
     return;
-    
+
     /* 
     let stack = "",
       srcName = "",
@@ -318,7 +310,9 @@ FiltaQuilla.Util = {
   },
 
   isDebugOption: function (o) {
-    if (!this.isDebug) {return false;}
+    if (!this.isDebug) {
+      return false;
+    }
     try {
       return this.prefs.getBoolPref("debug." + o);
     } catch {
@@ -348,7 +342,7 @@ FiltaQuilla.Util = {
           break; // only log once, in case multiple log switches are on
         }
       }
-    } catch(e) { 
+    } catch (e) {
       console.error(e);
     }
   },
@@ -360,7 +354,9 @@ FiltaQuilla.Util = {
     if (pref) {
       Services.prefs.setBoolPref(pref.getAttribute("name"), cb.checked);
     }
-    if (noUpdate) {return true;}
+    if (noUpdate) {
+      return true;
+    }
     return false; // this.updateMainWindow();
   },
 
@@ -393,8 +389,11 @@ FiltaQuilla.Util = {
       if (flt) {
         flt.value = filter;
         // make filter box readonly to prevent damage!
-        if (!readOnly) {flt.focus();}
-        else {flt.setAttribute("readonly", true);}
+        if (!readOnly) {
+          flt.focus();
+        } else {
+          flt.setAttribute("readonly", true);
+        }
         if (w.self.FilterPrefs) {
           w.self.FilterPrefs();
         }
@@ -600,7 +599,9 @@ FiltaQuilla.Util = {
             currentText = currentQuoteLevel + currentText;
           }
           if (currentQuoteLevel === "") {
-            if (type === "both" || type === "u") {unquoted.push(currentText);}
+            if (type === "both" || type === "u") {
+              unquoted.push(currentText);
+            }
           } else if (type === "both" || type === "q") {
             quoted.push(currentText);
           }
@@ -620,7 +621,9 @@ FiltaQuilla.Util = {
           currentText = currentQuoteLevel + currentText;
         }
         if (currentQuoteLevel === "") {
-          if (type === "both" || type === "u") {unquoted.push(currentText);}
+          if (type === "both" || type === "u") {
+            unquoted.push(currentText);
+          }
         } else if (type === "both" || type === "q") {
           quoted.push(currentText);
         }
@@ -648,8 +651,12 @@ FiltaQuilla.Util = {
     }
 
     // Return results based on type
-    if (type === "u") {return unquoted.join("\n\n");}
-    if (type === "q") {return quoted.join("\n\n");}
+    if (type === "u") {
+      return unquoted.join("\n\n");
+    }
+    if (type === "q") {
+      return quoted.join("\n\n");
+    }
     return [quoted.join("\n\n"), unquoted.join("\n\n")];
   },
 
@@ -701,7 +708,9 @@ FiltaQuilla.Util = {
       }
     } catch (ex) {
       FiltaQuilla.Util.logDebug(
-        `NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${folder.prettyName} failed.\nMatching body impossible.`,
+        `NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${
+          folder.prettyName|| folder.localizedName
+        } with subject "${subject}" failed.\nMatching body impossible.`,
         ex
       );
       return false; // shit shit shit - reading the message fails.
@@ -1123,7 +1132,9 @@ FiltaQuilla.Util = {
   getFileInitArg: function (win) {
     // [issue 265]
     // [bug 1882701] nsIFilePicker.init() first parameter changed from Tb125
-    if (!win) {return null;}
+    if (!win) {
+      return null;
+    }
     if (this.versionGreaterOrEqual(this.AppverFull, "125")) {
       return win.browsingContext;
     }
@@ -1161,9 +1172,7 @@ FiltaQuilla.Util = {
       util.logToConsole(msg);
       util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
       return false;
-    } finally {
-      ;
-    }
+    } 
     return result;
   },
 
