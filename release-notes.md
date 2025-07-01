@@ -1,4 +1,4 @@
-**Version 5.3** 
+**Version 5.3.1** 
 
 _Upcoming in the next big release:_ Thunderbird will soon ask you to choose your preferred update path — either the annual ESR track or the faster monthly releases. [Learn more about the new release model](https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/)
 
@@ -8,13 +8,10 @@ The monthly release cycle will deliver new features and interface updates as the
 
 
 **Improvements**
-*   Made compatible with Thunderbird 140.\*. Minimum version going forward will now be **Thunderbird 128**.
-*   Improvement in asynchronous Save Attachments, leading to slow down of Thunderbird when filtering POP3 mail (no copy listener) [issue #349]. We are now allowed to use `nsIThreadManager.processNextEvent()` in order to give cycles back to the system while the attachments are processed. Please restart Thunderbird to force changes to come into effect. 
-*   Play sound improvements: Fixed open sound file button, extracting the supplied sounds to the default folder `profile/extensions/filtaquilla` and added a play sound button to filter editor. [issue #350]
+*   Made compatible with Thunderbird 141.\*. 
 
 **Miscellaneus**
-*   Refactored internal action logic for better maintainability and consistency.
-*   Rewrote `saveMessageAsFile` to support concurrency and cleaner path handling.
+*    Thunderbird 141 removed `nsIMsgFolder.prettyName`
 
 **TO DO NEXT**
 *    Feature Request: Notification alert \[issue #240\].

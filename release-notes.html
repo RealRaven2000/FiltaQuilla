@@ -1,4 +1,4 @@
-<b>Version 5.3</b>
+<b>Version 5.3.1</b>
 
 <b>Upcoming in the next big release:</b> Thunderbird will soon ask you to choose your preferred update path — either the annual ESR track or the faster monthly releases. <a href="https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/">Learn more about the new release model</a>
 
@@ -10,15 +10,12 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 
 <b>Improvements</b>
 <ul>
-  <li> Made compatible with Thunderbird 140.*.  </li>
-  <li> Improvement in asynchronous Save Attachments, leading to slow down of Thunderbird when filtering POP3 mail (no copy listener) <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/349">[issue 349]</a>. We are now allowed to use nsIThreadManager.processNextEvent() in order to give cycles back to the system while the attachments are processed. Please restart Thunderbird to force changes to come into effect. </li>
-  <li> Play sound improvements: Fixed open sound file button, extracting the supplied sounds to the default folder profile/extensions/filtaquilla and added a play sound button to filter editor.<a href="https://github.com/RealRaven2000/FiltaQuilla/issues/350">[issue 350]</a> </li>
+  <li> Made compatible with Thunderbird 141.*.  </li>
 </ul>
 
 <b>Miscellaneus</b>
 <ul>
-  <li>Refactored internal action logic for better maintainability and consistency.</li>
-  <li>Rewrote `saveMessageAsFile` to support concurrency and cleaner path handling.</li>
+  <li> Thunderbird 141 removed nsIMsgFolder.prettyName </li>
 </ul>
 
 <strong>Support My Work</strong>
