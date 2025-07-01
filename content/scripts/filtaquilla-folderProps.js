@@ -38,7 +38,7 @@ function onLoad(activatedWhileWindowOpen) {
     );
     applyIncomingCb.addEventListener("command", (event) => {
       const active = event.originalTarget.checked;
-      console.log(`Change applyIncomingFilters of ${folder.prettyName} to: ${active}`);
+      console.log(`Change applyIncomingFilters of ${folder.prettyName || folder.localizedName} to: ${active}`);
       folder.setStringProperty("applyIncomingFilters", active ? "true" : "");
     });
     if (folder.getStringProperty("applyIncomingFilters")) {

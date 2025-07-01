@@ -561,9 +561,8 @@
 
         try {
           file.initWithPath(fileURL); // check whether template exists!
-        } catch(ex) {
+        } catch {
           console.error(`FiltaQuilla\nfwdSmartTemplates() - invalid file url: ${fileURL}`);
-          void ex;
           return;
         }
         if (!file.exists()) {
@@ -1165,9 +1164,8 @@
 
           try {
             directory.initWithPath(aActionValue);
-          } catch(ex) {
+          } catch {
             console.error(`FiltaQuilla\nsaveAttachment() - invalid directory url: ${aActionValue}`);
-            void ex;
             return;
           }
 
@@ -2011,8 +2009,7 @@
         try {
           thread = message.folder.msgDatabase.getThreadContainingMsgHdr(message);
           rootHdr = thread.getChildHdrAt(0);
-        } catch (e) {
-          void e;
+        } catch {
           rootHdr = message;
         }
 
@@ -2170,219 +2167,154 @@
     // 1. Enable Actions
     try {
       maxThreadScan = prefs.getIntPref("maxthreadscan");
-    } catch (e) {
+    } catch {
       maxThreadScan = 20;
-      void e;
     }
 
     try {
       subjectAppendEnabled = prefs.getBoolPref("subjectAppend.enabled");
-    } catch (e) {void e;}
+    } catch {;}
 
     try {
       subjectSuffixEnabled = prefs.getBoolPref("subjectSuffix.enabled");
-    } catch (e) {void e;}
+    } catch {;}
 
     try {
       removeKeywordEnabled = prefs.getBoolPref("removeKeyword.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       removeFlaggedEnabled = prefs.getBoolPref("removeFlagged.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       markUnreadEnabled = prefs.getBoolPref("markUnread.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       markRepliedEnabled = prefs.getBoolPref("markReplied.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       noBiffEnabled = prefs.getBoolPref("noBiff.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       copyAsReadEnabled = prefs.getBoolPref("copyAsRead.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       launchFileEnabled = prefs.getBoolPref("launchFile.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       runFileEnabled = prefs.getBoolPref("runFile.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       runFileUnicode = prefs.getBoolPref("runFile.unicode");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       trainAsJunkEnabled = prefs.getBoolPref("trainAsJunk.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       trainAsGoodEnabled = prefs.getBoolPref("trainAsGood.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       printEnabled = prefs.getBoolPref("print.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       addSenderEnabled = prefs.getBoolPref("addSender.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       saveAttachmentEnabled = prefs.getBoolPref("saveAttachment.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       detachAttachmentsEnabled = prefs.getBoolPref("detachAttachments.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       javascriptActionEnabled = prefs.getBoolPref("javascriptAction.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       javascriptActionBodyEnabled = prefs.getBoolPref("javascriptActionBody.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       regexpCaseInsensitiveEnabled = prefs.getBoolPref("regexpCaseInsensitive.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       tonequillaEnabled = prefs.getBoolPref("tonequilla.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       saveMessageAsFileEnabled = prefs.getBoolPref("saveMessageAsFile.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       moveLaterEnabled = prefs.getBoolPref("moveLater.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       archiveMessageEnabled = prefs.getBoolPref("archiveMessage.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       fwdSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.fwd.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       rspSmartTemplatesEnabled = prefs.getBoolPref("smarttemplates.rsp.enabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     // 2. Enable conditions
     try {
       SubjectRegexEnabled = prefs.getBoolPref("SubjectRegexEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       HeaderRegexEnabled = prefs.getBoolPref("HeaderRegexEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       JavascriptEnabled = prefs.getBoolPref("JavascriptEnabled");
-    } catch (e) {void e;}
+    } catch {;}
 
     try {
       SearchBccEnabled = prefs.getBoolPref("SearchBccEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
+
     try {
       ThreadHeadTagEnabled = prefs.getBoolPref("ThreadHeadTagEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
+
     try {
       ThreadAnyTagEnabled = prefs.getBoolPref("ThreadAnyTagEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       FolderNameEnabled = prefs.getBoolPref("FolderNameEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       AttachmentRegexEnabled = prefs.getBoolPref("AttachmentRegexEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       BodyRegexEnabled = prefs.getBoolPref("BodyRegexEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     try {
       SubjectBodyRegexEnabled = prefs.getBoolPref("SubjectBodyRegexEnabled");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
 
     fileNamesSpaceCharacter = prefs.getStringPref("fileNames.spaceCharacter");
   };
@@ -2485,7 +2417,7 @@
       try {
         let localCount = msgHdr.getUint32Property("moveLaterCount");
         if (localCount > moveLaterCount) {moveLaterCount = localCount;}
-      } catch (e) {void e;}
+      } catch {;}
     }
     if (moveLaterCount <= 0 || this.recallCount <= 0) {
       // execute move
@@ -2564,7 +2496,7 @@
     if (/@MESSAGEURI@/.test(parameter))
       {return parameter.replace(/@MESSAGEURI@/, hdr.folder.generateMessageURI(hdr.messageKey));}
     if (/@FOLDERNAME@/.test(parameter))
-      {return parameter.replace(/@FOLDERNAME@/, hdr.folder.prettyName);}
+      {return parameter.replace(/@FOLDERNAME@/, hdr.folder.prettyName || hdr.folder.localizedName);}
     if (/@PROPERTY@.+@/.test(parameter)) {
       // This is a little different, the actual property (which is typically a
       // custom db header) is stored like @PROPERTY@X-SPAM@
@@ -2575,9 +2507,7 @@
         try {
           var value = hdr.getStringProperty(property.toLowerCase());
           return matches[1] + value + matches[3];
-        } catch (e) {
-          void e;
-        }
+        } catch {;}
       }
     }
     return parameter;
@@ -2968,9 +2898,7 @@
     let moveLaterCount = 0;
     try {
       moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
-    } catch (e) {
-      void e;
-    }
+    } catch {;}
     moveLaterCount++;
     msgHdr.setUint32Property("moveLaterCount", moveLaterCount);
   }
