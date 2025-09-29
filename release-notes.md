@@ -1,17 +1,18 @@
-**Version 5.3.1** 
+**Version 5.4** 
 
-_Upcoming in the next big release:_ Thunderbird will soon ask you to choose your preferred update path — either the annual ESR track or the faster monthly releases. [Learn more about the new release model](https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/)
+**Latest News**
 
-The ESR version will stay on v140, increasing minor version numbers and including only security fixes and bug patches, which is often preferable for corporate environments.
+The Thunderbird monthly release cycle will deliver new features and interface updates as they’re developed. Please check whether your current add-ons support this release model. To help with this, you can install the [Add-on Compatibility Check](https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/).
 
-The monthly release cycle will deliver new features and interface updates as they’re developed. Please check whether your current add-ons support this release model. To help with this, you can install the [Add-on Compatibility Check](https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/) extension.
+Some users may have seen a false incompatibility warning after updating from Thunderbird to v142 or higher. This was caused by cached compatibility information in Thunderbird, which sometimes fails to refresh correctly. The previous version of FiltaQuilla was already fully compatible with 143.
+
+To get this fixed I raised a bug with Thunderbird: [Bugzilla 1986027](https://bugzilla.mozilla.org/show_bug.cgi?id=1986027).
 
 
 **Improvements**
-*   Made compatible with Thunderbird 141.\*. 
+*   Made compatible with Thunderbird 144.*.
+*   Rewrote the Tonequilla portion (play sound) to use current window as a parameter or the last 3pane window. \[issue #258\]
 
-**Miscellaneus**
-*    Thunderbird 141 removed `nsIMsgFolder.prettyName`
 
 **TO DO NEXT**
 *    Feature Request: Notification alert \[issue #240\].
