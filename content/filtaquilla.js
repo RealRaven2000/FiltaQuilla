@@ -1166,6 +1166,9 @@
             directory.initWithPath(aActionValue);
           } catch {
             console.error(`FiltaQuilla\nsaveAttachment() - invalid directory url: ${aActionValue}`);
+            if (copyListener) {
+              copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
+            }            
             return;
           }
 
@@ -2135,8 +2138,7 @@
     );
 
     try {
-      await ToneQuillaPlay.init();
-      ToneQuillaPlay.window = window;
+      await ToneQuillaPlay.init(window);
     } catch (ex) {
       FiltaQuilla.Util.logException("ToneQuillaPlay.init failed.", ex);
     }

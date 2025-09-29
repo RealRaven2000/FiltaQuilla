@@ -46,12 +46,53 @@ var kDelayToNext = 1200, // was 5000
 const kDelayToClear = 3000,  // was 15000
       kStatusIdle = 0,       // not playing anything
       kStatusStart = 1;
+      
+/* GLOBALS */
+let _window = null;
+// timer to control delay between play requests
+let _playTimer = null;
+// nsISound instance to play .wav files
+// let _nsISound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
+
+// queue of file references for sounds to play
+let _playQueue = [];
+// queue of already queued file references to ignore
+let _ignoreQueue = [];
+// status of player
+let _status = kStatusIdle;
+// timer to control delay to clear ignore queue
+let _ignoreTimer = null;
+// nsIMIMEService
+let _nsIMIMEService = null;
 
 function re(e) {
   dump(e + '\n');
   Cu.reportError(e);
   throw e;
 }
+
+function logHighlightDebugOptional(debugOption, txt, format = {}, ...args) {
+  const options = debugOption.split(",");
+  format.color = format.color || "white";
+  format.background = format.background || "rgb(15, 96, 6)";
+  for (let i = 0; i < options.length; i++) {
+    let option = options[i];
+    const Prefix = "extensions.filtaquilla";
+    let isDebug = Services.prefs.getBoolPref(`${Prefix}.debug.${option}`);
+    if (!isDebug) {
+      continue;
+    }
+    let time = new Date();
+    let timeStamp = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} - ${time.getMilliseconds()}`;
+    console.log(
+      `ToneQuilla [${option.toUpperCase()}] ${timeStamp}\n%c${txt}`,
+      `color:${format.color};background:${format.background}`,
+      ...args
+    );
+    break;
+  }
+}
+
 
 
 export const ToneQuillaPlay = {
@@ -63,51 +104,6 @@ export const ToneQuillaPlay = {
     }
   },
 
-  logHighlightDebugOptional: function (debugOption, txt, format={}, ...args) {
-    const options = debugOption.split(",");
-    format.color = format.color || "white";
-    format.background = format.background || "rgb(15, 96, 6)";
-    for (let i = 0; i < options.length; i++) {
-      let option = options[i];
-      const Prefix = "extensions.filtaquilla";
-      let isDebug = Services.prefs.getBoolPref(`${Prefix}.debug.${option}`);
-      if (!isDebug) {
-        continue;
-      }
-      let time = new Date();
-      let timeStamp = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} - ${time.getMilliseconds()}`;
-      console.log(
-        `ToneQuilla [${option.toUpperCase()}] ${timeStamp}\n%c${txt}`,
-        `color:${format.color};background:${format.background}`,
-        ...args
-      );
-      break; 
-    }    
-  },
-
-  // nsISound instance to play .wav files
-  _nsISound: null,
-
-  // queue of file references for sounds to play
-  _playQueue: [],
-
-  // queue of already queued file references to ignore
-  _ignoreQueue: [],
-
-  // status of player
-  _status: kStatusIdle,
-
-  // timer to control delay between play requests
-  _playTimer: null,
-
-  // timer to control delay to clear ignore queue
-  _ignoreTimer: null,
-
-  // nsIMIMEService
-  _nsIMIMEService: null,
-
-  // active audio element
-  _audioElement: null,
 
   // the window used to construct the Audio object
   window: null,
@@ -118,7 +114,7 @@ export const ToneQuillaPlay = {
   MY_ID: "tonequilla@mesquilla.com",
 
   //function to initialize variables
-  init: async function () {
+  init: async function (win = null) {
     // new utility function to unpack a file from the xpi
     async function copyDataURLToFile(aURL, file) {
       let step = 0;
@@ -168,6 +164,17 @@ export const ToneQuillaPlay = {
         let msg = "ToneQuillaPlay copyDataURLToFile() failed at step " + step + ": " + ex.message;
         ToneQuillaPlay.logDebug(msg);
         throw ex; // or return false if you prefer to handle error silently
+      }
+    }
+
+    if (win && win.document && win.document.createElement) {
+      // Use the passed window if valid
+      _window = win;
+    } else {
+      // Fallback to main 3-pane window
+      _window = Services.wm.getMostRecentWindow("mail:3pane");
+      if (!_window) {
+        throw new Error("Unable to find main mail window for audio playback");
       }
     }
 
@@ -282,11 +289,11 @@ export const ToneQuillaPlay = {
     //   globalThis.Services || ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
 
     try {
-      that._playTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-      that._ignoreTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+      _playTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+      _ignoreTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       // that._nsIIOService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-      that._nsISound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
-      that._nsIMIMEService = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
+      // _nsISound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
+      _nsIMIMEService = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
       // new code to unpack sounds...
 
       let dir = makePath();
@@ -344,39 +351,39 @@ export const ToneQuillaPlay = {
 
   // function to play the next queued sound
   nextSound: async function () {
-    let soundSpec = that._playQueue.shift();
+    let soundSpec = _playQueue.shift();
     if (!soundSpec) {
-      that.logHighlightDebugOptional("sounds", "ToneQuillaPlay: queue empty, nothing to play.");
+      logHighlightDebugOptional("sounds", "ToneQuillaPlay: queue empty, nothing to play.");
       // only clear _ignoreQueue once the queue is fully empty
-      that._ignoreTimer.initWithCallback(
+      _ignoreTimer.initWithCallback(
         that._clearIgnore,
         kDelayToClear,
         Ci.nsITimer.TYPE_ONE_SHOT
       );
-      that._status = kStatusIdle;
+      _status = kStatusIdle;
       return;
     }
 
-    that.logHighlightDebugOptional("sounds", `nextSound - Playing: ${soundSpec}`);  
+    logHighlightDebugOptional("sounds", `nextSound - Playing: ${soundSpec}`);
     if (soundSpec) {
-      that._status = kStatusStart;
+      _status = kStatusStart;
       await that.play(soundSpec);
       // tiny delay, but avoid recursion
       Promise.resolve().then(() => that.nextSound());
       // that._playTimer.initWithCallback(that.nextSound, kDelayToNext, Ci.nsITimer.TYPE_ONE_SHOT);
-    } 
+    }
   },
 
   play: async function (aSpec) {
-    if (!that.window) {
+    if (!_window) {
       // [issue 258]
       console.log("ToneQuillaPlay.play() - window instance not initialized!;");
-      that.window = Services.wm.getMostRecentWindow("mail:3pane");
-      console.log("initialized 'that.window' with Servies", { window: that.window, that: that });
+      _window = Services.wm.getMostRecentWindow("mail:3pane");
+      console.log("initialized '_window' with Servies", { window: _window, that: that });
     }
-    that.logHighlightDebugOptional("sounds", `play(${aSpec}) ...`);  
+    logHighlightDebugOptional("sounds", `play(${aSpec}) ...`);
     // initialize module if needed
-    if (!that._playTimer) {
+    if (!_playTimer) {
       await that.init();
     }
 
@@ -390,8 +397,8 @@ export const ToneQuillaPlay = {
       mimeType = "audio/wav";
     } else {
       try {
-        mimeType = that._nsIMIMEService.getTypeFromExtension(extension);
-      } catch {;} // ignore errors, since that probably means not defined
+        mimeType = _nsIMIMEService.getTypeFromExtension(extension);
+      } catch { ; } // ignore errors, since that probably means not defined
     }
     let uriSpec = aSpec.startsWith("file:")
       ? aSpec
@@ -411,14 +418,14 @@ export const ToneQuillaPlay = {
     }
 
     // Macs can use nsISound to play aiff files
-    if (that.window.navigator.platform.indexOf("Mac") >= 0 && mimeType == "audio/aiff") {
+    if (_window.navigator.platform.indexOf("Mac") >= 0 && mimeType == "audio/aiff") {
       mimeType = "audio/wav";
     }
 
     const startTime = new Date();
     that.logDebug("determined mimeType = " + mimeType);
-    const audio = that.window.document.createElement("audio");
-    const source = that.window.document.createElement("source");
+    const audio = _window.document.createElement("audio");
+    const source = _window.document.createElement("source");
 
     switch (mimeType) {
       case "video/ogg":
@@ -434,10 +441,13 @@ export const ToneQuillaPlay = {
         try {
           await new Promise((resolve) => {
             audio.addEventListener("loadedmetadata", resolve, { once: true });
-          });          
+          });
           const duration = isNaN(audio.duration) ? 0 : audio.duration * 1000; // ms
           await audio.play();
-          that.logHighlightDebugOptional("sounds", `Audio playback started: ${uriSpec} - should take ${duration}ms`);
+          logHighlightDebugOptional(
+            "sounds",
+            `Audio playback started: ${uriSpec} - should take ${duration}ms`
+          );
           // Wait until the audio ends before proceeding
           if (!duration) {
             await new Promise((resolve) => {
@@ -446,16 +456,16 @@ export const ToneQuillaPlay = {
           }
           const remainingDuration = duration - (new Date() - startTime);
           if (remainingDuration > 0) {
-            that.logHighlightDebugOptional(
+            logHighlightDebugOptional(
               "sounds",
               `After sound ended we still have ${remainingDuration} to wait!`
             );
             const r = duration - (new Date() - startTime) + kDelayToNext;
             // even with "latency compensation" - (negative kDelayToNext) enforce a min time of 20ms
-            await new Promise((resolve) => that.window.setTimeout(resolve, Math.max(20, r)));
+            await new Promise((resolve) => _window.setTimeout(resolve, Math.max(20, r)));
           }
         } catch (err) {
-          that.logHighlightDebugOptional("sounds", `Error playing ${uriSpec}:`, {}, err);
+          logHighlightDebugOptional("sounds", `Error playing ${uriSpec}:`, {}, err);
         }
         break;
       default:
@@ -465,14 +475,16 @@ export const ToneQuillaPlay = {
   },
 
   fadeOut: function (audio, duration = 150) {
-    if (!audio) {return;}
+    if (!audio) {
+      return;
+    }
 
     if (duration <= 0) {
       // No fade, stop immediately
       audio.volume = 0;
       return;
     }
-  
+
     // fade out the clip, then stop it
     const steps = 35;
     const stepTime = duration / steps;
@@ -491,7 +503,9 @@ export const ToneQuillaPlay = {
   },
 
   stop: function (audio) {
-    if (!audio) {return;}
+    if (!audio) {
+      return;
+    }
 
     if (kFadeOut > 0) {
       this.fadeOut(audio, kFadeOut);
@@ -504,12 +518,15 @@ export const ToneQuillaPlay = {
   // clear all file references from the ignore queue
   _clearIgnore: function () {
     that.logDebug("_clearIgnore()");
-    while (that._ignoreQueue.pop()) {;}
+    while (_ignoreQueue.pop()) { ; }
   },
 
   // add a file URL spec to the play queue, unless already queued or ignored
   queueToPlay: function (aSpec) {
-    that.logHighlightDebugOptional("sounds", `Queueing: ${aSpec}`, {background:"rgb(146, 88, 0)", color: "yellow"});
+    logHighlightDebugOptional("sounds", `Queueing: ${aSpec}`, {
+      background: "rgb(146, 88, 0)",
+      color: "yellow",
+    });
     // This function is designed to allow multiple emails to request playing
     // a sound, without getting the same sound multiple times, nor overlapping.
     // Multiple sounds are delayed to allow each to be heard. Any sounds
@@ -519,23 +536,23 @@ export const ToneQuillaPlay = {
     kFadeOut = Services.prefs.getIntPref("extensions.filtaquilla.tonequilla.fadeOut");
 
     // initialize module if needed
-    if (!that._playTimer) {
+    if (!_playTimer) {
       that.init();
     }
 
     // ignore recently queued sounds
-    if (that._ignoreQueue.indexOf(aSpec) >= 0) {
+    if (_ignoreQueue.indexOf(aSpec) >= 0) {
       that.logDebug("ignoring this sound, it was already played recently.");
       return;
     }
 
-    let urlIndex = that._playQueue.indexOf(aSpec);
+    let urlIndex = _playQueue.indexOf(aSpec);
     if (urlIndex < 0) {
-      that._playQueue.push(aSpec);
-      that._ignoreQueue.push(aSpec);
+      _playQueue.push(aSpec);
+      _ignoreQueue.push(aSpec);
     }
-    if (that._status == kStatusIdle) {
-      that._status = kStatusStart;
+    if (_status == kStatusIdle) {
+      _status = kStatusStart;
       that.nextSound(); // starts a new play queue
     } // if !idle,  then playback is already running & the queue will take care of it
   },
