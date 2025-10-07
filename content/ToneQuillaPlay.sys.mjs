@@ -284,10 +284,6 @@ export const ToneQuillaPlay = {
 
     const { NetUtil } = ChromeUtils.importESModule("resource://gre/modules/NetUtil.sys.mjs");
 
-    // Services is already global
-    // const { Services } =
-    //   globalThis.Services || ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
-
     try {
       _playTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       _ignoreTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
