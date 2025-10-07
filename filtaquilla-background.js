@@ -97,12 +97,6 @@
     "content/scripts/filtaquilla-filterEditor-css.js"
   );
 
-  /*
-  messenger.WindowListener.registerWindow(
-    "chrome://messenger/content/folderProps.xhtml",
-    "content/scripts/filtaquilla-folderProps.js"
-  );
-  */
 
   function greaterThan(versionA, versionB) {
     const clean = (v) =>
@@ -406,6 +400,25 @@
           script: data.script,
         });
         break;
+      case "showAboutConfig":
+        messenger.FiltaQuilla.showAboutConfig(data.filter);
+        break;
+      case "showMessage":{
+        const message = data.msg,
+          messageIds = data.msgIds,
+          mode = data.mode || "standard",
+          features = data.features || ["ok"]; // minimum: an ok button. make array mutable
+
+        switch (mode) {
+          case "standard":
+            return showFQmessage(messageIds, features, message);
+          case "news":
+            return displayUpdateMessage();
+          default:
+            return "unknown";
+        }
+      } 
+
     }
   });
 
@@ -423,16 +436,82 @@
         temporary,
         installed_ver: manifest.version,
       });
-    }    
+    }
 
-    switch(reason) {
+    switch (reason) {
       case "install":
         break;
       case "update":
         displayUpdateMessage();
         break;
     }
+
+    await createFiltaQuillaMenus();
   });
+
+  messenger.runtime.onStartup.addListener(async () => {
+    await createFiltaQuillaMenus();
+  });
+
+  async function createFiltaQuillaMenus() {
+    const isDebug = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.debug");
+    if (isDebug) { 
+      console.log("Creating FiltaQuilla menus..."); 
+    }
+
+    // Remove any previous menu entries just to be safe during reloads
+    await browser.menus.removeAll();
+
+    /* [issue 366] convert settings to html */
+    await messenger.menus.create({
+      id: "filtaquilla-preferences",
+      title: messenger.i18n.getMessage("prefwindow.title"),
+      contexts: ["browser_action_menu"], // attach to toolbar button
+      onclick: () => {
+        browser.tabs.create({ url: "html/fq-settings.html" });
+      },
+    });
+
+    await messenger.menus.create({
+      id: "filtaquilla-prefs-legacy",
+      title: `${messenger.i18n.getMessage("prefwindow.title")} (legacy)`,
+      contexts: ["browser_action_menu"],
+      onclick: () => {
+        messenger.FiltaQuilla.showOptions();
+      },
+    });
+
+    await messenger.menus.create({
+      id: "filtaquilla-news",
+      title: messenger.i18n.getMessage("newsHead"),
+      contexts: ["browser_action_menu"],
+      onclick: () => {
+        showFQmessage("whats-new-list", ["ok"]);
+      },
+    });
+
+    await messenger.menus.create({
+      id: "filtaquilla-support",
+      title: messenger.i18n.getMessage("supportPage"),
+      contexts: ["browser_action_menu"],
+      onclick: async () => {
+        const URL = "https://quickfilters.quickfolders.org/filtaquilla.html";
+        let tabs = await messenger.tabs.query({});
+        let existingTab = tabs.find((t) => t.url === URL);
+        if (existingTab) {
+          await messenger.tabs.update(existingTab.id, { active: true, url: URL });
+        } else {
+          await messenger.tabs.create({ url: URL });
+        }        
+      },
+    });    
+
+    // Force rebuild
+    await browser.menus.refresh();
+    if (isDebug) {
+      console.log("Menus created.");
+    }    
+  }
   
 
   // ************* messages  ****/

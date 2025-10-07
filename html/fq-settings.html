@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>__MSG_prefwindow.title__</title>
+<link rel="stylesheet" href="fq-dialogs.css">
+<link rel="stylesheet" href="fq-settings.css">
+</head>
+<body>
+<div id="filtaquillaPreferences" class="dialog">
+
+  <!-- Header -->
+  <div id="fq-options-header" class="hbox title">
+    <span>FiltaQuilla</span>
+    <span class="spacer"></span>
+    <span id="fq-options-header-version" title="click for change log!"> </span>
+  </div>
+
+  <!-- Tab navigation -->
+  <nav class="tabs" id="FiltaQuilla-Options-Tabbox">
+    <ul role="tablist">
+      <li role="tab">
+        <button isTab="true" value="filterActionsTab" class="active" tabindex="0">__MSG_filterActions__</button>
+      </li>
+      <li role="tab">
+        <button isTab="true" value="conditionsTab" tabindex="0">__MSG_searchTerms__</button>
+      </li>
+      <li role="tab">
+        <button isTab="true" value="supportTab" tabindex="0">__MSG_aboutAndSupport__</button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Tab panels -->
+  <div class="tabcontent-container" id="tabcontainer">
+
+    <!-- Filter Actions Tab -->
+    <section class="tabpanel active" id="filterActionsTab" orient="vertical">
+      <label>__MSG_optionsIntro__</label>
+
+      <div id="actionsGrid" class="grid-container">
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkSubjectAppendEnabled"
+                  data-pref-name="extensions.filtaquilla.subjectAppend.enabled">
+            __MSG_fq.subjectprepend__
+          </label>
+          <button class="helpLink" helptopic="prepend_subject"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <label><input type="checkbox" id="checkRemoveKeywordEnabled" data-pref-name="extensions.filtaquilla.removeKeyword.enabled">__MSG_fq.removekeyword__</label>
+        <label><input type="checkbox" id="checkRemoveFlaggedEnabled" data-pref-name="extensions.filtaquilla.removeFlagged.enabled">__MSG_fq.removeflagged__</label>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checknoBiffEnabled" data-pref-name="extensions.filtaquilla.noBiff.enabled">
+            __MSG_fq.nobiff__
+          </label>
+          <button class="helpLink" helptopic="do_not_notify" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkCopyAsReadEnabled" data-pref-name="extensions.filtaquilla.copyAsRead.enabled">
+            __MSG_fq.copyAsRead__
+          </label>
+          <button class="helpLink" helptopic="copy_as_read" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <label><input type="checkbox" id="checkMarkUnreadEnabled" data-pref-name="extensions.filtaquilla.markUnread.enabled">__MSG_fq.markUnread__</label>
+        <label><input type="checkbox" id="checkMarkRepliedEnabled" data-pref-name="extensions.filtaquilla.markReplied.enabled">__MSG_fq.markReplied__</label>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkSubjectSuffixEnabled" data-pref-name="extensions.filtaquilla.subjectSuffix.enabled">
+            __MSG_fq.subjectappend__
+          </label>
+          <button class="helpLink" helptopic="prepend_subject" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkLaunchFileEnabled" data-pref-name="extensions.filtaquilla.launchFile.enabled">
+            __MSG_fq.launchFile__
+          </label>
+          <button class="helpLink" helptopic="launch_file" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkRunFileEnabled" data-pref-name="extensions.filtaquilla.runFile.enabled">
+            __MSG_fq.runFile__
+          </label>
+          <button class="helpLink" helptopic="run_file" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkRunFileUnicode" data-pref-name="extensions.filtaquilla.runFile.unicode">
+            __MSG_fq.runFile.unicode__
+          </label>
+          <button class="helpLink" clickytooltip="__MSG_fq.runFile.unicode.tooltip__" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkTrainAsJunkEnabled" data-pref-name="extensions.filtaquilla.trainAsJunk.enabled">
+            __MSG_fq.trainJunk__
+          </label>
+          <button class="helpLink" helptopic="train_as_junk" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <label><input type="checkbox" id="checkTrainAsGoodEnabled" data-pref-name="extensions.filtaquilla.trainAsGood.enabled">__MSG_fq.trainGood__</label>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkMoveLaterEnabled" data-pref-name="extensions.filtaquilla.moveLater.enabled">
+            __MSG_fq.moveLater__
+          </label>
+          <button class="helpLink" helptopic="move_later" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <label><input type="checkbox" id="checkAddSenderEnabled" data-pref-name="extensions.filtaquilla.addSender.enabled">__MSG_fq.addSender__</label>
+        <label><input type="checkbox" id="checkJavascriptActionEnabled" data-pref-name="extensions.filtaquilla.javascriptAction.enabled">__MSG_fq.javascriptAction__</label>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkJavascriptActionBodyEnabled" data-pref-name="extensions.filtaquilla.javascriptActionBody.enabled">
+            __MSG_checkJavascriptActionBodyEnabled.label__
+          </label>
+          <button class="helpLink" helptopic="javascript_action" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <label><input type="checkbox" id="checkTonequillaEnabled" data-pref-name="extensions.filtaquilla.tonequilla.enabled">__MSG_fq.toneQuilla__</label>
+        <label><input type="checkbox" id="checkArchiveEnabled" data-pref-name="extensions.filtaquilla.archiveMessage.enabled">__MSG_fq.archiveMessage__</label>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkFwdSmartTemplates" data-pref-name="extensions.filtaquilla.smarttemplates.fwd.enabled">
+            __MSG_fq.smartTemplate.fwd__
+          </label>
+          <button class="helpLink" helptopic="smart_templates" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkRspSmartTemplates" data-pref-name="extensions.filtaquilla.smarttemplates.rsp.enabled">
+            __MSG_fq.smartTemplate.rsp__
+          </label>
+          <button class="helpLink" helptopic="smart_templates" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <label><input type="checkbox" id="checkPrintEnabled" data-pref-name="extensions.filtaquilla.print.enabled">__MSG_fq.print__</label>
+        <label><input type="checkbox" id="checkPrintToolsEnabled" data-pref-name="extensions.filtaquilla.print.enablePrintToolsNG">__MSG_fq.printTools__</label>
+        <label><input type="checkbox" id="chkAllowDuplicates" data-pref-name="extensions.filtaquilla.print.allowDuplicates">__MSG_fq.printAllowDuplicates__</label>
+
+        <div style="height: 20px;"></div>
+      </div>
+
+      <hr style="background-color: currentColor; height: 1px; opacity: 0.3;" />
+
+      <div class="option-row">
+        <label><input type="checkbox" id="checkSaveMessageAsFileEnabled" data-pref-name="extensions.filtaquilla.saveMessageAsFile.enabled">__MSG_fq.saveMsgAsFile__</label>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkSaveAttachmentEnabled" data-pref-name="extensions.filtaquilla.saveAttachment.enabled">
+            __MSG_fq.saveAttachment__
+          </label>
+          <button class="helpLink" helptopic="save_attachment" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox" id="checkDetachAttachmentsEnabled" data-pref-name="extensions.filtaquilla.detachAttachments.enabled">
+            __MSG_fq.detachAttachments__
+          </label>
+          <button class="helpLink" helptopic="detach_attachment" title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+      </div>
+
+      <div class="option-row">
+        <label>__MSG_fq.fileNameSpaceCharacter__:</label>
+        <input type="text"  id="filenames-spacechars" data-pref-name="extensions.filtaquilla.fileNames.spaceCharacter">
+
+        <label>__MSG_fq.fileNameMaxLength__:</label>
+        <input id="filenames-maxlength" data-pref-name="extensions.filtaquilla.fileNames.maxLength" type="number">
+
+        <br>
+
+        <label>__MSG_fq.fileNameWhiteList__:</label>
+        <input id="filenames-whitelist" type="text" data-pref-name="extensions.filtaquilla.fileNames.whiteList">
+      </div>
+    </section>
+
+
+
+
+    <!-- Search terms -->
+    <section class="tabpanel" id="conditionsTab" orient="vertical">
+      <label>__MSG_optionsIntro__</label>
+      <div id="conditionsGrid" class="grid-container">
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkThreadHeadTagEnabled"
+                  data-pref-name="extensions.filtaquilla.ThreadHeadTagEnabled">
+            __MSG_fq.threadHeadTag__
+          </label>
+          <button class="helpLink"
+                  helptopic="tag_thread_head"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkThreadAnyTagEnabled"
+                  data-pref-name="extensions.filtaquilla.ThreadAnyTagEnabled">
+            __MSG_fq.threadAnyTag__
+          </label>
+          <button class="helpLink"
+                  helptopic="tag_thread_msg"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <label>
+          <input type="checkbox"
+                id="fq.Bcc"
+                data-pref-name="extensions.filtaquilla.SearchBccEnabled">
+          __MSG_fq.Bcc__
+        </label>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkJavascriptEnabled"
+                  data-pref-name="extensions.filtaquilla.JavascriptEnabled">
+            __MSG_checkJavascriptEnabled.label__
+          </label>
+          <button class="helpLink"
+                  helptopic="match_javascript"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkSubjectRegexEnabled"
+                  data-pref-name="extensions.filtaquilla.SubjectRegexEnabled">
+            __MSG_fq.subjectRegex__
+          </label>
+          <button class="helpLink"
+                  helptopic="subject_regex"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkHeaderRegexEnabled"
+                  data-pref-name="extensions.filtaquilla.HeaderRegexEnabled">
+            __MSG_fq.hdrRegex__
+          </label>
+          <button class="helpLink"
+                  helptopic="header_regex"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal" style="grid-column: 3 / span 2;">
+          <label>
+            <input type="checkbox"
+                  id="checkSubjectBodyRegexEnabled"
+                  data-pref-name="extensions.filtaquilla.SubjectBodyRegexEnabled">
+            __MSG_fq.subjectBodyRegex__
+          </label>
+          <button class="helpLink"
+                  helptopic="subjectbody_regex"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <div style="grid-column: 1 / span 4;">
+          <spacer></spacer>
+          <hr />
+        </div>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkBodyRegexEnabled"
+                  data-pref-name="extensions.filtaquilla.BodyRegexEnabled">
+            __MSG_fq.bodyRegex__
+          </label>
+          <button class="helpLink"
+                  helptopic="body_regex"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkAttachRegexEnabled"
+                  data-pref-name="extensions.filtaquilla.AttachmentRegexEnabled"
+                  disabled>
+            __MSG_fq.attachmentRegex__
+          </label>
+          <button class="helpLinkDisabled"
+                  helptopic="match_attachmentname"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal" style="grid-column: 3 / span 2;">
+          <label>
+            <input type="checkbox"
+                  id="checkFolderNameEnabled"
+                  data-pref-name="extensions.filtaquilla.FolderNameEnabled">
+            __MSG_fq.folderName__
+          </label>
+          <button class="helpLink"
+                  helptopic="match_folder_name"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+      </div>
+
+      <div class="lineSpacer" style="height:10px;"></div>
+
+      <div>
+        <label>
+          <input type="checkbox"
+                id="checkRegexpCaseInsensitiveEnabled"
+                data-pref-name="extensions.filtaquilla.regexpCaseInsensitive.enabled">
+          __MSG_fq.regex.caseInsensitive__
+        </label>
+      </div>
+
+      <div class="option-horizontal">
+        <label>
+          <input type="checkbox"
+                id="checkMultiLineAddressEnabled"
+                data-pref-name="extensions.filtaquilla.regexpHeader.addressMultiLine">
+          __MSG_fq.regex.multilineanchors__
+        </label>
+        <button class="helpLink"
+                helptopic="multiline_anchors"
+                title="__MSG_helpFeatureTip__">&nbsp;</button>
+      </div>
+
+    </section>
+
+
+    <!-- About / Support -->
+    <section class="tabpanel" id="supportTab" orient="vertical">
+
+      <div class="hbox buttonLinks linkContainer">
+        <button id="changeLog" class="showSplash">__MSG_message.btn.changeLog__</button> 
+      </div>
+
+      <div class="linkBox linkContainer vbox">
+        <div class="hbox">
+          <a href="https://quickfilters.quickfolders.org/filtaquilla.html"
+            id="supportLink" class="buttonLink centeredLink">
+            __MSG_supportPage__
+          </a>
+        </div>
+        <table class="linkDescriptionBox">
+          <tr>
+            <td>
+              <img src="resource://filtaquilla-skin/filtaquilla-32.png"
+                  class="customLogo"
+                  id="filtaquilla_img" />
+            </td>
+            <td>
+              <p class="linkDescription">
+                __MSG_supportPage_desc__
+              </p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="linkBox linkContainer vbox">
+        <div class="hbox">
+          <a href="https://addons.thunderbird.net/addon/quickfilters/"
+            id="quickFiltersLink" class="buttonLink native centeredLink">
+            __MSG_quickFiltersPage__
+          </a>
+        </div>
+        <table class="linkDescriptionBox">
+          <tr>
+            <td>
+              <img src="resource://filtaquilla-skin/quickfilters.png"
+                  id="quickfilters_img" class="customLogo"/>
+            </td>
+            <td>
+              <p class="linkDescription">
+                __MSG_quickFiltersPage_desc__
+              </p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="linkBox linkContainer vbox">
+        <div class="hbox">
+          <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate"
+            id="licenseLink" class="buttonLink centeredLink">
+            __MSG_supportFiltaquilla__
+          </a>
+        </div>
+        <table class="linkDescriptionBox">
+          <tr>
+            <td>
+              <img src="resource://filtaquilla-skin/community.png"
+                  class="customLogo"
+                  id="community_img" />
+            </td>
+            <td>
+              <p class="linkDescription">
+                __MSG_supportFiltaquilla_desc__
+              </p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="aboutSection">
+        <div class="hbox hasConfigEvent" id="debugSettings">
+          <label>
+            <input type="checkbox"
+                  id="checkDebugEnabled"
+                  data-pref-name="extensions.filtaquilla.debug"
+                  instantApply="true" />
+            Debug
+          </label>
+          <button class="configSettings" id="debug-options" aria-label="__MSG_aria.configSettings__">&nbsp;</button>
+        </div>
+      </div>
+
+    </section>
+
+
+  </div>
+
+
+
+
+</div> <!-- filtaquillaPreferences -->
+
+<script src="../content/i18n.js"></script>
+<script src="fq-main.js"></script>
+<script src="fq-util.js"></script>
+<script src="fq-settings.js"></script>
+
+</body>
+</html>

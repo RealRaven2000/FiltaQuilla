@@ -1,0 +1,502 @@
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hovercolor: #113e6a;
+    --hoverbackground: #ffffffcb;
+    --selectedbackground:#1d3e7dad;
+    --clickedbackground:var(--selectedbackground);
+    --selectedcolor: #FFFFFF;
+    --activecolor: #a5f7fcd9;
+    --configColor: rgba(250,40,80, 0.85);
+    --focus-ring-color: #ffaa00aa;     
+  }  
+  
+  .tabs button:hover, .tabs button:focus-within {
+     color-scheme: light; /* force bright icon on active tab */
+  }
+  
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --hovercolor: #ffffffcb;
+    --hoverbackground: #113e6a;
+    --selectedbackground: #1d3e7dad;
+    --clickedbackground:var(--selectedbackground);
+    --activecolor: #FFFFFF;
+    --configColor: rgb(140,0,0);
+    --focus-ring-color: #0044aaaa;
+  }
+  
+  .tabs button:hover, .tabs button:focus-within {
+     color-scheme: dark; /* force bright icon on active tab */
+  }
+  
+}
+
+
+
+:root {
+  --version-background: linear-gradient(to bottom, #0380bf 0%,#006eb7 100%) !important;
+}
+
+/* styling for filtaquilla preferences dialog */
+
+.buttonLink {
+	cursor: pointer !important;
+	padding: 4px 16px;
+	margin: 4px auto 6px;
+	border: 1px solid rgba(120,120,120,0.5);
+	box-shadow: 4px 4px 3px rgba(80,80,80,0.3);
+}
+
+#actionsGrid checkbox,
+#conditionsGrid checkbox {
+  white-space: nowrap;
+}
+
+
+.centeredLink {
+  margin-inline: auto;
+}
+
+#supportLink {
+	background: linear-gradient(to bottom, #67b6ce 0%,#316c8c 31%,#066dab 100%);
+	color: #FFF;
+}
+
+#supportLink:hover {
+	background: linear-gradient(to bottom, #6ecfec 0%,#1e98da 31%,#0492ea 100%);
+}
+
+#quickFiltersLink {
+	background: linear-gradient(to bottom, #cb60b3 0%,#c146a1 50%,#a80077 51%,#db36a4 100%);
+	color: #FFF;
+}
+
+#quickFiltersLink:hover {
+	background: linear-gradient(to bottom, #f85032 0%,#f16f5c 50%,#f6290c 51%,#f02f17 71%,#e73827 100%);
+}
+
+#licenseLink {
+	background: linear-gradient(to bottom, #f78a4f 0%,#f05a04 31%,#b84300 61%,#f7782f 100%);
+	color: #FFF;
+}
+
+#licenseLink:hover {
+  background: linear-gradient(to bottom, #fdd8b3 0%,#fea546 31%,#f47e00 61%,#fdc589 100%);
+}
+
+div.lineSpacer {
+  display: block;
+  border-bottom: 1px solid gray;
+}
+
+.customLogo {
+  margin-left: 5px;
+	width: 32px;
+	height: 32px;
+}
+
+#filtaquilla_img {
+	/* just a hack as I don't appear to be able to use img url for a chrome address? */
+	background-image:url("resource://filtaquilla-skin/filtaquilla-32.png");
+	background-repeat: no-repeat;
+}
+
+#quickfilters_img {
+	/* just a hack as I don't appear to be able to use img url for a chrome address? */
+	background-image:url("resource://filtaquilla-skin/quickfilters.png");
+	background-repeat: no-repeat;
+}
+
+#community_img {
+	background-image:url("resource://filtaquilla-skin/community.png");
+	background-repeat: no-repeat;
+}
+
+.helpLink,
+.helpLinkDisabled {
+  appearance: none !important;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 3px;
+  width: 16px !important;
+  min-width: 22px;
+}
+
+.helpLink:hover {
+  border-color: var(--dialogtext);
+}
+
+.helpLink {
+  background-image: url("resource://filtaquilla-skin/help.svg");
+}
+.helpLinkDisabled {
+  background-image: url("resource://filtaquilla-skin/fugue-question-disabled.png");
+}
+
+
+.helpLink .tooltip {
+  position: fixed;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 5px;
+  background: white;
+  border: 1px solid #ccc;
+  visibility: hidden;
+  opacity: 0;
+  box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s, visibility 0s;
+  right: 20px !important; /* avoid cut off on the right */
+}
+
+.helpLink:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+hbox.title {
+  display: inline-flex; /* make child elements flex */
+  font-size: 20px;
+  font-weight: 500;
+}
+
+hbox.title spacer {
+  display: inline-block;
+  flex-grow: 5;
+}
+
+#fq-options-header-version {
+  background-color: rgba(80,80,80,0.13);
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
+#fq-options-header-version:hover {
+  color: white;
+  background-color: rgba(80,80,80,0.5);
+}
+
+.linkContainer, .aboutSection {
+	margin: 0 20px 1em 20px;
+	max-width: 660px;
+}
+.aboutSection {
+  margin-bottom: 0;
+}
+
+.linkBox {
+	border: 1px solid rgb(230,230,230);
+	padding-top: 0.75em;
+	white-space: normal !important;
+}
+
+.linkDescriptionBox vbox {
+  vertical-align: top;
+  display: table-cell;
+}
+
+.linkDescriptionBox img {
+	position: relative;	
+	top: auto;
+}
+
+.linkBox hbox {
+	max-width: 55em;
+}
+
+.aboutSection {
+  display: flex;
+}
+.aboutSection .hbox {
+  margin-left: auto;
+}
+
+.linkDescriptionBox {
+	display: table;
+}
+
+.linkDescription {
+	display: table-cell;
+	margin: 0 5px;
+	max-width: 50em !important;
+	padding: 4px;
+	padding-bottom: 0.7em;
+	text-align: left;
+	width: 50em !important;
+	white-space: wrap;
+}
+
+.linkDescription * {
+	max-width: 50em !important;
+}
+
+#actionCols column {
+	min-width: 175px;
+}
+
+.icontabs tab {
+	padding: 5px 8px;
+  margin-top: 5px;
+}
+
+.icontabs tab label {
+	margin-left:5px !important;
+}
+
+#filterActionsTab {
+  list-style-image: url("resource://filtaquilla-skin/fugue-arrow-curve.png") !important;
+}
+
+#conditionsTab {
+  list-style-image: url("resource://filtaquilla-skin/script.png") !important;
+}
+
+#supportTab {
+  list-style-image: url("resource://filtaquilla-skin/fugue-question.png") !important;
+}
+
+
+
+/* grid replacement */
+.grid-container {
+  align-content: start;
+  display: grid;
+  grid-row-gap: 1px;
+  grid-column-gap: 5px;
+  padding-top: 12px;
+}
+
+#actionsGrid,
+#conditionsGrid {
+  grid-template-columns: auto auto auto auto; /* widths of columns */
+}
+
+.showSplash, .showSplash:focus {
+  border: 1px solid rgba(100,100,100,0.5) ;
+  border-radius: 0.3em;
+  padding-inline: 0.5em;
+  color: white !important;
+  background-color: #006EB7 !important; /* blue */
+  background-image: var(--version-background) !important;
+}
+.showSplash label, .showSplash:focus label {
+  color: white;
+}
+
+.showSplash:hover, .showSplash:focus:hover {
+  color: black !important;
+	background-color: #ffd65e !important; /* yellow */
+	background-image: linear-gradient(to bottom, #fff65e 0%,#febf04 100%) !important;
+}
+
+.showSplash:hover *, .showSplash:focus:hover * {
+  color: rgb(60,0,0) !important;
+}
+.buttonLinks { 
+  margin-block: 0.5em;
+}
+
+.buttonLinks button {
+	cursor: pointer;
+  padding-block: 0.5em; 
+}
+
+
+.buttonLinks button.text-link {
+	min-width: 25em;
+	padding-inline: 1.5em !important;
+}
+
+button.text-link {
+	appearance: none !important;
+  border: 1px solid rgb(100,120,120);
+	color: #ffffff !important;
+  margin-top: 0.3em !important;
+  margin-bottom: 0.3em !important;
+  max-width: 36em;
+  padding: 1px 1px !important;
+  text-decoration: none !important;
+  text-shadow:#BBBBBB 0px 0px 2px;
+}
+
+
+/*** TABBOX  **/
+#FiltaQuilla-Options-Tabbox  li button:focus {
+  outline: 2px dashed var(--focus-ring-color, #0044aa); 
+  outline-offset: 2px; 
+}
+
+
+
+#FiltaQuilla-Options-Tabbox li button {
+  fill: var(--in-content-icon-color, currentColor);
+  stroke: var(--new-highlight, #4874c6) !important;
+  margin-block-end: 0; 
+}
+
+#FiltaQuilla-Options-Tabbox li button:not(.active):hover,
+#FiltaQuilla-Options-Tabbox li button:not(.active):focus {
+  fill: var(--hovercolor);
+  color: var(--hovercolor) !important;  
+}
+#FiltaQuilla-Options-Tabbox li button:active:hover {
+  fill: var(--activecolor);
+  color: var(--activecolor) !important;
+}
+
+
+/* Style the tab */
+.tabs ul {
+  display: flex;
+  margin: 0;
+  overflow: hidden;
+  padding-left: 1em;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tabs li {
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  list-style: none;
+  outline: none;
+  margin: 4px 2px 0;
+}
+
+.tabs button {
+  appearance: none;
+  border-radius: 0.5em 0.5em 0 0;
+  padding: 0.2em 0.6em;
+}
+
+/* Change background color of buttons on hover */
+.tabs button:hover, .tabs button:focus {
+  background-color: var(--hoverbackground);
+}
+
+.tabs li:hover:active button {
+  background-color: var(--clickedbackground, rgb(9, 9, 45));
+}
+
+
+/* Create an active/current tablink class */
+.tabs button.active {
+  background-color: var(--selectedbackground, #33f) !important;
+  color: var(--activecolor, #FFFFFF) !important;
+  fill: var(--activecolor, #FFFFFF) !important;
+  color-scheme: dark; /* force bright icon on active tab  */
+}
+
+/* Style the tab content */
+.tabcontent-container section {
+  display: none;
+  padding: 6px 12px;
+  /* border: 1px solid #ccc; */
+  border-top: none;
+} 
+
+.tabcontent-container section.active {
+  display: block;
+}
+
+/* header */
+#fq-options-header {
+  display: flex;
+  margin: 15px 5px 15px 5px;
+  padding: 1px 8px;
+  font-family: Calibri,sans-serif;
+  font-size: 1.5em;
+  opacity: 0.85;
+}
+
+#fq-options-header .spacer {
+  flex-grow: 1;
+}
+
+#fq-options-header-version {
+  background-color: rgba(60, 60, 60, 0.8);
+  border-radius: 3px;
+  border: none !important;
+  color: #00e5ff;
+  cursor: pointer;
+  font-size: 0.8em;
+  margin-bottom: 7px;
+  padding: 4px 8px !important;
+  text-shadow: 0 0 1px rgb(0, 0, 0), 0 0 2px rgb(96, 96, 60), 1px 2px 2px rgb(0, 0, 0);
+}
+
+#filenames-spacechars {
+  max-width: 3em; 
+  margin-right: 1em;
+}
+
+#filenames-maxlength {
+  max-width: 5em; 
+  margin-right: 1em;
+}
+#filenames-whitelist {
+  width: 100%;
+}
+
+#debugSettings {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/******************
+   CONFIG BUTTONS 
+ ******************/
+.hasConfigEvent button.configSettings {
+  background-color: transparent;
+  border-color: transparent;
+	color: currentColor;
+  cursor: pointer;
+  display: list-item inline;
+  fill: currentColor;
+  list-style-position: inside;
+  min-width: 24px !important;
+  padding: 3px 3px 0 3px;
+  width: 24px;
+}
+.hasConfigEvent button.configSettings::marker {
+  fill: currentColor;
+	color: currentColor;
+}
+
+.hasConfigEvent button.configSettings.leading {
+	margin-left: 0 !important;
+}
+
+
+.hasConfigEvent button.configSettings {
+  list-style-image: url('../skin/settings-simple.svg') !important;
+}
+
+.hasConfigEvent button.configSettings:hover {
+	fill: var(--configColor);
+	stroke: var(--configColor);
+  stroke-width: 3px;
+}
+
+.hasConfigEvent button[disabled="true"].configSettings:hover {
+	filter: grayscale(70%); /* desaturate because disabled! */
+}
+
+/* fill up remaining space */
+.hasConfigEvent > .spacer {
+	flex: 9;
+	background-color: var(--in-content-box-background);
+	border: 1px transparent;
+	align-self:  stretch;
+}
+
+/* pink box "hugs" contents */
+.hbox.hasConfigEvent {
+	width: max-content; 
+}

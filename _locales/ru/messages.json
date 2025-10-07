@@ -5,6 +5,9 @@
   "applyIncomingMails": {
     "message": "Применять фильтры к входящим письмам"
   },
+  "aria.configSettings": {
+    "message": "Расширенная настройка - для дополнительных настроек."
+  },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "Y"
   },

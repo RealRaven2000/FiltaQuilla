@@ -2,7 +2,7 @@
   "manifest_version" : 2,
   "name" : "FiltaQuilla",
   "description" : "Mail filter custom actions and searches",
-  "version" : "5.4",
+  "version" : "5.4.1pre15",
   "default_locale": "en",
   "author" : "R Kent James, Axel Grude",
   "developer" : {
@@ -13,7 +13,7 @@
       "gecko" : {
           "id" : "filtaquilla@mesquilla.com",
           "strict_min_version" : "128.0",
-          "strict_max_version" : "144.*"
+          "strict_max_version" : "145.*"
       }
   },
   "icons" : {
@@ -25,10 +25,20 @@
   } ,
   "permissions": [
     "messagesRead",
+    "menus",
     "notifications",
     "storage",
     "tabs"
   ],  
+  "browser_action": {
+    "default_icon": {
+      "32": "skin/filtaquilla-32.png",
+      "64": "skin/filtaquilla-64.png"
+    },
+    "default_windows": ["normal"],
+    "type": "menu",
+    "allowed_spaces": ["mail","settings"]
+  },
   "experiment_apis": {
     "FiltaQuilla": {
       "schema": "content/api/FiltaQuilla/schema.json",

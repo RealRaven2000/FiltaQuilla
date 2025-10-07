@@ -21,6 +21,26 @@
             "description": "target path of file to save"
           }
         ]
+      },
+      {
+        "name": "showOptions",
+        "type": "function",
+        "async": false,
+        "description": "opens legacy options dialog",
+        "parameters": []
+      },
+      {
+        "name": "showAboutConfig",
+        "type": "function",
+        "async": false,
+        "description": "opens about:config",
+        "parameters": [
+          {
+            "name": "filter",
+            "type": "string",
+            "description": "(optional) filter string to restrict configuration via search box (read only)"
+          }
+        ]
       }
 
     ]

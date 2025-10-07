@@ -5,6 +5,9 @@
   "applyIncomingMails": {
     "message": "Run filters on incoming mails"
   },
+  "aria.configSettings": {
+    "message": "Advanced configuration - for additional settings."
+  },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "Y"
   },
@@ -415,6 +418,6 @@
     "message": "FiltaQuilla is proudly supported through my work on my other Add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2}, and {A-ST}SmartTemplates{A2}. Please check them out on the Add-ons store!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1}FiltaQuilla is now compatible with Thunderbird 140.*{L2} {L1} Improved startup performance in Save Attachments (POP3 mail) [issue 349]{L2} {L1} Improvements and bug fixes around playing and editing sound actions [issue 350]{L2}{U2}"
+    "message": "{U1} {L1}FiltaQuilla is now compatible with Thunderbird 145.*.{L2} {L1} Rewrote the Tonequilla portion (play sound) to use current window as a parameter or the last 3pane window. [issue 258]{L2}{U2}"
   }
 }

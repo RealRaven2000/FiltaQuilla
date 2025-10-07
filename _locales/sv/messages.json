@@ -5,6 +5,9 @@
   "applyIncomingMails": {
     "message": "Kör filter på inkommande e-post"
   },
+  "aria.configSettings": {
+    "message": "Avancerade inställningar - för ytterligare inställningar."
+  },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "c"
   },
