@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>__MSG_prefwindow.title__</title>
-<link rel="stylesheet" href="fq-dialogs.css">
-<link rel="stylesheet" href="fq-settings.css">
+  <meta charset="UTF-8">
+  <!-- theme support -->
+  
+  <meta name="color-scheme" content="dark light">
+  <link rel='stylesheet' type='text/css' href="chrome://global/skin/in-content/common.css">
+  <link rel='stylesheet' type='text/css' href="chrome://messenger/skin/variables.css">
+  <link rel='stylesheet' type='text/css' href="chrome://messenger/skin/preferences/preferences.css">
+  <link rel='stylesheet' type='text/css' href="chrome://messenger/skin/shared/themeableDialog.css">
+  <link rel="stylesheet" href="fq-dialogs.css">
+  <link rel="stylesheet" href="fq-settings.css">
+
+  <title>__MSG_prefwindow.title__</title>
+
 </head>
 <body>
-<div id="filtaquillaPreferences" class="dialog">
 
   <!-- Header -->
   <div id="fq-options-header" class="hbox title">
@@ -20,13 +28,13 @@
   <nav class="tabs" id="FiltaQuilla-Options-Tabbox">
     <ul role="tablist">
       <li role="tab">
-        <button isTab="true" value="filterActionsTab" class="active" tabindex="0">__MSG_filterActions__</button>
+        <button isTab="true" id="btn_filterActions" value="filterActionsTab" class="active" tabindex="0">__MSG_filterActions__</button>
       </li>
       <li role="tab">
-        <button isTab="true" value="conditionsTab" tabindex="0">__MSG_searchTerms__</button>
+        <button isTab="true" id="btn_conditions" value="conditionsTab" tabindex="0">__MSG_searchTerms__</button>
       </li>
       <li role="tab">
-        <button isTab="true" value="supportTab" tabindex="0">__MSG_aboutAndSupport__</button>
+        <button isTab="true" id="btn_support" value="supportTab" tabindex="0">__MSG_aboutAndSupport__</button>
       </li>
     </ul>
   </nav>
@@ -50,8 +58,12 @@
                   title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <label><input type="checkbox" id="checkRemoveKeywordEnabled" data-pref-name="extensions.filtaquilla.removeKeyword.enabled">__MSG_fq.removekeyword__</label>
-        <label><input type="checkbox" id="checkRemoveFlaggedEnabled" data-pref-name="extensions.filtaquilla.removeFlagged.enabled">__MSG_fq.removeflagged__</label>
+        <label><input type="checkbox" id="checkRemoveKeywordEnabled" data-pref-name="extensions.filtaquilla.removeKeyword.enabled">
+          __MSG_fq.removekeyword__
+        </label>
+        <label><input type="checkbox" id="checkRemoveFlaggedEnabled" data-pref-name="extensions.filtaquilla.removeFlagged.enabled">
+          __MSG_fq.removeflagged__
+        </label>
 
         <span class="option-horizontal">
           <label>
@@ -112,7 +124,9 @@
           <button class="helpLink" helptopic="train_as_junk" title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <label><input type="checkbox" id="checkTrainAsGoodEnabled" data-pref-name="extensions.filtaquilla.trainAsGood.enabled">__MSG_fq.trainGood__</label>
+        <label><input type="checkbox" id="checkTrainAsGoodEnabled" data-pref-name="extensions.filtaquilla.trainAsGood.enabled">
+          __MSG_fq.trainGood__
+        </label>
 
         <span class="option-horizontal">
           <label>
@@ -122,8 +136,12 @@
           <button class="helpLink" helptopic="move_later" title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <label><input type="checkbox" id="checkAddSenderEnabled" data-pref-name="extensions.filtaquilla.addSender.enabled">__MSG_fq.addSender__</label>
-        <label><input type="checkbox" id="checkJavascriptActionEnabled" data-pref-name="extensions.filtaquilla.javascriptAction.enabled">__MSG_fq.javascriptAction__</label>
+        <label><input type="checkbox" id="checkAddSenderEnabled" data-pref-name="extensions.filtaquilla.addSender.enabled">
+          __MSG_fq.addSender__
+        </label>
+        <label><input type="checkbox" id="checkJavascriptActionEnabled" data-pref-name="extensions.filtaquilla.javascriptAction.enabled">
+          __MSG_fq.javascriptAction__
+        </label>
 
         <span class="option-horizontal">
           <label>
@@ -152,9 +170,15 @@
           <button class="helpLink" helptopic="smart_templates" title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <label><input type="checkbox" id="checkPrintEnabled" data-pref-name="extensions.filtaquilla.print.enabled">__MSG_fq.print__</label>
-        <label><input type="checkbox" id="checkPrintToolsEnabled" data-pref-name="extensions.filtaquilla.print.enablePrintToolsNG">__MSG_fq.printTools__</label>
-        <label><input type="checkbox" id="chkAllowDuplicates" data-pref-name="extensions.filtaquilla.print.allowDuplicates">__MSG_fq.printAllowDuplicates__</label>
+        <label><input type="checkbox" id="checkPrintEnabled" data-pref-name="extensions.filtaquilla.print.enabled">
+          __MSG_fq.print__
+        </label>
+        <label><input type="checkbox" id="checkPrintToolsEnabled" data-pref-name="extensions.filtaquilla.print.enablePrintToolsNG">
+          __MSG_fq.printTools__
+        </label>
+        <label><input type="checkbox" id="chkAllowDuplicates" data-pref-name="extensions.filtaquilla.print.allowDuplicates">
+          __MSG_fq.printAllowDuplicates__
+        </label>
 
         <div style="height: 20px;"></div>
       </div>
@@ -162,7 +186,9 @@
       <hr style="background-color: currentColor; height: 1px; opacity: 0.3;" />
 
       <div class="option-row">
-        <label><input type="checkbox" id="checkSaveMessageAsFileEnabled" data-pref-name="extensions.filtaquilla.saveMessageAsFile.enabled">__MSG_fq.saveMsgAsFile__</label>
+        <label><input type="checkbox" id="checkSaveMessageAsFileEnabled" data-pref-name="extensions.filtaquilla.saveMessageAsFile.enabled">
+          __MSG_fq.saveMsgAsFile__
+        </label>
 
         <span class="option-horizontal">
           <label>
@@ -445,15 +471,10 @@
 
   </div>
 
-
-
-
-</div> <!-- filtaquillaPreferences -->
-
-<script src="../content/i18n.js"></script>
-<script src="fq-main.js"></script>
-<script src="fq-util.js"></script>
-<script src="fq-settings.js"></script>
+  <script src="../content/i18n.js"></script>
+  <script src="fq-main.js"></script>
+  <script src="fq-util.js"></script>
+  <script src="fq-settings.js"></script>
 
 </body>
 </html>

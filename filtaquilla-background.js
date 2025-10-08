@@ -465,35 +465,38 @@
     /* [issue 366] convert settings to html */
     await messenger.menus.create({
       id: "filtaquilla-preferences",
-      title: messenger.i18n.getMessage("prefwindow.title"),
       contexts: ["browser_action_menu"], // attach to toolbar button
+      icons: "../skin/settings.svg",
       onclick: () => {
         browser.tabs.create({ url: "html/fq-settings.html" });
       },
+      title: messenger.i18n.getMessage("prefwindow.title"),
     });
 
     await messenger.menus.create({
       id: "filtaquilla-prefs-legacy",
-      title: `${messenger.i18n.getMessage("prefwindow.title")} (legacy)`,
       contexts: ["browser_action_menu"],
+      icons: "../skin/settings.svg",
       onclick: () => {
         messenger.FiltaQuilla.showOptions();
       },
+      title: `${messenger.i18n.getMessage("prefwindow.title")} (legacy)`,
     });
 
     await messenger.menus.create({
       id: "filtaquilla-news",
-      title: messenger.i18n.getMessage("newsHead"),
       contexts: ["browser_action_menu"],
+      icons: "../skin/new.svg",
       onclick: () => {
         showFQmessage("whats-new-list", ["ok"]);
       },
+      title: messenger.i18n.getMessage("newsHead"),
     });
 
     await messenger.menus.create({
       id: "filtaquilla-support",
-      title: messenger.i18n.getMessage("supportPage"),
       contexts: ["browser_action_menu"],
+      icons: "../skin/help.svg",
       onclick: async () => {
         const URL = "https://quickfilters.quickfolders.org/filtaquilla.html";
         let tabs = await messenger.tabs.query({});
@@ -502,8 +505,9 @@
           await messenger.tabs.update(existingTab.id, { active: true, url: URL });
         } else {
           await messenger.tabs.create({ url: URL });
-        }        
+        }
       },
+      title: messenger.i18n.getMessage("supportPage"),
     });    
 
     // Force rebuild

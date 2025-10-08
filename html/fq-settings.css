@@ -14,7 +14,6 @@
   .tabs button:hover, .tabs button:focus-within {
      color-scheme: light; /* force bright icon on active tab */
   }
-  
 }
 
 @media (prefers-color-scheme: light) {
@@ -31,10 +30,25 @@
   .tabs button:hover, .tabs button:focus-within {
      color-scheme: dark; /* force bright icon on active tab */
   }
-  
+}
+
+@media (min-height: 450px) {
+  .option-horizontal {
+    margin-block-end: 0.2em;
+  }
 }
 
 
+@media (min-height: 550px) {
+  .option-horizontal {
+    margin-block-end: 0.3em;
+  }
+}
+
+/* vertical spacing */
+.option-horizontal {
+  display: inline-flex;
+}
 
 :root {
   --version-background: linear-gradient(to bottom, #0380bf 0%,#006eb7 100%) !important;
@@ -213,6 +227,11 @@ hbox.title spacer {
 .aboutSection {
   display: flex;
 }
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
 .aboutSection .hbox {
   margin-left: auto;
 }
@@ -249,16 +268,22 @@ hbox.title spacer {
 	margin-left:5px !important;
 }
 
-#filterActionsTab {
-  list-style-image: url("resource://filtaquilla-skin/fugue-arrow-curve.png") !important;
+#FiltaQuilla-Options-Tabbox button {
+  background-repeat: no-repeat;
+  background-position: 4px center;
+  padding-left: 26px;
 }
 
-#conditionsTab {
-  list-style-image: url("resource://filtaquilla-skin/script.png") !important;
+#btn_filterActions {
+  background-image: url("../skin/fugue-arrow-curve.png") !important;
 }
 
-#supportTab {
-  list-style-image: url("resource://filtaquilla-skin/fugue-question.png") !important;
+#btn_conditions {
+  background-image: url("../skin/script.png") !important;
+}
+
+#btn_support {
+  background-image: url("../skin/fugue-question.png") !important;
 }
 
 
@@ -352,11 +377,16 @@ button.text-link {
 
 
 /* Style the tab */
+.tabs {
+  border-bottom: 4px solid var(--selectedbackground, #33f);
+  margin-left: 1em;
+}
+
 .tabs ul {
   display: flex;
   margin: 0;
   overflow: hidden;
-  padding-left: 1em;
+  padding-left: 0;
 }
 
 /* Style the buttons that are used to open the tab content */
@@ -366,7 +396,7 @@ button.text-link {
   cursor: pointer;
   list-style: none;
   outline: none;
-  margin: 4px 2px 0;
+  margin: 4px 0 0;
 }
 
 .tabs button {
@@ -391,6 +421,7 @@ button.text-link {
   color: var(--activecolor, #FFFFFF) !important;
   fill: var(--activecolor, #FFFFFF) !important;
   color-scheme: dark; /* force bright icon on active tab  */
+  border-bottom-color: var(--selectedbackground, #FFFFFF) !important;
 }
 
 /* Style the tab content */
@@ -447,6 +478,7 @@ button.text-link {
 #debugSettings {
   display: flex;
   justify-content: flex-end;
+  align-items: center; 
 }
 
 /******************
