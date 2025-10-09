@@ -46,7 +46,7 @@
     <section class="tabpanel active" id="filterActionsTab" orient="vertical">
       <label>__MSG_optionsIntro__</label>
 
-      <div id="actionsGrid" class="grid-container">
+      <div class="grid-container actionsGrid">
 
         <span class="option-horizontal">
           <label>
@@ -179,13 +179,11 @@
         <label><input type="checkbox" id="chkAllowDuplicates" data-pref-name="extensions.filtaquilla.print.allowDuplicates">
           __MSG_fq.printAllowDuplicates__
         </label>
-
-        <div style="height: 20px;"></div>
       </div>
 
-      <hr style="background-color: currentColor; height: 1px; opacity: 0.3;" />
+      <hr style="background-color: currentColor; height: 1px; opacity: 0.3;">
 
-      <div class="option-row">
+      <div class="grid-container actionsGrid">
         <label><input type="checkbox" id="checkSaveMessageAsFileEnabled" data-pref-name="extensions.filtaquilla.saveMessageAsFile.enabled">
           __MSG_fq.saveMsgAsFile__
         </label>
@@ -227,7 +225,7 @@
     <!-- Search terms -->
     <section class="tabpanel" id="conditionsTab" orient="vertical">
       <label>__MSG_optionsIntro__</label>
-      <div id="conditionsGrid" class="grid-container">
+      <div class="conditionsGrid grid-container">
 
         <span class="option-horizontal">
           <label>
@@ -253,12 +251,14 @@
                   title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <label>
-          <input type="checkbox"
-                id="fq.Bcc"
-                data-pref-name="extensions.filtaquilla.SearchBccEnabled">
-          __MSG_fq.Bcc__
-        </label>
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="fq.Bcc"
+                  data-pref-name="extensions.filtaquilla.SearchBccEnabled">
+            __MSG_fq.Bcc__
+          </label>
+        </span>
 
         <span class="option-horizontal">
           <label>
@@ -296,7 +296,7 @@
                   title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <span class="option-horizontal" style="grid-column: 3 / span 2;">
+        <span class="option-horizontal">
           <label>
             <input type="checkbox"
                   id="checkSubjectBodyRegexEnabled"
@@ -308,11 +308,10 @@
                   title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <div style="grid-column: 1 / span 4;">
-          <spacer></spacer>
-          <hr />
-        </div>
+      </div>
+      <hr />
 
+      <div class="conditionsGrid grid-container wide">
         <span class="option-horizontal">
           <label>
             <input type="checkbox"
@@ -322,6 +321,18 @@
           </label>
           <button class="helpLink"
                   helptopic="body_regex"
+                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+        </span>
+
+        <span class="option-horizontal">
+          <label>
+            <input type="checkbox"
+                  id="checkFolderNameEnabled"
+                  data-pref-name="extensions.filtaquilla.FolderNameEnabled">
+            __MSG_fq.folderName__
+          </label>
+          <button class="helpLink"
+                  helptopic="match_folder_name"
                   title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
@@ -338,21 +349,9 @@
                   title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <span class="option-horizontal" style="grid-column: 3 / span 2;">
-          <label>
-            <input type="checkbox"
-                  id="checkFolderNameEnabled"
-                  data-pref-name="extensions.filtaquilla.FolderNameEnabled">
-            __MSG_fq.folderName__
-          </label>
-          <button class="helpLink"
-                  helptopic="match_folder_name"
-                  title="__MSG_helpFeatureTip__">&nbsp;</button>
-        </span>
-
       </div>
 
-      <div class="lineSpacer" style="height:10px;"></div>
+      <hr />
 
       <div>
         <label>

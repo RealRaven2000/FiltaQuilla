@@ -50,6 +50,12 @@
   display: inline-flex;
 }
 
+/* fix conditions grid items (Bcc) */
+.grid-container > .option-horizontal {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
 :root {
   --version-background: linear-gradient(to bottom, #0380bf 0%,#006eb7 100%) !important;
 }
@@ -64,8 +70,8 @@
 	box-shadow: 4px 4px 3px rgba(80,80,80,0.3);
 }
 
-#actionsGrid checkbox,
-#conditionsGrid checkbox {
+.actionsGrid checkbox,
+.conditionsGrid checkbox {
   white-space: nowrap;
 }
 
@@ -292,15 +298,46 @@ label {
 .grid-container {
   align-content: start;
   display: grid;
-  grid-row-gap: 1px;
-  grid-column-gap: 5px;
+  gap: 4px 5px; /* row-gap column-gap */
   padding-top: 12px;
 }
 
-#actionsGrid,
-#conditionsGrid {
-  grid-template-columns: auto auto auto auto; /* widths of columns */
+
+.actionsGrid,
+.conditionsGrid {
+  grid-template-columns: auto auto auto auto;    
 }
+.conditionsGrid.wide {
+  grid-template-columns: auto auto auto;
+}
+
+/* Slightly narrower window → 3 columns */
+@media (max-width: 900px) {
+  .actionsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .conditionsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .conditionsGrid.wide {
+    grid-template-columns: auto auto;
+  }
+}
+
+@media (max-width: 500px) {
+  .conditionsGrid.wide {
+    grid-template-columns: auto;
+  }
+}
+
+
+
 
 .showSplash, .showSplash:focus {
   border: 1px solid rgba(100,100,100,0.5) ;
