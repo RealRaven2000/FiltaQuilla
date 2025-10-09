@@ -25,7 +25,7 @@ const christophers_code = async () => {
 
   function sanitizeName(aName, includesExtension = false) {
     const win = Services.wm.getMostRecentWindow("mail:3pane");
-    return win.FiltaQuilla.sanitizeName(aName, includesExtension);
+    return win.FiltaQuilla.sanitizeName(aName, includesExtension, true);
   }  
 
   var FiltaQuilla = class extends ExtensionCommon.ExtensionAPI {
