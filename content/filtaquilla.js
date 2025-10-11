@@ -2668,38 +2668,6 @@
     }
   }
 
-  const _fixEncoding = (str) => {
-    // check whether name is encoded per RFC 2047
-    // expects the format: "=?charset?encoding?encoded-text?="
-    const rfc2047Regex = /=\?[^?]+\?[BQbq]\?[^?]+\?=/;
-    if (!rfc2047Regex.test(str)) {
-      return str;
-    }
-    // replace all encoded words
-    return str.replace(/=\?([^?]+)\?([bqBQ])\?([^?]+)\?=/g, (m, charset, encoding, text) => {
-      try {
-        encoding = encoding.toUpperCase();
-        charset = charset.toLowerCase();
-
-        if (encoding === "B") {
-          // Base64 decode
-          const decoded = atob(text);
-          return new TextDecoder(charset, { fatal: false }).decode(
-            Uint8Array.from(decoded, (c) => c.charCodeAt(0))
-          );
-        } else if (encoding === "Q") {
-          // Quoted-printable decode per RFC 2047
-          const qp = text
-            .replace(/_/g, " ")
-            .replace(/=([A-Fa-f0-9]{2})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
-          return new TextDecoder(charset, { fatal: false }).decode(new TextEncoder().encode(qp));
-        }
-      } catch (ex) {
-        console.warn("fixEncoding(): decoding failed", { m, charset, encoding, ex });
-      }
-      return m; // return original match if decode fails
-    });
-  }
 
   // OBSOLETE from http://mxr.mozilla.org/comm-1.9.2/source/mozilla/toolkit/components/search/nsSearchService.js#677
   /**
@@ -2736,12 +2704,6 @@
     }
 
     let str = aName; // .toLowerCase();
-
-    if (fixEncoding && prefs.getBoolPref("fixEncodingInFileNames")) {
-      // deal with [bug 1992976]
-      str = _fixEncoding(str);
-    }
-
     // diacritics
     // eslint-disable-next-line no-constant-condition
     if (true) {

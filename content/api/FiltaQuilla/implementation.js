@@ -25,17 +25,17 @@ const christophers_code = async () => {
 
   function sanitizeName(aName, includesExtension = false) {
     const win = Services.wm.getMostRecentWindow("mail:3pane");
-    return win.FiltaQuilla.sanitizeName(aName, includesExtension, true);
+    return win.FiltaQuilla.sanitizeName(aName, includesExtension);
   }  
 
   var FiltaQuilla = class extends ExtensionCommon.ExtensionAPI {
     getAPI(_context) {
       return {
         FiltaQuilla: {
-          async saveFile(file, path) {
+          async saveFile(file, path, fileName = file.name) {
             const Cc = Components.classes;
             const Ci = Components.interfaces;
-            const newName = sanitizeName(file.name, true);
+            const newName = sanitizeName(fileName, true);
             const win = Services.wm.getMostRecentWindow("mail:3pane");
             const util = win.FiltaQuilla.Util;
             util.logDebug(`new file name would be: ${newName}`, util);
@@ -90,7 +90,7 @@ const christophers_code = async () => {
                 win,
                 uri,
                 name,
-                "chrome,resizable,centerscreen,width=600px,height=350px",
+                "chrome,resizable,centerscreen,width=800px,height=380px",
                 null
               );
             }

@@ -47,7 +47,7 @@
     ["content", "filtaquilla", "content/"], // chrome://path
   ]);
 
-  messenger.WindowListener.registerOptionsPage("chrome://filtaquilla/content/options.xhtml");
+  // messenger.WindowListener.registerOptionsPage("chrome://filtaquilla/content/options.xhtml");
 
   /* OVERLAY CONVERSIONS */
 
@@ -334,7 +334,10 @@
               console.log(`trying to save detached attachment, from: ${attachmentURL}`);
             }
           }
-          savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
+          // this returns an array of decoded strings
+          let [name] = await browser.messengerUtilities.decodeMimeHeader("name", [file.name]); 
+          console.log(`Decoded attachment name: ${name}`);
+          savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path, name);
           results.push(savedItem);
         }
         return results;

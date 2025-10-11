@@ -19,6 +19,12 @@
             "name": "path",
             "type": "string",
             "description": "target path of file to save"
+          },
+          {
+            "name": "fileName",
+            "type": "string",
+            "optional": true,
+            "description": "(optional) name to use for saved file, defaults to file.name"
           }
         ]
       },

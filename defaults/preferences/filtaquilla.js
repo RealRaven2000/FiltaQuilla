@@ -9,7 +9,7 @@ pref("extensions.filtaquilla@mesquilla.com.description", "chrome://filtaquilla/l
 pref("extensions.filtaquilla.maxthreadscan", 20);
 // filter actions
 pref("extensions.filtaquilla.attachmentTimeoutMs", 25000); // sync attachment saving. timeout per email
-pref("extensions.filtaquilla.fixEncodingInFileNames", true); // [bug 1992976]
+// pref("extensions.filtaquilla.fixEncodingInFileNames", true); // [bug 1992976]
 pref("extensions.filtaquilla.subjectAppend.enabled", false);
 pref("extensions.filtaquilla.subjectSuffix.enabled", false);
 pref("extensions.filtaquilla.removeKeyword.enabled", false);
