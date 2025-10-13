@@ -4,8 +4,8 @@ set /a oldRev=%filtquillaRev%
 set /a filtquillaRev+=1
 REM replace previous rev with new
 powershell -Command "(gc -en UTF8 manifest.json) -replace 'pre%oldRev%', 'pre%filtquillaRev%' | Out-File manifest.json  -encoding utf8"
-"C:\Program Files\7-Zip\7z" a -xr!.svn filtaQuilla-FX.zip manifest.json _locales content defaults html locale skin license.txt *.js *.html
+"C:\Program Files\7-Zip\7z" a -xr!.svn filtaQuilla-FX.zip manifest.json _locales content defaults html locale skin lic*.txt *.js *.html
 echo %filtquillaRev% > revision.txt
-move filtaQuilla*.xpi "..\..\..\_Test Versions\5.4\"
+move filtaQuilla*.xpi "..\..\..\_Test Versions\5.5\"
 powershell -Command "Start-Sleep -m 150"
-rename filtaQuilla-FX.zip filtaquilla-5.4.1pre%filtquillaRev%.xpi
+rename filtaQuilla-FX.zip filtaquilla-5.5pre%filtquillaRev%.xpi
