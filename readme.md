@@ -8,3 +8,6 @@ had to retire form Add-on development. As I am often asked about added features
 for filter conditions and actions for my Add-on quickFilters this is a good
 container for this additional functionality. I am keeping the license as GPL 3.0 for now.
 
+13/10/2025
+
+Added external icons, see list in license-artwork.txt
