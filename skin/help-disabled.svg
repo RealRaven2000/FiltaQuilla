@@ -5,13 +5,13 @@
   <style>
     path {
         --iconStroke: transparent;
-        --icon-fill: #204030;
+        --icon-fill: #986433ff;
         --stroke-width: 2pt;
     }
     @media (prefers-color-scheme: dark) {
         path { 
           --iconStroke: transparent; 
-          --icon-fill: #5F99CEff;
+          --icon-fill: #d02b2bff;
         }
     }        
   </style>  

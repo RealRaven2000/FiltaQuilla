@@ -108,12 +108,13 @@
           <button class="helpLink" helptopic="run_file" title="__MSG_helpFeatureTip__">&nbsp;</button>
         </span>
 
-        <span class="option-horizontal">
+        <span class="option-horizontal option-tooltip-content">
           <label>
             <input type="checkbox" id="checkRunFileUnicode" data-pref-name="extensions.filtaquilla.runFile.unicode">
             __MSG_fq.runFile.unicode__
           </label>
-          <button class="helpLink" clickytooltip="__MSG_fq.runFile.unicode.tooltip__" title="__MSG_helpFeatureTip__">&nbsp;</button>
+          <button class="tooltipBtn" clickytooltip="__MSG_fq.runFile.unicode.tooltip__" title="__MSG_helpFeatureTip__" aria-label="More info">&nbsp;</button>
+          <div class="tooltip-bubble" hidden="true">__MSG_fq.runFile.unicode.tooltip__</div>    
         </span>
 
         <span class="option-horizontal">
@@ -344,9 +345,10 @@
                   disabled>
             __MSG_fq.attachmentRegex__
           </label>
-          <button class="helpLinkDisabled"
+          <button class="tooltipBtn disabled"
                   helptopic="match_attachmentname"
                   title="__MSG_helpFeatureTip__">&nbsp;</button>
+          <div class="tooltip-bubble" hidden="true">__MSG_feature.unsupported__</div> 
         </span>
 
       </div>

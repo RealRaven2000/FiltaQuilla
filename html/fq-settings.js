@@ -59,17 +59,62 @@ const initPrefs = async () => {
   }
 };
 
+/**** FLOATING TOOLTIPS ===> **** */
+function toggleTooltip(button) {
+  const row = button.closest(".option-horizontal");
+  if (!row) {
+    return;
+  }
+
+  const tooltip = row.querySelector(".tooltip-bubble");
+  if (!tooltip) {
+    return;
+  }
+
+  // Hide all other tooltips first
+  document.querySelectorAll(".tooltip-bubble").forEach((t) => {
+    if (t !== tooltip) {
+      t.hidden = true;
+    }
+  });
+  document.querySelectorAll(".tooltipBtn").forEach((t) => {
+    t.removeAttribute("tooltipshown");
+  });
+
+  // Toggle this one
+  tooltip.hidden = !tooltip.hidden;
+  if (tooltip.hidden) {
+    button.removeAttribute("tooltipshown");
+  } else {
+    button.setAttribute("tooltipshown", true);
+  }
+}
+
+
 const initEventListeners = async () => {
   for (let button of document.querySelectorAll("#FiltaQuilla-Options-Tabbox button")) {
     button.addEventListener("click", activateTab);
   }
 
+  // Tooltip buttons
+  for (let btn of document.querySelectorAll(".tooltipBtn")) {
+    btn.addEventListener("click", () => {
+      toggleTooltip(btn);
+    });
+  }
+
   document.addEventListener("click", (ev) => {
-    const btn = ev.target.closest(".helpLink");
-    if (!btn) { return; }
-    const topic = btn.getAttribute("helptopic");
-    if (!topic) { return; }
-    FiltaQuilla.Util.openHelpTab(topic);
+    const btn = ev.target.closest(".helpLink") || ev.target.closest(".tooltipBtn");
+    if (!btn) {
+      return;
+    }
+    if (btn.classList.contains("helpLink")) {
+      const topic = btn.getAttribute("helptopic");
+      if (!topic) {
+        return;
+      }
+      FiltaQuilla.Util.openHelpTab(topic);
+    }
   });
 
   addConfigEvent(document.getElementById("debug-options"), "extensions.filtaquilla.debug");
