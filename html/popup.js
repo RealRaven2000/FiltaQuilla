@@ -90,7 +90,8 @@ const formatAll = (txt) => {
     .replace(/\{A2\}/g, "</a>")
     .replace(/\{br\}/g, "<br>")
     .replace(/\{A\}/g, "</a>")
-    .replace(/\[issue (\d*)\]/g, "<a class=issue no=$1 href='#'>[issue $1]</a>")
+    .replace(/\[issue (\d*)\]/g, "<a class='issue' no=$1 href='#'>[issue $1]</a>")
+    .replace(/\[Bug (\d*)\]/g, "<a class='bug' no=$1 href='#'>[Bug $1]</a>")
     .replace(/\[(.)\]/g, "<code class='keystroke'>$1</code>") // single keys
     .replace(/\[(F\d*)\]/g, "<code class='keystroke'>$1</code>") // F10
     .replace(/\[(CTRL|ALT)\]/g, "<code class='keystroke'>$1</code>"); // single keys

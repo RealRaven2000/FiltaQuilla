@@ -2677,7 +2677,7 @@
    *          if a sanitized name cannot be obtained (if aName contains
    *          no valid characters).
    */
-  const _sanitizeName = (aName, includesExtension = false, fixEncoding = false) => {
+  const _sanitizeName = (aName, includesExtension = false) => {
     const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
     let chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()_-+'!%" +

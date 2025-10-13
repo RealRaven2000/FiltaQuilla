@@ -153,6 +153,15 @@ window.addEventListener("load", async () => {
         );
       }
     }
+    if (event.target.classList.contains("bug")) {
+      let bugId = event.target.getAttribute("no");
+      if (bugId) {
+        event.preventDefault();
+        messenger.windows.openDefaultBrowser(
+          `https://bugzilla.mozilla.org/show_bug.cgi?id=${bugId}`
+        );
+      }
+    }    
   });
 
   // always allow hitting ESC to cancel
