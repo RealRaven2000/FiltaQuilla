@@ -513,6 +513,24 @@
       title: messenger.i18n.getMessage("supportPage"),
     });    
 
+    await messenger.menus.create({
+      id: "filtaquilla-github",
+      contexts: ["browser_action_menu"],
+      icons: "../skin/github.svg",
+      onclick: async () => {
+        const URL = "https://github.com/RealRaven2000/FiltaQuilla/issues";
+        let tabs = await messenger.tabs.query({});
+        let existingTab = tabs.find((t) => t.url === URL);
+        if (existingTab) {
+          await messenger.tabs.update(existingTab.id, { active: true, url: URL });
+        } else {
+          await messenger.tabs.create({ url: URL });
+        }
+      },
+      title: messenger.i18n.getMessage("githubPage"),
+    });
+    
+
     // Force rebuild
     await browser.menus.refresh();
     if (isDebug) {
@@ -541,7 +559,7 @@
       height: 480,
     };
     const ids = messageIds.split(",").map((s) => s.trim());
-    if (ids.includes("newsMsgEsr140")) { // it's a long one...
+    if (ids.includes("newsMsgForced")) { // it's a long one...
       windowProperties.height = 520;
       windowProperties.width = 800;
     }
@@ -588,9 +606,9 @@
 
   let retryScheduled = false; // session flag to avoid repeat re-scheduling
   const RETRY_MINUTES = 20;
-  const LATEST_UPDATEMSG = "5.3"; // latest version with update message
+  const LATEST_UPDATEMSG = "5.5"; // latest version with special message (forced display)
   async function displayUpdateMessage() {
-    const messageIds = "newsMsgEsr140",
+    const messageIds = "newsMsgForced",
       isDebug = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.debug");
 
     const logDebug = (...args) => {
