@@ -40,6 +40,9 @@
   "extensions.filtaquilla.description": {
     "message": "E-postfiltrerande anpassade åtgärder"
   },
+  "feature.unsupported": {
+    "message": "Den här funktionen stöds för närvarande inte."
+  },
   "filtaquilla.applyIncomingFilters": {
     "message": "Tillämpa filter för inkommande"
   },
@@ -286,6 +289,9 @@
   "fq.trainJunk.access": {
     "message": "ä"
   },
+  "githubPage": {
+    "message": "Besök FiltaQuilla GitHub-sida"
+  },
   "helpFeatureTip": {
     "message": "Visa detaljer om denna funktion"
   },
@@ -309,8 +315,8 @@
     "message": "FiltaQuilla har gjort ändringar i vissa av sina anpassade filteråtgärder – dessa kan bara tillämpas efter att Thunderbird har startats om. Starta om Thunderbird så snart som möjligt för att säkerställa att filtren fungerar smidigt."
   },
   "newsHead": { "message": "Senaste nytt" },
-  "newsMsgEsr140": {
-    "message": "{P1}{boldStart} Kommer snart i nästa stora version {boldEnd}: Thunderbird kommer snart att be dig välja din föredragna uppdateringsväg — antingen den årliga ESR-versionen eller de snabbare månatliga utgåvorna. {ARelease}Läs mer om den nya versionsmodellen{A2}.{U1} {L1}ESR-versionen kommer att stanna på v140, öka endast mindre versionsnummer och inkludera endast säkerhetsfixar och buggfixar, vilket ofta föredras i företagsmiljöer.{L2} {L1}Den månatliga utgivningscykeln levererar nya funktioner och gränssnittsuppdateringar när de utvecklas. Kontrollera om dina nuvarande tillägg stöder denna versionsmodell. För att hjälpa till med detta kan du installera {AcompatCheck}Tilläggskompatibilitetskontrollen{A2}.{L2} {U2}{P2}{P1} Vi är glada att meddela att FiltaQuilla är fullt kompatibel med Thunderbird 140, nästa Extended Support Release (ESR). Detta innebär fortsatt tillförlitlighet och trygghet under nästa stora supportcykel.{P2}{P1} FiltaQuilla fortsätter att stödja användare på Thunderbird 128 och senare för närvarande.{P2}{P1} Vi övervakar kontinuerligt ändringar i Thunderbird för att säkerställa att FiltaQuilla förblir kompatibel och pålitlig, oavsett vilken versionsväg du väljer.{P2}"
+  "newsMsgForced": {
+    "message": "{P1}Denna version introducerar fullständigt stöd för franska, japanska, italienska och spanska lokaler. Vi har konverterat inställningsdialogen till HTML för bättre framtidssäkerhet och underhållbarhet.{P2}{P1}På grund av den lågnivåfunktionalitet som FiltaQuilla använder måste detta tillägg förbli experimentellt och begär därför fullständiga behörigheter vid installation.{P2}{P1}Denna uppdatering inkluderar även mindre förbättringar i filtermotorn och åtgärder för kända problem från tidigare versioner. FiltaQuilla fortsätter att stödja användare på Thunderbird 128 och senare, men äldre versioner kanske inte drar nytta av de senaste lokaliseringarna eller korrigeringarna.{P2}"
   },
   "optionsIntro": {
     "message": "Aktivera alla elemet du vill ha tillgängliga i dialogruan &quot;Filtreringsregler&quot;. Starta om efter ändringar."
@@ -403,6 +409,6 @@
     "message": "FiltaQuilla stöds stolt genom mitt arbete med mina andra tillägg: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} och {A-ST}SmartTemplates{A2}. Kolla gärna in dem i tilläggsbutiken!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1}FiltaQuilla är nu kompatibel med Thunderbird 140.*{L2} {L1} Förbättrad startprestanda vid spara bilagor (POP3-mail) [issue 349]{L2} {L1} Förbättringar och buggfixar kring ljudåtgärder [issue 350]{L2}{U2}"
+    "message": "{U1} {L1} FiltaQuilla är nu kompatibel med Thunderbird 145.*.{L2} {L1} Nya översättningar har lagts till för franska, japanska, italienska och spanska användare.{L2} {L1} En ny verktygsfältsknapp har lagts till för snabb åtkomst till inställningarna. Om du inte behöver den kan du ta bort den via Visa » Verktygsfält » Anpassa verktygsfält.{L2} {L1} Inställningsdialogen har konverterats till HTML. [issue 366]{L2} {L1} Fixat: I vissa fall kunde bilagor sparas med förvrängda filnamn på grund av kodningsproblem [issue 364]. Eftersom detta är ett API-fel rapporterades det också som en bugg på Bugzilla [Bug 1992976].{L2} {U2}"
   }
 }

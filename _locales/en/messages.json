@@ -40,6 +40,9 @@
   "extensions.filtaquilla.description": {
     "message": "Mail filter custom actions"
   },
+  "feature.unsupported": {
+    "message": "This feature is currently not supported."
+  },
   "filtaquilla.applyIncomingFilters": {
     "message": "Apply Incoming Filters"
   },
@@ -298,6 +301,9 @@
   "fq.trainJunk.access": {
     "message": "J"
   },
+  "githubPage": {
+    "message": "Visit FiltaQuilla GitHub Page"
+  },
   "helpFeatureTip": {
     "message": "Show Details on this feature"
   },
@@ -321,8 +327,8 @@
     "message": "FiltaQuilla has made modifications to some of its custom filter actions - these can only be applied after a restart of Thunderbird. Please restart Thunderbird at your earliest convenience to ensure smooth filters operation."
   },
   "newsHead": { "message": "Latest News" },
-  "newsMsgEsr140": {
-    "message": "{P1}{boldStart} Upcoming in the next big release {boldEnd}: Thunderbird will soon ask you to choose your preferred update path — either the annual ESR track or the faster monthly releases. {ARelease}Learn more about the new release model{A2}.{U1} {L1}The ESR version will stay on v140, increasing minor version numbers and including only security fixes and bug patches, which is often preferable for corporate environments.{L2} {L1}The monthly release cycle will deliver new features and interface updates as they’re developed. Please check whether your current add-ons support this release model. To help with this, you can install the {AcompatCheck}Add-on Compatibility Check{A2}.{L2} {U2}{P2}{P1} We're happy to announce that FiltaQuilla is fully compatible with Thunderbird 140, the next Extended Support Release (ESR). This means ongoing reliability and peace of mind through the next major support cycle.{P2}{P1} FiltaQuilla continues to support users on Thunderbird 128 and above for now.{P2}{P1} We continuously monitor Thunderbird changes to ensure FiltaQuilla remains compatible and reliable, regardless of the release track you choose.{P2}"
+  "newsMsgForced": {
+    "message": "{P1}This release introduces full support for French, Japanese, Italian, and Spanish locales. We have converted the settings dialog to HTML for better future-proofing and maintainability.{P2}{P1}Due to the low-level nature of FiltaQuilla’s functionality, this Add-on has to remain experimental and thus still request full permissions during installation.{P2}{P1}This update also includes minor improvements to the filter engine and fixes to known issues from previous versions. FiltaQuilla continues to support users on Thunderbird 128 and above, but older versions may not benefit from the latest localizations or fixes.{P2}"
   },
   "optionsIntro": {
     "message": "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes."
@@ -418,6 +424,6 @@
     "message": "FiltaQuilla is proudly supported through my work on my other Add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2}, and {A-ST}SmartTemplates{A2}. Please check them out on the Add-ons store!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1}FiltaQuilla is now compatible with Thunderbird 145.*.{L2} {L1} Rewrote the Tonequilla portion (play sound) to use current window as a parameter or the last 3pane window. [issue 258]{L2}{U2}"
+    "message": "{U1} {L1} FiltaQuilla is now compatible with Thunderbird 145.*.{L2} {L1} Added localisations for French, Japanese, Italian and Spanish users.{L2}{L1} Added a toolbar button for convenient access to settings. If it's not needed, you can remove it via View » Toolbars » Toolbar Layout.{L2}{L1} Converted settings dialog to html. [issue 366]{L2}{L1} Fixed: In some cases, attachments can be saved with garbled file name due to encoding issues [issue 364]. As this is an API error I also raised a Bug on Bugzilla [Bug 1992976]. {L2}{U2}"
   }
 }

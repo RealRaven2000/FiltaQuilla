@@ -1,0 +1,427 @@
+{
+  "aboutAndSupport": {
+    "message": "Acerca de FiltaQuilla / Ayuda"
+  },
+  "applyIncomingMails": {
+    "message": "Ejecutar filtros en correos entrantes"
+  },
+  "aria.configSettings": {
+    "message": "Configuración avanzada - para opciones adicionales"
+  },
+  "checkJavascriptActionBodyEnabled.accesskey": {
+    "message": "Y"
+  },
+  "checkJavascriptActionBodyEnabled.label": {
+    "message": "Acción Javascript con cuerpo"
+  },
+  "checkJavascriptEnabled.accesskey": {
+    "message": "J"
+  },
+  "checkJavascriptEnabled.label": {
+    "message": "Javascript"
+  },
+  "default": {
+    "message": "Usar por defecto"
+  },
+  "editJavascript": {
+    "message": "Editar Javascript"
+  },
+  "enabled": {
+    "message": "Habilitado"
+  },
+  "extensionDescription": {
+    "message": "Genera filtros de correo rápidamente analizando los atributos de los mensajes."
+  },
+  "extensionName": {
+    "message": "FiltaQuilla"
+  },
+  "extensions.filtaquilla.description": {
+    "message": "Acciones personalizadas de filtro de correo"
+  },
+  "feature.unsupported": {
+    "message": "Esta función no está soportada actualmente."
+  },
+  "filtaquilla.applyIncomingFilters": {
+    "message": "Aplicar filtros entrantes"
+  },
+  "filtaquilla.applyIncomingFilters.accesskey": {
+    "message": "F"
+  },
+  "filtaquilla.editJavascript": {
+    "message": "Editar Javascript…"
+  },
+  "filtaquilla.enabled": {
+    "message": "Habilitado"
+  },
+  "filtaquilla.filters": {
+    "message": "Filtros"
+  },
+  "filtaquilla.inherit": {
+    "message": "Heredar"
+  },
+  "filtaquilla.javascriptAction.name": {
+    "message": "Acción Javascript"
+  },
+  "filtaquilla.javascriptActionBody.name": {
+    "message": "Acción Javascript con cuerpo"
+  },
+  "filtaquilla.launcher.launch": {
+    "message": "¡Ejecutar el archivo!"
+  },
+  "filtaquilla.launcher.select": {
+    "message": "Seleccionar un archivo…"
+  },
+  "filtaquilla.playSound": {
+    "message": "Reproducir sonido"
+  },
+  "filtaquilla.runProgram.select": {
+    "message": "Seleccionar un programa…"
+  },
+  "filtaquilla.runProgram.title": {
+    "message": "Seleccionar un programa para ejecutar"
+  },
+  "filtaquilla.selectFolder.btn": {
+    "message": "Elegir carpeta…"
+  },
+  "filtaquilla.selectFolder.title": {
+    "message": "Seleccionar una carpeta"
+  },
+  "filtaquilla.template.select": {
+    "message": "Seleccionar una plantilla…"
+  },
+  "filtaquilla.tone.select": {
+    "message": "Seleccionar un archivo de sonido…"
+  },
+  "filterActions": {
+    "message": "Acciones de filtro"
+  },
+  "fq.Bcc": {
+    "message": "Cco"
+  },
+  "fq.Bcc.access": {
+    "message": "B"
+  },
+  "fq.addSender": {
+    "message": "Agregar remitente a la lista de direcciones"
+  },
+  "fq.addSender.access": {
+    "message": "L"
+  },
+  "fq.attachmentRegex": {
+    "message": "Coincidencia de nombre de archivo adjunto (Regex)"
+  },
+  "fq.bodyRegex": {
+    "message": "Coincidencia en el cuerpo (Regex)"
+  },
+  "fq.copyAsRead": {
+    "message": "Copiar como leído"
+  },
+  "fq.copyAsRead.access": {
+    "message": "C"
+  },
+  "fq.detachAttachments": {
+    "message": "Separar archivos adjuntos a"
+  },
+  "fq.detachAttachments.access": {
+    "message": "D"
+  },
+  "fq.filtaquilla.mustSelectFolder": {
+    "message": "Debe seleccionar una carpeta de destino"
+  },
+  "fq.fileNameMaxLength": {
+    "message": "Longitud máxima"
+  },
+  "fq.fileNameSpaceCharacter": {
+    "message": "Reemplazar espacios en los nombres de archivos por"
+  },
+  "fq.fileNameWhiteList": {
+    "message": "Letras permitidas"
+  },
+  "fq.folderName": {
+    "message": "Nombre de la carpeta"
+  },
+  "fq.folderName.access": {
+    "message": "F"
+  },
+  "fq.hdrRegex": {
+    "message": "Coincidencia de cabecera (Regex)"
+  },
+  "fq.hdrRegex.access": {
+    "message": "H"
+  },
+  "fq.javascript": {
+    "message": "Javascript"
+  },
+  "fq.javascriptAction": {
+    "message": "Acción Javascript"
+  },
+  "fq.javascriptAction.access": {
+    "message": "V"
+  },
+  "fq.launchFile": {
+    "message": "Abrir archivo"
+  },
+  "fq.launchFile.access": {
+    "message": "F"
+  },
+  "fq.markReplied": {
+    "message": "Marcar como respondido"
+  },
+  "fq.markReplied.access": {
+    "message": "E"
+  },
+  "fq.markUnread": {
+    "message": "Marcar como no leído"
+  },
+  "fq.markUnread.access": {
+    "message": "M"
+  },
+  "fq.moveLater": {
+    "message": "Mover más tarde"
+  },
+  "fq.moveLater.access": {
+    "message": "A"
+  },
+  "fq.nobiff": {
+    "message": "No notificar"
+  },
+  "fq.nobiff.access": {
+    "message": "N"
+  },
+  "fq.print": {
+    "message": "Imprimir"
+  },
+  "fq.print.access": {
+    "message": "P"
+  },
+  "fq.printAllowDuplicates": {
+    "message": "Permitir duplicados"
+  },
+  "fq.printTools": {
+    "message": "Usar PrintingTools NG para imprimir"
+  },
+  "fq.regex.caseInsensitive": {
+    "message": "Coincidencia regex sin distinción de mayúsculas/minúsculas"
+  },
+  "fq.regex.multilineanchors": {
+    "message": "Soporta anclas '^' y '$' en cabeceras de dirección"
+  },
+  "fq.removeflagged": {
+    "message": "Quitar estrella"
+  },
+  "fq.removeflagged.access": {
+    "message": "S"
+  },
+  "fq.removekeyword": {
+    "message": "Quitar etiqueta"
+  },
+  "fq.removekeyword.access": {
+    "message": "O"
+  },
+  "fq.runFile": {
+    "message": "Ejecutar programa"
+  },
+  "fq.runFile.access": {
+    "message": "R"
+  },
+  "fq.runFile.unicode": {
+    "message": "Usar UTF-16 por defecto"
+  },
+  "fq.runFile.unicode.tooltip": {
+    "message": "Usa el parámetro @UTF16@ o @UTF8@ para usar codificación individual"
+  },
+  "fq.saveAttachment": {
+    "message": "Guardar adjuntos en"
+  },
+  "fq.saveAttachment.access": {
+    "message": "H"
+  },
+  "fq.saveMsgAsFile": {
+    "message": "Guardar mensaje como archivo"
+  },
+  "fq.saveMsgAsFile.access": {
+    "message": "I"
+  },
+  "fq.smartTemplate.fwd": {
+    "message": "Reenviar con SmartTemplate"
+  },
+  "fq.smartTemplate.rsp": {
+    "message": "Responder con SmartTemplate"
+  },
+  "fq.archiveMessage": {
+    "message": "Archivar mensaje"
+  },
+  "fq.subjectBodyRegex": {
+    "message": "Coincidencia regex en asunto o cuerpo"
+  },
+  "fq.subjectRegex": {
+    "message": "Coincidencia regex en asunto"
+  },
+  "fq.subjectRegex.access": {
+    "message": "S"
+  },
+  "fq.subjectappend": {
+    "message": "Añadir al asunto"
+  },
+  "fq.subjectappend.access": {
+    "message": "A"
+  },
+  "fq.subjectprepend": {
+    "message": "Preponer al asunto"
+  },
+  "fq.subjectprepend.access": {
+    "message": "U"
+  },
+  "fq.threadAnyTag": {
+    "message": "Etiqueta de mensajes del hilo"
+  },
+  "fq.threadAnyTag.access": {
+    "message": "T"
+  },
+  "fq.threadHeadTag": {
+    "message": "Etiqueta del inicio del hilo"
+  },
+  "fq.threadHeadTag.access": {
+    "message": "H"
+  },
+  "fq.toneQuilla": {
+    "message": "Reproducir sonido (Tonequilla)"
+  },
+  "fq.trainGood": {
+    "message": "Marcar como bueno"
+  },
+  "fq.trainGood.access": {
+    "message": "G"
+  },
+  "fq.trainJunk": {
+    "message": "Marcar como correo no deseado"
+  },
+  "fq.trainJunk.access": {
+    "message": "J"
+  },
+  "githubPage": {
+    "message": "Visitar la página de FiltaQuilla en GitHub"
+  },
+  "helpFeatureTip": {
+    "message": "Mostrar detalles sobre esta función"
+  },
+  "indexInGlobalDatabase": {
+    "message": "Indexar en la base de datos global"
+  },
+  "inherit": {
+    "message": "Heredar"
+  },
+  "inheritedProperties": {
+    "message": "Propiedades heredadas"
+  },
+  "message.btn.accept": { "message": "Aceptar" },
+  "message.btn.cancel": { "message": "Cancelar" },
+  "message.btn.changeLog": { "message": "Mostrar los últimos cambios…" },
+  "message.btn.no": { "message": "No" },
+  "message.btn.yes": { "message": "Sí" },
+  "message.linkInTab": { "message": "(Enlace abierto en una pestaña)" },
+  "message.placeholder": { "message": "Mensaje faltante." },
+  "message.restart": {
+    "message": "FiltaQuilla ha realizado modificaciones en algunas de sus acciones de filtro personalizadas. Estas solo se aplicarán después de reiniciar Thunderbird. Por favor, reinicia Thunderbird para garantizar un funcionamiento fluido de los filtros."
+  },
+  "newsHead": { "message": "Últimas noticias" },
+  "newsMsgForced": {
+    "message": "{P1}Esta versión introduce soporte completo para los idiomas francés, japonés, italiano y español. Hemos convertido el diálogo de configuración a HTML para garantizar una mejor compatibilidad futura y facilidad de mantenimiento.{P2}{P1}Debido a la naturaleza de bajo nivel de la funcionalidad de FiltaQuilla, este complemento debe seguir siendo experimental y, por lo tanto, solicita permisos completos durante la instalación.{P2}{P1}Esta actualización también incluye pequeñas mejoras en el motor de filtros y correcciones de problemas conocidos de versiones anteriores. FiltaQuilla continúa siendo compatible con Thunderbird 128 y versiones superiores, aunque las versiones anteriores pueden no beneficiarse de las últimas localizaciones o correcciones.{P2}"
+  },
+  "optionsIntro": {
+    "message": "Activa todos los elementos que desees tener disponibles en el cuadro de diálogo 'Reglas de filtros'. Reinicia después de realizar cambios."
+  },
+  "pane1.title": {
+    "message": "Preferencias de FiltaQuilla"
+  },
+  "prefPanel-inheritPane": {
+    "message": "Propiedades heredadas"
+  },
+  "prefwindow.title": {
+    "message": "Preferencias de FiltaQuilla"
+  },
+  "purchase-a-license": {
+    "message": "Comprar una licencia."
+  },
+  "purchase-heading": {
+    "message": "¡Compra una licencia!"
+  },
+  "quickFiltersPage": {
+    "message": "¡Obtén quickFilters!"
+  },
+  "quickFiltersPage_desc": {
+    "message": "Descarga este increíble complemento para potenciar tus filtros. quickFilters facilita enormemente la definición y gestión de filtros."
+  },
+  "regex.accept": {
+    "message": "Aceptar"
+  },
+  "regex.btnBuilder.tooltip": {
+    "message": "haz clic aquí para probar tu expresión regular"
+  },
+  "regex.cancel": {
+    "message": "Cancelar"
+  },
+  "regex.collapseWhiteSpace": {
+    "message": "colapsar todos los espacios en blanco"
+  },
+  "regex.contentfilter": {
+    "message": "Restricciones de contenido:"
+  },
+  "regex.content.plaintext": {
+    "message": "procesar partes de texto sin formato"
+  },
+  "regex.content.html": {
+    "message": "procesar partes HTML"
+  },
+  "regex.content.raw": {
+    "message": "Modo sin procesar: sin preprocesamiento en partes de texto sin formato."
+  },
+  "regex.content.vcard": {
+    "message": "procesar partes de vcard"
+  },
+  "regex.exclude.html": {
+    "message": "excluir todas las etiquetas HTML"
+  },
+  "regex.exclude.quotes": {
+    "message": "excluir citas (html + texto sin formato)"
+  },
+  "regex.exclude.style": {
+    "message": "excluir etiquetas globales &lt;style&gt; y CSS"
+  },
+  "regex.expression": {
+    "message": "Expresión regular"
+  },
+  "regex.popup": {
+    "message": "Opciones de búsqueda…"
+  },
+  "regex.raw.help": {
+    "message": "Por defecto, FiltaQuilla prepara las partes de texto sin formato contrayendo todos los párrafos, eliminando saltos de línea causados por el ajuste de texto. Esto también elimina los signos de cita {>} al final de un párrafo. Activa esta opción si deseas buscar en el mensaje sin procesar."
+  },
+  "regex.switches": {
+    "message": "Opciones de búsqueda"
+  },
+  "searchTerms": {
+    "message": "Términos de búsqueda"
+  },
+  "supportFiltaquilla": {
+    "message": "Apoya FiltaQuilla"
+  },
+  "supportFiltaquilla_desc": {
+    "message": "FiltaQuilla es gratuito para descargar y usar. La mejor forma de apoyar al equipo de desarrollo es comprar una licencia de quickFilters Pro, la extensión más completa para gestionar y crear filtros de forma súper conveniente."
+  },
+  "supportPage": {
+    "message": "Visitar página de soporte"
+  },
+  "supportPage_desc": {
+    "message": "Esta página describe las diferentes acciones y condiciones que puedes agregar a los filtros de correo con FiltaQuilla."
+  },
+  "whats-new-head": {
+    "message": "Cambios importantes"
+  },
+  "whats-new-intro": {
+    "message": "FiltaQuilla cuenta con el apoyo de mi trabajo en otros complementos: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2}, y {A-ST}SmartTemplates{A2}. ¡Échales un vistazo en la tienda de complementos!"
+  },
+  "whats-new-list": {
+    "message": "{U1} {L1} FiltaQuilla ahora es compatible con Thunderbird 145.*.{L2} {L1} Se agregaron localizaciones para usuarios de francés, japonés, italiano y español.{L2}{L1} Se añadió un botón de barra de herramientas para acceder cómodamente a la configuración. Si no lo necesitas, puedes quitarlo desde Ver » Barras de herramientas » Diseño de la barra de herramientas.{L2}{L1} Se convirtió el cuadro de diálogo de configuración a HTML. [issue 366]{L2}{L1} Corregido: En algunos casos, los archivos adjuntos se guardaban con nombres distorsionados debido a problemas de codificación. [issue 364]. Como este es un error del API, también se presentó un informe en Bugzilla [Bug 1992976].{L2}{U2}"
+  }
+}

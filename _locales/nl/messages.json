@@ -40,6 +40,9 @@
   "extensions.filtaquilla.description": {
     "message": "Aangepaste acties e-mailfilter"
   },
+  "feature.unsupported": {
+    "message": "Deze functie wordt momenteel niet ondersteund."
+  },
   "filtaquilla.applyIncomingFilters": {
     "message": "Inkomende filters toepassen"
   },
@@ -289,6 +292,9 @@
   "fq.trainJunk.access": {
     "message": "O"
   },
+  "githubPage": {
+    "message": "Bezoek de FiltaQuilla GitHub-pagina"
+  },
   "helpFeatureTip": {
     "message": "Details van deze functie weergeven"
   },
@@ -312,8 +318,8 @@
     "message": "FiltaQuilla heeft enkele aangepaste filteracties gewijzigd – deze kunnen pas worden toegepast na een herstart van Thunderbird. Start Thunderbird alstublieft zo snel mogelijk opnieuw op om een goede werking van de filters te garanderen."
   },
   "newsHead": { "message": "Laatste nieuws" },
-  "newsMsgEsr140": {
-    "message": "{P1}{boldStart} Binnenkort in de volgende grote release {boldEnd}: Thunderbird zal u binnenkort vragen om uw voorkeursupdatepad te kiezen — ofwel het jaarlijkse ESR-traject of de snellere maandelijkse releases. {ARelease}Lees meer over het nieuwe release-model{A2}.{U1} {L1}De ESR-versie blijft op v140, verhoogt alleen de subversienummers en bevat uitsluitend beveiligings- en bugfixes, wat vaak de voorkeur heeft in zakelijke omgevingen.{L2} {L1}De maandelijkse releasecyclus levert nieuwe functies en interface-updates zodra deze ontwikkeld zijn. Controleer of uw huidige add-ons dit release-model ondersteunen. Om hierbij te helpen kunt u de {AcompatCheck}Add-on Compatibiliteitscontrole{A2} installeren.{L2} {U2}{P2}{P1} We zijn blij te kunnen melden dat FiltaQuilla volledig compatibel is met Thunderbird 140, de volgende Extended Support Release (ESR). Dit betekent voortdurende betrouwbaarheid en gemoedsrust tijdens de volgende grote ondersteuningscyclus.{P2}{P1} FiltaQuilla blijft voorlopig gebruikers van Thunderbird 128 en hoger ondersteunen.{P2}{P1} We volgen de wijzigingen in Thunderbird voortdurend om te zorgen dat FiltaQuilla compatibel en betrouwbaar blijft, ongeacht het gekozen releasepad.{P2}"
+  "newsMsgForced": {
+    "message": "{P1}Deze release biedt volledige ondersteuning voor Franse, Japanse, Italiaanse en Spaanse locale instellingen. We hebben het instellingenvenster geconverteerd naar HTML voor betere toekomstbestendigheid en onderhoudbaarheid.{P2}{P1}Vanwege de low-level aard van de functionaliteit van FiltaQuilla moet deze add-on experimenteel blijven en vraagt daarom volledige machtigingen bij installatie.{P2}{P1}Deze update bevat ook kleine verbeteringen aan de filterengine en oplossingen voor bekende problemen uit eerdere versies. FiltaQuilla blijft gebruikers van Thunderbird 128 en hoger ondersteunen, oudere versies profiteren mogelijk niet van de nieuwste localisaties of fixes.{P2}"
   },
   "optionsIntro": {
     "message": "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen."
@@ -406,6 +412,6 @@
     "message": "FiltaQuilla wordt trots ondersteund door mijn werk aan mijn andere add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} en {A-ST}SmartTemplates{A2}. Bekijk ze in de Add-ons store!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1}FiltaQuilla is nu compatibel met Thunderbird 140.*{L2} {L1} Verbeterde opstartprestaties bij bijlagen opslaan (POP3-mail) [issue 349]{L2} {L1} Verbeteringen en bugfixes rond het afspelen en bewerken van geluidsacties [issue 350]{L2}{U2}"
+    "message": "{U1} {L1} FiltaQuilla is nu compatibel met Thunderbird 145.*.{L2} {L1} Nieuwe vertalingen toegevoegd voor Frans, Japans, Italiaans en Spaans.{L2} {L1} Er is een nieuwe werkbalkknop toegevoegd voor snelle toegang tot de instellingen. Als je deze niet nodig hebt, kun je hem verwijderen via Beeld » Werkbalken » Werkbalk aanpassen.{L2} {L1} Het instellingenvenster is omgezet naar HTML. [issue 366]{L2} {L1} Opgelost: In sommige gevallen konden bijlagen worden opgeslagen met onleesbare bestandsnamen vanwege coderingsproblemen [issue 364]. Omdat dit een API-fout is, is er ook een bug aangemaakt op Bugzilla [Bug 1992976].{L2} {U2}"
   }
 }

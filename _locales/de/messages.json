@@ -40,6 +40,9 @@
   "extensions.filtaquilla.description": {
     "message": "Benutzerdefinierte Aktionen für Mailfilter"
   },
+  "feature.unsupported": {
+    "message": "Diese Funktion wird derzeit nicht unterstützt."
+  },
   "filtaquilla.applyIncomingFilters": {
     "message": "Eingehende Filter ausführen"
   },
@@ -298,6 +301,9 @@
   "fq.trainJunk.access": {
     "message": "J"
   },
+  "githubPage": {
+    "message": "FiltaQuilla GitHub-Seite besuchen"
+  },
   "helpFeatureTip": {
     "message": "Mehr Informationen über diese Funktion"
   },
@@ -321,8 +327,8 @@
     "message": "FiltaQuilla hat einige seiner benutzerdefinierten Filteraktionen geändert – diese können erst nach einem Neustart von Thunderbird angewendet werden. Bitte starten Sie Thunderbird so bald wie möglich neu, um einen reibungslosen Filterbetrieb zu gewährleisten."
   },
   "newsHead": { "message": "Neueste Nachrichten" },
-  "newsMsgEsr140": {
-    "message": "{P1}{boldStart} Demnächst im nächsten großen Release {boldEnd}: Thunderbird wird Sie bald bitten, Ihren bevorzugten Update-Pfad zu wählen – entweder den jährlichen ESR-Zweig oder die schnelleren monatlichen Veröffentlichungen. {ARelease}Erfahren Sie mehr über das neue Release-Modell{A2}.{U1} {L1}Die ESR-Version bleibt auf v140, erhöht nur die Nebenversionsnummern und enthält ausschließlich Sicherheitsupdates und Fehlerbehebungen, was oft für Unternehmen bevorzugt wird.{L2} {L1}Der monatliche Veröffentlichungszyklus liefert neue Funktionen und Interface-Updates, sobald sie entwickelt werden. Bitte prüfen Sie, ob Ihre aktuellen Add-ons dieses Release-Modell unterstützen. Um dabei zu helfen, können Sie die {AcompatCheck}Add-on-Kompatibilitätsprüfung{A2} installieren.{L2} {U2}{P2}{P1} Wir freuen uns, bekannt zu geben, dass FiltaQuilla vollständig mit Thunderbird 140, der nächsten Extended Support Release (ESR), kompatibel ist. Das bedeutet fortlaufende Zuverlässigkeit und Sicherheit im nächsten großen Support-Zyklus.{P2}{P1} FiltaQuilla unterstützt weiterhin Nutzer von Thunderbird 128 und höher.{P2}{P1} Wir überwachen kontinuierlich Änderungen in Thunderbird, um sicherzustellen, dass FiltaQuilla unabhängig vom gewählten Release-Zweig kompatibel und zuverlässig bleibt.{P2}"
+  "newsMsgForced": {
+    "message": "{P1}Dieses Release führt vollständige Unterstützung für die französische, japanische, italienische und spanische Lokalisierung ein. Wir haben den Einstellungsdialog auf HTML umgestellt, um eine bessere Zukunftssicherheit und Wartbarkeit zu gewährleisten.{P2}{P1}Aufgrund der Low-Level-Funktionalität von FiltaQuilla muss dieses Add-on weiterhin als experimentell eingestuft werden und fordert daher bei der Installation volle Berechtigungen an.{P2}{P1}Dieses Update enthält außerdem kleinere Verbesserungen der Filter-Engine und Korrekturen bekannter Fehler aus früheren Versionen. FiltaQuilla unterstützt weiterhin Nutzer von Thunderbird 128 und höher, ältere Versionen profitieren jedoch möglicherweise nicht von den neuesten Lokalisierungen oder Fehlerbehebungen.{P2}"
   },
   "optionsIntro": {
     "message": "Aktivieren Sie alle Einträge die im 'Filter bearbeiten' Dialog angeboten werden sollen. Neustart erforderlich."
@@ -415,6 +421,6 @@
     "message": "FiltaQuilla wird stolz durch meine Arbeit an meinen anderen Add-ons unterstützt: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} und {A-ST}SmartTemplates{A2}. Schauen Sie sie sich im Add-ons-Store an!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1}FiltaQuilla ist jetzt kompatibel mit Thunderbird 140.*{L2} {L1} Verbesserte Startleistung beim Speichern von Anhängen (POP3-Mail) [issue 349]{L2} {L1} Verbesserungen und Fehlerbehebungen beim Abspielen und Bearbeiten von Sound-Aktionen [issue 350]{L2}{U2}"
+    "message": "{U1} {L1} FiltaQuilla ist jetzt mit Thunderbird 145.* kompatibel.{L2} {L1} Neue Übersetzungen für Französisch, Japanisch, Italienisch und Spanisch hinzugefügt.{L2} {L1} Eine neue Symbolleistenschaltfläche wurde hinzugefügt, um schnellen Zugriff auf die Einstellungen zu ermöglichen. Falls Sie diese nicht benötigen, können Sie sie über Ansicht » Symbolleisten » Symbolleisten anpassen entfernen.{L2} {L1} Der Einstellungsdialog wurde in HTML umgewandelt. [issue 366]{L2} {L1} Behoben: In einigen Fällen konnten Anhänge aufgrund von Codierungsproblemen mit unlesbaren Dateinamen gespeichert werden [issue 364]. Da dies ein API-Fehler ist, wurde außerdem ein Bug auf Bugzilla gemeldet [Bug 1992976].{L2} {U2}"
   }
 }
