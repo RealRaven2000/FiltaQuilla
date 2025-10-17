@@ -424,6 +424,7 @@
     "message": "FiltaQuilla is proudly supported through my work on my other Add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2}, and {A-ST}SmartTemplates{A2}. Please check them out on the Add-ons store!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1} FiltaQuilla is now compatible with Thunderbird 145.*.{L2} {L1} Added localisations for French, Japanese, Italian and Spanish users.{L2}{L1} Added a toolbar button for convenient access to settings. If it's not needed, you can remove it via View » Toolbars » Toolbar Layout.{L2}{L1} Converted settings dialog to html. [issue 366]{L2}{L1} Fixed: In some cases, attachments can be saved with garbled file name due to encoding issues [issue 364]. As this is an API error I also raised a Bug on Bugzilla [Bug 1992976]. {L2}{U2}"
+    "description": "🇬🇧 change log",
+    "message": "{U1} {L1} Fixed Regression from 5.5: Attachments were not saved anymore since update (Thunderbird 128). [issue 367], [issue 368] {L2} {L1} FiltaQuilla is now compatible with Thunderbird 145.*.{L2} {L1} Added localisations for French, Japanese, Italian and Spanish users.{L2}{L1} Added a toolbar button for convenient access to settings. If it's not needed, you can remove it via View » Toolbars » Toolbar Layout.{L2}{L1} Converted settings dialog to html. [issue 366]{L2}{L1} Fixed: In some cases, attachments can be saved with garbled file name due to encoding issues [issue 364]. As this is an API error I also raised a Bug on Bugzilla [Bug 1992976]. {L2}{U2}"
   }
 }

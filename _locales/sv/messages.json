@@ -409,6 +409,7 @@
     "message": "FiltaQuilla stöds stolt genom mitt arbete med mina andra tillägg: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} och {A-ST}SmartTemplates{A2}. Kolla gärna in dem i tilläggsbutiken!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1} FiltaQuilla är nu kompatibel med Thunderbird 145.*.{L2} {L1} Nya översättningar har lagts till för franska, japanska, italienska och spanska användare.{L2} {L1} En ny verktygsfältsknapp har lagts till för snabb åtkomst till inställningarna. Om du inte behöver den kan du ta bort den via Visa » Verktygsfält » Anpassa verktygsfält.{L2} {L1} Inställningsdialogen har konverterats till HTML. [issue 366]{L2} {L1} Fixat: I vissa fall kunde bilagor sparas med förvrängda filnamn på grund av kodningsproblem [issue 364]. Eftersom detta är ett API-fel rapporterades det också som en bugg på Bugzilla [Bug 1992976].{L2} {U2}"
+    "description": "🇸🇪 change log",
+    "message": "{U1} {L1} Åtgärdad regression från version 5.5: Bilagor sparades inte längre sedan uppdateringen (Thunderbird 128). [issue 367], [issue 368] {L2} {L1} FiltaQuilla är nu kompatibel med Thunderbird 145.*.{L2} {L1} Lagt till lokaliseringar för franska, japanska, italienska och spanska användare.{L2}{L1} Lagt till en verktygsfältknapp för enkel åtkomst till inställningar. Om den inte behövs kan den tas bort via Visa » Verktygsfält » Verktygsfältslayout.{L2}{L1} Inställningsdialog konverterad till HTML. [issue 366]{L2}{L1} Fixat: I vissa fall kunde bilagor sparas med felaktiga filnamn på grund av kodningsproblem [issue 364]. Eftersom detta är ett API-fel rapporterades även en bugg på Bugzilla [Bug 1992976]. {L2}{U2}"
   }
 }

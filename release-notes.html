@@ -1,4 +1,4 @@
-<b>Version 5.5</b>
+<b>Version 5.5.1</b>
 
 The Thunderbird monthly release cycle will deliver new features and interface updates as they’re developed. Please check whether your current add-ons support this release model. To help with this, you can install the <a href="https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/" class="native">Add-on Compatibility Check</a>.
 
@@ -13,13 +13,10 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 <b>Improvements</b>
 <ul>
   <li> Made FiltaQuilla compatible with Thunderbird 145.*.  </li>
-  <li> Added localisations for French, Japanese, Italian and Spanish users.</li>
-  <li> Converted settings dialog to html <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/366">[issue 366]</a></li>
-  <li> Added a toolbar button for convenient access to settings. If it's not needed, you can remove the button via View » Toolbars » Toolbar Layout.</li>
 </ul>
 <b>Bug Fixes</b>
 <ul>
-  <li> In some cases, attachments can be saved under wrong name and wrong format. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/364">[issue 364]</a>. I added some manual correction to fix the problem. This is a bug in the messages API, that returns an incorrectly encoded file name (it should decode the file name and return it correctly), so I raised <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1992976">Bug 1992976</a> in this matter.</li>
+  <li> Attachments aren't saved anymore in Thunderbird 128 since v5.5. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/367">[issue 367]</a>, <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/368">[issue 368]</a>. </li>
 </ul>
 
 

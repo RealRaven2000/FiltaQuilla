@@ -412,6 +412,7 @@
     "message": "FiltaQuilla wordt trots ondersteund door mijn werk aan mijn andere add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} en {A-ST}SmartTemplates{A2}. Bekijk ze in de Add-ons store!"
   },
   "whats-new-list": {
-    "message": "{U1} {L1} FiltaQuilla is nu compatibel met Thunderbird 145.*.{L2} {L1} Nieuwe vertalingen toegevoegd voor Frans, Japans, Italiaans en Spaans.{L2} {L1} Er is een nieuwe werkbalkknop toegevoegd voor snelle toegang tot de instellingen. Als je deze niet nodig hebt, kun je hem verwijderen via Beeld » Werkbalken » Werkbalk aanpassen.{L2} {L1} Het instellingenvenster is omgezet naar HTML. [issue 366]{L2} {L1} Opgelost: In sommige gevallen konden bijlagen worden opgeslagen met onleesbare bestandsnamen vanwege coderingsproblemen [issue 364]. Omdat dit een API-fout is, is er ook een bug aangemaakt op Bugzilla [Bug 1992976].{L2} {U2}"
+    "description": "🇳🇱 change log",
+    "message": "{U1} {L1} Regressie uit versie 5.5 opgelost: Bijlagen werden sinds de update (Thunderbird 128) niet meer opgeslagen. [issue 367], [issue 368] {L2} {L1} FiltaQuilla is nu compatibel met Thunderbird 145.*.{L2} {L1} Lokalisaties toegevoegd voor Franse, Japanse, Italiaanse en Spaanse gebruikers.{L2}{L1} Werkbalkknop toegevoegd voor snelle toegang tot de instellingen. Indien niet nodig, kan deze worden verwijderd via Beeld » Werkbalken » Werkbalkindeling.{L2}{L1} Instellingen dialoog geconverteerd naar HTML. [issue 366]{L2}{L1} Opgelost: In sommige gevallen konden bijlagen worden opgeslagen met corrupte bestandsnamen door coderingproblemen [issue 364]. Omdat dit een API-fout is, is er ook een Bug op Bugzilla aangemaakt [Bug 1992976]. {L2}{U2}"
   }
 }

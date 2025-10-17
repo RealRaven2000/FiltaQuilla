@@ -32,10 +32,10 @@ const christophers_code = async () => {
     getAPI(_context) {
       return {
         FiltaQuilla: {
-          async saveFile(file, path, fileName = file.name) {
+          async saveFile(file, path, fileName) {
             const Cc = Components.classes;
             const Ci = Components.interfaces;
-            const newName = sanitizeName(fileName, true);
+            const newName = sanitizeName(fileName || file.name, true);
             const win = Services.wm.getMostRecentWindow("mail:3pane");
             const util = win.FiltaQuilla.Util;
             util.logDebug(`new file name would be: ${newName}`, util);

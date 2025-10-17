@@ -245,12 +245,6 @@ div.lineSpacer {
 
 
 .option-tooltip-content {
-  /*
-  display: inline-flex; 
-  align-items: center;
-  margin-right: auto;
-  align-items: center;
-  */
   position: relative; /* for absolute tooltip */
 }
 
@@ -387,8 +381,6 @@ label {
 #btn_support {
   background-image: url("../skin/fugue-question.png") !important;
 }
-
-
 
 /* grid replacement */
 .grid-container {

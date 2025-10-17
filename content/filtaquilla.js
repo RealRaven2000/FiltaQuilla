@@ -2782,15 +2782,16 @@
       addItems("Ж", "Zh");
       addItems("ж", "zh");
       addItems("&", "+"); // improve readability
-
-      // 2. remove whitelisted characters
-      [...whiteList].forEach((l) => replaceMap.delete(l));
-
-      // 3. replace stuff
-      replaceMap.forEach((value, key) => {
-        str = str.replace(new RegExp(key, "g"), value);
-      });
     }
+    // 2. remove whitelisted characters
+    [...whiteList].forEach((l) => replaceMap.delete(l));
+
+    util.logDebug(`Sanitizing name(${str}, includesExtension=${includesExtension}), type:${typeof str}`);
+    // 3. replace stuff
+    replaceMap.forEach((value, key) => {
+      str = str.replace(new RegExp(key, "g"), value);
+    });
+
 
     // special characters
     let name = str.trim().replace(/ /g, spaceChar); // used to be "-"
@@ -2924,7 +2925,19 @@
   );
 
   /* functions to move to experiment API in the future */
-  FiltaQuilla.sanitizeName = _sanitizeName;
+  FiltaQuilla.sanitizeName =  (aName, includesExtension = false) => {
+    try {
+      if (typeof aName !== "string" || !aName) {
+        aName = "unnamed";
+      }
+      return _sanitizeName(aName, includesExtension);
+    } catch (ex) {
+      console.error("sanitizeName failed, returning unsanitized name:", aName, ex);
+      return aName || "unnamed";
+    }
+  };
+  
+  
 })();
 
 // vim: set expandtab tabstop=2 shiftwidth=2:

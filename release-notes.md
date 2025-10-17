@@ -1,4 +1,4 @@
-**Version 5.5** 
+**Version 5.5.1** 
 
 **Latest News**
 
@@ -11,12 +11,9 @@ To get this fixed I raised a bug with Thunderbird: [Bugzilla 1986027](https://bu
 
 **Improvements**
 *   Made compatible with Thunderbird 145.*.
-*   Converted settings dialog to html \[issue #266\]
-*   Added localisations for French, Japanese, Italian and Spanish users.
-*   Added a toolbar button for convenient access to settings. If it's not needed, you can remove it via View » Toolbars » Toolbar Layout
 
 **Bug Fixes**
-*   In some cases, attachments can be saved under wrong name and wrong format. \[issue #364\] I added some manual correction to fix the problem. As this is a bug in the messages API, that returns an incorrectly encoded file name (it should decode the file name and return it correctly), so I raised [Bug 1992976](https://bugzilla.mozilla.org/show_bug.cgi?id=1992976) in this matter.
+*   Fixed Regression from 5.5: Attachments aren't saved anymore since update (Thunderbird 128). [issue #367], [issue #368]
 
 
 **TO DO NEXT**

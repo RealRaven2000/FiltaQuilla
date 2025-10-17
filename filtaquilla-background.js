@@ -335,9 +335,23 @@
             }
           }
           // this returns an array of decoded strings
-          let [name] = await browser.messengerUtilities.decodeMimeHeader("name", [file.name]); 
-          console.log(`Decoded attachment name: ${name}`);
-          savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path, name);
+          let processed = false;
+          if (browser.messengerUtilities?.decodeMimeHeader) { // API added only in 137
+            try {
+              let [name] = await browser.messengerUtilities.decodeMimeHeader("name", [file.name]);
+              console.log(`Decoded attachment name: ${name}`);
+              if (name) {
+                savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path, name);
+                processed = true;
+              }
+            } catch (ex) {
+              console.error("Could not decode attachment name", ex);
+            }
+          }
+          if (!processed) {
+            console.log(`Using raw attachment name: ${file.name}`);
+            savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
+          }
           results.push(savedItem);
         }
         return results;
