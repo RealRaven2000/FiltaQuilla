@@ -1,4 +1,4 @@
-**Version 5.5.1** 
+**Version 5.6** 
 
 **Latest News**
 
@@ -10,16 +10,16 @@ To get this fixed I raised a bug with Thunderbird: [Bugzilla 1986027](https://bu
 
 
 **Improvements**
-*   Made compatible with Thunderbird 145.*.
+*   
 
 **Bug Fixes**
-*   Fixed Regression from 5.5: Attachments aren't saved anymore since update (Thunderbird 128). [issue #367], [issue #368]
+*  `detachAttachmentsWOPrompts` was removed from Thunderbird during 140 development cycle. [issue #369]
+*  Fixed: Double saving via the filter as pdf and additional txt file  [issue #370]
+
 
 
 **TO DO NEXT**
 *    Feature Request: Notification alert \[issue #240\].
-*    Work in progress: Allow automatic running of filters outside of Inbox (IMAP only) \[issue #318\].
-     As adding the checkbox in folder properties didn't meet policy restrictions, we are planning to add a web extension compatible interface for this at a later stage, possible through the folder tree context menu.
 *    Test attachRegEx_match and see if it needs updates for Tb128 / Release
 
 
