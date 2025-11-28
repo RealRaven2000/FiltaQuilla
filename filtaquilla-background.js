@@ -41,6 +41,68 @@
     return compareVersions(v1, v2) === 0;
   }
 
+  // helper function to deal with Mime decoded file names
+  async function getSafeAttachmentName(at) {
+    let filename = at.name;
+    if (!filename) {
+      // No name provided — return null/falsy so calling code can skip
+      return null;
+    }
+
+    if (browser.messengerUtilities?.decodeMimeHeader) {
+      try {
+        const [decoded] = await browser.messengerUtilities.decodeMimeHeader("name", [filename]);
+        if (decoded) {
+          filename = decoded;
+        }
+      } catch (ex) {
+        console.error("Could not decode attachment name, using original:", ex);
+        // fall back to original filename
+      }
+    }
+
+    // If it's an attached email, ensure it ends with .eml
+    if (at.contentType === "message/rfc822" && !/\.(eml|msg)$/i.test(filename)) {
+      filename += ".eml";
+    }
+
+    return filename;
+  }
+
+  async function filterAttachments(attachmentsList, isDebug, messageId) {
+    // the contentDisposition attribute is not supported by the MessageAttachment API in Tb 128!
+    const info = await browser.runtime.getBrowserInfo();
+    const isPrerelease = !greaterThan(info.version, "135.0");
+
+    const filtered = [];
+
+    for (const at of attachmentsList) {
+      const name = at.name?.toLowerCase() || "";
+      const type = at.contentType?.toLowerCase() || "";
+
+      if (name.endsWith(".asc") || name.endsWith(".sig") || type === "application/pgp-signature") {
+        if (isDebug) {
+          console.log(`filterAttachments - Skipping PGP signature attachment: ${at.name}`);
+        }
+        continue;
+      }
+
+      filtered.push(at);
+    }
+
+    if (isPrerelease) {
+      await addHeaders(filtered, messageId);
+    }
+    // zip files can sometimes be included as "inline" attachments
+    return filtered.filter(
+      (a) =>
+        a.contentDisposition === "attachment" ||
+        (a.contentDisposition === "inline" && a.contentType.startsWith("application/"))
+    );
+  }
+
+
+
   messenger.WindowListener.registerChromeUrl([
     ["resource", "filtaquilla", "content/"], // resource://
     ["resource", "filtaquilla-skin", "skin/"], // make a separate resource (we can't have 2 different resources mapped to to the same name)
@@ -260,48 +322,116 @@
           browser.tabs.create({ active: true, url: data.URL });
         }
         break;
-      case "saveAttachments": {
-        const attachments = await browser.messages.listAttachments(data.messageHeader.id);
-        const results = [];
+      case "detachAttachments": { // old test code
         const isDebugAttachments = await messenger.LegacyPrefs.getPref(
           Legacy_Root + "debug.attachments"
         );
-        // (filter out inline attachments)
-        // we need to be careful already detach attachments are not included.
-        // what contentDisposition do they have?
-        // this attribute is not supported by the MessageAttachment API in Tb 128!
-        const info = await browser.runtime.getBrowserInfo();
-        const isPrerelease = !greaterThan(info.version, "135.0");
-        if (isPrerelease) {
-          await addHeaders(attachments, data.messageHeader.id);
-        }
-        let attachmentsToSave = attachments.filter((a) => a.contentDisposition === "attachment");
+        const attachmentsList = await browser.messages.listAttachments(data.messageHeader.id);
+        const attachmentsToDetach = await filterAttachments(
+          attachmentsList,
+          isDebugAttachments,
+          data.messageHeader.id
+        );
         if (isDebugAttachments) {
           console.log(
-            `FILTAQUILLA - saveAttachments(): ${attachmentsToSave.length} attachments to save...`
+            `FILTAQUILLA - detachAttachments(): ${attachmentsToDetach.length} attachments to save...`
+          );
+        }
+        const savedMetaAttachments = [];
+        for (const at of attachmentsToDetach) {
+          const safeName = await getSafeAttachmentName(at);
+          if (!safeName) {
+            continue; // skip parts without a proper name
+          }
+
+          savedMetaAttachments.push({
+            partName: at.partName,
+            fileName: safeName,
+            path: at.path || "", // add path if available or leave empty
+            size: at.size,
+            contentType: at.contentType,
+            headers: at.headers || {},
+          });
+        }
+        // const results = [];
+
+        if (savedMetaAttachments.length) {
+          // we now need to delete (only) the attachments that were saved successfully...
+          // const partNames = savedMetaAttachments.map((a) => a.partName);
+          // await browser.messages.deleteAttachments(data.messageHeader.id, partNames);
+          // experimental hook
+          // this should replace the "stubs" the API has generated with real links to the file system
+          await messenger.FiltaQuilla.detachAttachments(
+            data.messageHeader.id,
+            savedMetaAttachments
+          );
+          // can we return a results array?
+        }
+        break;
+      }
+      case "tryDetachAttachments": {
+        // is the message signed? then we cannot detach anything from the message
+        // contentType ==="multipart/signed"
+        // 1. messages.getFull(id,{decrypt:false}) => returns the complete mime tree of a message
+        //                 supports a 2nd parameter to get encrypted parts too. needs messagesRead permission
+        // asking for the original (encrypted) part
+        // => branch to background, and check for being signed
+        // 2. parts.some( (part) => part.contentType ==="multipart/signed"))
+        //  ==> means it is signed, and we can save from the background and skip detachment.
+        const fullMsg = await browser.messages.getFull(data.messageHeader.id, { decrypt: false });
+        if (!(fullMsg.parts.some((part) => part.contentType === "multipart/signed"))) {
+          // message not signed, let's return this result and leave detachment to the caller (core code)
+          const result = {
+            success: true,
+            reason: "message not signed, detachment possible",
+            action: ""
+          }
+          return result;
+        }      
+        // signed message - do not detach, just save instead!
+        // use the fallthrough mechanism
+
+      }
+      // eslint-disable-next-line no-fallthrough
+      case "saveAttachments": {
+        /*
+        we can use browser.messages.deleteAttachments(messageId, [partNames]) once they are saved?
+        */
+        const isDetachFailed = (data.func === "tryDetachAttachments");
+        const isDebugAttachments = await messenger.LegacyPrefs.getPref(
+          Legacy_Root + "debug.attachments"
+        );
+        const attachmentsList = await browser.messages.listAttachments(data.messageHeader.id);
+        const attachmentsToSave = await filterAttachments(
+          attachmentsList,
+          isDebugAttachments,
+          data.messageHeader.id
+        );
+        const results = [];
+        if (isDebugAttachments) {
+          console.log(
+            `FILTAQUILLA - saveAttachments(${data.messageHeader.subject}):\n` +
+              `${attachmentsToSave.length} attachments of ${attachmentsList.length} to save...`
           );
         }
         // check for attached messages to include _their_ attachments, and append those.
         for (const at of attachmentsToSave) {
-          if (at.message && at.message.id) {
-            let recursiveAttachments = await browser.messages.listAttachments(at.message.id);
-            for (let rA of recursiveAttachments) {
-              rA.myMessageId = at.message.id; // stash message id of eml attachment
-            }
-            if (!recursiveAttachments?.length) {
-              continue;
-            }
-            if (isPrerelease) {
-              await addHeaders(recursiveAttachments, at.message.id);
-            }
-            // add contained attachments within attached eml.
-            attachmentsToSave.push(
-              ...recursiveAttachments.filter((a) => a.contentDisposition === "attachment")
-            );
+          // If the attachment itself *is* a message (message/rfc822),
+          // treat it as a normal attachment (an .eml file) — don't recurse into it.
+          const safeName = await getSafeAttachmentName(at);
+          if (!safeName) {
+            continue; // skip attachments without name - these could be mMime parts
           }
-        }
-
-        for (const at of attachmentsToSave) {
+          if (at.contentType === "message/rfc822") {
+            if (isDebugAttachments) {
+              console.log(`Found attached email: ${safeName}`);
+            }
+            // Ensure it will be saved as an .eml file if it lacks an extension
+            if (!/\.(eml|msg)$/i.test(safeName)) {
+              at.name = safeName + ".eml";
+            }
+          }
+          // Old recursion logic removed: we no longer inspect at.message.id or push nested attachments.
           if (isDebugAttachments) {
             console.log(at);
           }
@@ -336,7 +466,8 @@
           }
           // this returns an array of decoded strings
           let processed = false;
-          if (browser.messengerUtilities?.decodeMimeHeader) { // API added only in 137
+          if (browser.messengerUtilities?.decodeMimeHeader) {
+            // API added only in 137
             try {
               let [name] = await browser.messengerUtilities.decodeMimeHeader("name", [file.name]);
               console.log(`Decoded attachment name: ${name}`);
@@ -352,9 +483,16 @@
             console.log(`Using raw attachment name: ${file.name}`);
             savedItem.success = await messenger.FiltaQuilla.saveFile(file, data.path);
           }
+
           results.push(savedItem);
         }
-        return results;
+        const result = {
+          attachments: results,
+          reason: isDetachFailed ? "detachment not possible, message signed" : "saved",
+          action: isDetachFailed ? "savedInBackground" : "saved",
+          success: true,
+        };
+        return result;
       }
       case "scriptEditor":
         {
@@ -399,9 +537,8 @@
             return displayUpdateMessage();
           default:
             return "unknown";
-        }          
-      } 
-      
+        }
+      }
     } // switch
   });
 

@@ -44,6 +44,7 @@
     "resource:///modules/MessageArchiver.sys.mjs"
   );
 
+  var { AttachmentInfo } = ChromeUtils.importESModule("resource:///modules/AttachmentInfo.sys.mjs");
   /*
   // [issue 318] REMOVED
 
@@ -893,123 +894,171 @@
       needsBody: false,
     }; // end add Sender
 
-    function _extractAttachmentDetail(mimeMsg, msgHdr, directory, msgURI) {
-      const attachments = mimeMsg.allAttachments;
-      const msgURIs = [],
-        contentTypes = [],
-        urls = [],
-        displayNames = [];
-
-      for (let j = 0; j < attachments.length; j++) {
-        const attachment = attachments[j];
-        if (attachment.url.startsWith("file:")) {
-          util.logToConsole(
-            `Attachment for '${msgHdr.subject}'was already removed: check \n { attachment.url}`
-          );
-          continue;
-        }
-
-        msgURIs.push(msgURI);
-        contentTypes.push(attachment.contentType);
-        urls.push(attachment.url);
-        let attachmentName = _sanitizeName(attachment.name, true);
-        displayNames.push(attachmentName);
-        const txt =
-          `Detach attachment [${j}] to ${directory.path} ...\n` +
-          ` msgURI=${msgURI}\n` +
-          ` att.url=${attachment.url}\n` +
-          ` att.contentType=${attachment.contentType}`;
-        util.logDebug(txt);
+    async function _detachLegacy(attachmentInfos, directory) {
+      const failedUris = [];
+      if (!attachmentInfos.length) {
+        return []; // nothing to do
       }
-      return { msgURIs, contentTypes, urls, displayNames };
+
+      // Build arrays for detachAttachmentsWOPrompts
+      const msgURIs = attachmentInfos.map((at) => at.uri);
+      const contentTypes = attachmentInfos.map((at) => at.contentType);
+      const urls = attachmentInfos.map((at) => at.url);
+      const displayNames = attachmentInfos.map((at) => at.name);
+      const messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
+
+      // Wrap the synchronous function in a Promise so we can await it
+      await new Promise((resolve) => {
+        messenger.detachAttachmentsWOPrompts(directory, contentTypes, urls, displayNames, msgURIs, {
+          OnStartRunningUrl(url) {
+            console.log(`Starting to detach attachment: ${url?.spec ?? "unknown URL"}`);
+          },
+          OnStopRunningUrl(url, status) {
+            const urlSpec = url?.spec ?? "unknown URL";
+            if (status === 0) {
+              console.log(`Attachment detached successfully: ${urlSpec}`);
+            } else {
+              failedUris.push(urlSpec);
+              console.warn(`Failed to detach attachment: ${urlSpec}`);
+            }
+            // Always resolve — we collect failures in failedUris
+            resolve();
+          },
+        });
+      });
+
+      return failedUris;
     }
 
     async function _detachAttachments(aMsgHdrs, directory) {
       const failedUris = [];
+      const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
+      const isDebug = prefs.getBoolPref("debug.attachments");
+
+      var { MsgHdrProcessor, getMsgPartUrl } = ChromeUtils.importESModule(
+        "resource:///modules/ExtensionMessages.sys.mjs"
+      );
       try {
         // Process all message headers asynchronously
         for (let i = 0; i < aMsgHdrs.length; i++) {
-          let { msgHdr, mimeMsg } = await new Promise((resolve) =>
-            MsgHdrToMimeMessage(
-              aMsgHdrs[i],
-              null,
-              function (msgHdr, mimeMsg) {
-                resolve({ msgHdr, mimeMsg });
-              },
-              false /* allowDownload */,
-              { saneBodySize: true, examineEncryptedParts: false }
-            )
-          );
- 
-          // do something with mimeMsg
-          const msgURI = msgHdr.folder.generateMessageURI(msgHdr.messageKey);
-          const attachments = mimeMsg.allAttachments;
-          const messenger = Cc["@mozilla.org/messenger;1"].createInstance(Ci.nsIMessenger);
-          const ds = msgHdr.date / 1000;
-          const mDate = new Date(ds);
-          let nicedate =
-            `${mDate.getFullYear()}-${mDate.getMonth() + 1}-` +
-            `${mDate.getDate()} ${mDate.getHours()}:${mDate.getMinutes()}`;
+          const msgHdr = aMsgHdrs[i];
+          const msgHdrProcessor = new MsgHdrProcessor(msgHdr);
+          const attachments = await msgHdrProcessor.getAttachmentParts();
+          const attachmentInfos = [];
 
-          if (!attachments?.length) {
-            // nothing to do
+          // is the message signed? then we cannot detach anything from the message
+          // contentType ==="multipart/signed"
+          // 1. messages.getFull(id,{decrypt:false}) => returns the complete mime tree of a message
+          //                 supports a 2nd parameter to get encrypted parts too. needs messagesRead permission
+          // asking for the original (encrypted) part
+          // => branch to background, and check for being signed
+          // 2. parts.some( (part) => part.contentType ==="multipart/signed"))
+          //  ==> means it is signed, and we can save from the background and skip detachment.
+
+          const messageHeader = extension.messageManager.convert(msgHdr);
+          const result = await FiltaQuilla.Util.notifyTools.notifyBackground({
+            func: "tryDetachAttachments",
+            messageHeader: messageHeader,
+            path: directory.path,
+          });
+          if (!result.success) {
+            console.warn("_detachAttachments: cannot detach from signed/encrypted message:", msgHdr);
             continue;
           }
-
-          const { msgURIs, contentTypes, urls, displayNames } = _extractAttachmentDetail(
-            mimeMsg,
-            msgHdr,
-            directory,
-            msgURI,
-            nicedate
-          );
-          if (!msgURIs.length) {
-            // nothing to do
-            util.logDebug("No attachments left to process.");
-            continue;
-          }
-
-          try {
-            util.logDebug("calling detachAttachmentsWOPrompts", urls);
-            await new Promise((resolve, _reject) => {
-              messenger.detachAttachmentsWOPrompts(
-                directory,
-                contentTypes,
-                urls,
-                displayNames,
-                msgURIs,
-                {
-                  OnStartRunningUrl(url) {
-                    util.logDebug(
-                      `Starting to detach attachment: ${url?.spec ?? "unknown URL"}\n` +
-                        `from ${nicedate}`
-                    );
-                  },
-                  OnStopRunningUrl(url, status) {
-                    const urlSpec = url?.spec ?? "unknown URL";
-                    if (status === 0) {
-                      util.logDebug(`Attachment detached successfully: ${urlSpec}`, url || "");
-                      resolve(); // No failures
-                    } else {
-                      failedUris.push(urlSpec);
-                      util.logDebug(
-                        `---------------\nFailed to detach attachment: ${urlSpec}`,
-                        url || ""
-                      );
-                      // reject(new Error(`Failed to detach attachment: ${url?.spec}`));
-                      resolve();
-                    }
-                  },
-                }
+          if (result?.action=="savedInBackground") {
+            if (isDebug) {
+              console.log(
+                `Attachments were saved for message ${msgHdr.messageKey} "${msgHdr?.subject}".\n`+
+                `Skipping detachment as it wasn't possible because: ${result?.reason}`
               );
+            }
+            continue;
+          }
+
+          for (const attachmentPart of attachments) {
+            const isExternalAttachment = attachmentPart.headers.has(
+              "x-mozilla-external-attachment-url"
+            );
+            if (isExternalAttachment) {
+              if (isDebug) {
+                console.log(
+                  `Already deleted attachment ${attachmentPart.partNum} in message ${msgHdr.messageKey}.`
+                );
+              }
+              continue;
+            }
+            const isInline = attachmentPart.headers._rawHeaders
+              .get("content-disposition")
+              .some((s) => s.split(";").includes("inline"));
+            const contentType = attachmentPart.headers?.contentType?.type || "";
+            const isApplication = contentType.startsWith("application/");
+            if (isInline && !isApplication) {
+              // skip inline attachments
+              continue;
+            }
+
+            if (
+              ["application/pgp-signature", "application/pgp-keys"].includes(contentType)
+            ) {
+              continue; // skip keys + signatures
+            }
+
+            const attachmentInfo = new AttachmentInfo({
+              contentType: contentType,
+              url: getMsgPartUrl(msgHdr, attachmentPart.partNum),
+              name: _sanitizeName(attachmentPart.name, true),
+              uri: msgHdr.folder.getUriForMsg(msgHdr),
+              isExternalAttachment,
+              message: msgHdr,
             });
 
-            if (!failedUris.length) {
-              util.logDebug("All attachments detached successfully.");
+            const deleted = !attachmentInfo.hasFile;
+            if (deleted) {
+              if (isDebug) {
+                console.log(
+                  `Already deleted attachment ${attachmentPart.partNum} in message ${msgHdr.messageKey}.`
+                );
+              }
+              continue;
             }
-          } catch (ex) {
-            failedUris.push("General detachAttachmentsWOPrompts exception");
-            util.logException("FiltaQuilla._detachAttachments - detachAttachmentsWOPrompts()", ex);
+            console.log(attachmentPart);
+            attachmentInfos.push(attachmentInfo);
+          }
+          if (isDebug) {
+            console.log(
+              `Retrieved ${attachmentInfos.length} valid attachments to detach:`,
+              attachmentInfos,
+              directory.path
+            );
+          }
+          if (attachmentInfos.length === 0) {
+            continue; // nothing to do, go to next message
+          }
+          if (AttachmentInfo.detachAttachments) {
+            // exists from Tb 142, see bug 1788159
+            await AttachmentInfo.detachAttachments(msgHdr, attachmentInfos, directory.path);
+          } else {
+            if (isDebug) {
+              console.log(`detachAttachments doesn't exist, try to save instead.`);
+            }
+
+            // Unfortunately, in Thunderbird versions before 142, we CANNOT detach silently
+            // so there is no point in calling our API based attachment save function here
+            failedUris.push(... await _detachLegacy(attachmentInfos, directory));
+            // we might do something with the list of saved attachments later...
+/*            
+            const results = await _saveAttachments(aMsgHdrs, directory);
+            if (attachmentInfos[0].detach) {
+              for (const at of attachmentInfos) {
+                // unfortunately we cannot detach without confirmation dialog :'(
+                // await at.detach(window.messenger, false);
+              }
+            } else {
+              console.warn(
+                `AttachmentInfo.detach() doesn't exist - we only could save attachments for message "${msgHdr?.subject}".`
+              );
+            }
+*/
           }
         }
       } catch (ex) {
@@ -1050,7 +1099,7 @@
           if (testErr) {
             throw new Error(`Exception test in: saveAttachments background call`);
           }
-          const results = await FiltaQuilla.Util.notifyTools.notifyBackground({
+          const result = await FiltaQuilla.Util.notifyTools.notifyBackground({
             func: "saveAttachments",
             messageHeader: messageHeader,
             path: directory.path,
@@ -1059,7 +1108,7 @@
           // Process each saved item individually
           const successes = [],
             failures = [];
-          for (let savedItem of results) {
+          for (let savedItem of result.attachments) {
             if (savedItem.success) {
               successes.push(
                 `Attachment ${savedItem.fileName} saved successfully in ${directory.path}`
@@ -1685,7 +1734,6 @@
                 break;
               }
             }
-            // messenger.detachAttachmentsWOPrompts(this.directory, this.attachments.length, contentTypes, urls, displayNames, msgURIs, null);
           } else {this.found = false;}
           this.processed = true;
         } catch (ex) {
@@ -2853,51 +2901,6 @@
         resolve(status); // Resolve the Promise when saving completes
       },
     };
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  function _detachAttachments_old(
-    messenger,
-    directory,
-    contentTypes,
-    urls,
-    displayNames,
-    msgURIs,
-    copyListener
-  ) {
-    const failedUris = [];
-
-    return new Promise((resolve, reject) => {
-      messenger.detachAttachmentsWOPrompts(directory, contentTypes, urls, displayNames, msgURIs, {
-        OnStartRunningUrl(url) {
-          copyListener.onStartCopy();
-          util.logDebug(`Starting to detach attachment: ${url?.spec ?? "unknown URL"}`);
-        },
-        OnStopRunningUrl(url, status) {
-          const urlSpec = url?.spec ?? "unknown URL";
-          if (status === 0) {
-            util.logDebug(`Attachment detached successfully: ${urlSpec}`, url);
-            resolve(failedUris); // No failures
-          } else {
-            failedUris.push(urlSpec);
-            util.logDebug(`---------------\nFailed to detach attachment: ${urlSpec}`, url);
-            reject(new Error(`Failed to detach attachment: ${url?.spec}`));
-          }
-        },
-      });
-    })
-      .then((failedUris) => {
-        //  Pass failedUris through
-        const result = failedUris.length ? Cr.NS_ERROR_FAILURE : Cr.NS_OK;
-        util.logDebug(`calling copyListener.onStopCopy(${result}) ...`);
-        copyListener.onStopCopy(result);
-        return failedUris;
-      })
-      .catch((error) => {
-        util.logDebug("exception: calling copyListener.onStopCopy() with failure");
-        copyListener.onStopCopy(Cr.NS_ERROR_FAILURE);
-        return Promise.reject(error);
-      });
   }
 
   // actions that need the body can conflict with a move. These should

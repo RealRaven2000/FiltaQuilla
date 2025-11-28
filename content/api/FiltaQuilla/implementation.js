@@ -108,6 +108,53 @@ const christophers_code = async () => {
               }
             });
           },
+          detachAttachments: async function (messageId, savedAttachments) {
+            // probably obsolete. Hence no schema entry.
+            console.log(`detachAttachments called for messageId: ${messageId}`);   
+            const win = Services.wm.getMostRecentWindow("mail:3pane");
+            const extension = win.FiltaQuilla.Util.extension;
+            const msgHdr = extension.messageManager.get(messageId); 
+            if (!msgHdr) {
+              console.warn(`messageManager could not retrieve valid message header from id ${messageId}`);
+              return false;
+            }
+            // 1. Open message via msgDatabase
+            const msgDB = msgHdr.folder.msgDatabase;
+            if (!msgDB) {
+              console.warn(`couldn't retrieve msgDabase for ${msgHdr?.folder?.URI}`);
+              return false;
+            }
+            /*
+            var { AttachmentInfo } = ChromeUtils.importESModule(
+              "resource:///modules/AttachmentInfo.sys.mjs"
+            );
+            */
+
+            for (let at of savedAttachments) {
+              /*
+              const newAttachment = new AttachmentInfo({
+                contentType: at.contentType,
+                url: "test",
+                name: at.partName,
+                uri,
+                isExternalAttachment,
+                message: msgHdr,
+                updateAttachmentsDisplayFn: null,
+              });
+              */
+              console.log(`restoring ${at}  from ${at?.path}...`);
+              // TODO: implement actual logic
+              // 2. Find the stub corresponding to at.partName
+              let part = msgDB.getAttachmentInfo(at.partName);
+              if (!part) {
+                console.warn(`couldn't find part ${at.partName}, skipping`);
+                continue;
+              }
+              // 3. Update headers or metadata to point to at.path
+              // 4. Optionally refresh UI or trigger any required events
+            }
+            return true;
+          },
         },
       };
     }
