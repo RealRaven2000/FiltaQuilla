@@ -53,19 +53,19 @@ function show(id) {
 const formatAll = (txt) => {
   let localizedMsg = txt;
   return localizedMsg
-    .replace(/\{boldStart\}/g, "<b>")
-    .replace(/\{boldEnd\}/g, "</b>")
+    .replace(/\{bold\}/g, "<b>")
+    .replace(/\{\/bold\}/g, "</b>")
     .replace(/\{hr\}/g, "<hr>")
-    .replace(/\{italicStart\}/g, "<i>")
-    .replace(/\{italicEnd\}/g, "</i>")
-    .replace(/\{U1\}/g, "<ul>")
-    .replace(/\{U2\}/g, "</ul>")
-    .replace(/\{L1\}/g, "<li>")
-    .replace(/\{L2\}/g, "</li>")
-    .replace(/\{P1(?:\s+([^}]+))?\}/g, (_, attrs) => {
-      // attrs will be undefined if no class specified
+    .replace(/\{italic\}/g, "<i>")
+    .replace(/\{\/italic\}/g, "</i>")
+    .replace(/\{U\}/g, "<ul>")
+    .replace(/\{\/U\}/g, "</ul>")
+    .replace(/\{L\}/g, "<li>")
+    .replace(/\{\/L\}/g, "</li>")
+    .replace(/\{P(?:\s+([^}]+))?\}/g, (_, attrs) => {
       return attrs ? `<p ${attrs}>` : "<p>";
     })
+    .replace(/\{\/P\}/g, "</p>")
     .replace(
       /\{ARelease\}/g,
       "<a href='https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/'>"
@@ -86,16 +86,16 @@ const formatAll = (txt) => {
       /\{A-ST\}/g,
       "<a href='https://addons.thunderbird.net/thunderbird/addon/smarttemplate4/' class='native'>"
     )
-    .replace(/\{P2\}/g, "</p>")
-    .replace(/\{A2\}/g, "</a>")
-    .replace(/\{br\}/g, "<br>")
+    .replace(/\{\/A\}/g, "</a>")
     .replace(/\{A\}/g, "</a>")
-    .replace(/\[issue (\d*)\]/g, "<a class='issue' no=$1 href='#'>[issue $1]</a>")
-    .replace(/\[Bug (\d*)\]/g, "<a class='bug' no=$1 href='#'>[Bug $1]</a>")
-    .replace(/\[(.)\]/g, "<code class='keystroke'>$1</code>") // single keys
-    .replace(/\[(F\d*)\]/g, "<code class='keystroke'>$1</code>") // F10
-    .replace(/\[(CTRL|ALT)\]/g, "<code class='keystroke'>$1</code>"); // single keys
-}
+    .replace(/\{br\}/g, "<br>")
+    .replace(/\[issue (\d+)\]/g, "<a class='issue' no=$1 href='#'>[issue $1]</a>")
+    .replace(/\[Bug (\d+)\]/g, "<a class='bug' no=$1 href='#'>[Bug $1]</a>")
+    .replace(/\[(.)\]/g, "<code class='keystroke'>$1</code>")
+    .replace(/\[(F\d+)\]/g, "<code class='keystroke'>$1</code>")
+    .replace(/\[(CTRL|ALT|SHIFT)\]/g, "<code class='keystroke'>$1</code>");
+};
+
 
 // eslint-disable-next-line no-unused-vars
 async function insertLocalizedMessage(element, rawMessage) {
