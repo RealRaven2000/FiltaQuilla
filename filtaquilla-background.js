@@ -641,11 +641,30 @@
       id: "filtaquilla-news",
       contexts: ["browser_action_menu"],
       icons: "../skin/new.svg",
-      onclick: () => {
-        showFQmessage("whats-new-list", ["ok"]);
+      onclick: async () => {
+        const result = await showFQmessage("newsMsgForced", ["ok", "changeLog"], "");
+        if (result === "changeLog") {
+          // display the changelog
+          showFQmessage("whats-new-list", ["ok"], null, messenger.i18n.getMessage("newsHead"));
+        }
       },
       title: messenger.i18n.getMessage("newsHead"),
     });
+
+    await messenger.menus.create({
+      id: "filtaquilla-changelog",
+      contexts: ["browser_action_menu"],
+      icons: "../skin/new.svg",
+      onclick: () => {
+        showFQmessage(
+          "whats-new-list", 
+          ["ok"], 
+          null, 
+          messenger.i18n.getMessage("whats-new-head")
+        );
+      },
+      title: messenger.i18n.getMessage("message.btn.changeLog"),
+    });    
 
     await messenger.menus.create({
       id: "filtaquilla-support",
@@ -693,12 +712,17 @@
   // ************* messages  ****/
 
   const MESSAGE_STORAGE_KEY = "FiltaQuilla_Message_Key";
-  const showFQmessage = async (messageIds, features, message = "") => {
+  const HEADING_STORAGE_KEY = "FiltaQuilla_Heading_Key";
+  const showFQmessage = async (messageIds, features, message = "", heading = "") => {
     const url = new URL(browser.runtime.getURL("html/fq-message.html"));
     if (message) {
-      // Store message globally
+      // Store message + header globally
       await browser.storage.local.set({ [MESSAGE_STORAGE_KEY]: message });
       url.searchParams.set("msg_storage", "true");
+    }
+    if (heading) {
+      await browser.storage.local.set({ [HEADING_STORAGE_KEY]: heading });
+      url.searchParams.set("msg_header_stored", "true");
     }
     if (messageIds) {
       url.searchParams.set("msgId", messageIds);
@@ -711,7 +735,7 @@
     };
     const ids = messageIds.split(",").map((s) => s.trim());
     if (ids.includes("newsMsgForced")) { // it's a long one...
-      windowProperties.height = 520;
+      windowProperties.height = 560;
       windowProperties.width = 800;
     }
 
@@ -757,7 +781,7 @@
 
   let retryScheduled = false; // session flag to avoid repeat re-scheduling
   const RETRY_MINUTES = 20;
-  const LATEST_UPDATEMSG = "5.5"; // latest version with special message (forced display)
+  const LATEST_UPDATEMSG = "6.0"; // latest version with special message (forced display)
   async function displayUpdateMessage() {
     const messageIds = "newsMsgForced",
       isDebug = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.debug");
@@ -769,7 +793,7 @@
       console.log("FQ displayUpdateMessage()\n", ...args);
     };
 
-    let features = ["ok", "cancel","restart","changeLog"];
+    const features = ["ok", "cancel","restart","changeLog"];
 
     // reflects last addon version installed with a msg.
     let lastMessage =

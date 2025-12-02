@@ -67,20 +67,23 @@ async function getStoredMessage(key, hasMessage) {
 
 window.addEventListener("load", async () => {
   const MESSAGE_STORAGE_KEY = "FiltaQuilla_Message_Key";
+  const HEADING_STORAGE_KEY = "FiltaQuilla_Heading_Key";
+
   const params = getQueryParams();
   const features = (params.features || "ok").split(","); // fallback to "ok"
-
-  if (features.includes("changeLog")) {
-    document.getElementById("titleBox").textContent = messenger.i18n.getMessage("whats-new-head");
-  }
-
   /**** Passed Message or message id(s) to retrieve from l10n ****/
   // retrieve an arbitrary message text from storagem
   // but only if the queryparameter msg_storage was set!
   let message = await getStoredMessage(MESSAGE_STORAGE_KEY, !!params.msg_storage);
+  const heading = await getStoredMessage(HEADING_STORAGE_KEY, !!params.msg_header_stored);
+
+  if (heading) {
+    document.getElementById("titleBox").textContent = heading;
+  }
+
   let messageIdList = [];
   if (params.msgId) {
-    // allow multiple ids as a comma separated string of localized message ids
+    // allow adding multiple ids as a comma separated string of localized message ids
     messageIdList =
       typeof params.msgId === "string" && params.msgId.includes(",")
         ? params.msgId.split(",").map((s) => s.trim())
@@ -118,7 +121,7 @@ window.addEventListener("load", async () => {
     // these are optional sections
     restart: document.getElementById("restart"),
     changeLogIntro: document.getElementById("changeLogIntro"),
-  }
+  };
 
   if (messageIdList.includes("whats-new-list")) {
     elements.changeLogIntro?.removeAttribute("hidden");
@@ -161,7 +164,7 @@ window.addEventListener("load", async () => {
           `https://bugzilla.mozilla.org/show_bug.cgi?id=${bugId}`
         );
       }
-    }    
+    }
   });
 
   // always allow hitting ESC to cancel
