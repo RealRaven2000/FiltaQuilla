@@ -328,7 +328,7 @@
   },
   "newsHead": { "message": "Latest News" },
   "newsMsgForced": {
-    "message": "{P1}This release introduces full support for French, Japanese, Italian, and Spanish locales. We have converted the settings dialog to HTML for better future-proofing and maintainability.{P2}{P1}Due to the low-level nature of FiltaQuilla’s functionality, this Add-on has to remain experimental and thus still request full permissions during installation.{P2}{P1}This update also includes minor improvements to the filter engine and fixes to known issues from previous versions. FiltaQuilla continues to support users on Thunderbird 128 and above, but older versions may not benefit from the latest localizations or fixes.{P2}"
+    "message": "{P}This version raises FiltaQuilla’s minimum Thunderbird requirement to ensure reliable attachment handling and long-term stability. {bold}FiltaQuilla 6.*{/bold} and subsequent versions will require {bold}Thunderbird 140{/bold} or later.{/P}{P}Attachment saving was experienced as unreliable for some users on older Thunderbird versions. This update addresses these issues where possible and improves overall stability.{/P}{P}Thunderbird has gone through many internal changes in recent releases, and keeping old versions supported would have meant maintaining duplicate paths that no longer behave consistently. Moving forward allows FiltaQuilla to stay stable instead of fighting those inconsistencies.{/P}{P}Thank you for staying up to date and helping keep FiltaQuilla maintainable for the future.{/P}"
   },
   "optionsIntro": {
     "message": "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes."
@@ -421,10 +421,10 @@
     "message": "Important Changes"
   },
   "whats-new-intro": {
-    "message": "FiltaQuilla is proudly supported through my work on my other Add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2}, and {A-ST}SmartTemplates{A2}. Please check them out on the Add-ons store!"
+    "message": "FiltaQuilla is proudly supported through my work on my other Add-ons: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A}, and {A-ST}SmartTemplates{/A}. Please check them out on the Add-ons store!"
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U1} {L1} Fixed Regression from 5.5: Attachments were not saved anymore since update (Thunderbird 128). [issue 367], [issue 368] {L2} {L1} FiltaQuilla is now compatible with Thunderbird 145.*.{L2} {L1} Added localisations for French, Japanese, Italian and Spanish users.{L2}{L1} Added a toolbar button for convenient access to settings. If it's not needed, you can remove it via View » Toolbars » Toolbar Layout.{L2}{L1} Converted settings dialog to html. [issue 366]{L2}{L1} Fixed: In some cases, attachments can be saved with garbled file name due to encoding issues [issue 364]. As this is an API error I also raised a Bug on Bugzilla [Bug 1992976]. {L2}{U2}"
+    "message": "{U}{L} Raised the minimum Thunderbird version to ensure stable attachment handling going forward.{/L}{L} FiltaQuilla is now compatible up to Thunderbird {bold}146.*{/bold}.{/L}{L} Signatures are no longer saved when detaching or exporting attachments. [issue 372]{/L}{L} Fixed issues where certain attachments were not saved correctly. [issue 376]{/L}{L} Restored attachment detaching after Thunderbird removed the old method. [issue 369]{/L}{L} Fixed double-saving of PDF and TXT files when triggered by the same filter. [issue 367], [issue 370]{/L}{/U}"
   }
 }

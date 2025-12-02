@@ -10,17 +10,24 @@ To get this fixed I raised a bug with Thunderbird: <a href="https://bugzilla.moz
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>. For more ways of supporting me work, please read the section below after the change log.
 
+
 <b>Improvements</b>
 <ul>
-  <li> Made FiltaQuilla compatible with Thunderbird 145.*.  </li>
+  <li> Made FiltaQuilla compatible with Thunderbird 146.*.  </li>
+  <li> Signatures are now excluded when saving or detaching attachments to avoid useless files. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/372">[issue 372]</a></li>
 </ul>
 <b>Bug Fixes</b>
 <ul>
-  <li> Fix detaching attachments - the function `detachAttachmentsWOPrompts` was removed from Thunderbird during 140 development cycle. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/369">[issue 369]</a></li>
-  <li> Fixed: Double saving via the filter as pdf and additional txt file <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/367">[issue 367]</a>, <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/370">[issue 370]</a>. </li>
-  <li> Fixed regression: Current folder buttons (on the QuickFolders toolbar) don't update immediately <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/328">[issue 328]</a>. </li>
+  <li> Some attachments were not saved correctly – fixed. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/376">[issue 376]</a></li>
+  <li> Reimplemented attachment detaching after Tb142 removed the original API. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/369">[issue 369]</a></li>
+  <li> Fixed double-saving of PDF and TXT files from the same filter action. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/367">[issue 367]</a>, <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/370">[issue 370]</a></li>
 </ul>
-
+<b>Planned Next</b>
+<ul>
+  <li> Notification after filter actions. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/240">[issue 240]</a></li>
+  <li> Custom filenames when saving attachments. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/219">[issue 219]</a></li>
+  <li> Review of <code>attachRegEx_match</code> for current Thunderbird versions.</li>
+</ul>
 
 <strong>Support My Work</strong>
 

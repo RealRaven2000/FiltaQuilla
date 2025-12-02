@@ -326,7 +326,7 @@
   },
   "newsHead": { "message": "Dernières nouvelles" },
   "newsMsgForced": {
-    "message": "{P1}Cette version apporte une prise en charge complète des langues française, japonaise, italienne et espagnole. Nous avons converti le dialogue des paramètres en HTML pour une meilleure pérennité et maintenabilité.{P2}{P1}En raison de la nature bas niveau des fonctionnalités de FiltaQuilla, ce module complémentaire doit rester expérimental et demande donc des autorisations complètes lors de l'installation.{P2}{P1}Cette mise à jour inclut également des améliorations mineures du moteur de filtres et des corrections de problèmes connus des versions précédentes. FiltaQuilla continue de prendre en charge les utilisateurs de Thunderbird 128 et plus, mais les anciennes versions peuvent ne pas bénéficier des dernières localisations ou corrections.{P2}"
+    "message": "{P}Cette version augmente la version minimale requise de Thunderbird pour FiltaQuilla afin d’assurer une gestion fiable des pièces jointes et une stabilité à long terme. {bold}FiltaQuilla 6.*{/bold} et les versions suivantes nécessiteront {bold}Thunderbird 140{/bold} ou ultérieure.{/P}{P}L’enregistrement des pièces jointes était peu fiable pour certains utilisateurs sur les anciennes versions de Thunderbird. Cette mise à jour corrige ces problèmes dans la mesure du possible et améliore la stabilité globale.{/P}{P}Thunderbird a connu de nombreux changements internes ces dernières versions, et maintenir la compatibilité avec les anciennes versions aurait impliqué de maintenir des chemins en double qui ne se comportent plus de manière cohérente. Avancer permet à FiltaQuilla de rester stable plutôt que de lutter contre ces incohérences.{/P}{P}Merci de rester à jour et de contribuer à rendre FiltaQuilla maintenable pour l’avenir.{/P}"
   },
   "optionsIntro": {
     "message": "Activez tous les éléments que vous souhaitez rendre disponibles dans la boîte de dialogue 'Règles de filtrage'. Redémarrez après les modifications."
@@ -419,10 +419,10 @@
     "message": "Modifications importantes"
   },
   "whats-new-intro": {
-    "message": "FiltaQuilla est soutenu par mon travail sur d’autres modules complémentaires : {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2}, et {A-ST}SmartTemplates{A2}. Découvrez-les sur le magasin de modules complémentaires !"
+    "message": "FiltaQuilla est soutenu par mon travail sur d’autres modules complémentaires : {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A}, et {A-ST}SmartTemplates{/A}. Découvrez-les sur le magasin de modules complémentaires !"
   },
   "whats-new-list": {
-    "description": "🇫🇷 change log",
-    "message": "{U1} {L1} Correction de la régression de la version 5.5 : Les pièces jointes n’étaient plus enregistrées depuis la mise à jour (Thunderbird 128). [issue 367], [issue 368] {L2} {L1} FiltaQuilla est maintenant compatible avec Thunderbird 145.*.{L2} {L1} Ajout des traductions pour les utilisateurs français, japonais, italiens et espagnols.{L2}{L1} Bouton dans la barre d’outils ajouté pour un accès rapide aux paramètres. Si ce n’est pas nécessaire, vous pouvez le supprimer via Affichage » Barres d’outils » Disposition de la barre d’outils.{L2}{L1} Dialogue des paramètres converti en HTML. [issue 366]{L2}{L1} Correction : Dans certains cas, les pièces jointes pouvaient être enregistrées avec un nom de fichier illisible à cause de problèmes d’encodage [issue 364]. Comme il s’agit d’une erreur d’API, un Bug a également été soumis sur Bugzilla [Bug 1992976]. {L2}{U2}"
+    "description": "🇫🇷 journal des modifications",
+    "message": "{U}{L}Augmentation de la version minimale de Thunderbird pour assurer une gestion stable des pièces jointes à l’avenir.{/L}{L}FiltaQuilla est désormais compatible avec Thunderbird {bold}146.*{/bold}.{/L}{L}Les signatures ne sont plus enregistrées lors de la détachement ou de l’exportation des pièces jointes. [issue 372]{/L}{L}Correction des problèmes où certaines pièces jointes n’étaient pas correctement enregistrées. [issue 376]{/L}{L}Restauration du détachement des pièces jointes après la suppression de l’ancienne méthode par Thunderbird. [issue 369]{/L}{L}Correction du double enregistrement des fichiers PDF et TXT déclenché par le même filtre. [issue 367], [issue 370]{/L}{/U}"
   }
 }

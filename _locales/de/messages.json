@@ -328,7 +328,7 @@
   },
   "newsHead": { "message": "Neueste Nachrichten" },
   "newsMsgForced": {
-    "message": "{P1}Dieses Release führt vollständige Unterstützung für die französische, japanische, italienische und spanische Lokalisierung ein. Wir haben den Einstellungsdialog auf HTML umgestellt, um eine bessere Zukunftssicherheit und Wartbarkeit zu gewährleisten.{P2}{P1}Aufgrund der Low-Level-Funktionalität von FiltaQuilla muss dieses Add-on weiterhin als experimentell eingestuft werden und fordert daher bei der Installation volle Berechtigungen an.{P2}{P1}Dieses Update enthält außerdem kleinere Verbesserungen der Filter-Engine und Korrekturen bekannter Fehler aus früheren Versionen. FiltaQuilla unterstützt weiterhin Nutzer von Thunderbird 128 und höher, ältere Versionen profitieren jedoch möglicherweise nicht von den neuesten Lokalisierungen oder Fehlerbehebungen.{P2}"
+    "message": "{P}Diese Version erhöht die minimale Thunderbird-Version, die für FiltaQuilla erforderlich ist, um eine zuverlässige Handhabung von Anhängen und langfristige Stabilität zu gewährleisten. {bold}FiltaQuilla 6.*{/bold} und nachfolgende Versionen erfordern {bold}Thunderbird 140{/bold} oder höher.{/P}{P}Das Speichern von Anhängen war für einige Benutzer in älteren Thunderbird-Versionen unzuverlässig. Dieses Update behebt diese Probleme soweit möglich und verbessert die allgemeine Stabilität.{/P}{P}Thunderbird hat in den letzten Versionen viele interne Änderungen durchlaufen, und die Unterstützung alter Versionen hätte bedeutet, doppelte Pfade zu pflegen, die nicht mehr konsistent funktionieren. Durch den Schritt nach vorne bleibt FiltaQuilla stabil, statt gegen diese Inkonsistenzen anzukämpfen.{/P}{P}Vielen Dank, dass Sie Ihre Software auf dem neuesten Stand halten und FiltaQuilla so für die Zukunft wartbar machen.{/P}"
   },
   "optionsIntro": {
     "message": "Aktivieren Sie alle Einträge die im 'Filter bearbeiten' Dialog angeboten werden sollen. Neustart erforderlich."
@@ -418,10 +418,10 @@
     "message": "Wichtige Änderungen"
   },
   "whats-new-intro": {
-    "message": "FiltaQuilla wird stolz durch meine Arbeit an meinen anderen Add-ons unterstützt: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} und {A-ST}SmartTemplates{A2}. Schauen Sie sie sich im Add-ons-Store an!"
+    "message": "FiltaQuilla wird stolz durch meine Arbeit an meinen anderen Add-ons unterstützt: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A} und {A-ST}SmartTemplates{/A}. Schauen Sie sich diese im Add-ons-Store an!"
   },
   "whats-new-list": {
-    "description": "🇩🇪 change log",
-    "message": "{U1} {L1} Regression in Version 5.5 behoben: Anhänge wurden seit dem Update (Thunderbird 128) nicht mehr gespeichert. [issue 367], [issue 368] {L2} {L1} FiltaQuilla ist jetzt kompatibel mit Thunderbird 145.*.{L2} {L1} Lokalisierungen für französische, japanische, italienische und spanische Nutzer hinzugefügt.{L2}{L1} Toolbar-Schaltfläche für einfachen Zugriff auf die Einstellungen hinzugefügt. Wenn sie nicht benötigt wird, kann sie über Ansicht » Symbolleisten » Symbolleistenlayout entfernt werden.{L2}{L1} Einstellungsdialog auf HTML konvertiert. [issue 366]{L2}{L1} Behoben: In einigen Fällen konnten Anhänge mit fehlerhaften Dateinamen gespeichert werden, aufgrund von Kodierungsproblemen [issue 364]. Da dies ein API-Fehler ist, wurde auch ein Bug in Bugzilla gemeldet [Bug 1992976]. {L2}{U2}"
+    "description": "🇩🇪 Änderungsprotokoll",
+    "message": "{U}{L}Die Mindestversion von Thunderbird wurde erhöht, um eine stabile Handhabung von Anhängen in Zukunft zu gewährleisten.{/L}{L}FiltaQuilla ist jetzt bis zu Thunderbird {bold}146.*{/bold} kompatibel.{/L}{L}Signaturen werden beim Trennen oder Exportieren von Anhängen nicht mehr gespeichert. [issue 372]{/L}{L}Probleme behoben, bei denen bestimmte Anhänge nicht korrekt gespeichert wurden. [issue 376]{/L}{L}Das Trennen von Anhängen wurde wiederhergestellt, nachdem Thunderbird die alte Methode entfernt hatte. [issue 369]{/L}{L}Doppelte Speicherung von PDF- und TXT-Dateien durch denselben Filter wurde behoben. [issue 367], [issue 370]{/L}{/U}"
   }
 }

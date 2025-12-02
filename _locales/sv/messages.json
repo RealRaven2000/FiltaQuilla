@@ -316,7 +316,7 @@
   },
   "newsHead": { "message": "Senaste nytt" },
   "newsMsgForced": {
-    "message": "{P1}Denna version introducerar fullständigt stöd för franska, japanska, italienska och spanska lokaler. Vi har konverterat inställningsdialogen till HTML för bättre framtidssäkerhet och underhållbarhet.{P2}{P1}På grund av den lågnivåfunktionalitet som FiltaQuilla använder måste detta tillägg förbli experimentellt och begär därför fullständiga behörigheter vid installation.{P2}{P1}Denna uppdatering inkluderar även mindre förbättringar i filtermotorn och åtgärder för kända problem från tidigare versioner. FiltaQuilla fortsätter att stödja användare på Thunderbird 128 och senare, men äldre versioner kanske inte drar nytta av de senaste lokaliseringarna eller korrigeringarna.{P2}"
+    "message": "{P}Den här versionen höjer FiltaQuillas minimikrav på Thunderbird för att säkerställa pålitlig hantering av bilagor och långsiktig stabilitet. {bold}FiltaQuilla 6.*{/bold} och efterföljande versioner kräver {bold}Thunderbird 140{/bold} eller senare.{/P}{P}Sparande av bilagor var opålitligt för vissa användare på äldre Thunderbird-versioner. Den här uppdateringen åtgärdar dessa problem där det är möjligt och förbättrar den övergripande stabiliteten.{/P}{P}Thunderbird har genomgått många interna förändringar i de senaste versionerna, och att fortsätta stödja gamla versioner skulle ha inneburit att underhålla duplicerade vägar som inte längre fungerar konsekvent. Genom att gå framåt kan FiltaQuilla förbli stabil istället för att kämpa mot dessa inkonsekvenser.{/P}{P}Tack för att du håller programvaran uppdaterad och hjälper till att hålla FiltaQuilla underhållbar i framtiden.{/P}"
   },
   "optionsIntro": {
     "message": "Aktivera alla elemet du vill ha tillgängliga i dialogruan &quot;Filtreringsregler&quot;. Starta om efter ändringar."
@@ -406,10 +406,10 @@
     "message": "Viktiga ändringar"
   },
   "whats-new-intro": {
-    "message": "FiltaQuilla stöds stolt genom mitt arbete med mina andra tillägg: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} och {A-ST}SmartTemplates{A2}. Kolla gärna in dem i tilläggsbutiken!"
+    "message": "FiltaQuilla stöds stolt genom mitt arbete med mina andra tillägg: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A} och {A-ST}SmartTemplates{/A}. Kolla gärna in dem i tilläggsbutiken!"
   },
   "whats-new-list": {
-    "description": "🇸🇪 change log",
-    "message": "{U1} {L1} Åtgärdad regression från version 5.5: Bilagor sparades inte längre sedan uppdateringen (Thunderbird 128). [issue 367], [issue 368] {L2} {L1} FiltaQuilla är nu kompatibel med Thunderbird 145.*.{L2} {L1} Lagt till lokaliseringar för franska, japanska, italienska och spanska användare.{L2}{L1} Lagt till en verktygsfältknapp för enkel åtkomst till inställningar. Om den inte behövs kan den tas bort via Visa » Verktygsfält » Verktygsfältslayout.{L2}{L1} Inställningsdialog konverterad till HTML. [issue 366]{L2}{L1} Fixat: I vissa fall kunde bilagor sparas med felaktiga filnamn på grund av kodningsproblem [issue 364]. Eftersom detta är ett API-fel rapporterades även en bugg på Bugzilla [Bug 1992976]. {L2}{U2}"
+    "description": "🇸🇪 ändringslogg",
+    "message": "{U}{L}Höjd minsta Thunderbird-version för att säkerställa stabil hantering av bilagor framöver.{/L}{L}FiltaQuilla är nu kompatibel med Thunderbird {bold}146.*{/bold}.{/L}{L}Signaturer sparas inte längre vid borttagning eller export av bilagor. [issue 372]{/L}{L}Åtgärdade problem där vissa bilagor inte sparades korrekt. [issue 376]{/L}{L}Återställde borttagning av bilagor efter att Thunderbird tagit bort den gamla metoden. [issue 369]{/L}{L}Fixade dubbel sparning av PDF- och TXT-filer när samma filter utlöste dem. [issue 367], [issue 370]{/L}{/U}"
   }
 }

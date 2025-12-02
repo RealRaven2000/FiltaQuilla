@@ -319,7 +319,7 @@
   },
   "newsHead": { "message": "Laatste nieuws" },
   "newsMsgForced": {
-    "message": "{P1}Deze release biedt volledige ondersteuning voor Franse, Japanse, Italiaanse en Spaanse locale instellingen. We hebben het instellingenvenster geconverteerd naar HTML voor betere toekomstbestendigheid en onderhoudbaarheid.{P2}{P1}Vanwege de low-level aard van de functionaliteit van FiltaQuilla moet deze add-on experimenteel blijven en vraagt daarom volledige machtigingen bij installatie.{P2}{P1}Deze update bevat ook kleine verbeteringen aan de filterengine en oplossingen voor bekende problemen uit eerdere versies. FiltaQuilla blijft gebruikers van Thunderbird 128 en hoger ondersteunen, oudere versies profiteren mogelijk niet van de nieuwste localisaties of fixes.{P2}"
+    "message": "{P}Deze versie verhoogt de minimale Thunderbird-versie voor FiltaQuilla om betrouwbare bijlageverwerking en langdurige stabiliteit te waarborgen. {bold}FiltaQuilla 6.*{/bold} en volgende versies vereisen {bold}Thunderbird 140{/bold} of hoger.{/P}{P}Het opslaan van bijlagen was voor sommige gebruikers op oudere Thunderbird-versies onbetrouwbaar. Deze update lost deze problemen waar mogelijk op en verbetert de algehele stabiliteit.{/P}{P}Thunderbird heeft in recente releases veel interne veranderingen ondergaan, en het blijven ondersteunen van oude versies zou betekenen dat dubbele paden moeten worden onderhouden die niet meer consistent werken. Door vooruit te gaan kan FiltaQuilla stabiel blijven in plaats van tegen die inconsistenties te vechten.{/P}{P}Dank u voor het up-to-date houden van uw software en voor het helpen FiltaQuilla in de toekomst onderhoudbaar te houden.{/P}"
   },
   "optionsIntro": {
     "message": "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen."
@@ -409,10 +409,10 @@
     "message": "Belangrijke wijzigingen"
   },
   "whats-new-intro": {
-    "message": "FiltaQuilla wordt trots ondersteund door mijn werk aan mijn andere add-ons: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2} en {A-ST}SmartTemplates{A2}. Bekijk ze in de Add-ons store!"
+    "message": "FiltaQuilla wordt trots ondersteund door mijn werk aan mijn andere add-ons: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A} en {A-ST}SmartTemplates{/A}. Bekijk ze in de Add-ons store!"
   },
   "whats-new-list": {
-    "description": "🇳🇱 change log",
-    "message": "{U1} {L1} Regressie uit versie 5.5 opgelost: Bijlagen werden sinds de update (Thunderbird 128) niet meer opgeslagen. [issue 367], [issue 368] {L2} {L1} FiltaQuilla is nu compatibel met Thunderbird 145.*.{L2} {L1} Lokalisaties toegevoegd voor Franse, Japanse, Italiaanse en Spaanse gebruikers.{L2}{L1} Werkbalkknop toegevoegd voor snelle toegang tot de instellingen. Indien niet nodig, kan deze worden verwijderd via Beeld » Werkbalken » Werkbalkindeling.{L2}{L1} Instellingen dialoog geconverteerd naar HTML. [issue 366]{L2}{L1} Opgelost: In sommige gevallen konden bijlagen worden opgeslagen met corrupte bestandsnamen door coderingproblemen [issue 364]. Omdat dit een API-fout is, is er ook een Bug op Bugzilla aangemaakt [Bug 1992976]. {L2}{U2}"
+    "description": "🇳🇱 wijzigingslogboek",
+    "message": "{U}{L}Het minimum van Thunderbird is verhoogd om een stabiele verwerking van bijlagen in de toekomst te waarborgen.{/L}{L}FiltaQuilla is nu compatibel met Thunderbird {bold}146.*{/bold}.{/L}{L}Handtekeningen worden niet langer opgeslagen bij het loskoppelen of exporteren van bijlagen. [issue 372]{/L}{L}Problemen opgelost waarbij bepaalde bijlagen niet correct werden opgeslagen. [issue 376]{/L}{L}Bijlage-loskoppelen hersteld nadat Thunderbird de oude methode had verwijderd. [issue 369]{/L}{L}Dubbel opslaan van PDF- en TXT-bestanden bij dezelfde filteractie opgelost. [issue 367], [issue 370]{/L}{/U}"
   }
 }

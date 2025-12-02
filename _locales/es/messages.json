@@ -326,7 +326,7 @@
   },
   "newsHead": { "message": "Últimas noticias" },
   "newsMsgForced": {
-    "message": "{P1}Esta versión introduce soporte completo para los idiomas francés, japonés, italiano y español. Hemos convertido el diálogo de configuración a HTML para garantizar una mejor compatibilidad futura y facilidad de mantenimiento.{P2}{P1}Debido a la naturaleza de bajo nivel de la funcionalidad de FiltaQuilla, este complemento debe seguir siendo experimental y, por lo tanto, solicita permisos completos durante la instalación.{P2}{P1}Esta actualización también incluye pequeñas mejoras en el motor de filtros y correcciones de problemas conocidos de versiones anteriores. FiltaQuilla continúa siendo compatible con Thunderbird 128 y versiones superiores, aunque las versiones anteriores pueden no beneficiarse de las últimas localizaciones o correcciones.{P2}"
+    "message": "{P}Esta versión eleva el requisito mínimo de Thunderbird para FiltaQuilla y garantiza un manejo confiable de los archivos adjuntos y estabilidad a largo plazo. {bold}FiltaQuilla 6.*{/bold} y las versiones posteriores requerirán {bold}Thunderbird 140{/bold} o superior.{/P}{P}El guardado de archivos adjuntos era poco confiable para algunos usuarios en versiones anteriores de Thunderbird. Esta actualización soluciona estos problemas en la medida de lo posible y mejora la estabilidad general.{/P}{P}Thunderbird ha pasado por muchos cambios internos en las versiones recientes, y mantener compatibilidad con versiones antiguas habría significado mantener rutas duplicadas que ya no se comportan de forma consistente. Avanzar permite que FiltaQuilla se mantenga estable en lugar de luchar contra esas inconsistencias.{/P}{P}Gracias por mantener su software actualizado y ayudar a que FiltaQuilla sea sostenible en el futuro.{/P}"
   },
   "optionsIntro": {
     "message": "Activa todos los elementos que desees tener disponibles en el cuadro de diálogo 'Reglas de filtros'. Reinicia después de realizar cambios."
@@ -419,10 +419,10 @@
     "message": "Cambios importantes"
   },
   "whats-new-intro": {
-    "message": "FiltaQuilla cuenta con el apoyo de mi trabajo en otros complementos: {A-qI}quickFilters{A2}, {A-QF}QuickFolders{A2}, y {A-ST}SmartTemplates{A2}. ¡Échales un vistazo en la tienda de complementos!"
+    "message": "FiltaQuilla cuenta con el apoyo de mi trabajo en otros complementos: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A}, y {A-ST}SmartTemplates{/A}. ¡Échales un vistazo en la tienda de complementos!"
   },
   "whats-new-list": {
-    "description": "🇪🇸 change log",
-    "message": "{U1} {L1} Corregida la regresión de la versión 5.5: Los archivos adjuntos ya no se guardaban desde la actualización (Thunderbird 128). [issue 367], [issue 368] {L2} {L1} FiltaQuilla ahora es compatible con Thunderbird 145.*.{L2} {L1} Añadidas localizaciones para usuarios franceses, japoneses, italianos y españoles.{L2}{L1} Añadido botón de la barra de herramientas para acceso rápido a la configuración. Si no es necesario, puede eliminarlo a través de Ver » Barras de herramientas » Diseño de barra de herramientas.{L2}{L1} Dialogo de configuración convertido a HTML. [issue 366]{L2}{L1} Corregido: En algunos casos, los archivos adjuntos podían guardarse con nombres corruptos debido a problemas de codificación [issue 364]. Como es un error de la API, también se reportó un Bug en Bugzilla [Bug 1992976]. {L2}{U2}"
+    "description": "🇪🇸 registro de cambios",
+    "message": "{U}{L}Se ha elevado la versión mínima de Thunderbird para garantizar un manejo estable de los archivos adjuntos en el futuro.{/L}{L}FiltaQuilla ahora es compatible con Thunderbird {bold}146.*{/bold}.{/L}{L}Las firmas ya no se guardan al separar o exportar archivos adjuntos. [issue 372]{/L}{L}Se solucionaron problemas en los que ciertos archivos adjuntos no se guardaban correctamente. [issue 376]{/L}{L}Se restauró la separación de archivos adjuntos después de que Thunderbird eliminó el método antiguo. [issue 369]{/L}{L}Se corrigió el doble guardado de archivos PDF y TXT cuando se activaba por el mismo filtro. [issue 367], [issue 370]{/L}{/U}"
   }
 }

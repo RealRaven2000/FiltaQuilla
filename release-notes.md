@@ -1,25 +1,28 @@
-**Version 5.6** 
+**Version 6.0** 
 
 **Latest News**
 
-The Thunderbird monthly release cycle will deliver new features and interface updates as they’re developed. Please check whether your current add-ons support this release model. To help with this, you can install the [Add-on Compatibility Check](https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/).
+We decided to concentrate on the latest versions from FIltaQuilla 140 onwards because the code base was getting pretty unmanagable due to the substantial changes in Thunderbird Core and additional features added by the extended mail extension APIs. Being able to support this and legacy ways of doing the same thing within the same Add-on proved to be very difficult and produce unmanagable code.
 
-Some users may have seen a false incompatibility warning after updating from Thunderbird to v142 or higher. This was caused by cached compatibility information in Thunderbird, which sometimes fails to refresh correctly. The previous version of FiltaQuilla was already fully compatible with 143.
+Even just supporting both ESR140 and the current release versions (currently 145), is already a difficult thing leading to substantially branching code paths within the same Add-on. This cut-off point will also be used to prepare for a number of long desired feature additions around saving attachments, which will be delivered next.
 
-To get this fixed I raised a bug with Thunderbird: [Bugzilla 1986027](https://bugzilla.mozilla.org/show_bug.cgi?id=1986027).
+Increased strict_min_version to 140.0.
 
 
 **Improvements**
-*   
+*   Exclude signatures from saved / detached attachments [issue #372] 
+
 
 **Bug Fixes**
-*  `detachAttachmentsWOPrompts` was removed from Thunderbird during 140 development cycle. [issue #369]
+*  Problems with saving some attachments - others work [issue #376]
+*  Tb142 removed `messenger.detachAttachmentsWOPrompts` - reimplement detach attachments [issue #369]
 *  Fixed: Double saving via the filter as pdf and additional txt file  [issue #370]
 
 
 
 **TO DO NEXT**
 *    Feature Request: Notification alert \[issue #240\].
+*    Support custom file names, including date, when saving / detaching attachments [issue #219]
 *    Test attachRegEx_match and see if it needs updates for Tb128 / Release
 
 
