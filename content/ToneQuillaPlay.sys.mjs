@@ -108,7 +108,7 @@ export const ToneQuillaPlay = {
   // the window used to construct the Audio object
   window: null,
 
-  // nsIFile for the sounds directory
+  // path string for the sounds directory
   soundsDirectory: null,
 
   MY_ID: "tonequilla@mesquilla.com",

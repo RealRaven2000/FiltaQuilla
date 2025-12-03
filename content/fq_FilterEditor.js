@@ -649,9 +649,11 @@
           // init is now async!!
           ToneQuillaPlay.init().then(
             () => {
-              if (ToneQuillaPlay.soundsDirectory) {
-                fp.displayDirectory =
-                  ToneQuillaPlay.soundsDirectory.QueryInterface(Ci.nsIFile);
+              const dirPath = ToneQuillaPlay.soundsDirectory;
+              if (dirPath) {
+                const file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
+                file.initWithPath(dirPath);
+                fp.displayDirectory = file;
               }
               fp.open(fpCallback);
             }
