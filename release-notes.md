@@ -11,7 +11,8 @@ Increased strict_min_version to 140.0.
 
 **Improvements**
 *   Exclude signatures from saved / detached attachments [issue #372] 
-
+*   Made FiltaQuilla compatible with Thunderbird 146.*.
+*   Removed legacy options screen and tightened UX in the modern html version for added clarity. [issue #379]
 
 **Bug Fixes**
 *  Problems with saving some attachments - others work [issue #376]

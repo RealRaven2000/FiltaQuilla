@@ -118,6 +118,8 @@ Increased strict_min_version to 140.0.
 *  Problems with saving some attachments - others work [issue #376]
 *  Tb142 removed `messenger.detachAttachmentsWOPrompts` - reimplement detach attachments [issue #369]
 *  Fixed: Double saving via the filter as pdf and additional txt file  [issue #370]
+*  Removed legacy settings XUL dialog options.xhtml. [issue #379]
+*  Added dedicated change log menu item. Added version numbers [issue #379]
 
 
 ======================================

@@ -1,12 +1,8 @@
-<b>Version 5.6</b>
+We decided to concentrate on the latest versions from FIltaQuilla 140 onwards because the code base was getting pretty unmanagable due to the substantial changes in Thunderbird Core and additional features added by the extended mail extension APIs. Being able to support this and legacy ways of doing the same thing within the same Add-on proved to be very difficult and produce unmanagable code.
 
-The Thunderbird monthly release cycle will deliver new features and interface updates as they’re developed. Please check whether your current add-ons support this release model. To help with this, you can install the <a href="https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/" class="native">Add-on Compatibility Check</a>.
+Even just supporting both ESR140 and the current release versions (currently 145), is already a difficult thing leading to substantially branching code paths within the same Add-on. This cut-off point will also be used to prepare for a number of long desired feature additions around saving attachments, which will be delivered next.
 
-
-In some cases can be seen a false incompatibility warning after updating from Thunderbird to v142 or higher. This was caused by cached compatibility information in Thunderbird, which sometimes fails to refresh correctly. The previous version of FiltaQuilla was already fully compatible with 144. 
-
-To get this fixed I raised a bug with Thunderbird: <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1986027">[Bugzilla 1986027]</a>.
-
+Increased strict_min_version to 140.0.
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>. For more ways of supporting me work, please read the section below after the change log.
 
@@ -15,6 +11,7 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 <ul>
   <li> Made FiltaQuilla compatible with Thunderbird 146.*.  </li>
   <li> Signatures are now excluded when saving or detaching attachments to avoid useless files. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/372">[issue 372]</a></li>
+  <li> Removed legacy options screen and tightened UX in the modern html version for added clarity. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/379">[issue 379]</a> </li>
 </ul>
 <b>Bug Fixes</b>
 <ul>
