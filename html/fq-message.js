@@ -48,6 +48,7 @@ function getQueryParams() {
 
 // helper to marshall a formatted message without using
 // queryParameter directly!
+// this consumes the message from local storage to avoid accidentally reusing it
 async function getStoredMessage(key, hasMessage) {
   if (!hasMessage) {
     return "";
@@ -79,7 +80,12 @@ window.addEventListener("load", async () => {
 
   if (heading) {
     document.getElementById("titleBox").textContent = heading;
+    document.title = heading;
   }
+
+  document.getElementById("changeLog").textContent = messenger.i18n.getMessage(
+    "message.btn.changeLog", ""
+  );
 
   let messageIdList = [];
   if (params.msgId) {

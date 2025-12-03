@@ -57,6 +57,9 @@ const initPrefs = async () => {
       messenger.LegacyPrefs.setPref(prefName, el.type === "number" ? Number(el.value) : el.value);
     });
   }
+  document.getElementById("changeLog").textContent = messenger.i18n.getMessage(
+    "message.btn.changeLog", ""
+  );
 };
 
 /**** FLOATING TOOLTIPS ===> **** */

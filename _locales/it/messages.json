@@ -316,7 +316,10 @@
   },
   "message.btn.accept": { "message": "OK" },
   "message.btn.cancel": { "message": "Annulla" },
-  "message.btn.changeLog": { "message": "Mostra le ultime modifiche…" },
+  "message.btn.changeLog": {
+    "message": "Mostra le ultime modifiche $versionPart$…",
+    "placeholders": { "versionPart": { "content": "$1" } }
+  },
   "message.btn.no": { "message": "No" },
   "message.btn.yes": { "message": "Sì" },
   "message.linkInTab": { "message": "(Link aperto in una scheda)" },
@@ -415,6 +418,10 @@
   "supportPage_desc": {
     "message": "Questa pagina descrive le varie azioni e condizioni che puoi aggiungere ai filtri della posta con FiltaQuilla."
   },
+  "versionPart": {
+    "message": "(versione $1$)",
+    "placeholders": { "1": { "content": "$1", "example": "6.0" } }
+  },
   "whats-new-head": {
     "message": "Cambiamenti importanti"
   },
@@ -423,6 +430,6 @@
   },
   "whats-new-list": {
     "description": "🇮🇹 registro delle modifiche",
-    "message": "{U}{L}Aumentata la versione minima di Thunderbird per garantire una gestione stabile degli allegati in futuro.{/L}{L}FiltaQuilla è ora compatibile con Thunderbird {bold}146.*{/bold}.{/L}{L}Le firme non vengono più salvate quando si staccano o esportano gli allegati. [issue 372]{/L}{L}Risolti problemi per cui alcuni allegati non venivano salvati correttamente. [issue 376]{/L}{L}Ripristinato il distacco degli allegati dopo che Thunderbird ha rimosso il metodo precedente. [issue 369]{/L}{L}Corretto il doppio salvataggio dei file PDF e TXT quando attivati dallo stesso filtro. [issue 367], [issue 370]{/L}{/U}"
+    "message": "{U}{L}Aumentata la versione minima di Thunderbird per garantire una gestione stabile degli allegati in futuro.{/L}{L}FiltaQuilla è ora compatibile con Thunderbird {bold}146.*{/bold}.{/L}{L}Le firme non vengono più salvate quando si staccano o esportano gli allegati. [issue 372]{/L}{L}Risolti problemi per cui alcuni allegati non venivano salvati correttamente. [issue 376]{/L}{L}Ripristinato il distacco degli allegati dopo che Thunderbird ha rimosso il metodo precedente. [issue 369]{/L}{L}Corretto il doppio salvataggio dei file PDF e TXT quando attivati dallo stesso filtro. [issue 367], [issue 370]{/L}{L}Rimosso lo schermo delle opzioni legacy e ottimizzata l’UX nella versione HTML moderna per maggiore chiarezza. [issue 379]{/L}{/U}"
   }
 }

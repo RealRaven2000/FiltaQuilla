@@ -109,8 +109,6 @@
     ["content", "filtaquilla", "content/"], // chrome://path
   ]);
 
-  // messenger.WindowListener.registerOptionsPage("chrome://filtaquilla/content/options.xhtml");
-
   /* OVERLAY CONVERSIONS */
 
   // overlay  chrome://messenger/content/messenger.xul chrome://filtaquilla/content/filtaquilla.xul
@@ -531,8 +529,16 @@
           features = data.features || ["ok"]; // minimum: an ok button. make array mutable
 
         switch (mode) {
-          case "standard":
-            return showFQmessage(messageIds, features, message);
+          case "standard": {
+            let heading = "";
+            if (data.msgIds === "whats-new-list" && data.forceShow !== true) {
+              const versionPart =
+                " " +
+                messenger.i18n.getMessage("versionPart", browser.runtime.getManifest().version);
+              heading = messenger.i18n.getMessage("whats-new-head") + " " + versionPart;
+            }
+            return showFQmessage(messageIds, features, message, heading);
+          }
           case "news":
             return displayUpdateMessage();
           default:
@@ -628,16 +634,6 @@
     });
 
     await messenger.menus.create({
-      id: "filtaquilla-prefs-legacy",
-      contexts: ["browser_action_menu"],
-      icons: "../skin/settings.svg",
-      onclick: () => {
-        messenger.FiltaQuilla.showOptions();
-      },
-      title: `${messenger.i18n.getMessage("prefwindow.title")} (legacy)`,
-    });
-
-    await messenger.menus.create({
       id: "filtaquilla-news",
       contexts: ["browser_action_menu"],
       icons: "../skin/new.svg",
@@ -645,25 +641,23 @@
         const result = await showFQmessage("newsMsgForced", ["ok", "changeLog"], "");
         if (result === "changeLog") {
           // display the changelog
-          showFQmessage("whats-new-list", ["ok"], null, messenger.i18n.getMessage("newsHead"));
+          showFQmessage("whats-new-list", ["ok"]);
         }
       },
       title: messenger.i18n.getMessage("newsHead"),
     });
 
+    const versionPart = " " +  
+      messenger.i18n.getMessage("versionPart", browser.runtime.getManifest().version);
     await messenger.menus.create({
       id: "filtaquilla-changelog",
       contexts: ["browser_action_menu"],
-      icons: "../skin/new.svg",
+      icons: "../skin/changelog.svg",
       onclick: () => {
-        showFQmessage(
-          "whats-new-list", 
-          ["ok"], 
-          null, 
-          messenger.i18n.getMessage("whats-new-head")
-        );
+        showFQmessage("whats-new-list", ["ok"], null, 
+          messenger.i18n.getMessage("whats-new-head") + " " + versionPart);
       },
-      title: messenger.i18n.getMessage("message.btn.changeLog"),
+      title: messenger.i18n.getMessage("message.btn.changeLog", versionPart),
     });    
 
     await messenger.menus.create({
@@ -720,6 +714,14 @@
       await browser.storage.local.set({ [MESSAGE_STORAGE_KEY]: message });
       url.searchParams.set("msg_storage", "true");
     }
+    if (messageIds == "whats-new-list" && !heading) {
+      heading = messenger.i18n.getMessage("whats-new-head") + " " +
+        messenger.i18n.getMessage(
+          "versionPart",
+          browser.runtime.getManifest().version
+        );
+    }
+
     if (heading) {
       await browser.storage.local.set({ [HEADING_STORAGE_KEY]: heading });
       url.searchParams.set("msg_header_stored", "true");
@@ -730,13 +732,16 @@
     url.searchParams.set("features", features.join(","));
     // smallest size as start
     const windowProperties = {
-      width: 660,
-      height: 480,
+      width: 750,
+      height: 520,
     };
     const ids = messageIds.split(",").map((s) => s.trim());
     if (ids.includes("newsMsgForced")) { // it's a long one...
       windowProperties.height = 560;
-      windowProperties.width = 800;
+      windowProperties.width = 810;
+    }
+    if (messageIds.includes("whats-new-list")) {
+      windowProperties.width = Math.max(windowProperties.width, 810);
     }
 
     if (features.includes("restart")) {

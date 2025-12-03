@@ -318,7 +318,10 @@
   },
   "message.btn.accept": { "message": "OK" },
   "message.btn.cancel": { "message": "Abbrechen" },
-  "message.btn.changeLog": { "message": "Neueste Änderungen anzeigen…" },
+  "message.btn.changeLog": {
+    "message": "Neueste Änderungen anzeigen $versionPart$…",
+    "placeholders": { "versionPart": { "content": "$1" } }
+  },
   "message.btn.no": { "message": "Nein" },
   "message.btn.yes": { "message": "Ja" },
   "message.linkInTab": { "message": "(Link in Tab geöffnet)" },
@@ -414,6 +417,10 @@
   "supportPage_desc": {
     "message": "Diese Seite beschreibt die verschiedenen Aktionen und Suchbedingungen die man mit FiltaQuilla zu den Filterregeln hinzufügen kann."
   },
+  "versionPart": {
+    "message": "(Version $1$)",
+    "placeholders": { "1": { "content": "$1", "example": "6.0" } }
+  },
   "whats-new-head": {
     "message": "Wichtige Änderungen"
   },
@@ -422,6 +429,6 @@
   },
   "whats-new-list": {
     "description": "🇩🇪 Änderungsprotokoll",
-    "message": "{U}{L}Die Mindestversion von Thunderbird wurde erhöht, um eine stabile Handhabung von Anhängen in Zukunft zu gewährleisten.{/L}{L}FiltaQuilla ist jetzt bis zu Thunderbird {bold}146.*{/bold} kompatibel.{/L}{L}Signaturen werden beim Trennen oder Exportieren von Anhängen nicht mehr gespeichert. [issue 372]{/L}{L}Probleme behoben, bei denen bestimmte Anhänge nicht korrekt gespeichert wurden. [issue 376]{/L}{L}Das Trennen von Anhängen wurde wiederhergestellt, nachdem Thunderbird die alte Methode entfernt hatte. [issue 369]{/L}{L}Doppelte Speicherung von PDF- und TXT-Dateien durch denselben Filter wurde behoben. [issue 367], [issue 370]{/L}{/U}"
+    "message": "{U}{L}Die Mindestversion von Thunderbird wurde erhöht, um eine stabile Handhabung von Anhängen in Zukunft zu gewährleisten.{/L}{L}FiltaQuilla ist jetzt bis zu Thunderbird {bold}146.*{/bold} kompatibel.{/L}{L}Signaturen werden beim Trennen oder Exportieren von Anhängen nicht mehr gespeichert. [issue 372]{/L}{L}Probleme behoben, bei denen bestimmte Anhänge nicht korrekt gespeichert wurden. [issue 376]{/L}{L}Das Trennen von Anhängen wurde wiederhergestellt, nachdem Thunderbird die alte Methode entfernt hatte. [issue 369]{/L}{L}Doppelte Speicherung von PDF- und TXT-Dateien durch denselben Filter wurde behoben. [issue 367], [issue 370]{/L}{L}Der alte Optionsbildschirm wurde entfernt, und die moderne HTML-Version für bessere Benutzerfreundlichkeit optimiert. [issue 379]{/L}{/U}"
   }
 }

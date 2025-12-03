@@ -318,7 +318,10 @@
   },
   "message.btn.accept": { "message": "OK" },
   "message.btn.cancel": { "message": "Cancel" },
-  "message.btn.changeLog": { "message": "Show latest Changes…" },
+  "message.btn.changeLog": {
+    "message": "Show latest Changes $versionPart$…",
+    "placeholders": { "versionPart": { "content": "$1", "example": " version 6.0" } }
+  },
   "message.btn.no": { "message": "No" },
   "message.btn.yes": { "message": "Yes" },
   "message.linkInTab": { "message": "(Link opened in Tab)" },
@@ -417,6 +420,10 @@
   "supportPage_desc": {
     "message": "This Page describes the different actions and conditions you can add to mail filters with FiltaQuilla."
   },
+  "versionPart": {
+    "message": " (version $1$)",
+    "placeholders": { "1": { "content": "$1", "example": "6.0" } }
+  },
   "whats-new-head": {
     "message": "Important Changes"
   },
@@ -425,6 +432,6 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L} Raised the minimum Thunderbird version to ensure stable attachment handling going forward.{/L}{L} FiltaQuilla is now compatible up to Thunderbird {bold}146.*{/bold}.{/L}{L} Signatures are no longer saved when detaching or exporting attachments. [issue 372]{/L}{L} Fixed issues where certain attachments were not saved correctly. [issue 376]{/L}{L} Restored attachment detaching after Thunderbird removed the old method. [issue 369]{/L}{L} Fixed double-saving of PDF and TXT files when triggered by the same filter. [issue 367], [issue 370]{/L}{/U}"
+    "message": "{U}{L}Raised the minimum Thunderbird version to ensure stable attachment handling going forward.{/L}{L}FiltaQuilla is now compatible up to Thunderbird {bold}146.*{/bold}.{/L}{L}Signatures are no longer saved when detaching or exporting attachments. [issue 372]{/L}{L}Fixed issues where certain attachments were not saved correctly. [issue 376]{/L}{L}Restored attachment detaching after Thunderbird removed the old method. [issue 369]{/L}{L}Fixed double-saving of PDF and TXT files when triggered by the same filter. [issue 367], [issue 370]{/L}{L}Removed legacy options screen and tightened UX in the modern html version for added clarity. [issue 379]{/L}{/U}"
   }
 }

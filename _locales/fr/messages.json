@@ -316,7 +316,10 @@
   },
   "message.btn.accept": { "message": "OK" },
   "message.btn.cancel": { "message": "Annuler" },
-  "message.btn.changeLog": { "message": "Afficher les dernières modifications…" },
+  "message.btn.changeLog": {
+    "message": "Afficher les dernières modifications $versionPart$…",
+    "placeholders": { "versionPart": { "content": "$1" } }
+  },
   "message.btn.no": { "message": "Non" },
   "message.btn.yes": { "message": "Oui" },
   "message.linkInTab": { "message": "(Lien ouvert dans un onglet)" },
@@ -415,6 +418,10 @@
   "supportPage_desc": {
     "message": "Cette page décrit les différentes actions et conditions que vous pouvez ajouter aux filtres de courrier avec FiltaQuilla."
   },
+  "versionPart": {
+    "message": "(version $1$)",
+    "placeholders": { "1": { "content": "$1", "example": "6.0" } }
+  },
   "whats-new-head": {
     "message": "Modifications importantes"
   },
@@ -423,6 +430,6 @@
   },
   "whats-new-list": {
     "description": "🇫🇷 journal des modifications",
-    "message": "{U}{L}Augmentation de la version minimale de Thunderbird pour assurer une gestion stable des pièces jointes à l’avenir.{/L}{L}FiltaQuilla est désormais compatible avec Thunderbird {bold}146.*{/bold}.{/L}{L}Les signatures ne sont plus enregistrées lors de la détachement ou de l’exportation des pièces jointes. [issue 372]{/L}{L}Correction des problèmes où certaines pièces jointes n’étaient pas correctement enregistrées. [issue 376]{/L}{L}Restauration du détachement des pièces jointes après la suppression de l’ancienne méthode par Thunderbird. [issue 369]{/L}{L}Correction du double enregistrement des fichiers PDF et TXT déclenché par le même filtre. [issue 367], [issue 370]{/L}{/U}"
+    "message": "{U}{L}Augmentation de la version minimale de Thunderbird pour assurer une gestion stable des pièces jointes à l’avenir.{/L}{L}FiltaQuilla est désormais compatible avec Thunderbird {bold}146.*{/bold}.{/L}{L}Les signatures ne sont plus enregistrées lors de la détachement ou de l’exportation des pièces jointes. [issue 372]{/L}{L}Correction des problèmes où certaines pièces jointes n’étaient pas correctement enregistrées. [issue 376]{/L}{L}Restauration du détachement des pièces jointes après la suppression de l’ancienne méthode par Thunderbird. [issue 369]{/L}{L}Correction du double enregistrement des fichiers PDF et TXT déclenché par le même filtre. [issue 367], [issue 370]{/L}{L}Écran d’options hérité supprimé et l’interface HTML moderne optimisée pour une meilleure clarté. [issue 379]{/L}{/U}"
   }
 }

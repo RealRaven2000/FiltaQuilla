@@ -306,7 +306,10 @@
   },
   "message.btn.accept": { "message": "OK" },
   "message.btn.cancel": { "message": "Avbryt" },
-  "message.btn.changeLog": { "message": "Visa senaste ändringar…" },
+  "message.btn.changeLog": {
+    "message": "Visa senaste ändringar $versionPart$…",
+    "placeholders": { "versionPart": { "content": "$1" } }
+  },
   "message.btn.no": { "message": "Nej" },
   "message.btn.yes": { "message": "Ja" },
   "message.linkInTab": { "message": "(Länk öppnad i flik)" },
@@ -402,6 +405,10 @@
   "supportPage_desc": {
     "message": "Denna sida beskriver de olika åtgärderna och villkoren du kan lägga till i e-postfilter med FiltaQuilla."
   },
+  "versionPart": {
+    "message": "(версия $1$)",
+    "placeholders": { "1": { "content": "$1", "example": "6.0" } }
+  },
   "whats-new-head": {
     "message": "Viktiga ändringar"
   },
@@ -410,6 +417,6 @@
   },
   "whats-new-list": {
     "description": "🇸🇪 ändringslogg",
-    "message": "{U}{L}Höjd minsta Thunderbird-version för att säkerställa stabil hantering av bilagor framöver.{/L}{L}FiltaQuilla är nu kompatibel med Thunderbird {bold}146.*{/bold}.{/L}{L}Signaturer sparas inte längre vid borttagning eller export av bilagor. [issue 372]{/L}{L}Åtgärdade problem där vissa bilagor inte sparades korrekt. [issue 376]{/L}{L}Återställde borttagning av bilagor efter att Thunderbird tagit bort den gamla metoden. [issue 369]{/L}{L}Fixade dubbel sparning av PDF- och TXT-filer när samma filter utlöste dem. [issue 367], [issue 370]{/L}{/U}"
+    "message": "{U}{L}Höjd minsta Thunderbird-version för att säkerställa stabil hantering av bilagor framöver.{/L}{L}FiltaQuilla är nu kompatibel med Thunderbird {bold}146.*{/bold}.{/L}{L}Signaturer sparas inte längre vid borttagning eller export av bilagor. [issue 372]{/L}{L}Åtgärdade problem där vissa bilagor inte sparades korrekt. [issue 376]{/L}{L}Återställde borttagning av bilagor efter att Thunderbird tagit bort den gamla metoden. [issue 369]{/L}{L}Fixade dubbel sparning av PDF- och TXT-filer när samma filter utlöste dem. [issue 367], [issue 370]{/L}{L}Det äldre alternativfönstret har tagits bort och UX i den moderna HTML-versionen har förbättrats för ökad tydlighet. [issue 379]{/L}{/U}"
   }
 }

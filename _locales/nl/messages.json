@@ -309,7 +309,10 @@
   },
   "message.btn.accept": { "message": "OK" },
   "message.btn.cancel": { "message": "Annuleren" },
-  "message.btn.changeLog": { "message": "Toon laatste wijzigingen…" },
+  "message.btn.changeLog": {
+    "message": "Laatste wijzigingen tonen $versionPart$…",
+    "placeholders": { "versionPart": { "content": "$1" } }
+  },
   "message.btn.no": { "message": "Nee" },
   "message.btn.yes": { "message": "Ja" },
   "message.linkInTab": { "message": "(Link geopend in tabblad)" },
@@ -405,6 +408,10 @@
   "supportPage_desc": {
     "message": "Deze pagina beschrijft de verschillende acties en voorwaarden die met FiltaQuilla aan e-mailfilters kunt toevoegen."
   },
+  "versionPart": {
+    "message": "(versie $1$)",
+    "placeholders": { "1": { "content": "$1", "example": "6.0" } }
+  },
   "whats-new-head": {
     "message": "Belangrijke wijzigingen"
   },
@@ -413,6 +420,6 @@
   },
   "whats-new-list": {
     "description": "🇳🇱 wijzigingslogboek",
-    "message": "{U}{L}Het minimum van Thunderbird is verhoogd om een stabiele verwerking van bijlagen in de toekomst te waarborgen.{/L}{L}FiltaQuilla is nu compatibel met Thunderbird {bold}146.*{/bold}.{/L}{L}Handtekeningen worden niet langer opgeslagen bij het loskoppelen of exporteren van bijlagen. [issue 372]{/L}{L}Problemen opgelost waarbij bepaalde bijlagen niet correct werden opgeslagen. [issue 376]{/L}{L}Bijlage-loskoppelen hersteld nadat Thunderbird de oude methode had verwijderd. [issue 369]{/L}{L}Dubbel opslaan van PDF- en TXT-bestanden bij dezelfde filteractie opgelost. [issue 367], [issue 370]{/L}{/U}"
+    "message": "{U}{L}Het minimum van Thunderbird is verhoogd om een stabiele verwerking van bijlagen in de toekomst te waarborgen.{/L}{L}FiltaQuilla is nu compatibel met Thunderbird {bold}146.*{/bold}.{/L}{L}Handtekeningen worden niet langer opgeslagen bij het loskoppelen of exporteren van bijlagen. [issue 372]{/L}{L}Problemen opgelost waarbij bepaalde bijlagen niet correct werden opgeslagen. [issue 376]{/L}{L}Bijlage-loskoppelen hersteld nadat Thunderbird de oude methode had verwijderd. [issue 369]{/L}{L}Dubbel opslaan van PDF- en TXT-bestanden bij dezelfde filteractie opgelost. [issue 367], [issue 370]{/L}{L}Het legacy-optiescherm is verwijderd en de UX in de moderne HTML-versie verbeterd voor meer duidelijkheid. [issue 379]{/L}{/U}"
   }
 }
