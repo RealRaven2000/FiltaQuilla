@@ -65,17 +65,6 @@ const christophers_code = async () => {
               return false;
             }
           },
-          showOptions: function () {
-            // legacy options will be removed later
-            const win = Services.wm.getMostRecentWindow("mail:3pane");
-            win
-              .openDialog(
-                "chrome://filtaquilla/content/options.xhtml",
-                "filtaquilla-options",
-                "chrome,titlebar,centerscreen,resizable,alwaysRaised,instantApply"
-              )
-              .focus();
-          },
           showAboutConfig: function (filter) {
             const name = "Preferences:ConfigManager",
               mediator = Services.wm,

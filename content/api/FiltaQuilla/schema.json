@@ -29,13 +29,6 @@
         ]
       },
       {
-        "name": "showOptions",
-        "type": "function",
-        "async": false,
-        "description": "opens legacy options dialog",
-        "parameters": []
-      },
-      {
         "name": "showAboutConfig",
         "type": "function",
         "async": false,
@@ -48,7 +41,6 @@
           }
         ]
       }
-
     ]
   }
 ]
