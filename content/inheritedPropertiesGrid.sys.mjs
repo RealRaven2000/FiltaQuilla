@@ -124,11 +124,11 @@ export const InheritedPropertiesGrid = {
     try {
 			let inheritedProperties = this.getInheritedProperties();
       let property = inheritedProperties[aProperty];
-      if (typeof property != 'undefined')
+      if (typeof property != 'undefined') {
         return property;
-    } catch (e) {} // perhaps something is still using the old method?
+			}
+    } catch {;} // perhaps something is still using the old method?
     throw "Inherited property " + aProperty + " not registered";
-    return null;
    },
 
   // This function implements most of the onPreInit function for setting
@@ -143,11 +143,13 @@ export const InheritedPropertiesGrid = {
 			let catEnum = catMan.enumerateCategory("InheritedPropertiesGrid");
 			while (catEnum.hasMoreElements()) {
 				let property = catEnum.getNext()
-															.QueryInterface(Components.interfaces.nsISupportsCString)
-															.data,
-				    row = this.createInheritRow(property, server, window.document, true);
-				if (row) // don't add if it already exists, probably a prior extension uses it
+					.QueryInterface(Components.interfaces.nsISupportsCString)
+					.data;
+			  const row = this.createInheritRow(property, server, window.document, true);
+				if (row) {
+					// don't add if it already exists, probably a prior extension uses it
 					rows.appendChild(row);
+				}
 			}
 
 		} catch (e) {Cu.reportError(e);}
@@ -183,8 +185,8 @@ export const InheritedPropertiesGrid = {
 
 			// Check if it already exists, perhaps added by another extension.
 			let rows = document.getElementById("inheritRows");
-			if (rows)
-				return rows;
+			if (rows) { return rows; }
+				
 
 			const strings = Cc["@mozilla.org/intl/stringbundle;1"]
 												.getService(Ci.nsIStringBundleService)
@@ -198,7 +200,7 @@ export const InheritedPropertiesGrid = {
 			try {
 					document.getElementById("GeneralPanel")
 									.appendChild(inheritBox);
-			} catch (e) {
+			} catch {
 				// must be SeaMonkey
 				let nameBox = document.getElementById('nameBox');
 				nameBox.parentNode.appendChild(inheritBox);
@@ -294,12 +296,14 @@ export const InheritedPropertiesGrid = {
 			let property = aProperty,
 			    propertyObject = this.getPropertyObject(property),
 			    row = document.getElementById("property-" + property);
-			if (row)
+			if (row) {
 				row.parentNode.removeChild(row);
+			}
 			row = document.createElement("row");
 			row.setAttribute("id", "property-" + property);
-			if (aIsAccountManager && propertyObject.hidefor)
+			if (aIsAccountManager && propertyObject.hidefor) {
 				row.setAttribute("hidefor", propertyObject.hidefor);
+			}
 
 			let label = document.createElement("label");
 			label.setAttribute("value", propertyObject.name);
@@ -312,10 +316,11 @@ export const InheritedPropertiesGrid = {
 			let enableCheckbox = document.createElement("checkbox");
 			enableCheckbox.setAttribute("id", "enable-" + property);
 			// We only use this in the account manager
-			if (aIsAccountManager)
+			if (aIsAccountManager) {
 				enableCheckbox.setAttribute("oncommand",
 					"InheritedPropertiesGrid.onCommandEnable('" + property +
 					"' ,gInheritTarget, document);");
+			}
 			enableHbox.appendChild(enableCheckbox);
 			row.appendChild(enableHbox);
 
@@ -350,10 +355,11 @@ export const InheritedPropertiesGrid = {
 			let isInherited, server;
 
 			// aFolder can be either an nsIMsgIncomingServer or an nsIMsgFolder
-			if (aFolder instanceof Ci.nsIMsgIncomingServer)
+			if (aFolder instanceof Ci.nsIMsgIncomingServer) {
 				server = aFolder;
-			else if (aFolder.isServer)
+			} else if (aFolder.isServer) {
 				server = aFolder.server;
+			}
 
 			let inheritedValue = "";
 			if (server)
@@ -367,27 +373,30 @@ export const InheritedPropertiesGrid = {
 														.getBranch("");
 					globalValue = rootprefs.getCharPref(globalProperty);
 				}
-				catch (e) {}
+				catch  {;}
 				isInherited = (inheritedValue == globalValue);
 			}
 			else
 			{
 				let folderValue = aFolder.getStringProperty(property);
-				if (folderValue && folderValue.length > 0)
+				if (folderValue && folderValue.length > 0) {
 					isInherited = false;
-				else
+				} else {
 					isInherited = true;
+				}
 				inheritedValue = aFolder.getInheritedStringProperty(property);
 			}
 
-			if (isInherited)
+			if (isInherited) {
 				inheritCheckbox.setAttribute("checked", "true");
+			}
 
 			let isEnabled = true;
 	/* propertyObject.defaultValue(aFolder) ? inheritedValue != "false" : inheritedValue == "true"; */
 			enableCheckbox.setAttribute("checked", isEnabled ? "true" : "false");
-			if (isInherited)
+			if (isInherited) {
 				enableCheckbox.setAttribute("disabled", "true");
+			}
 
 			return row;
 
@@ -459,26 +468,26 @@ export const InheritedPropertiesGrid = {
 
 			if (elementInherit.checked)
 			{
-				if (aFolder.isServer)
-				{
+				if (aFolder.isServer) {
 					let value = aFolder.server.getCharValue(property);
-					if (value && value.length > 0)
+					if (value && value.length > 0) {
 						aFolder.server.setCharValue(property, "");
-				}
-				else
-				{
+					}
+				} else {
 					let value = aFolder.getStringProperty(property);
-					if (value && value.length > 0)
+					if (value && value.length > 0) {
 						aFolder.setStringProperty(property, "");
+					}
 				}
 			}
 			else
 			{
 				let value = elementEnable.checked ? "true" : "false";
-				if (aFolder.isServer)
+				if (aFolder.isServer) {
 					aFolder.server.setCharValue(property, value);
-				else
+				} else {
 					aFolder.setStringProperty(property, value);
+				}
 			}
 		}
 		catch (e) {Cu.reportError(e);}
