@@ -1,23 +1,10 @@
-**Version 6.0** 
-
-**Latest News**
-
-We decided to concentrate on the latest versions from FiltaQuilla 140 onward because the code base was getting pretty unmanageable  due to the substantial changes in Thunderbird Core and additional features added by the extended mail extension APIs. Being able to support this and legacy ways of doing the same thing within the same Add-on proved to be very difficult and produce unmanageable  code.
-
-Even just supporting both ESR140 and the current release versions (currently 145), is already a difficult thing leading to substantially branching code paths within the same Add-on. This cut-off point will also be used to prepare for a number of long desired feature additions around saving attachments, which will be delivered next.
-
-Increased strict_min_version to 140.0.
-
+**Version 6.1** 
 
 **Improvements**
-*   Exclude signatures from saved / detached attachments [issue #372] 
-*   Made FiltaQuilla compatible with Thunderbird 146.*.
-*   Removed legacy options screen and tightened UX in the modern html version for added clarity. [issue #379]
+*   incompatible with Tb147 - bumped strict_max_ver to 149.* [issue #385]
 
 **Bug Fixes**
-*  Problems with saving some attachments - others work [issue #376]
-*  Tb142 removed `messenger.detachAttachmentsWOPrompts` - reimplement detach attachments [issue #369]
-*  Fixed: Double saving via the filter as pdf and additional txt file  [issue #370]
+*  "Play sound" file picker - doesn't work when path textbox is empty [issue #380]
 
 
 

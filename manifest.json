@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "FiltaQuilla",
   "description": "Mail filter custom actions and searches",
-  "version": "6.0",
+  "version": "6.1",
   "default_locale": "en",
   "author": "R Kent James, Axel Grude",
   "developer": {
@@ -13,7 +13,7 @@
     "gecko": {
       "id": "filtaquilla@mesquilla.com",
       "strict_min_version": "140.0",
-      "strict_max_version": "146.*"
+      "strict_max_version": "149.*"
     }
   },
   "icons": {

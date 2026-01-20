@@ -108,7 +108,7 @@
 
 
   
-6.0
+6.0 - published 03.12.2025
 
 Increased strict_min_version to 140.0.
 
@@ -121,6 +121,9 @@ Increased strict_min_version to 140.0.
 *  Removed legacy settings XUL dialog options.xhtml. [issue #379]
 *  Added dedicated change log menu item. Added version numbers [issue #379]
 
+6.1 - WIP
+**Bug Fixes**
+*    "Play sound" file picker - doesn't work when path textbox is empty [issue #380]
 
 ======================================
 
