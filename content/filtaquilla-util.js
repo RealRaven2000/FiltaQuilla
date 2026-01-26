@@ -725,6 +725,24 @@ FiltaQuilla.Util = {
       return false;
     }
 
+    function isContentPlain(contentType) {
+      if (!contentType) {
+        return false;
+      }
+      // [issue 389] add message/delivery-status to scannable body parts
+      const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
+      const userPlainTextType = prefs.getStringPref("regexpBody.contentType.whiteList");
+      if (userPlainTextType) {
+        const r = new RegExp(userPlainTextType, "i");
+        if (r.test(contentType)) {
+          return true;
+        }
+      }
+
+      // default allowed types
+      return /^text\/plain|^text\/html|^text\/enriched/i.test(contentType);
+    }
+
     var ExtractMimeMsgEmitter = {
       getAttachmentName(part) {
         if (!part || !part.hasOwnProperty("headers")) {
@@ -797,11 +815,11 @@ FiltaQuilla.Util = {
           return false;
         }
 
-        if (contentType.search(/^text\/plain|^text\/html|^text\/enriched/i) === -1) {
-          return false;
+        if (isContentPlain(contentType)) {
+          return true;
         }
 
-        return true;
+        return false;
       },
 
       /** JSMime API */
@@ -839,7 +857,7 @@ FiltaQuilla.Util = {
           return;
         }
 
-        this.mimeTree.attachments.sort((a, b) => a.partName > b.partName);
+        this.mimeTree.attachments.sort((a, b) => a.partName.localeCompare(b.partName));
         this.mimeMsg = this.mimeTree;
       },
 
@@ -934,6 +952,10 @@ FiltaQuilla.Util = {
 
         // Set the parent of this part to be the new current part.
         this.partsPath.pop();
+
+        if (!this.partsPath.length) {
+          return;
+        }
 
         // Add the size of this part to its parent as well.
         currentPart = this.partsPath[this.partsPath.length - 1];
@@ -1047,7 +1069,7 @@ FiltaQuilla.Util = {
           if (searchOptions.includes("-whitespace") && !isWhiteSpaceCollapsed) {
             p = this.collapseWhiteSpace(p, true);
           }
-        } else if (bp.contentType.includes("plain")) {
+        } else if (isContentPlain(bp.contentType)) {
           if (isContentTypeFilter && !searchOptions.includes("type:plain")) {
             // skip plain text
             continue;
