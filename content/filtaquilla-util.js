@@ -1285,6 +1285,276 @@ FiltaQuilla.Util = {
     // Construct the URL with regex and flags only if expression is provided
     this.openLinkInBrowser(targetUrl);
   },
+  /* token arg formatting from SmartTemplates */
+  initFormatter: function (argString, formatter = {}) {
+    // [issue 288]
+    let formatArgs = argString.split(",");
+    formatArgs.shift();
+    while (formatArgs.length) {
+      if (formatArgs[0].startsWith("capitalize")) {
+        formatter.isCapitalize = true;
+      }
+      if (formatArgs[0].startsWith("camelcase")) {
+        formatter.isCamelcase = true;
+      }
+      if (formatArgs[0].startsWith("uppercase")) {
+        formatter.isUppercase = true;
+      }
+      if (formatArgs[0].startsWith("lowercase")) {
+        formatter.isLowercase = true;
+      }
+      if (formatArgs[0].startsWith("default")) {
+        formatter.isDefault = true;
+      }
+      if (formatArgs[0].startsWith("sent")) {
+        formatter.isSent = true;
+      }
+      if (formatArgs[0].startsWith("utc")) {
+        formatter.isUTC = true;
+      }
+      formatArgs.shift();
+    }
+    return formatter;
+  },
+
+  /* token arg formatting from SmartTemplates */
+  isTransformString: function (argString) {
+    if (!argString) {
+      return false;
+    }
+    const allowedTransformations = [
+      "capitalize",
+      "camelcase",
+      "uppercase",
+      "lowercase",
+      "default",
+      "sent",
+      "utc",
+    ];
+    return allowedTransformations.includes(argString);
+  },
+
+  /* token arg formatting from SmartTemplates */
+  transformString: function (txt, formatter) {
+    // [issue 288]
+    if (!formatter) {
+      return txt;
+    }
+    if (formatter?.isUppercase) {
+      return txt.toUpperCase();
+    }
+    if (formatter?.isLowercase) {
+      return txt.toLowerCase();
+    }
+    if (formatter?.isCamelcase) {
+      const words = txt.split(" ");
+      for (let i = 0; i < words.length; i++) {
+        words[i] = words[i][0].toLowerCase() + words[i].slice(1);
+      }
+      return words.join(" ");
+    }
+    if (formatter?.isCapitalize) {
+      let txtDebug = "";
+      function capitalize(input, delimiters) {
+        const delimiterArray = delimiters.split(""); // make an array of single characters
+        // Lowercase the entire input first
+        input = input.toLowerCase();
+
+        delimiterArray.forEach((delimiter) => {
+          input = input
+            .split(delimiter)
+            .map((word) => {
+              txtDebug += `capitalize(${delimiter}): ${word}\n`;
+              // Capitalize the first letter of each word
+              return word[0].toUpperCase() + word.slice(1);
+            })
+            .join(delimiter);
+        });
+        FiltaQuilla.Util.logDebug(`capitalized ${input}\n` + txtDebug);
+        return input;
+      }
+
+      txt = capitalize(txt, " -'"); // [issue 343] capitalize after other delimiters
+    }
+    return txt;
+  },
+
+  getTimeZoneAbbrev: function (tm) {
+    const util = FiltaQuilla.Util;
+    function isAcronym(str) {
+      return str.toUpperCase() == str; // if it is all caps we assume it is an acronym
+    }
+    // return tm.toString().replace(/^.*\(|\)$/g, ""); HARAKIRIs version, not working.
+    // get part between parentheses
+    // e.g. "(GMT Daylight Time)"
+    util.logDebugOptional(
+      "timeZones",
+      `getTimeZoneAbbrev(time: ${tm.toString()}`
+    );
+    let timeString = tm.toTimeString(),
+      timeZone = timeString.match(/\(.*?\)/),
+      retVal = "";
+    util.logDebugOptional("timeZones", ` timeString = ${timeString}\n timeZone = ${timeZone}`);
+    if (timeZone && timeZone.length > 0) {
+      // remove enclosing brackets and split
+      let words = timeZone[0].substring(1, timeZone[0].length - 1).split(" ");
+      for (let i = 0; i < words.length; i++) {
+        let wrd = words[i];
+        if (
+          (wrd.length == 3 && wrd.match("[A-Z]{3}")) ||
+          (wrd.length == 4 && wrd.match("[A-Z]{4}")) ||
+          isAcronym(wrd)
+        ) {
+          retVal += wrd + " "; // abbrev contained
+        } else {
+          retVal += wrd[0]; // first letters cobbled together
+        }
+      }
+    } else {
+      util.logDebugOptional("timeZones", "no timeZone match, building manual...");
+      retVal = timeString.match("[A-Z]{4}");
+      if (!retVal) {
+        retVal = timeString.match("[A-Z]{3}");
+      }
+      // convert to long form by using hard-coded time zones array.
+      util.logDebug(
+        "Cannot determine timezone string - Missed parentheses - from:\n" +
+          `${timeString} regexp guesses: ${retVal}`
+      );
+
+    }
+    util.logDebugOptional("timeZones", "getTimeZoneAbbrev return value = " + retVal);
+    return retVal.trim();
+  },
+
+  /**
+   * Formats a timestamp into a human-readable date/time string. From SmartTemplates.
+   *
+   * @param {number|Date} time - The base time to format. Can be a Unix timestamp in milliseconds or a Date object.
+   * @param {string} argument - A format string or additional modifiers, e.g. '"A, d/m/Y H:M",toclipboard'.
+   *                            Supports special switches like "current" or transformations.
+   * @param {number} [timezone=0] - Optional timezone offset in minutes. Positive values are ahead of UTC, negative are behind.
+   *                                If not provided, defaults to 0.
+   * @param {object} formatter - optional to pass back any formatting switched
+   * @returns {string} The formatted date/time string according to the provided format and any active offsets or timezone adjustments.
+   * NOTES:
+   *   additional parameters possible (enclose format string with "" to append following parameter)
+   *   toclipboard - copy to clipboard
+   */
+  dateFormat: function (time, argument, timezone, formatter = {}) {
+    const util = FiltaQuilla.Util;
+    let timeFormat = argument; // simple case
+
+    if (argument.startsWith('"')) {
+      const closeQuote = argument.lastIndexOf('"');
+      timeFormat = argument.substring(1, closeQuote);
+      const argString = argument.substring(closeQuote + 2);
+      const args = argString
+        ? argString
+            .split(/(?<!\\),/)
+            .map((a) => a.replace(/\\,/g, ",").trim())
+            .filter((a) => a.length > 0)
+        : [];
+
+      const transformArgs = args.filter((a) => a?.trim() && util.isTransformString(a));
+      util.initFormatter(transformArgs.join(","), formatter); 
+    } 
+
+    util.logDebugOptional("timeStrings", `dateFormat(${time}, ${timeFormat}, ${timezone})\n`);
+    if (!timezone) {
+      timezone = 0;
+    }
+    try {
+      let tm = new Date();
+
+      // Set Time - add Timezone offset
+      tm.setTime(time + timezone * 60 * 1000);
+      let d02 = function (val) {
+          return ("0" + val).replace(/.(..)/, "$1");
+        },
+        // cal = SmartTemplate4.calendar,
+        isUTC = formatter?.isUTC || false,
+        year = isUTC ? tm.getUTCFullYear().toString() : tm.getFullYear().toString(),
+        month = isUTC ? tm.getUTCMonth() : tm.getMonth(),
+        day = isUTC ? tm.getUTCDate() : tm.getDate(),
+        hour = isUTC ? tm.getUTCHours() : tm.getHours(),
+        minute = isUTC ? tm.getUTCMinutes() : tm.getMinutes();
+
+      //numeral replacements first
+      let timeString = timeFormat
+        .replace("timestamp", time * 1000) // timestamp in μs [issue 381]
+        .replace("unix", Math.floor(time)) // unix timestamp [issue 381]
+        .replace("Y", year)
+        .replace("y", year.slice(year.length - 2))
+        .replace("n", month + 1)
+        .replace("m", d02(month + 1))
+        .replace("e", day)
+        .replace("d", d02(day))
+        .replace("k", hour)
+        .replace("H", d02(hour))
+        .replace("l", ((hour + 23) % 12) + 1)
+        .replace("I", d02(((hour + 23) % 12) + 1))
+        .replace("M", d02(minute))
+        .replace("S", d02(tm.getSeconds()));
+
+      // alphabetic-placeholders need to be inserted because otherwise we will replace
+      // parts of day / monthnames etc.
+      timeString = timeString
+        .replace("tz_name", "##t")
+        .replace("B", "##B")
+        .replace("b", "##b")
+        .replace("A", "##A")
+        .replace("a", "##a")
+        .replace("p1", "##p1")
+        .replace("p2", "##p2")
+        .replace("p", "##p");
+
+      timeString = timeString
+        .replace("##t", isUTC ? "UTC" : util.getTimeZoneAbbrev(tm))
+        .replace("##B", new Intl.DateTimeFormat(this.currentLocale, { month: "long" }).format(tm))
+        .replace("##b", new Intl.DateTimeFormat(this.currentLocale, { month: "short" }).format(tm))
+        .replace("##A", new Intl.DateTimeFormat(this.currentLocale, { weekday: "long" }).format(tm))
+        .replace(
+          "##a",
+          new Intl.DateTimeFormat(this.currentLocale, { weekday: "short" }).format(tm)
+        )
+        .replace("##p1", hour < 12 ? "a.m." : "p.m.")
+        .replace("##p2", hour < 12 ? "A.M." : "P.M.")
+        .replace("##p", hour < 12 ? "AM" : "PM");
+
+      if (formatter) {
+        timeString = util.transformString(timeString, formatter);
+      }
+
+      util.logDebugOptional("timeStrings", "Created timeString: " + timeString);
+      return timeString;
+    } catch (ex) {
+      util.logException("util.dateFormat() failed", ex);
+    }
+    return "";
+  },
+
+  // SmartTemplates: async version of string.replace()
+  // takes an asynchronous callback function as last argument.
+  replaceAsync: async function (string, searchValue, replacer) {
+    try {
+      if (typeof replacer === "function") {
+        const matches = [];
+        string.replace(searchValue, (...args) => {
+          matches.push(args);
+        });
+
+        const resolved = await Promise.all(matches.map((args) => replacer(...args)));
+        let i = 0;
+        return string.replace(searchValue, () => resolved[i++]);
+      } else {
+        // if a string is passed.
+        return Promise.resolve(String.prototype.replace.call(string, searchValue, replacer));
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 }; // Util
 
 // some scoping for globals

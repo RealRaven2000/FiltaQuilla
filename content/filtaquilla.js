@@ -185,10 +185,27 @@
       id: "filtaquilla@mesquilla.com#subjectAppend",
       name: util.getBundleString("fq.subjectprepend"),
 
-      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
-        for (let msgHdr of aMsgHdrs) {
-          var appSubject = _mimeAppend(aActionValue, msgHdr.subject, true);
-          msgHdr.subject = appSubject;
+      applyAction: async function (aMsgHdrs, aActionValue, aListener, _aType, _aMsgWindow) {
+        aListener?.onStartCopy();
+        const promises = aMsgHdrs.map(async (msgHdr) => {
+          return util
+            .replaceAsync(aActionValue, /%([a-zA-Z][\w\-:=.]*)(\(.+?\))?%/gm, (dmy, token, arg) =>
+              replaceReservedWords(dmy, token, arg, { msgHdr })
+            )
+            .then((result) => {
+              const s = _mimeAppend(result, msgHdr.subject, true);
+              msgHdr.subject = s;
+              msgHdr.setStringProperty("x-filtaquilla-subject", s);
+            });
+        });
+
+        try {
+          await Promise.all(promises);
+          aListener?.onStopCopy?.(0);
+        } catch (ex) {
+          console.error("FiltaQuilla.subjectAppend [=Prepend to Subject] failed", ex);
+          aListener?.onStopCopy?.(Cr.NS_ERROR_FAILURE);
+          throw ex;
         }
       },
 
@@ -202,7 +219,7 @@
 
       allowDuplicates: false,
       needsBody: false,
-      isAsync: false,
+      isAsync: true,
     };
 
     // Append [Suffix] to subject
@@ -210,10 +227,29 @@
       id: "filtaquilla@mesquilla.com#subjectSuffix",
       name: util.getBundleString("fq.subjectappend"),
 
-      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
-        for (let msgHdr of aMsgHdrs) {
-          var appSubject = _mimeAppend(aActionValue, msgHdr.subject, false);
-          msgHdr.subject = appSubject;
+      applyAction: async function (aMsgHdrs, aActionValue, aListener, _aType, _aMsgWindow) {
+        aListener?.onStartCopy();
+        const util = FiltaQuilla.Util;
+
+        const promises = aMsgHdrs.map((msgHdr) => {
+          return util
+            .replaceAsync(aActionValue, /%([a-zA-Z][\w\-:=.]*)(\(.+?\))?%/gm, (dmy, token, arg) =>
+              replaceReservedWords(dmy, token, arg, { msgHdr })
+            )
+            .then((result) => {
+              const s = _mimeAppend(result, msgHdr.subject, false);
+              msgHdr.subject = s;
+              msgHdr.setStringProperty("x-filtaquilla-subject", s);
+            });
+        });
+
+        try {
+          await Promise.all(promises);
+          aListener?.onStopCopy?.(0);
+        } catch (ex) {
+          console.error("FiltaQuilla.subjectSuffix [=Append to Subject] failed", ex);
+          aListener?.onStopCopy?.(Cr.NS_ERROR_FAILURE);
+          throw ex;
         }
       },
 
@@ -2533,16 +2569,44 @@
 
   //  take the text utf8Append and either prepend (direction == true)
   //    or suffix (direction == false) to the subject
-  function _mimeAppend(utf8Append, subject, direction) {
+  function _mimeAppend(addedString, subject, direction) {
     // append a UTF8 string to a mime-encoded subject
     var mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(Ci.nsIMimeConverter),
       decodedSubject = mimeConvert.decodeMimeHeader(subject, null, false, true);
 
-    const appendedSubject = direction ? utf8Append + decodedSubject : decodedSubject + utf8Append;
-    const recodedSubject = mimeConvert.encodeMimePartIIStr_UTF8(appendedSubject, false, "UTF-8", 0, 72);
-    return recodedSubject;
+    const newString = direction ? addedString + decodedSubject : decodedSubject + addedString;
+    return newString;
+    // const recodedSubject = mimeConvert.encodeMimePartIIStr_UTF8(appendedSubject, false, "UTF-8", 0, 72);
+    // return recodedSubject;
   }
 
+  // Replace reserved words
+	async function replaceReservedWords(dmy, token, arg, options = { isEval: false }) {
+    const util = FiltaQuilla.Util;
+    // remove  (  ) from argument string
+    function removeParentheses(arg) {
+      arg = arg.trim();
+      if (arg.startsWith("(") && arg.endsWith(")")) {
+        return arg.slice(1, -1);
+      }
+      return arg;
+    }
+    switch (token) {
+      case "date": {
+        // when do we need to use  msgHdr.date ? "sent" must be included as argument
+        const argString = removeParentheses(arg);
+        let format = util.initFormatter(argString);
+        const tm =
+          format.isSent && options?.msgHdr?.date
+            ? new Date(options.msgHdr.date / 1000)
+            : new Date();
+        let formattedTime = util.dateFormat(tm.getTime(), argString, 0, format); // dateFormat will add offsets itself
+        token = formattedTime;
+      }
+    }
+    return token;
+  }
+  
 
   function _replaceParameters(hdr, parameter) {
     // replace ambersand-delimited fields in a parameter

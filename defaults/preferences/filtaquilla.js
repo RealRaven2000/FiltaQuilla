@@ -3,8 +3,6 @@
     pref
  */
 
-// See http://kb.mozillazine.org/Localize_extension_descriptions
-pref("extensions.filtaquilla@mesquilla.com.description", "chrome://filtaquilla/locale/filtaquilla.properties");
 // the maximum number of items to scan in a thread search
 pref("extensions.filtaquilla.maxthreadscan", 20);
 // filter actions
@@ -59,6 +57,7 @@ pref("extensions.filtaquilla.FolderNameEnabled", false);
 pref("extensions.filtaquilla.ThreadHeadTagEnabled", false);
 pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
 
+
 // debug
 pref("extensions.filtaquilla.debug", false);
 pref("extensions.filtaquilla.debug.attachments", false);
@@ -70,6 +69,7 @@ pref("extensions.filtaquilla.debug.regexSubject", false);
 pref("extensions.filtaquilla.debug.regexHeader", false);
 pref("extensions.filtaquilla.debug.regexBody", false);
 pref("extensions.filtaquilla.debug.regexBody_parts", false);
+pref("extensions.filtaquilla.debug.timeStrings", false);
 pref("extensions.filtaquilla.debug.mimeBody", false);
 pref("extensions.filtaquilla.debug.isLocal", false);
 pref("extensions.filtaquilla.debug.sounds", false);
