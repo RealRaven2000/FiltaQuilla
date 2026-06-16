@@ -205,8 +205,11 @@
   "fq.regex.caseInsensitive": {
     "message": "Regex case-insensitive Match"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "If enabled, FiltaQuilla automatically applies {s}/i{/s} to your regex, which can break lookaheads that count uppercase or lowercase letters. Disable this to preserve case-sensitive matches or use {s}/c{/s} at the end of your regex."
+  },
   "fq.regex.multilineanchors": {
-    "message": "Support anchor tokens '^' and '$' with address headers"
+    "message": "Support anchor tokens {s}^{/s} and {s}${/s} with address headers"
   },
   "fq.removeflagged": {
     "message": "Remove Star"
@@ -432,6 +435,6 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}Raised the minimum Thunderbird version to ensure stable attachment handling going forward.{/L}{L}FiltaQuilla is now compatible up to Thunderbird {bold}146.*{/bold}.{/L}{L}Signatures are no longer saved when detaching or exporting attachments. [issue 372]{/L}{L}Fixed issues where certain attachments were not saved correctly. [issue 376]{/L}{L}Restored attachment detaching after Thunderbird removed the old method. [issue 369]{/L}{L}Fixed double-saving of PDF and TXT files when triggered by the same filter. [issue 367], [issue 370]{/L}{L}Removed legacy options screen and tightened UX in the modern html version for added clarity. [issue 379]{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla is now compatible up to Thunderbird {bold}149.*{/bold}.{/L}{L}Added tool tip to regular expression option for case insensitive matching{/L}{/U}"
   }
 }

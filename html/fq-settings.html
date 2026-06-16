@@ -355,17 +355,26 @@
 
       <hr />
 
-      <div>
+      <span class="option-horizontal option-tooltip-content">
         <label>
           <input type="checkbox"
                 id="checkRegexpCaseInsensitiveEnabled"
                 data-pref-name="extensions.filtaquilla.regexpCaseInsensitive.enabled">
           __MSG_fq.regex.caseInsensitive__
         </label>
-      </div>
+        <button 
+          id="regex-caseInsensitive" 
+          class="tooltipBtn" 
+          clickytooltip="__MSG_fq.regex.caseInsensitive.tip__" 
+          title="__MSG_helpFeatureTip__" 
+          aria-label="More info">&nbsp;</button>
+        <div 
+          class="tooltip-bubble" 
+          hidden="true">__MSG_fq.regex.caseInsensitive.tip__</div>    
+      </span>
 
       <div class="option-horizontal">
-        <label>
+        <label id="multiline_anchors">
           <input type="checkbox"
                 id="checkMultiLineAddressEnabled"
                 data-pref-name="extensions.filtaquilla.regexpHeader.addressMultiLine">
@@ -473,6 +482,7 @@
   </div>
 
   <script src="../content/i18n.js"></script>
+  <script src="popup.js"></script>
   <script src="fq-main.js"></script>
   <script src="fq-util.js"></script>
   <script src="fq-settings.js"></script>

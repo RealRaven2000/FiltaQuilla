@@ -205,8 +205,11 @@
   "fq.regex.caseInsensitive": {
     "message": "正規表現 大文字小文字を区別しない"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "有効にすると、FiltaQuilla は自動的に {s}/i{/s} を正規表現に適用します。これにより、大文字または小文字を数える先読みが正しく機能しない場合があります。大文字小文字を区別する一致を保持するには、このオプションを無効にするか、正規表現の末尾に {s}/c{/s} を使用してください。"
+  },
   "fq.regex.multilineanchors": {
-    "message": "アドレスヘッダーで '^' および '$' のアンカーをサポート"
+    "message": "アドレスヘッダーで {s}^{/s} および {s}${/s} のアンカーをサポート"
   },
   "fq.removeflagged": {
     "message": "スターを削除"
@@ -431,7 +434,7 @@
     "message": "FiltaQuillaは他のアドオン {A-qI}quickFilters{/A}、{A-QF}QuickFolders{/A}、{A-ST}SmartTemplates{/A} のサポートで成り立っています。ぜひご覧ください！"
   },
   "whats-new-list": {
-    "description": "🇯🇵 変更履歴",
-    "message": "{U}{L}今後の添付ファイルの安定した処理のため、Thunderbird の最低バージョンを引き上げました。{/L}{L}FiltaQuilla は Thunderbird {bold}146.*{/bold} に対応しました。{/L}{L}署名は添付ファイルを切り離したりエクスポートしたりする際に保存されなくなりました。 [issue 372]{/L}{L}特定の添付ファイルが正しく保存されない問題を修正しました。 [issue 376]{/L}{L}Thunderbird が旧メソッドを削除した後、添付ファイルの切り離し機能を復元しました。 [issue 369]{/L}{L}同じフィルターで PDF と TXT ファイルが二重に保存される問題を修正しました。 [issue 367], [issue 370]{/L}{L}従来のオプション画面を削除し、最新のHTML版でユーザー体験を向上させ、より分かりやすくしました。[issue 379]{/L}{/U}"
+    "description": "🇯🇵 更新履歴",
+    "message": "{U}{L}FiltaQuilla は Thunderbird {bold}149.*{/bold} まで対応しました。{/L}{L}正規表現の大文字・小文字を区別しないオプションにツールチップを追加{/L}{/U}"
   }
 }

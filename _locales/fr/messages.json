@@ -203,8 +203,11 @@
   "fq.regex.caseInsensitive": {
     "message": "Correspondance regex insensible à la casse"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "Si activé, FiltaQuilla applique automatiquement {s}/i{/s} à votre regex, ce qui peut casser les lookaheads qui comptent les lettres majuscules ou minuscules. Désactivez cette option pour conserver la sensibilité à la casse ou utilisez {s}/c{/s} à la fin de votre regex."
+  },
   "fq.regex.multilineanchors": {
-    "message": "Support des ancrages '^' et '$' pour les en-têtes d'adresse"
+    "message": "Support des ancrages {s}^{/s} et {s}${/s} pour les en-têtes d'adresse"
   },
   "fq.removeflagged": {
     "message": "Supprimer l'étoile"
@@ -430,6 +433,6 @@
   },
   "whats-new-list": {
     "description": "🇫🇷 journal des modifications",
-    "message": "{U}{L}Augmentation de la version minimale de Thunderbird pour assurer une gestion stable des pièces jointes à l’avenir.{/L}{L}FiltaQuilla est désormais compatible avec Thunderbird {bold}146.*{/bold}.{/L}{L}Les signatures ne sont plus enregistrées lors de la détachement ou de l’exportation des pièces jointes. [issue 372]{/L}{L}Correction des problèmes où certaines pièces jointes n’étaient pas correctement enregistrées. [issue 376]{/L}{L}Restauration du détachement des pièces jointes après la suppression de l’ancienne méthode par Thunderbird. [issue 369]{/L}{L}Correction du double enregistrement des fichiers PDF et TXT déclenché par le même filtre. [issue 367], [issue 370]{/L}{L}Écran d’options hérité supprimé et l’interface HTML moderne optimisée pour une meilleure clarté. [issue 379]{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla est désormais compatible avec Thunderbird {bold}149.*{/bold}.{/L}{L}Ajout d’un tooltip pour l’option des expressions régulières insensible à la casse{/L}{/U}"
   }
 }

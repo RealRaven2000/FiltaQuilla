@@ -205,8 +205,11 @@
   "fq.regex.caseInsensitive": {
     "message": "Regulärer Ausdruck ohne Beachtung der Groß-/Kleinschreibung"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "Wenn aktiviert, wendet FiltaQuilla automatisch {s}/i{/s} auf Ihren Regex an, was Lookaheads, die Groß- oder Kleinbuchstaben zählen, beeinträchtigen kann. Deaktivieren Sie dies, um case-sensitive Übereinstimmungen zu erhalten, oder verwenden Sie {s}/c{/s} am Ende Ihres regulären Ausdrucks."
+  },
   "fq.regex.multilineanchors": {
-    "message": "Unterstützung für Anker-Tokens '^' und '$' bei Adressheadern,"
+    "message": "Unterstützung für Anker-Tokens {s}^{/s} und {s}${/s} bei Adressheadern,"
   },
   "fq.removeflagged": {
     "message": "Stern entfernen"
@@ -428,7 +431,7 @@
     "message": "FiltaQuilla wird stolz durch meine Arbeit an meinen anderen Add-ons unterstützt: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A} und {A-ST}SmartTemplates{/A}. Schauen Sie sich diese im Add-ons-Store an!"
   },
   "whats-new-list": {
-    "description": "🇩🇪 Änderungsprotokoll",
-    "message": "{U}{L}Die Mindestversion von Thunderbird wurde erhöht, um eine stabile Handhabung von Anhängen in Zukunft zu gewährleisten.{/L}{L}FiltaQuilla ist jetzt bis zu Thunderbird {bold}146.*{/bold} kompatibel.{/L}{L}Signaturen werden beim Trennen oder Exportieren von Anhängen nicht mehr gespeichert. [issue 372]{/L}{L}Probleme behoben, bei denen bestimmte Anhänge nicht korrekt gespeichert wurden. [issue 376]{/L}{L}Das Trennen von Anhängen wurde wiederhergestellt, nachdem Thunderbird die alte Methode entfernt hatte. [issue 369]{/L}{L}Doppelte Speicherung von PDF- und TXT-Dateien durch denselben Filter wurde behoben. [issue 367], [issue 370]{/L}{L}Der alte Optionsbildschirm wurde entfernt, und die moderne HTML-Version für bessere Benutzerfreundlichkeit optimiert. [issue 379]{/L}{/U}"
+    "description": "🇩🇪 Changelog",
+    "message": "{U}{L}FiltaQuilla ist jetzt kompatibel bis Thunderbird {bold}149.*{/bold}.{/L}{L}Tooltip für die Option der Groß-/Kleinschreibung bei regulären Ausdrücken hinzugefügt{/L}{/U}"
   }
 }

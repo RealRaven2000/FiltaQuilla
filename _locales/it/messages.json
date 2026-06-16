@@ -203,6 +203,9 @@
   "fq.regex.caseInsensitive": {
     "message": "Corrispondenza regex senza distinzione tra maiuscole e minuscole"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "Se abilitato, FiltaQuilla applica automaticamente {s}/i{/s} alla tua regex, il che può compromettere i lookahead che contano lettere maiuscole o minuscole. Disattiva questa opzione per preservare le corrispondenze case-sensitive o usa {s}/c{/s} alla fine della tua regex."
+  },
   "fq.regex.multilineanchors": {
     "message": "Supporta ancore '^' e '$' negli header degli indirizzi"
   },
@@ -430,6 +433,6 @@
   },
   "whats-new-list": {
     "description": "🇮🇹 registro delle modifiche",
-    "message": "{U}{L}Aumentata la versione minima di Thunderbird per garantire una gestione stabile degli allegati in futuro.{/L}{L}FiltaQuilla è ora compatibile con Thunderbird {bold}146.*{/bold}.{/L}{L}Le firme non vengono più salvate quando si staccano o esportano gli allegati. [issue 372]{/L}{L}Risolti problemi per cui alcuni allegati non venivano salvati correttamente. [issue 376]{/L}{L}Ripristinato il distacco degli allegati dopo che Thunderbird ha rimosso il metodo precedente. [issue 369]{/L}{L}Corretto il doppio salvataggio dei file PDF e TXT quando attivati dallo stesso filtro. [issue 367], [issue 370]{/L}{L}Rimosso lo schermo delle opzioni legacy e ottimizzata l’UX nella versione HTML moderna per maggiore chiarezza. [issue 379]{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla è ora compatibile con Thunderbird {bold}149.*{/bold}.{/L}{L}Aggiunto tooltip per l’opzione delle espressioni regolari insensibile alle maiuscole{/L}{/U}"
   }
 }

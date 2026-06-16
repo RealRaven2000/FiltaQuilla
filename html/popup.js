@@ -62,29 +62,31 @@ const formatAll = (txt) => {
     .replace(/\{\/U\}/g, "</ul>")
     .replace(/\{L\}/g, "<li>")
     .replace(/\{\/L\}/g, "</li>")
+    .replace(/\{s\}/g, "<code class='syntax'>")
+    .replace(/\{\/s\}/g, "</code>")
     .replace(/\{P(?:\s+([^}]+))?\}/g, (_, attrs) => {
       return attrs ? `<p ${attrs}>` : "<p>";
     })
     .replace(/\{\/P\}/g, "</p>")
     .replace(
       /\{ARelease\}/g,
-      "<a href='https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/'>"
+      "<a href='https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/'>",
     )
     .replace(
       /\{AcompatCheck\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/' class='native'>"
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/' class='native'>",
     )
     .replace(
       /\{A-QF\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickfolders-tabbed-folders/' class='native'>"
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickfolders-tabbed-folders/' class='native'>",
     )
     .replace(
       /\{A-qI\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickFilters/' class='native'>"
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickFilters/' class='native'>",
     )
     .replace(
       /\{A-ST\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/smarttemplate4/' class='native'>"
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/smarttemplate4/' class='native'>",
     )
     .replace(/\{\/A\}/g, "</a>")
     .replace(/\{A\}/g, "</a>")
@@ -94,6 +96,56 @@ const formatAll = (txt) => {
     .replace(/\[(.)\]/g, "<code class='keystroke'>$1</code>")
     .replace(/\[(F\d+)\]/g, "<code class='keystroke'>$1</code>")
     .replace(/\[(CTRL|ALT|SHIFT)\]/g, "<code class='keystroke'>$1</code>");
+};
+
+/**
+ * Strips pseudo-tags / HTML from a formatted string for blind users.
+ * Useful for aria-label, clickyTooltip, or screen readers.
+ *
+ * Keeps meaningful content like keystrokes or issue numbers,
+ * removes formatting tags, HTML links, and other decorative pseudo-tags.
+ *
+ * @param {string} txt - The formatted text from i18n bundle
+ * @returns {string} Plain text suitable for accessibility
+ */
+// eslint-disable-next-line no-unused-vars
+const formatScrub = (txt) => {
+  if (!txt) {
+    return "";
+  }
+
+  let clean = txt
+    // Remove formatting tags
+    .replace(/\{\/?bold\}/g, "")
+    .replace(/\{\/?italic\}/g, "")
+    .replace(/\{U\}/g, "")
+    .replace(/\{\/U\}/g, "")
+    .replace(/\{L\}/g, "")
+    .replace(/\{\/L\}/g, "")
+    .replace(/\{s\}/g, "")
+    .replace(/\{\/s\}/g, "")
+    .replace(/\{P(?:\s+[^}]+)?\}/g, "")
+    .replace(/\{\/P\}/g, "")
+    .replace(/\{hr\}/g, "")
+    .replace(/\{br\}/g, "\n") // line breaks ok
+
+    // Keep link text but remove the tag
+    .replace(/\{A(?:Release|compatCheck|-QF|qI|ST)?\}/g, "")
+    .replace(/\{\/A\}/g, "")
+
+    // Keep issue/Bug brackets
+    .replace(/\[issue (\d+)\]/gi, "[issue $1]")
+    .replace(/\[Bug (\d+)\]/gi, "[Bug $1]")
+
+    // Keep keystrokes as simple bracketed text
+    .replace(/\[(F\d+|CTRL|ALT|SHIFT|.)\]/g, "[$1]")
+
+    // Collapse any leftover curly-brace placeholders
+    .replace(/\{[^}]+\}/g, "")
+
+    .trim();
+
+  return clean;
 };
 
 
@@ -157,3 +209,91 @@ async function resizeWindow()  { // was in updateActions()
     return;
   }
 }
+
+/**
+ * Safely inserts formatted HTML into a container element.
+ * The content can contain pseudo-tags like {s}…{/s} that are converted by formatAll().
+ * Existing content is replaced only if the new HTML contains nodes.
+ *
+ * @param {Element} container - The DOM element to receive the HTML content.
+ * @param {string|Node} html - HTML string or Node to be inserted safely.
+ * @returns {boolean} True if content was inserted, false otherwise.
+ */
+// eslint-disable-next-line no-unused-vars
+var insertHtmlSafely = (container, html) => {
+  if (!container || !html) {
+    return;
+  }
+
+  // Create a document fragment from the HTML string or Node
+  let frag;
+  if (typeof html === "string") {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    frag = document.createDocumentFragment();
+
+    const sanitizeNode = (node) => {
+      if (node.nodeType !== 1) {
+        return node; // ELEMENT_NODE only
+      }
+
+      if (node.tagName.toLowerCase() === "script") {
+        return null;
+      }
+
+      const dangerousAttrs = [
+        "onclick",
+        "onchange",
+        "oninput",
+        "onmouseover",
+        "onload",
+        "onerror",
+        "onfocus",
+        "onblur",
+        "onmousedown",
+        "onmouseup",
+        "onmouseenter",
+        "onmouseleave",
+      ];
+
+      [...node.attributes].forEach((attr) => {
+        const name = attr.name.toLowerCase();
+        const value = attr.value.trim().toLowerCase();
+        if (dangerousAttrs.includes(name) || value.startsWith("javascript:")) {
+          node.removeAttribute(attr.name);
+        }
+      });
+
+      Array.from(node.childNodes).forEach((child) => {
+        const sanitized = sanitizeNode(child);
+        if (!sanitized) {
+          child.remove();
+        }
+      });
+
+      return node;
+    };
+
+    for (const node of Array.from(doc.body.childNodes)) {
+      const sanitized = sanitizeNode(node);
+      if (sanitized) {
+        frag.appendChild(sanitized);
+      }
+    }
+  } else if (html.nodeType) {
+    frag = document.createDocumentFragment();
+    while (html.firstChild) {
+      frag.appendChild(html.firstChild);
+    }
+  } else {
+    return false;
+  }
+
+  // Only replace existing content if we have something to insert
+  if (frag && frag.childNodes.length > 0) {
+    container.replaceChildren(frag);
+  }
+
+  return true;
+};
+

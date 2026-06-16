@@ -1,8 +1,54 @@
 /*
 globals
   i18n,
+  formatAll,
+  formatScrub,
+  insertHtmlSafely
   */
 
+
+/**
+ * Updates a tooltip button with a localized message containing formatted HTML.
+ * The tooltip content is inserted safely and will only display when triggered.
+ *
+ * @param {string} buttonId - ID of the tooltip button element.
+ * @param {string} bundleKey - i18n key for the tooltip text.
+ */
+const updateHtmlTooltips = (buttonId, bundleKey) => {
+  const btn = document.getElementById(buttonId);
+  const bubble = btn?.nextElementSibling; // assuming div.tooltip-bubble follows the button
+  if (!btn || !bubble) {
+    return;
+  }
+
+  const txt = messenger.i18n.getMessage(bundleKey);
+
+  // clickytooltip / aria-label: plain text for accessibility
+  btn.setAttribute("clickyTooltip", txt);
+  btn.setAttribute("aria-label", formatScrub(txt));
+
+  // div.tooltip-bubble: can contain formatted HTML via pseudo-tags
+  const htmlCode = formatAll(txt);
+  insertHtmlSafely(bubble, htmlCode);
+};
+
+/**
+ * Updates the inner HTML of a DOM element with localized and formatted content.
+ * Uses formatAll() to process pseudo-tags such as {s}…{/s}.
+ * Content is sanitized via insertHtmlSafely().
+ *
+ * @param {string} selector - CSS selector for the target element.
+ * @param {string} bundleKey - i18n key for the localized string to display.
+ */
+const updateHtmlContents = (selector, bundleKey) => {
+  const element = document.querySelector(selector);
+  if (!element) {
+    return;
+  }
+  const txt = messenger.i18n.getMessage(bundleKey);
+  const htmlCode = formatAll(txt);
+  insertHtmlSafely(element, htmlCode);
+};  
 
 // add event listeners for tabs
 const activateTab = (event) => {
@@ -60,6 +106,11 @@ const initPrefs = async () => {
   document.getElementById("changeLog").textContent = messenger.i18n.getMessage(
     "message.btn.changeLog", ""
   );
+
+  updateHtmlContents("#multiline_anchors", "fq.regex.multilineanchors");
+  updateHtmlTooltips("regex-caseInsensitive", "fq.regex.caseInsensitive.tip");
+  
+
 };
 
 /**** FLOATING TOOLTIPS ===> **** */

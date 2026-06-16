@@ -202,8 +202,11 @@
   "fq.regex.caseInsensitive": {
     "message": "Regex hoofdletterongevoelige Match"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "Als ingeschakeld, past FiltaQuilla automatisch {s}/i{/s} toe op uw regex, wat lookaheads die hoofdletters of kleine letters tellen kan breken. Schakel dit uit om hoofdlettergevoelige overeenkomsten te behouden of gebruik {s}/c{/s} aan het einde van uw regex."
+  },
   "fq.regex.multilineanchors": {
-    "message": "Ondersteuning voor ankertekens '^' en '$' bij adreskoppen,"
+    "message": "Ondersteuning voor ankertekens {s}^{/s} en {s}${/s} bij adreskoppen,"
   },
   "fq.removeflagged": {
     "message": "Ster verwijderen"
@@ -420,6 +423,6 @@
   },
   "whats-new-list": {
     "description": "🇳🇱 wijzigingslogboek",
-    "message": "{U}{L}Het minimum van Thunderbird is verhoogd om een stabiele verwerking van bijlagen in de toekomst te waarborgen.{/L}{L}FiltaQuilla is nu compatibel met Thunderbird {bold}146.*{/bold}.{/L}{L}Handtekeningen worden niet langer opgeslagen bij het loskoppelen of exporteren van bijlagen. [issue 372]{/L}{L}Problemen opgelost waarbij bepaalde bijlagen niet correct werden opgeslagen. [issue 376]{/L}{L}Bijlage-loskoppelen hersteld nadat Thunderbird de oude methode had verwijderd. [issue 369]{/L}{L}Dubbel opslaan van PDF- en TXT-bestanden bij dezelfde filteractie opgelost. [issue 367], [issue 370]{/L}{L}Het legacy-optiescherm is verwijderd en de UX in de moderne HTML-versie verbeterd voor meer duidelijkheid. [issue 379]{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla is nu compatibel met Thunderbird {bold}149.*{/bold}.{/L}{L}Tooltip toegevoegd aan de reguliere expressie-optie voor hoofdletterongevoelige overeenkomsten{/L}{/U}"
   }
 }

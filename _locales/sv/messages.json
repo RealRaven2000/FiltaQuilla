@@ -199,8 +199,11 @@
   "fq.regex.caseInsensitive": {
     "message": "Regex skiftlägeskänslig Match"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "Om aktiverat, tillämpar FiltaQuilla automatiskt {s}/i{/s} på ditt regex, vilket kan bryta lookaheads som räknar versaler eller gemener. Inaktivera detta för att behålla skiftlägeskänsliga matchningar eller använd {s}/c{/s} i slutet av ditt regex."
+  },
   "fq.regex.multilineanchors": {
-    "message": "Stöd för ankartoken '^' och '$' i adressrubriker,"
+    "message": "Stöd för ankartoken {s}^{/s} och {s}${/s} i adressrubriker,"
   },
   "fq.removeflagged": {
     "message": "Ta bort stjärna"
@@ -417,6 +420,6 @@
   },
   "whats-new-list": {
     "description": "🇸🇪 ändringslogg",
-    "message": "{U}{L}Höjd minsta Thunderbird-version för att säkerställa stabil hantering av bilagor framöver.{/L}{L}FiltaQuilla är nu kompatibel med Thunderbird {bold}146.*{/bold}.{/L}{L}Signaturer sparas inte längre vid borttagning eller export av bilagor. [issue 372]{/L}{L}Åtgärdade problem där vissa bilagor inte sparades korrekt. [issue 376]{/L}{L}Återställde borttagning av bilagor efter att Thunderbird tagit bort den gamla metoden. [issue 369]{/L}{L}Fixade dubbel sparning av PDF- och TXT-filer när samma filter utlöste dem. [issue 367], [issue 370]{/L}{L}Det äldre alternativfönstret har tagits bort och UX i den moderna HTML-versionen har förbättrats för ökad tydlighet. [issue 379]{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla är nu kompatibel med Thunderbird {bold}149.*{/bold}.{/L}{L}Tool tip tillagd för alternativet för regex utan skiftlägeskänslighet{/L}{/U}"
   }
 }

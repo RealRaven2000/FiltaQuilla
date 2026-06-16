@@ -203,8 +203,11 @@
   "fq.regex.caseInsensitive": {
     "message": "Coincidencia regex sin distinción de mayúsculas/minúsculas"
   },
+  "fq.regex.caseInsensitive.tip": {
+    "message": "Si está activado, FiltaQuilla aplica automáticamente {s}/i{/s} a su regex, lo que puede romper los lookaheads que cuentan letras mayúsculas o minúsculas. Desactívelo para conservar coincidencias sensibles a mayúsculas o use {s}/c{/s} al final de su regex."
+  },
   "fq.regex.multilineanchors": {
-    "message": "Soporta anclas '^' y '$' en cabeceras de dirección"
+    "message": "Soporta anclas {s}^{/s} y {s}${/s} en cabeceras de dirección"
   },
   "fq.removeflagged": {
     "message": "Quitar estrella"
@@ -430,6 +433,6 @@
   },
   "whats-new-list": {
     "description": "🇪🇸 registro de cambios",
-    "message": "{U}{L}Se ha elevado la versión mínima de Thunderbird para garantizar un manejo estable de los archivos adjuntos en el futuro.{/L}{L}FiltaQuilla ahora es compatible con Thunderbird {bold}146.*{/bold}.{/L}{L}Las firmas ya no se guardan al separar o exportar archivos adjuntos. [issue 372]{/L}{L}Se solucionaron problemas en los que ciertos archivos adjuntos no se guardaban correctamente. [issue 376]{/L}{L}Se restauró la separación de archivos adjuntos después de que Thunderbird eliminó el método antiguo. [issue 369]{/L}{L}Se corrigió el doble guardado de archivos PDF y TXT cuando se activaba por el mismo filtro. [issue 367], [issue 370]{/L}{L}Se eliminó la pantalla de opciones heredada y se mejoró la experiencia de usuario en la versión HTML moderna para mayor claridad. [issue 379]{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla ahora es compatible con Thunderbird {bold}149.*{/bold}.{/L}{L}Se añadió un tooltip a la opción de expresiones regulares para coincidencias sin distinguir mayúsculas{/L}{/U}"
   }
 }
