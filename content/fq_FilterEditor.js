@@ -746,8 +746,9 @@
         // open a panel with options
         const button = es.querySelector(".fq-regexbody"),
           buttonRect = button.getBoundingClientRect();
-        let popupPanel = MozXULElement.parseXULToFragment(`
-<div class="fq_bodyRegexOptions" style="background:white;color:black;position:fixed;border: 1px solid gray;box-shadow: 3px 3px 3px rgba(40,40,40,0.3);">
+        // moved styles to skin/filtaquilla.css
+        const popupPanel = MozXULElement.parseXULToFragment(`
+<div class="fq_bodyRegexOptions" style="">
   <vbox>
     <hbox style="display: grid; grid-template-columns: 0.5em auto 0.5em auto; column-gap: 3px; row-gap: 0; margin-block:0.3em;">
     <label value="" />

@@ -8,7 +8,6 @@
 .ruleactiontarget[type="filtaquilla@mesquilla.com#javascriptActionBody"] ,
 .ruleactiontarget[type="filtaquilla@mesquilla.com#saveMessageAsFile"] {
   flex-grow: 2;
-  /* -moz-box-flex: 1;  */
 }
 
 filtaquilla-ruleactiontarget-runpicker toolbarbutton,
@@ -84,4 +83,12 @@ menulist.flexinput {
 /* push down the text */
 .filtaquilla_topinput {
   align-items: end;
+}
+
+.fq_bodyRegexOptions {
+  color: var(--box-text-color, light-dark(#18181b, #FBFBFE));    
+  background-color: var(--richlist-button-background, light-dark(#C8C8C8, #23222b));
+  position: fixed;
+  border: 1px solid var(--border-color,color-mix(in srgb, currentColor 50%, transparent));
+  box-shadow: 3px 3px 3px rgba(40,40,40,0.3);
 }
