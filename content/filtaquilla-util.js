@@ -244,7 +244,7 @@ FiltaQuilla.Util = {
       // this shouldn't happen!
     }
     return (
-      `${end.getHours()}:${end.getMinutes()}:${end.getSeconds()}` + 
+      `${end.getHours()}:${end.getMinutes()}:${end.getSeconds()}` +
       `.${end.getMilliseconds()}  ${timePassed}`
     );
   },
@@ -332,7 +332,7 @@ FiltaQuilla.Util = {
    * @optionString {string}: comma delimited options
    * @msg {string}: text to log
    */
-  logDebugOptional: function logDebugOptional(optionString, msg) {
+  logDebugOptional: function (optionString, msg) {
     try {
       let options = optionString.split(",");
       for (let i = 0; i < options.length; i++) {
@@ -689,6 +689,77 @@ FiltaQuilla.Util = {
     return newMarkup;
   },
 
+  parseHeaderMap: function (headerText) {
+    let map = new Map();
+    let lines = headerText.split(/\r?\n/);
+
+    let lastKey = null;
+
+    for (let line of lines) {
+      // undo header line folding (break+space)
+      if (/^\s/.test(line) && lastKey) {
+        let prev = map.get(lastKey);
+        map.set(lastKey, (prev || "") + " " + line.trim());
+        continue;
+      }
+
+      // skip malformed lines (without ":")
+      let idx = line.indexOf(":");
+      if (idx === -1) {
+        continue;
+      }
+
+      let key = line.slice(0, idx).toLowerCase();
+      let val = line.slice(idx + 1).trim();
+
+      lastKey = key;
+
+      let existing = map.get(key);
+
+      // if the header already exists, convert to array or push to existing array
+      if (existing === undefined) {
+        map.set(key, val);
+      } else if (Array.isArray(existing)) {
+        existing.push(val);
+      } else {
+        map.set(key, [existing, val]);
+      }
+    }
+
+    return map;
+  },
+
+  extractRawHeaders: function (aMsgHdr) {
+    const folder = aMsgHdr.folder;
+    const stream = folder.getMsgInputStream(aMsgHdr, {});
+    let buffer = "";
+
+    try {
+      let chunk;
+
+      while ((chunk = stream.available())) {
+        buffer += NetUtil.readInputStreamToString(stream, chunk);
+
+        if (
+          buffer.includes("\r\n\r\n") ||
+          buffer.includes("\n\n") ||
+          buffer.includes("This is a multi-part message in MIME format.")
+        ) {
+          break;
+        }
+
+        if (buffer.length > 256 * 1024) {
+          break;
+        }
+      }
+    } finally {
+      stream.close();
+    }
+
+    let headerText = buffer.split(/\r?\n\r?\n/)[0];
+    return this.parseHeaderMap(headerText);
+  },
+
   bodyMimeMatch: function (aMsgHdr, searchValue, searchFlags, searchOptions = []) {
     let reg,
       folder = aMsgHdr.folder,
@@ -709,7 +780,7 @@ FiltaQuilla.Util = {
     } catch (ex) {
       FiltaQuilla.Util.logDebug(
         `NetUtil.readInputStreamToString FAILED\nStreaming the message in folder ${
-          folder.prettyName|| folder.localizedName
+          folder.prettyName || folder.localizedName
         } with subject "${subject}" failed.\nMatching body impossible.`,
         ex
       );
@@ -1194,7 +1265,7 @@ FiltaQuilla.Util = {
       util.logToConsole(msg);
       util.logException("FiltaQuilla.javascriptAction - applyAction failed.", ex);
       return false;
-    } 
+    }
     return result;
   },
 

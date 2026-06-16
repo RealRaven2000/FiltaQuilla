@@ -180,7 +180,7 @@
      * custom action implementations
      */
 
-    // prepend to subject. This was called "append" due to an earlier bug
+    // Prepend to subject. This was called "append" due to an earlier bug
     self.subjectAppend = {
       id: "filtaquilla@mesquilla.com#subjectAppend",
       name: util.getBundleString("fq.subjectprepend"),
@@ -205,7 +205,7 @@
       isAsync: false,
     };
 
-    // Suffix to subject
+    // Append [Suffix] to subject
     self.subjectSuffix = {
       id: "filtaquilla@mesquilla.com#subjectSuffix",
       name: util.getBundleString("fq.subjectappend"),
@@ -227,7 +227,7 @@
 
       allowDuplicates: false,
       needsBody: false,
-      isAsync: false,
+      isAsync: true,
     };
 
     // remove keyword
@@ -1832,10 +1832,11 @@
         }
         return [Matches, DoesntMatch];
       },
-      match: function headerRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function (aMsgHdr, aSearchValue, aSearchOp) {
         // the header and its regex are separated by a ':' in aSearchValue
         const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
           isDebug = prefs.getBoolPref("debug.regexHeader");
+        let isRawHeader = false;
         let colonIndex = aSearchValue.indexOf(":");
         if (colonIndex == -1) {
           // not found, default to does not match
@@ -1851,26 +1852,48 @@
         let propertyRealName = aMsgHdr.properties.find(
           (e) => e.toLowerCase() == headerName.toLowerCase()
         );
-
+        var headerValue = "";
         if (!propertyRealName) {
           if (isDebug) {
             util.logDebugOptional(
               "regexHeader",
-              `Header ${headerName} not found. The following properties are available in\n"${aMsgHdr.subject}":\n` +
+              `Header ${headerName} not found in Thunderbird's DB header. The following properties are available in\n"${aMsgHdr.subject}":\n` +
                 `${aMsgHdr.properties.join(", ")}\n`
             );
           }
-          // property not found!
-          switch (aSearchOp) {
-            case Matches:
-              return false;
-            case DoesntMatch:
-              return true;
+        } else {
+          headerValue = aMsgHdr.getStringProperty(propertyRealName);
+        }
+
+        // fallback for headers that aren't parsed by msgDb
+        if (!headerValue) {
+          let hMap = FiltaQuilla.Util.extractRawHeaders(aMsgHdr);
+          let hValue = hMap.get(headerName.toLowerCase());
+
+          if (hValue === undefined) {
+            if (isDebug) {
+              util.logDebugOptional(
+                "regexHeader",
+                `Header ${headerName} not found in raw header map. The following headers are available in\n"${aMsgHdr.subject}":\n` +
+                  `${[...hMap.keys()].join(", ")}\n`
+              );
+            }
+            switch (aSearchOp) {
+              case Matches:
+                return false;
+              case DoesntMatch:
+                return true;
+            }
+          }
+          isRawHeader = true;
+          if (Array.isArray(hValue)) {
+            headerValue = hValue.join("\n");
+          } else {
+            headerValue = hValue || "";
           }
         }
 
-        var headerValue = aMsgHdr.getStringProperty(propertyRealName);
-        if (headerValue) {
+        if (headerValue && !isRawHeader) {
           // [issue 308]
           const mimeConvert = Cc["@mozilla.org/messenger/mimeconverter;1"].getService(
             Ci.nsIMimeConverter
@@ -1902,7 +1925,8 @@
           `headerRegEx[${headerName}] RESULT: ${result}`,
           "white",
           "rgb(0,100,0)",
-          `\n search term: Header ${operand} '${searchValue}'`
+          `\n search term: Header ${operand} '${searchValue}'`,
+          `\n val: '${headerValue.substring(0, 120)}'`,
         );
         return result;
       },
@@ -2519,6 +2543,7 @@
     return recodedSubject;
   }
 
+
   function _replaceParameters(hdr, parameter) {
     // replace ambersand-delimited fields in a parameter
     // eslint-disable-next-line no-unused-vars
@@ -2679,7 +2704,8 @@
     ) {
       searchFlags += "i";
     }
-
+    
+    searchFlags = searchFlags.replace(REGEX_CASE_SENSITIVE_FLAG, "");
     return [searchValue, searchFlags, searchOptions];
   }
 
