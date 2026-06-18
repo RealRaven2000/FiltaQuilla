@@ -30,7 +30,8 @@
     "message": "Activé"
   },
   "extensionDescription": {
-    "message": "Générez rapidement des filtres mail en analysant les attributs des messages."
+    "description": "Description of the extension.",
+    "message": "Ajoute de nombreuses actions de filtrage et termes de recherche supplémentaires pour les e-mails : imprimer le message, supprimer l’étoile ou le tag, marquer comme répondu ou non lu, copier comme lu, recherche par expressions régulières."
   },
   "extensionName": {
     "message": "FiltaQuilla"

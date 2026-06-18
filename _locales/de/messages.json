@@ -31,7 +31,7 @@
   },
   "extensionDescription": {
     "description": "Description of the extension.",
-    "message": "Auf die Schnelle neue Filter erzeugen, einfach während man Email in Verzeichnisse einordnet. Filter in weniger als 10 Sekunden erzeugen. Mehrere Filter zusammenführen, und auf andere Konten übertragen."
+    "message": "Fügt viele zusätzliche E-Mail-Filteraktionen und Suchbegriffe hinzu – E-Mails drucken, Stern oder Tag entfernen, als beantwortet oder ungelesen markieren, als gelesen kopieren, reguläre Ausdrücke durchsuchen."
   },
   "extensionName": {
     "description": "Name of the extension.",

@@ -31,7 +31,7 @@
   },
   "extensionDescription": {
     "description": "Description of the extension.",
-    "message": "Generera snabbt e-postfilterregler direkt, genom att dra och släppa mejl och analysera deras attribut."
+    "message": "Lägger till många extra e-postfilteråtgärder och söktermer: skriv ut e-post, ta bort stjärna eller etikett, markera som besvarad eller oläst, kopiera som läst, sökning med reguljära uttryck."
   },
   "extensionName": {
     "description": "Name of the extension.",

@@ -31,7 +31,7 @@
   },
   "extensionDescription": {
     "description": "Description of the extension.",
-    "message": "Genereer snel e-mailfilterregels door e-mails te slepen en neer te zetten en hun attributen te analyseren."
+    "message": "Voegt veel extra e-mailfilteracties en zoektermen toe: e-mail afdrukken, ster of label verwijderen, markeren als beantwoord of ongelezen, kopiëren als gelezen, zoeken met reguliere expressies."
   },
   "extensionName": {
     "description": "Name of the extension.",

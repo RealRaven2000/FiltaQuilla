@@ -31,7 +31,7 @@
   },
   "extensionDescription": {
     "description": "Description of the extension.",
-    "message": "Quickly generate mail filters on the fly, by dragging and dropping mails and analyzing their attributes."
+    "message": "Adds many additional mail filter actions and search terms - print mail, remove star or tag, mark replied or unread, copy as read, search regular expressions."
   },
   "extensionName": {
     "description": "Name of the extension.",

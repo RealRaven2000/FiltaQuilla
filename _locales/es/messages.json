@@ -30,7 +30,8 @@
     "message": "Habilitado"
   },
   "extensionDescription": {
-    "message": "Genera filtros de correo rápidamente analizando los atributos de los mensajes."
+    "description": "Description of the extension.",
+    "message": "Añade muchas acciones y términos de búsqueda adicionales para filtros de correo: imprimir correo, eliminar estrella o etiqueta, marcar como respondido o no leído, copiar como leído, búsqueda con expresiones regulares."
   },
   "extensionName": {
     "message": "FiltaQuilla"

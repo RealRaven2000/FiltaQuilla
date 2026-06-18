@@ -31,7 +31,7 @@
   },
   "extensionDescription": {
     "description": "Description of the extension.",
-    "message": "Quickly generate mail filters on the fly, by dragging and dropping mails and analyzing their attributes."
+    "message": "メールフィルターの追加アクションと検索条件を多数追加します。メールの印刷、スターやタグの削除、返信済みまたは未読としてマーク、既読としてコピー、正規表現検索などに対応します。"
   },
   "extensionName": {
     "description": "Name of the extension.",
