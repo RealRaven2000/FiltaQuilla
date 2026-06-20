@@ -1871,7 +1871,8 @@
       match: function (aMsgHdr, aSearchValue, aSearchOp) {
         // the header and its regex are separated by a ':' in aSearchValue
         const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
-          isDebug = prefs.getBoolPref("debug.regexHeader");
+          isDebug = prefs.getBoolPref("debug.regexHeader"),
+          allowRawHeaders = prefs.getBoolPref("regexpHeader.allowRawHeaders");
         let isRawHeader = false;
         let colonIndex = aSearchValue.indexOf(":");
         if (colonIndex == -1) {
@@ -1902,7 +1903,7 @@
         }
 
         // fallback for headers that aren't parsed by msgDb
-        if (!headerValue) {
+        if (headerValue==="" && allowRawHeaders) {
           let hMap = FiltaQuilla.Util.extractRawHeaders(aMsgHdr);
           let hValue = hMap.get(headerName.toLowerCase());
 

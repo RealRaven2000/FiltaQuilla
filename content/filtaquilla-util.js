@@ -730,6 +730,8 @@ FiltaQuilla.Util = {
   },
 
   extractRawHeaders: function (aMsgHdr) {
+    // for  an up to date method see also MsgHdrProcessor
+    // https://searchfox.org/comm-central/source/mail/components/extensions/ExtensionMessages.sys.mjs#391
     const folder = aMsgHdr.folder;
     const stream = folder.getMsgInputStream(aMsgHdr, {});
     let buffer = "";

@@ -172,6 +172,10 @@ const initEventListeners = async () => {
   });
 
   addConfigEvent(document.getElementById("debug-options"), "extensions.filtaquilla.debug");
+  addConfigEvent(
+    document.getElementById("hdr-regex-options"),
+    "extensions.filtaquilla.regexpHeader.allowRawHeaders"
+  );
   document
     .getElementById("fq-options-header-version")
     .addEventListener("click", (event) => onVersionClick(event.target));

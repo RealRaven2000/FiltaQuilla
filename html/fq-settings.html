@@ -286,15 +286,18 @@
         </span>
 
         <span class="option-horizontal">
-          <label>
-            <input type="checkbox"
-                  id="checkHeaderRegexEnabled"
-                  data-pref-name="extensions.filtaquilla.HeaderRegexEnabled">
-            __MSG_fq.hdrRegex__
-          </label>
-          <button class="helpLink"
-                  helptopic="header_regex"
-                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+          <div class="hbox hasConfigEvent" id="headerRegexSettings">
+            <label>
+              <input type="checkbox"
+                    id="checkHeaderRegexEnabled"
+                    data-pref-name="extensions.filtaquilla.HeaderRegexEnabled">
+              __MSG_fq.hdrRegex__
+            </label>
+            <button class="configSettings" id="hdr-regex-options" aria-label="__MSG_aria.configSettings__">&nbsp;</button>
+            <button class="helpLink"
+                    helptopic="header_regex"
+                    title="__MSG_helpFeatureTip__">&nbsp;</button>
+          </div>
         </span>
 
         <span class="option-horizontal">

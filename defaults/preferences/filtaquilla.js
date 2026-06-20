@@ -41,6 +41,7 @@ pref("extensions.filtaquilla.saveMessageAsFile.enabled", false);
 pref("extensions.filtaquilla.moveLater.enabled", false);
 pref("extensions.filtaquilla.regexpCaseInsensitive.enabled", true);
 pref("extensions.filtaquilla.regexpHeader.addressMultiLine", false); // [issue 329]
+pref("extensions.filtaquilla.regexpHeader.allowRawHeaders",false);
 pref("extensions.filtaquilla.regexpBody.contentType.whiteList", "");
 pref("extensions.filtaquilla.archiveMessage.enabled", false);
 pref("extensions.filtaquilla.smarttemplates.fwd.enabled", false);
