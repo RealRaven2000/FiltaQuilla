@@ -50,11 +50,38 @@ function show(id) {
   return el;
 }
 
+function replaceNested(text) {
+  let result = text;
+  const maxLoops = 5; // prevent infinite recursion
+
+  for (let i = 0; i < maxLoops; i++) {
+    let changed = false;
+
+    result = result.replace(/\{\+([\w.]+)\}/g, (_, id) => {
+      // replace is streaming results from 1st capturing group:
+      // (fullMatch, group1, index, originalString)
+      const replacement = messenger.i18n.getMessage(id) || `{+${id}}`;
+      if (replacement !== `{+${id}}`) {
+        changed = true;
+      }
+      return replacement;
+    });
+
+    if (!changed) {
+      break;
+    }
+  }
+
+  return result;
+}
+
+
 const formatAll = (txt) => {
-  let localizedMsg = txt;
-  return localizedMsg
+  return replaceNested(txt)
     .replace(/\{bold\}/g, "<b>")
     .replace(/\{\/bold\}/g, "</b>")
+    .replace(/\{b\}/g, "<b>")
+    .replace(/\{\/b\}/g, "</b>")
     .replace(/\{hr\}/g, "<hr>")
     .replace(/\{italic\}/g, "<i>")
     .replace(/\{\/italic\}/g, "</i>")
@@ -70,23 +97,23 @@ const formatAll = (txt) => {
     .replace(/\{\/P\}/g, "</p>")
     .replace(
       /\{ARelease\}/g,
-      "<a href='https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/'>",
+      "<a href='https://blog.thunderbird.net/2025/03/thunderbird-release-channel-update/'>"
     )
     .replace(
       /\{AcompatCheck\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/' class='native'>",
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/addon-compatibility-check/' class='native'>"
     )
     .replace(
       /\{A-QF\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickfolders-tabbed-folders/' class='native'>",
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickfolders-tabbed-folders/' class='native'>"
     )
     .replace(
       /\{A-qI\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickFilters/' class='native'>",
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/quickFilters/' class='native'>"
     )
     .replace(
       /\{A-ST\}/g,
-      "<a href='https://addons.thunderbird.net/thunderbird/addon/smarttemplate4/' class='native'>",
+      "<a href='https://addons.thunderbird.net/thunderbird/addon/smarttemplate4/' class='native'>"
     )
     .replace(/\{\/A\}/g, "</a>")
     .replace(/\{A\}/g, "</a>")
