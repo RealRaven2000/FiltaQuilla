@@ -1,24 +1,34 @@
-We decided to concentrate on the latest versions from Thunderbird v140 onward because the code base was getting pretty unmanageable  due to the substantial changes in Thunderbird Core and additional features added by the extended mail extension APIs. Being able to support this and legacy ways of doing the same thing within the same Add-on proved to be very difficult and produce unmanageable code.
+This release updates FiltaQuilla to reflect recent changes in Thunderbird’s add-on platform planning. A previously announced restriction affecting Experiment APIs on the Release channel has been postponed to a later ESR cycle (currently targeted for 2027).
 
-Even just supporting both ESR140 and the current release versions (currently 147), is already a difficult thing leading to substantially branching code paths within the same Add-on. This cut-off point will also be used to prepare for a number of long desired feature additions around saving attachments, which will be delivered next.
+No immediate action is required. FiltaQuilla continues to work on both Release and ESR versions of Thunderbird where supported.
 
-Increased strict_min_version to 140.0.
+Users who rely on advanced or experimental functionality may prefer the ESR channel for a more stable environment with fewer platform changes. The recommended migration point from Release to ESR is Thunderbird 153, expected in July 2026.
+
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>. For more ways of supporting me work, please read the section below after the change log.
 
 
 <b>Improvements</b>
 <ul>
-  <li> Made FiltaQuilla compatible with Thunderbird 149.*.  <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/385">[issue 385]</a></li>
-  <li> Added tool tip to regular expression option for case insensitive matching</li>
+  <li> Made FiltaQuilla compatible with Thunderbird 153.*.  <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/385">[issue 385]</a></li>
+  <li> Prepend / Append Date to subject <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/398">[issue 398]</a> 
+    
+  Added %date()% switch for subject prefix / append, for a list of letters you can use in the format string - See: https://smarttemplates.quickfolders.org/variables.html#customDates
+
+  Example: Prefix Subject:  `%date("Y-m-d")% [Important] </li>
+  <li>
+    Added tool tip to regular expression option for case insensitive matching
+  </li>
+  <li> Made regex options panel theme compatible </li>
 </ul>
 <b>Bug Fixes</b>
 <ul>
-  <li> </li>
+  <li>Fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match" </li>
 </ul>
 
 <b>Planned Next</b>
 <ul>
+  <li> Convert storage from legacy preferences (about:config) to local storage (API compatible) [issue 401]</li>
   <li> Notification after filter actions. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/240">[issue 240]</a></li>
   <li> Custom filenames when saving attachments. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/219">[issue 219]</a></li>
   <li> Review of <code>attachRegEx_match</code> for current Thunderbird versions.</li>
