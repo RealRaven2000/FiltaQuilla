@@ -334,7 +334,7 @@
   },
   "newsHead": { "message": "Latest News" },
   "newsMsgForced": {
-    "message": "{P}This version raises FiltaQuilla’s minimum Thunderbird requirement to ensure reliable attachment handling and long-term stability. {bold}FiltaQuilla 6.*{/bold} and subsequent versions will require {bold}Thunderbird 140{/bold} or later.{/P}{P}Attachment saving was experienced as unreliable for some users on older Thunderbird versions. This update addresses these issues where possible and improves overall stability.{/P}{P}Thunderbird has gone through many internal changes in recent releases, and keeping old versions supported would have meant maintaining duplicate paths that no longer behave consistently. Moving forward allows FiltaQuilla to stay stable instead of fighting those inconsistencies.{/P}{P}Thank you for staying up to date and helping keep FiltaQuilla maintainable for the future.{/P}"
+    "message": "{P}A planned change to limit the use of Experiment APIs on the Release channel has been postponed to a future ESR cycle (currently targeted for 2027).{/P}{P}At this time, no action is required. Add-ons like {b}{+extensionName}{/b} continue to work on both Release and ESR versions of Thunderbird where supported, although experimental interfaces may change over time as the platform develops.{/P}"
   },
   "optionsIntro": {
     "message": "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes."
@@ -435,6 +435,6 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}FiltaQuilla is now compatible up to Thunderbird {bold}149.*{/bold}.{/L}{L}Added tool tip to regular expression option for case insensitive matching{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla is now compatible up to Thunderbird {bold}153.*{/bold}.{/L}{L}Prepend/Append Date to subject now supports the {s}%date()%{/s} syntax (see variables by SmartTemplates). [issue 398]{/L}{L}Added tooltip for case-insensitive regular expression matching option.{/L}{L}Improved theme compatibility of regex options panel.{/L}{L}Fixed regex pseudo-flag {s}c{/s} overriding case-insensitive matching.{/L}{L}Header regex now allows searching message headers not exposed in the message database (e.g. {s}in-reply-to{/s}). This can be enabled in settings. It requires partial message download and may slow down filtering. It is recommended only for manual filters. [issue 395]{/L}{/U}"
   }
 }

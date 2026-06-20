@@ -333,7 +333,7 @@
   },
   "newsHead": { "message": "Últimas noticias" },
   "newsMsgForced": {
-    "message": "{P}Esta versión eleva el requisito mínimo de Thunderbird para FiltaQuilla y garantiza un manejo confiable de los archivos adjuntos y estabilidad a largo plazo. {bold}FiltaQuilla 6.*{/bold} y las versiones posteriores requerirán {bold}Thunderbird 140{/bold} o superior.{/P}{P}El guardado de archivos adjuntos era poco confiable para algunos usuarios en versiones anteriores de Thunderbird. Esta actualización soluciona estos problemas en la medida de lo posible y mejora la estabilidad general.{/P}{P}Thunderbird ha pasado por muchos cambios internos en las versiones recientes, y mantener compatibilidad con versiones antiguas habría significado mantener rutas duplicadas que ya no se comportan de forma consistente. Avanzar permite que FiltaQuilla se mantenga estable en lugar de luchar contra esas inconsistencias.{/P}{P}Gracias por mantener su software actualizado y ayudar a que FiltaQuilla sea sostenible en el futuro.{/P}"
+    "message": "{P}Se ha pospuesto a un futuro ciclo ESR (actualmente previsto para 2027) un cambio planificado para limitar el uso de las APIs de experimentación en el canal Release.{/P}{P}Por el momento no es necesaria ninguna acción. Complementos como {b}{+extensionName+}{/b} siguen funcionando tanto en las versiones Release como ESR de Thunderbird donde están soportadas, aunque las interfaces experimentales pueden cambiar con el tiempo a medida que evoluciona la plataforma.{/P}"
   },
   "optionsIntro": {
     "message": "Activa todos los elementos que desees tener disponibles en el cuadro de diálogo 'Reglas de filtros'. Reinicia después de realizar cambios."
@@ -433,7 +433,7 @@
     "message": "FiltaQuilla cuenta con el apoyo de mi trabajo en otros complementos: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A}, y {A-ST}SmartTemplates{/A}. ¡Échales un vistazo en la tienda de complementos!"
   },
   "whats-new-list": {
-    "description": "🇪🇸 registro de cambios",
-    "message": "{U}{L}FiltaQuilla ahora es compatible con Thunderbird {bold}149.*{/bold}.{/L}{L}Se añadió un tooltip a la opción de expresiones regulares para coincidencias sin distinguir mayúsculas{/L}{/U}"
+    "description": "🇪🇸 change log",
+    "message": "{U}{L}FiltaQuilla ahora es compatible hasta Thunderbird {bold}153.*{/bold}.{/L}{L}Prepend/Append Date en el asunto ahora admite la sintaxis {s}%date()%{/s} (ver variables de SmartTemplates). [issue 398]{/L}{L}Añadido tooltip para la opción de coincidencia de expresiones regulares sin distinción entre mayúsculas y minúsculas.{/L}{L}Mejorada la compatibilidad del panel de opciones de regex con el tema.{/L}{L}Corregido el pseudo-flag de regex {s}c{/s} que anulaba la coincidencia sin distinción entre mayúsculas y minúsculas.{/L}{L}Header regex ahora permite buscar encabezados de mensajes no expuestos en la base de datos de mensajes (p. ej. {s}in-reply-to{/s}). Esto puede activarse en los ajustes. Requiere descarga parcial del mensaje y puede ralentizar el filtrado. Se recomienda solo para filtros manuales. [issue 395]{/L}{/U}"
   }
 }

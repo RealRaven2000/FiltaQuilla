@@ -737,7 +737,7 @@
     };
     const ids = messageIds.split(",").map((s) => s.trim());
     if (ids.includes("newsMsgForced")) { // it's a long one...
-      windowProperties.height = 560;
+      windowProperties.height = 400;
       windowProperties.width = 810;
     }
     if (messageIds.includes("whats-new-list")) {
@@ -786,7 +786,7 @@
 
   let retryScheduled = false; // session flag to avoid repeat re-scheduling
   const RETRY_MINUTES = 20;
-  const LATEST_UPDATEMSG = "6.0"; // latest version with special message (forced display)
+  const LATEST_UPDATEMSG = "6.2"; // latest version with special message (forced display)
   async function displayUpdateMessage() {
     const messageIds = "newsMsgForced",
       isDebug = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.debug");

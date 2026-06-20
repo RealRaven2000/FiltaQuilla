@@ -325,7 +325,7 @@
   },
   "newsHead": { "message": "Laatste nieuws" },
   "newsMsgForced": {
-    "message": "{P}Deze versie verhoogt de minimale Thunderbird-versie voor FiltaQuilla om betrouwbare bijlageverwerking en langdurige stabiliteit te waarborgen. {bold}FiltaQuilla 6.*{/bold} en volgende versies vereisen {bold}Thunderbird 140{/bold} of hoger.{/P}{P}Het opslaan van bijlagen was voor sommige gebruikers op oudere Thunderbird-versies onbetrouwbaar. Deze update lost deze problemen waar mogelijk op en verbetert de algehele stabiliteit.{/P}{P}Thunderbird heeft in recente releases veel interne veranderingen ondergaan, en het blijven ondersteunen van oude versies zou betekenen dat dubbele paden moeten worden onderhouden die niet meer consistent werken. Door vooruit te gaan kan FiltaQuilla stabiel blijven in plaats van tegen die inconsistenties te vechten.{/P}{P}Dank u voor het up-to-date houden van uw software en voor het helpen FiltaQuilla in de toekomst onderhoudbaar te houden.{/P}"
+    "message": "{P}Een geplande wijziging om het gebruik van experimentele API’s op het Release-kanaal te beperken is uitgesteld naar een toekomstige ESR-cyclus (momenteel gepland voor 2027).{/P}{P}Op dit moment is geen actie vereist. Add-ons zoals {b}{+extensionName+}{/b} blijven werken in zowel Release- als ESR-versies van Thunderbird waar ondersteund, hoewel experimentele interfaces in de loop van de tijd kunnen veranderen naarmate het platform zich ontwikkelt.{/P}"
   },
   "optionsIntro": {
     "message": "Schakel alle items in die u beschikbaar wilt hebben in het venster ‘filterregels’. Herstart na de wijzigingen."
@@ -422,7 +422,7 @@
     "message": "FiltaQuilla wordt trots ondersteund door mijn werk aan mijn andere add-ons: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A} en {A-ST}SmartTemplates{/A}. Bekijk ze in de Add-ons store!"
   },
   "whats-new-list": {
-    "description": "🇳🇱 wijzigingslogboek",
-    "message": "{U}{L}FiltaQuilla is nu compatibel met Thunderbird {bold}149.*{/bold}.{/L}{L}Tooltip toegevoegd aan de reguliere expressie-optie voor hoofdletterongevoelige overeenkomsten{/L}{/U}"
+    "description": "🇳🇱 change log",
+    "message": "{U}{L}FiltaQuilla is nu compatibel tot Thunderbird {bold}153.*{/bold}.{/L}{L}Datum voor onderwerp voorvoegen/achtervoegen ondersteunt nu de {s}%date()%{/s}-syntax (zie variabelen van SmartTemplates). [issue 398]{/L}{L}Tooltip toegevoegd voor de optie voor hoofdletterongevoelige regex-matching.{/L}{L}Compatibiliteit van het regex-optiepaneel met het thema verbeterd.{/L}{L}Regex pseudo-flag {s}c{/s} die hoofdletterongevoelige matching overschreef, is opgelost.{/L}{L}Header regex maakt nu zoeken naar berichtheaders mogelijk die niet in de berichten-database beschikbaar zijn (bijv. {s}in-reply-to{/s}). Dit kan in instellingen worden ingeschakeld. Dit vereist gedeeltelijke berichtdownload en kan filtering vertragen. Alleen aanbevolen voor handmatige filters. [issue 395]{/L}{/U}"
   }
 }

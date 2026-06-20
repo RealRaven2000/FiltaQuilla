@@ -10,20 +10,19 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 
 <b>Improvements</b>
 <ul>
-  <li> Made FiltaQuilla compatible with Thunderbird 153.*.  <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/385">[issue 385]</a></li>
+  <li> Made FiltaQuilla compatible with Thunderbird 153.*. </li>
   <li> Prepend / Append Date to subject <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/398">[issue 398]</a> 
     
   Added %date()% switch for subject prefix / append, for a list of letters you can use in the format string - See: https://smarttemplates.quickfolders.org/variables.html#customDates
 
   Example: Prefix Subject:  `%date("Y-m-d")% [Important] </li>
-  <li>
-    Added tool tip to regular expression option for case insensitive matching
-  </li>
+  <li> Added tool tip to regular expression option for case insensitive matching </li>
   <li> Made regex options panel theme compatible </li>
 </ul>
 <b>Bug Fixes</b>
 <ul>
-  <li>Fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match" </li>
+  <li> Fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match" </li>
+  <li> Header regex: headers like "in-reply-to" are not exposed and do not work <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/395">[issue 395]</a>. You can now search for headers that are not part of the message database, which can be enabled with a separate settings. This requires streaming part of the message and may lead to slowdown during filtering - therefore we recommend it only in filters that run manually.</li>
 </ul>
 
 <b>Planned Next</b>

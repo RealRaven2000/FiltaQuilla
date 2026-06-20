@@ -333,7 +333,7 @@
   },
   "newsHead": { "message": "Dernières nouvelles" },
   "newsMsgForced": {
-    "message": "{P}Cette version augmente la version minimale requise de Thunderbird pour FiltaQuilla afin d’assurer une gestion fiable des pièces jointes et une stabilité à long terme. {bold}FiltaQuilla 6.*{/bold} et les versions suivantes nécessiteront {bold}Thunderbird 140{/bold} ou ultérieure.{/P}{P}L’enregistrement des pièces jointes était peu fiable pour certains utilisateurs sur les anciennes versions de Thunderbird. Cette mise à jour corrige ces problèmes dans la mesure du possible et améliore la stabilité globale.{/P}{P}Thunderbird a connu de nombreux changements internes ces dernières versions, et maintenir la compatibilité avec les anciennes versions aurait impliqué de maintenir des chemins en double qui ne se comportent plus de manière cohérente. Avancer permet à FiltaQuilla de rester stable plutôt que de lutter contre ces incohérences.{/P}{P}Merci de rester à jour et de contribuer à rendre FiltaQuilla maintenable pour l’avenir.{/P}"
+    "message": "{P}Un changement prévu visant à limiter l’utilisation des API expérimentales sur le canal Release a été reporté à un futur cycle ESR (actuellement prévu pour 2027).{/P}{P}Aucune action n’est requise pour le moment. Les modules complémentaires comme {b}{+extensionName+}{/b} continuent de fonctionner à la fois sur les versions Release et ESR de Thunderbird lorsqu’elles sont prises en charge, bien que les interfaces expérimentales puissent évoluer avec le temps au fur et à mesure du développement de la plateforme.{/P}"
   },
   "optionsIntro": {
     "message": "Activez tous les éléments que vous souhaitez rendre disponibles dans la boîte de dialogue 'Règles de filtrage'. Redémarrez après les modifications."
@@ -433,7 +433,7 @@
     "message": "FiltaQuilla est soutenu par mon travail sur d’autres modules complémentaires : {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A}, et {A-ST}SmartTemplates{/A}. Découvrez-les sur le magasin de modules complémentaires !"
   },
   "whats-new-list": {
-    "description": "🇫🇷 journal des modifications",
-    "message": "{U}{L}FiltaQuilla est désormais compatible avec Thunderbird {bold}149.*{/bold}.{/L}{L}Ajout d’un tooltip pour l’option des expressions régulières insensible à la casse{/L}{/U}"
+    "description": "🇫🇷 change log",
+    "message": "{U}{L}FiltaQuilla est maintenant compatible jusqu’à Thunderbird {bold}153.*{/bold}.{/L}{L}Préfixe/ajout de date dans l’objet prend désormais en charge la syntaxe {s}%date()%{/s} (voir les variables SmartTemplates). [issue 398]{/L}{L}Ajout d’une infobulle pour l’option de correspondance insensible à la casse des expressions régulières.{/L}{L}Amélioration de la compatibilité du panneau des options regex avec les thèmes.{/L}{L}Correction du pseudo-flag regex {s}c{/s} qui outrepassait la correspondance insensible à la casse.{/L}{L}Header regex permet désormais de rechercher des en-têtes de messages non exposés dans la base de données (ex. {s}in-reply-to{/s}). Cette option peut être activée dans les paramètres. Elle nécessite le téléchargement partiel du message et peut ralentir le filtrage. Elle est recommandée uniquement pour les filtres manuels. [issue 395]{/L}{/U}"
   }
 }

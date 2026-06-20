@@ -334,7 +334,7 @@
   },
   "newsHead": { "message": "Neueste Nachrichten" },
   "newsMsgForced": {
-    "message": "{P}Diese Version erhöht die minimale Thunderbird-Version, die für FiltaQuilla erforderlich ist, um eine zuverlässige Handhabung von Anhängen und langfristige Stabilität zu gewährleisten. {bold}FiltaQuilla 6.*{/bold} und nachfolgende Versionen erfordern {bold}Thunderbird 140{/bold} oder höher.{/P}{P}Das Speichern von Anhängen war für einige Benutzer in älteren Thunderbird-Versionen unzuverlässig. Dieses Update behebt diese Probleme soweit möglich und verbessert die allgemeine Stabilität.{/P}{P}Thunderbird hat in den letzten Versionen viele interne Änderungen durchlaufen, und die Unterstützung alter Versionen hätte bedeutet, doppelte Pfade zu pflegen, die nicht mehr konsistent funktionieren. Durch den Schritt nach vorne bleibt FiltaQuilla stabil, statt gegen diese Inkonsistenzen anzukämpfen.{/P}{P}Vielen Dank, dass Sie Ihre Software auf dem neuesten Stand halten und FiltaQuilla so für die Zukunft wartbar machen.{/P}"
+    "message": "{P}Eine geplante Änderung zur Einschränkung der Nutzung von Experiment-APIs im Release-Kanal wurde auf einen zukünftigen ESR-Zyklus verschoben (derzeit für 2027 geplant).{/P}{P}Derzeit ist keine Aktion erforderlich. Add-ons wie {b}{+extensionName+}{/b} funktionieren weiterhin sowohl in Release- als auch ESR-Versionen von Thunderbird, sofern unterstützt, auch wenn sich experimentelle Schnittstellen im Laufe der Weiterentwicklung der Plattform ändern können.{/P}"
   },
   "optionsIntro": {
     "message": "Aktivieren Sie alle Einträge die im 'Filter bearbeiten' Dialog angeboten werden sollen. Neustart erforderlich."
@@ -432,6 +432,6 @@
   },
   "whats-new-list": {
     "description": "🇩🇪 Changelog",
-    "message": "{U}{L}FiltaQuilla ist jetzt kompatibel bis Thunderbird {bold}149.*{/bold}.{/L}{L}Tooltip für die Option der Groß-/Kleinschreibung bei regulären Ausdrücken hinzugefügt{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla ist jetzt bis Thunderbird {bold}153.*{/bold} kompatibel.{/L}{L}Datum für Betreff voranstellen/anhängen unterstützt jetzt die {s}%date()%{/s}-Syntax (siehe Variablen von SmartTemplates). [issue 398]{/L}{L}Tooltip für die Option zur case-insensitiven regulären Ausdruckssuche hinzugefügt.{/L}{L}Theme-Kompatibilität des Regex-Optionspanels verbessert.{/L}{L}Regex-Pseudo-Flag {s}c{/s} überschreibt jetzt die case-insensitive Suche korrekt behoben.{/L}{L}Header-Regex erlaubt jetzt die Suche nach Nachrichten-Headern, die nicht in der Nachrichten-Datenbank verfügbar sind (z. B. {s}in-reply-to{/s}). Dies kann in den Einstellungen aktiviert werden. Es erfordert das teilweise Herunterladen der Nachricht und kann die Filterung verlangsamen. Es wird nur für manuelle Filter empfohlen. [issue 395]{/L}{/U}"
   }
 }
