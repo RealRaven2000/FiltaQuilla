@@ -262,15 +262,18 @@
         </span>
 
         <span class="option-horizontal">
-          <label>
-            <input type="checkbox"
-                  id="checkJavascriptEnabled"
-                  data-pref-name="extensions.filtaquilla.JavascriptEnabled">
-            __MSG_checkJavascriptEnabled.label__
-          </label>
-          <button class="helpLink"
-                  helptopic="match_javascript"
-                  title="__MSG_helpFeatureTip__">&nbsp;</button>
+          <div class="hbox hasConfigEvent" id="javascriptSearchSettings">
+            <label>
+              <input type="checkbox"
+                    id="checkJavascriptEnabled"
+                    data-pref-name="extensions.filtaquilla.JavascriptEnabled">
+              __MSG_checkJavascriptEnabled.label__
+            </label>
+            <button class="configSettings" id="javascript-search-options" aria-label="__MSG_aria.configSettings__">&nbsp;</button>
+            <button class="helpLink"
+                    helptopic="match_javascript"
+                    title="__MSG_helpFeatureTip__">&nbsp;</button>
+          </div>
         </span>
 
         <span class="option-horizontal">

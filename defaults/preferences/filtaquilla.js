@@ -53,6 +53,7 @@ pref("extensions.filtaquilla.BodyRegexEnabled", true);
 pref("extensions.filtaquilla.SubjectBodyRegexEnabled", false);
 pref("extensions.filtaquilla.HeaderRegexEnabled", false);
 pref("extensions.filtaquilla.JavascriptEnabled", false);
+pref("extensions.filtaquilla.JavascriptEnabled.needsBody", true);
 pref("extensions.filtaquilla.SearchBccEnabled", true);
 pref("extensions.filtaquilla.FolderNameEnabled", false);
 pref("extensions.filtaquilla.ThreadHeadTagEnabled", false);
@@ -61,6 +62,7 @@ pref("extensions.filtaquilla.ThreadAnyTagEnabled", false);
 
 // debug
 pref("extensions.filtaquilla.debug", false);
+pref("extensions.filtaquilla.debug.JavaScript", false);
 pref("extensions.filtaquilla.debug.attachments", false);
 pref("extensions.filtaquilla.debug.firstrun", false);
 pref("extensions.filtaquilla.debug.notifications", false);

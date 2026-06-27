@@ -2085,7 +2085,24 @@
       getEnabled: function javascript_getEnabled(_scope, _op) {
         return true;
       },
-      needsBody: false,
+      get needsBody() {
+        // was hardcoded to false
+        // only safe if we use standard JS and standard headers
+        // methods such as Util.extractRawHeaders() NEED BODY
+        // any method that uses Util or Services should LEAVE THIS AS true
+        try {
+          const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
+            isNeedsBody = prefs.getBoolPref("regexpHeader.allowRawHeaders");
+          util.logDebugOptional("JavaScript", `self.javascript.needsBody = ${isNeedsBody}`);
+          return isNeedsBody;
+        } catch (e) {
+          console.warn(
+            "FiltaQuiall javascript\nSomething went wrong during needsBody! Forcing self.javascript.needsBody = true",
+            e
+          );
+          return true;
+        }
+      },
       getAvailable: function javascript_getAvailable(_scope, _op) {
         return JavascriptEnabled;
       },
@@ -2103,13 +2120,19 @@
           fq_method: "javascript",
         };
 
+        const scriptResult = util.saferEval(script, context);
+        util.logDebugOptional(
+          "JavaScript",
+          `Result of sandbox eval: ${scriptResult}`,
+          scriptResult
+        );
         switch (aSearchOp) {
           case Matches:
             // [issue 338] eval rejected by CSP
-            return util.saferEval(script, context);
+            return scriptResult;
           case DoesntMatch:
             // [issue 338] eval rejected by CSP
-            return !util.saferEval(script, context);
+            return !scriptResult;
         }
       },
     };

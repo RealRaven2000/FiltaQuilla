@@ -172,10 +172,17 @@ const initEventListeners = async () => {
   });
 
   addConfigEvent(document.getElementById("debug-options"), "extensions.filtaquilla.debug");
+  // this will allow reading cusomt headers but force needsBody on all regex Header methods:
   addConfigEvent(
     document.getElementById("hdr-regex-options"),
     "extensions.filtaquilla.regexpHeader.allowRawHeaders"
   );
+  // safety: this will toggle needsBody for javascript search term
+  addConfigEvent(
+    document.getElementById("javascript-search-options"),
+    "extensions.filtaquilla.JavascriptEnabled.needsBody"
+  );
+
   document
     .getElementById("fq-options-header-version")
     .addEventListener("click", (event) => onVersionClick(event.target));
