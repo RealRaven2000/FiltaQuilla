@@ -101,8 +101,6 @@
     );
   }
 
-
-
   messenger.WindowListener.registerChromeUrl([
     ["resource", "filtaquilla", "content/"], // resource://
     ["resource", "filtaquilla-skin", "skin/"], // make a separate resource (we can't have 2 different resources mapped to to the same name)
@@ -156,7 +154,6 @@
     "chrome://messenger/content/virtualFolderProperties.xhtml",
     "content/scripts/filtaquilla-filterEditor-css.js"
   );
-
 
   function greaterThan(versionA, versionB) {
     const clean = (v) =>
@@ -320,7 +317,8 @@
           browser.tabs.create({ active: true, url: data.URL });
         }
         break;
-      case "detachAttachments": { // old test code
+      case "detachAttachments": {
+        // old test code
         const isDebugAttachments = await messenger.LegacyPrefs.getPref(
           Legacy_Root + "debug.attachments"
         );
@@ -377,25 +375,24 @@
         // 2. parts.some( (part) => part.contentType ==="multipart/signed"))
         //  ==> means it is signed, and we can save from the background and skip detachment.
         const fullMsg = await browser.messages.getFull(data.messageHeader.id, { decrypt: false });
-        if (!(fullMsg.parts.some((part) => part.contentType === "multipart/signed"))) {
+        if (!fullMsg.parts.some((part) => part.contentType === "multipart/signed")) {
           // message not signed, let's return this result and leave detachment to the caller (core code)
           const result = {
             success: true,
             reason: "message not signed, detachment possible",
-            action: ""
-          }
+            action: "",
+          };
           return result;
-        }      
+        }
         // signed message - do not detach, just save instead!
         // use the fallthrough mechanism
-
       }
       // eslint-disable-next-line no-fallthrough
       case "saveAttachments": {
         /*
         we can use browser.messages.deleteAttachments(messageId, [partNames]) once they are saved?
         */
-        const isDetachFailed = (data.func === "tryDetachAttachments");
+        const isDetachFailed = data.func === "tryDetachAttachments";
         const isDebugAttachments = await messenger.LegacyPrefs.getPref(
           Legacy_Root + "debug.attachments"
         );
@@ -581,7 +578,6 @@
 
     }
   });
-
   messenger.WindowListener.startListening();
 
   messenger.runtime.onInstalled.addListener(async (data) => {
@@ -615,8 +611,8 @@
 
   async function createFiltaQuillaMenus() {
     const isDebug = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.debug");
-    if (isDebug) { 
-      console.log("Creating FiltaQuilla menus..."); 
+    if (isDebug) {
+      console.log("Creating FiltaQuilla menus...");
     }
 
     // Remove any previous menu entries just to be safe during reloads
@@ -626,7 +622,7 @@
     await messenger.menus.create({
       id: "filtaquilla-preferences",
       contexts: ["browser_action_menu"], // attach to toolbar button
-      icons: "../skin/settings.svg",
+      icons: "./skin/settings.svg",
       onclick: () => {
         browser.tabs.create({ url: "html/fq-settings.html" });
       },
@@ -647,18 +643,22 @@
       title: messenger.i18n.getMessage("newsHead"),
     });
 
-    const versionPart = " " +  
-      messenger.i18n.getMessage("versionPart", browser.runtime.getManifest().version);
+    const versionPart =
+      " " + messenger.i18n.getMessage("versionPart", browser.runtime.getManifest().version);
     await messenger.menus.create({
       id: "filtaquilla-changelog",
       contexts: ["browser_action_menu"],
       icons: "../skin/changelog.svg",
       onclick: () => {
-        showFQmessage("whats-new-list", ["ok"], null, 
-          messenger.i18n.getMessage("whats-new-head") + " " + versionPart);
+        showFQmessage(
+          "whats-new-list",
+          ["ok"],
+          null,
+          messenger.i18n.getMessage("whats-new-head") + " " + versionPart
+        );
       },
       title: messenger.i18n.getMessage("message.btn.changeLog", versionPart),
-    });    
+    });
 
     await messenger.menus.create({
       id: "filtaquilla-support",
@@ -675,7 +675,7 @@
         }
       },
       title: messenger.i18n.getMessage("supportPage"),
-    });    
+    });
 
     await messenger.menus.create({
       id: "filtaquilla-github",
@@ -693,15 +693,13 @@
       },
       title: messenger.i18n.getMessage("githubPage"),
     });
-    
 
     // Force rebuild
     await browser.menus.refresh();
     if (isDebug) {
       console.log("Menus created.");
-    }    
+    }
   }
-  
 
   // ************* messages  ****/
 
@@ -715,11 +713,10 @@
       url.searchParams.set("msg_storage", "true");
     }
     if (messageIds == "whats-new-list" && !heading) {
-      heading = messenger.i18n.getMessage("whats-new-head") + " " +
-        messenger.i18n.getMessage(
-          "versionPart",
-          browser.runtime.getManifest().version
-        );
+      heading =
+        messenger.i18n.getMessage("whats-new-head") +
+        " " +
+        messenger.i18n.getMessage("versionPart", browser.runtime.getManifest().version);
     }
 
     if (heading) {
@@ -736,7 +733,8 @@
       height: 520,
     };
     const ids = messageIds.split(",").map((s) => s.trim());
-    if (ids.includes("newsMsgForced")) { // it's a long one...
+    if (ids.includes("newsMsgForced")) {
+      // it's a long one...
       windowProperties.height = 400;
       windowProperties.width = 810;
     }
@@ -745,7 +743,7 @@
     }
 
     if (features.includes("restart")) {
-      windowProperties.height+=60;
+      windowProperties.height += 60;
     }
 
     const createData = {
@@ -798,7 +796,7 @@
       console.log("FQ displayUpdateMessage()\n", ...args);
     };
 
-    const features = ["ok", "cancel","restart","changeLog"];
+    const features = ["ok", "cancel", "restart", "changeLog"];
 
     // reflects last addon version installed with a msg.
     let lastMessage =
@@ -827,7 +825,7 @@
           installedVersion
         );
         logDebug("Message shown successfully – version flag saved.");
-        switch(result) {
+        switch (result) {
           case "changeLog":
             // display the changelog
             await showFQmessage("whats-new-list", ["ok"]);
@@ -848,11 +846,14 @@
       }
       retryScheduled = true;
       logDebug("Scheduling one-time retry in 20 minutes…");
-      setTimeout(() => {
-        displayUpdateMessage().catch((e) =>
-          console.error("Retry of displayUpdateMessage() failed:", e)
-        );
-      }, RETRY_MINUTES * 60 * 1000); // 20 minutes
+      setTimeout(
+        () => {
+          displayUpdateMessage().catch((e) =>
+            console.error("Retry of displayUpdateMessage() failed:", e)
+          );
+        },
+        RETRY_MINUTES * 60 * 1000
+      ); // 20 minutes
     }
   }
 })();
