@@ -126,16 +126,17 @@ Increased strict_min_version to 140.0.
 *    "Play sound" file picker - doesn't work when path textbox is empty [issue #380]
 *    incompatible with Tb147 - bumped strict_max_ver to 149.* [issue #385]
  
-6.2 - WIP
+6.2.1 - WIP
 *    Increased strict_max_version to 153.*.
+*    Added forced needsBody for javascript for added stability [issue #403]. Can be switched off from settings
 *    Added tool tip to regular expression option for case insensitive matching
-*    fix regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match"
 *    Made regex options panel theme compatible using --box-text-color, --richlist-button-background, --border-color
-*    header regex: headers like "in-reply-to" are not exposed and do not work [issue #395]
+*    fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match"
+*    Fixed: header regex: headers like "in-reply-to" are not exposed and do not work [issue #395]
 *    Prepend / Append Date to subject [issue #398] 
 *              Added %date()% switch for subject prefix / append, for a list of letters you can use in the format string 
 *              check https://smarttemplates.quickfolders.org/variables.html#customDates
-*              Example: Prefix Subject:  `%date("Y-m-d")% [Important] 
+*              Example: Prefix Subject:  `%date("Y-m-d")% [Important] `
 
 
 

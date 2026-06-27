@@ -1,6 +1,6 @@
-This release updates FiltaQuilla to reflect recent changes in Thunderbird’s add-on platform planning. A previously announced restriction affecting Experiment APIs on the Release channel has been postponed to a later ESR cycle (currently targeted for 2027).
+This release updates FiltaQuilla to reflect recent changes in Thunderbird’s add-on platform planning. The planned restriction on the use of Experiment APIs on the Release channel has been postponed and is now scheduled for the following ESR cycle in 2027.
 
-No immediate action is required. FiltaQuilla continues to work on both Release and ESR versions of Thunderbird where supported.
+With Thunderbird 153 ESR arriving in July, a transition window opens during which users can switch from Thunderbird 153 Release to the ESR channel to secure a more stable update path. From the following ESR cycle in 2027 onwards, legacy add-ons will <b>only be supported on ESR versions</b>.
 
 Users who rely on advanced or experimental functionality may prefer the ESR channel for a more stable environment with fewer platform changes. The recommended migration point from Release to ESR is Thunderbird 153, expected in July 2026.
 
@@ -10,7 +10,7 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 
 <b>Improvements</b>
 <ul>
-  <li> Made FiltaQuilla compatible with Thunderbird 153.*. </li>
+  <li> Made FiltaQuilla compatible with Thunderbird 153.*. We are ready for the next ESR cycle! </li>
   <li> Prepend / Append Date to subject <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/398">[issue 398]</a> 
     
   Added %date()% switch for subject prefix / append, for a list of letters you can use in the format string - See: https://smarttemplates.quickfolders.org/variables.html#customDates
@@ -18,6 +18,13 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
   Example: Prefix Subject:  `%date("Y-m-d")% [Important] </li>
   <li> Added tool tip to regular expression option for case insensitive matching </li>
   <li> Made regex options panel theme compatible </li>
+  <li> JavaScript search term now forces needsBody = true for stability
+  <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/403">[issue 403]</a>.
+
+  This may potentially lead to slow down but it is necessary for searches that may require
+  parts of the message to be downloaded - in which case the search term needs to "know" it.
+
+  This can be disabled in settings (advanced users only). </li>
 </ul>
 <b>Bug Fixes</b>
 <ul>

@@ -334,7 +334,7 @@
   },
   "newsHead": { "message": "Latest News" },
   "newsMsgForced": {
-    "message": "{P}A planned change to limit the use of Experiment APIs on the Release channel has been postponed to a future ESR cycle (currently targeted for 2027).{/P}{P}At this time, no action is required. Add-ons like {b}{+extensionName}{/b} continue to work on both Release and ESR versions of Thunderbird where supported, although experimental interfaces may change over time as the platform develops.{/P}"
+    "message": "{P}The planned restriction on the use of Experiment APIs on the Release channel has been postponed and is now scheduled for the following ESR cycle in 2027.{/P}{P}With Thunderbird 153 ESR arriving in July, a transition window opens during which users can switch from Thunderbird 153 Release to the ESR channel to secure a more stable update path. From the following ESR cycle in 2027 onwards, legacy add-ons will {b}only be supported on ESR versions{/b}.{/P}{P}{b}{+extensionName}{/b} continues to work on both Release and ESR versions of Thunderbird where supported, although experimental interfaces may still change as the platform evolves.{/P}"
   },
   "optionsIntro": {
     "message": "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes."
@@ -435,6 +435,6 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}FiltaQuilla is now compatible up to Thunderbird {bold}153.*{/bold}.{/L}{L}Prepend/Append Date to subject now supports the {s}%date()%{/s} syntax (see variables by SmartTemplates). [issue 398]{/L}{L}Added tooltip for case-insensitive regular expression matching option.{/L}{L}Improved theme compatibility of regex options panel.{/L}{L}Fixed regex pseudo-flag {s}c{/s} overriding case-insensitive matching.{/L}{L}Header regex now allows searching message headers not exposed in the message database (e.g. {s}in-reply-to{/s}). This can be enabled in settings. It requires partial message download and may slow down filtering. It is recommended only for manual filters. [issue 395]{/L}{/U}"
+    "message": "{U}{L}FiltaQuilla is now compatible with Thunderbird {bold}153.*{/bold}.{/L}{L}Support added for prepending or appending the date to the subject using the {s}%date()%{/s} placeholder. Date formats are compatible with SmartTemplates. You can choose between the current date and the date of the email. [issue 398]{/L}{L}Header regex can now search message headers that Thunderbird does not normally expose (e.g. {s}In-Reply-To{/s}). This feature is disabled by default because it requires access to email content, which may affect performance when filtering, especially with large mailboxes or at startup. It can be enabled in Settings. [issue 395]{/L}{L}JavaScript search terms now require Thunderbird to provide email content. This improves reliability and avoids performance issues when retrieving emails. This feature allows writing filter conditions as sandboxed JavaScript code. Access to email content may also be triggered by functions such as {s}Services{/s} or {s}Util.extractRawHeaders(){/s}. If you are sure your scripts do not use these functions, this behavior can be disabled in Settings. [issue 403]{/L}{L}Improved theme compatibility of the regex options panel.{/L}{L}Added a tooltip for case-insensitive regular expression matching.{/L}{/U}"
   }
 }

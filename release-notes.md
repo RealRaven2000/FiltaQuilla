@@ -4,11 +4,12 @@
 *    Increased strict_max_version to 153.*.
 *    Made regex options panel theme compatible using --box-text-color, --richlist-button-background, --border-color
 *    header regex: headers like "in-reply-to" are not exposed and do not work [issue #395]
-*    Added tool tip to regular expression option for case insensitive matching
+*    JavaScript search term now forces needsBody = true for stability [issue #403]
 *    Prepend / Append Date to subject [issue #398] 
 *              Added %date()% switch for subject prefix / append, for a list of letters you can use in the format string 
 *              check https://smarttemplates.quickfolders.org/variables.html#customDates
 *              Example: Prefix Subject:  `%date("Y-m-d")% [Important] 
+*    Added tool tip to regular expression option for case insensitive matching
 
 
 **Bug Fixes**
