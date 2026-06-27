@@ -1858,7 +1858,12 @@
       getEnabled: function headerRegEx_getEnabled(scope, _op) {
         return _isLocalSearch(scope);
       },
-      needsBody: false,
+      get needsBody() {
+        // was hardcoded to false
+        const prefs = Services.prefs.getBranch("extensions.filtaquilla."),
+          isNeedsBody = prefs.getBoolPref("regexpHeader.allowRawHeaders");
+        return isNeedsBody;
+      },
       getAvailable: function headerRegEx_getAvailable(scope, _op) {
         return _isLocalSearch(scope) && HeaderRegexEnabled;
       },
@@ -1904,6 +1909,13 @@
 
         // fallback for headers that aren't parsed by msgDb
         if (headerValue==="" && allowRawHeaders) {
+           FiltaQuilla.Util.logHighlightDebug(
+             `headerRegex: `,
+             "white",
+             "rgb(100, 0, 45)",
+             `\n needs to stream message to find${propertyRealName}` +
+             "This may slow down filtering."
+           );
           let hMap = FiltaQuilla.Util.extractRawHeaders(aMsgHdr);
           let hValue = hMap.get(headerName.toLowerCase());
 
