@@ -547,35 +547,51 @@
 
   // modern message handler (from content script)
   // avoid notifytools in the future!
-  messenger.runtime.onMessage.addListener(async (data, _sender, _sendResponse) => {
+  // modern message handler (from content script)
+  // avoid notifytools in the future!
+  messenger.runtime.onMessage.addListener((data) => {
     switch (data.command) {
       case "updateActionScript":
-        // => send this to fq_FilterEditor.js
+        // <== fire-and-forget handler (Filter Editor bridge)
         console.log(`Send edited Script to Filter Editor:\n---------------\n${data.script}`);
         messenger.NotifyTools.notifyExperiment({
           event: "updateFilterScript",
           script: data.script,
         });
-        break;
+        return;
       case "showAboutConfig":
+        // <== fire-and-forget handler (opens FiltaQuilla config UI)
         messenger.FiltaQuilla.showAboutConfig(data.filter);
-        break;
-      case "showMessage":{
-        const message = data.msg,
-          messageIds = data.msgIds,
-          mode = data.mode || "standard",
-          features = data.features || ["ok"]; // minimum: an ok button. make array mutable
-
-        switch (mode) {
-          case "standard":
-            return showFQmessage(messageIds, features, message);
-          case "news":
-            return displayUpdateMessage();
-          default:
-            return "unknown";
-        }
-      } 
-
+        return;
+      case "showMessage":
+        // <== async message dialog with result return
+        return new Promise((resolve) => {
+          const mode = data.mode || "standard",
+            message = data.msg,
+            messageIds = data.msgIds,
+            features = data.features || ["ok"];
+          switch (mode) {
+            case "standard":
+              showFQmessage(messageIds, features, message)
+                .then(resolve)
+                .catch((ex) => {
+                  console.warn(`showMessage(${mode})`, ex);
+                  resolve(null);
+                });
+              break;
+            case "news":
+              displayUpdateMessage()
+                .then(resolve)
+                .catch((ex) => {
+                  console.warn(`showMessage(${mode})`, ex);
+                  resolve(null);
+                });
+              break;
+            default:
+              resolve("unknown");
+          }
+        });
+      // <== insert handlers for future commands here
     }
   });
   messenger.WindowListener.startListening();
@@ -632,7 +648,7 @@
     await messenger.menus.create({
       id: "filtaquilla-news",
       contexts: ["browser_action_menu"],
-      icons: "../skin/new.svg",
+      icons: "./skin/new.svg",
       onclick: async () => {
         const result = await showFQmessage("newsMsgForced", ["ok", "changeLog"], "");
         if (result === "changeLog") {
@@ -648,7 +664,7 @@
     await messenger.menus.create({
       id: "filtaquilla-changelog",
       contexts: ["browser_action_menu"],
-      icons: "../skin/changelog.svg",
+      icons: "./skin/changelog.svg",
       onclick: () => {
         showFQmessage(
           "whats-new-list",
@@ -663,7 +679,7 @@
     await messenger.menus.create({
       id: "filtaquilla-support",
       contexts: ["browser_action_menu"],
-      icons: "../skin/help.svg",
+      icons: "./skin/help.svg",
       onclick: async () => {
         const URL = "https://quickfilters.quickfolders.org/filtaquilla.html";
         let tabs = await messenger.tabs.query({});
@@ -680,7 +696,7 @@
     await messenger.menus.create({
       id: "filtaquilla-github",
       contexts: ["browser_action_menu"],
-      icons: "../skin/github.svg",
+      icons: "./skin/github.svg",
       onclick: async () => {
         const URL = "https://github.com/RealRaven2000/FiltaQuilla/issues";
         let tabs = await messenger.tabs.query({});
