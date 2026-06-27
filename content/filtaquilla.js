@@ -1554,7 +1554,7 @@
         }
         return [Contains, DoesntContain, Is, Isnt, BeginsWith, EndsWith];
       },
-      match: function folderName_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function (aMsgHdr, aSearchValue, aSearchOp) {
         let folderName = aMsgHdr.folder.name,
           matches = false;
 
@@ -1603,7 +1603,7 @@
         }
         return [Contains, DoesntContain, Is, Isnt, IsEmpty, IsntEmpty, BeginsWith, EndsWith];
       },
-      match: function searchBcc_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function (aMsgHdr, aSearchValue, aSearchOp) {
         let bccList = aMsgHdr.bccList;
         if (aSearchOp == IsEmpty) {return bccList.length == 0;}
         if (aSearchOp == IsntEmpty) {return bccList.length != 0;}
@@ -1700,7 +1700,7 @@
           return [Matches, DoesntMatch];
         }
       },
-      match: function subjectRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function (aMsgHdr, aSearchValue, aSearchOp) {
         var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue, searchFlags;
         [searchValue, searchFlags] = _getRegEx(aSearchValue);
@@ -1798,7 +1798,7 @@
         }
         return [Matches, DoesntMatch];
       },
-      match: function attachRegEx_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function (aMsgHdr, aSearchValue, aSearchOp) {
         // attach Regexp
         // var subject = aMsgHdr.mime2DecodedSubject;
         let searchValue,
@@ -2032,7 +2032,7 @@
         }
         return [Matches, DoesntMatch];
       },
-      match: function subjectBodyRegex_match(aMsgHdr, aSearchValue, aSearchOp) {
+      match: function (aMsgHdr, aSearchValue, aSearchOp) {
         var subject = aMsgHdr.mime2DecodedSubject,
           subResult = false;
 
@@ -2080,7 +2080,7 @@
       getAvailableOperators: function javascript_getAvailableOperators(_scope) {
         return [Matches, DoesntMatch];
       },
-      match: function javascript_match(message, aSearchValue, aSearchOp) {
+      match: function (message, aSearchValue, aSearchOp) {
         const script = aSearchValue;
         // the javascript stored in aSearchValue should use "message" to
         // reference the nsIMsgDBHdr objst for the message
@@ -2115,7 +2115,7 @@
       getAvailableOperators: function threadHeadTag_getAvailableOperators(_scope) {
         return [Is, Isnt, Contains, DoesntContain, IsEmpty, IsntEmpty];
       },
-      match: function threadHeadTag_matches(message, aSearchValue, aSearchOp) {
+      match: function (message, aSearchValue, aSearchOp) {
         let thread = null;
         let rootHdr = null;
         try {
@@ -2171,7 +2171,7 @@
       getAvailableOperators: function threadAnyTag_getAvailableOperators(_scope) {
         return [Contains, DoesntContain, IsntEmpty];
       },
-      match: function threadAnyTag_matches(message, aSearchValue, aSearchOp) {
+      match: function (message, aSearchValue, aSearchOp) {
         let tagArray = tagService.getAllTags({}),
           tagKeys = {};
         for (let tagInfo of tagArray) {
