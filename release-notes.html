@@ -4,6 +4,7 @@ With Thunderbird 153 ESR arriving in July, a transition window opens during whic
 
 Users who rely on advanced or experimental functionality may prefer the ESR channel for a more stable environment with fewer platform changes. The recommended migration point from Release to ESR is Thunderbird 153, expected in July 2026.
 
+<b>Supporting FiltaQuilla</b>
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>. For more ways of supporting me work, please read the section below after the change log.
 
@@ -16,20 +17,21 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
   Added %date()% switch for subject prefix / append, for a list of letters you can use in the format string - See: https://smarttemplates.quickfolders.org/variables.html#customDates
 
   Example: Prefix Subject:  `%date("Y-m-d")% [Important] </li>
-  <li> Added tool tip to regular expression option for case insensitive matching </li>
-  <li> Made regex options panel theme compatible </li>
   <li> JavaScript search term now forces needsBody = true for stability
   <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/403">[issue 403]</a>.
-
   This may potentially lead to slow down but it is necessary for searches that may require
   parts of the message to be downloaded - in which case the search term needs to "know" it.
 
   This can be disabled in settings (advanced users only). </li>
+
+  <li> Added tool tip to regular expression option for case insensitive matching </li>
+  <li> Made regex options panel theme compatible </li>
 </ul>
 <b>Bug Fixes</b>
 <ul>
   <li> Fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match" </li>
   <li> Header regex: headers like "in-reply-to" are not exposed and do not work <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/395">[issue 395]</a>. You can now search for headers that are not part of the message database, which can be enabled with a separate settings. This requires streaming part of the message and may lead to slowdown during filtering - therefore we recommend it only in filters that run manually.</li>
+  <li> Hardened ToneQuilla against path errors <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/380">[issue 380]</a></li>
 </ul>
 
 <b>Planned Next</b>

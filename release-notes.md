@@ -1,4 +1,4 @@
-**Version 6.2** 
+**Version 6.2.1** 
 
 **Improvements**
 *    Increased strict_max_version to 153.*.
@@ -14,7 +14,7 @@
 
 **Bug Fixes**
 *    Fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match"
-
+*    Hardened ToneQuilla against path errors [issue #380]
 
 
 **TO DO NEXT**
