@@ -181,13 +181,27 @@ export const ToneQuillaPlay = {
     function makePath() {
       // let path = new Array("extensions", "filtaquilla"); // was: tonequilla
       // return FileUtils.getDir("ProfD", path, true);
-      const profileDir = PathUtils.profileDir;
+      let profileDir = PathUtils.profileDir;
+      if (!profileDir) {
+        console.warn("PathUtils.profileDir empty → fallback to dirsvc ProfD");
+        profileDir = Services.dirsvc.get("ProfD", Ci.nsIFile).path;
+      }      
+      if (!profileDir) {
+        console.error("ToneQuillaPlay - empty profile Directory!", {
+          profileDir: PathUtils.profileDir,
+          type: typeof profileDir
+        });
+        return null;
+      }
       let path = PathUtils.join(profileDir, "extensions", "filtaquilla");
       return path;
     }
 
     async function ensureDirectoryExists(dir, stopAtDir) {
-      const parts = dir.split(/[\\/]/);
+      if (!dir) {
+        return false;
+      }
+      const parts = dir.split(/[\\/]/).filter((p) => p); // removes trailing "/"
       const stopAtNormalized = stopAtDir.replace(/[\\/]+$/, "").toLowerCase();
 
       // Build the list of directories from root to target
@@ -195,6 +209,9 @@ export const ToneQuillaPlay = {
       const fullPaths = [];
 
       for (let i = 1; i < parts.length; i++) {
+        if (!parts[i]) {
+          continue; // skip empty parts
+        }
         buildPath = PathUtils.join(buildPath, parts[i]);
         fullPaths.push(buildPath);
       }
