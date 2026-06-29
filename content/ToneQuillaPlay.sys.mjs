@@ -225,8 +225,8 @@ export const ToneQuillaPlay = {
             break;
           } // found the first existing parent
         } catch (ex) {
-          console.error("Error in IOUtils.stat - throwing again:", ex);
           if (ex.name !== "NotFoundError") {
+            console.error("Error in IOUtils.stat - throwing again:", ex);
             throw ex;
           }
         }
