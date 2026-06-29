@@ -58,6 +58,9 @@
   "filtaquilla.filters": {
     "message": "Filters"
   },
+  "filtaquilla.notificationAlert": {
+    "message": "Show Desktop Notification"
+  },
   "filtaquilla.inherit": {
     "message": "Inherit"
   },

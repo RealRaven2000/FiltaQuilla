@@ -101,6 +101,95 @@
     );
   }
 
+  const notificationMessageMap = new Map();
+
+  async function openNotificationMessage({ ref }) {
+    if (!ref) {
+      return false;
+    }
+
+    const openProperties = {};
+    if (ref.messageId) {
+      openProperties.messageId = ref.messageId;
+    } else if (ref.headerMessageId) {
+      openProperties.headerMessageId = ref.headerMessageId;
+    } else {
+      // Keep folder/messageKey payload for later recovery strategies.
+      // TB WebExtension APIs currently do not provide direct open-by-messageKey.
+      if (ref.apiFolder || ref.folderURI || ref.messageKey !== null) {
+        console.warn("notificationAlert: missing message identifier, folder fallback not implemented yet", {
+          apiFolder: ref.apiFolder || null,
+          folderURI: ref.folderURI || null,
+          messageKey: ref.messageKey ?? null,
+        });
+      }
+      return false;
+    }
+
+    if (["tab", "window"].includes(ref.openMode)) {
+      openProperties.location = ref.openMode;
+    }
+
+    await messenger.messageDisplay.open(openProperties);
+    return true;
+  }
+
+  async function handleNotificationAlert({ data }) {
+    const fallback = data.msgRef || {};
+    const msg = data.msgKey || {};
+    const extensionName = messenger.i18n.getMessage("extensionName") || "FiltaQuilla";
+    const subject = msg.subject || fallback.subject || extensionName;
+    const author = msg.author || fallback.author || "";
+    const rawActionValue = (data.actionValue || "").trim();
+    let severity = "default";
+    let actionHeading = rawActionValue;
+    // added switches for severity "warn:" / "alert:"
+    const severityMatch = /^(warn|alert)\s*:\s*(.*)$/i.exec(rawActionValue);
+    if (severityMatch) {
+      severity = severityMatch[1].toLowerCase();
+      actionHeading = severityMatch[2].trim();
+    }
+    if (!actionHeading) {
+      actionHeading = extensionName;
+    }
+
+    const iconMap = {
+      default: "skin/filtaquilla-64.png",
+      warn: "skin/notification-warn.svg",
+      alert: "skin/notification-alert.svg",
+    };
+    const iconPath = iconMap[severity] || iconMap.default;
+    const countText =
+      data.messageCount && data.messageCount > 1 ? ` (${data.messageCount} messages)` : "";
+
+    const notificationId = `fq-notification-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+    const options = {
+      type: "basic",
+      iconUrl: browser.runtime.getURL(iconPath),
+      title: `${actionHeading}${countText}`,
+      isClickable: true,
+      // TODO [l10n]: Add a dedicated localized fallback body key for notifications,
+      // e.g. notificationAlert.defaultMessage, instead of relying on subject fallback only.
+      message: `${subject}${author ? `\n${author}` : ""}`,
+    };
+
+    try {
+      await browser.notifications.create(notificationId, options);
+      notificationMessageMap.set(notificationId, {
+        messageId: msg.id || null,
+        headerMessageId: msg.headerMessageId || fallback.messageId || null,
+        apiFolder: data.apiFolderParam || null,
+        folderURI: fallback.folderURI || null,
+        messageKey: fallback.messageKey ?? null,
+        openMode: data.openMode || "default",
+      });
+      return { success: true, notificationId };
+    } catch (ex) {
+      console.error("notificationAlert: browser.notifications.create failed", ex, { data });
+      return { success: false, error: ex?.message || String(ex) };
+    }
+  }
+
   messenger.WindowListener.registerChromeUrl([
     ["resource", "filtaquilla", "content/"], // resource://
     ["resource", "filtaquilla-skin", "skin/"], // make a separate resource (we can't have 2 different resources mapped to to the same name)
@@ -317,6 +406,8 @@
           browser.tabs.create({ active: true, url: data.URL });
         }
         break;
+      case "notificationAlert": 
+        return handleNotificationAlert({ data });
       case "detachAttachments": {
         // old test code
         const isDebugAttachments = await messenger.LegacyPrefs.getPref(
@@ -543,6 +634,30 @@
         }
       }
     } // switch
+  });
+
+  messenger.notifications.onClicked.addListener(async (notificationId) => {
+    const ref = notificationMessageMap.get(notificationId);
+    if (!ref) {
+      return;
+    }
+
+    try {
+      await openNotificationMessage({ ref });
+    } catch (ex) {
+      console.error("notificationAlert: opening message failed", ex, { notificationId, ref });
+    } finally {
+      notificationMessageMap.delete(notificationId);
+      try {
+        await messenger.notifications.clear(notificationId);
+      } catch {
+        // notification may already be gone
+      }
+    }
+  });
+
+  messenger.notifications.onClosed.addListener((notificationId, _byUser) => {
+    notificationMessageMap.delete(notificationId);
   });
 
   // modern message handler (from content script)

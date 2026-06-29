@@ -58,6 +58,9 @@
   "filtaquilla.filters": {
     "message": "Filters"
   },
+  "filtaquilla.notificationAlert": {
+    "message": "Desktopmelding tonen"
+  },
   "filtaquilla.inherit": {
     "message": "Erven"
   },

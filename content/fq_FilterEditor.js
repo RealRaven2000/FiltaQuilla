@@ -81,6 +81,7 @@
        // mappings to thunderbird's ruleactiontarget-* elements
       "filtaquilla@mesquilla.com#subjectAppend": "ruleactiontarget-forwardto",
       "filtaquilla@mesquilla.com#subjectSuffix": "ruleactiontarget-forwardto",
+      "filtaquilla@mesquilla.com#notificationAlert": "ruleactiontarget-forwardto",
       "filtaquilla@mesquilla.com#removeTag": "ruleactiontarget-tag",
       "filtaquilla@mesquilla.com#copyAsRead": "ruleactiontarget-folder",
       "filtaquilla@mesquilla.com#moveLater": "ruleactiontarget-folder",

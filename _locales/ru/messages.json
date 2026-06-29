@@ -58,6 +58,9 @@
   "filtaquilla.filters": {
     "message": "Фильтры"
   },
+  "filtaquilla.notificationAlert": {
+    "message": "Показать уведомление на рабочем столе"
+  },
   "filtaquilla.inherit": {
     "message": "Унаследованное"
   },

@@ -1700,7 +1700,27 @@ FiltaQuilla.Util = {
 
 var { ExtensionParent } = ChromeUtils.importESModule("resource://gre/modules/ExtensionParent.sys.mjs");
 var { MimeParser } = ChromeUtils.importESModule("resource:///modules/mimeParser.sys.mjs");
-FiltaQuilla.Util.extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
+
+Object.defineProperties(FiltaQuilla.Util, {
+  extension: {
+    get() {
+      return ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
+    },
+  },
+  messageManager: {
+    get() {
+      // requires "messagesRead" permission?
+      return FiltaQuilla.Util.extension.messageManager;
+    },
+  },
+  folderManager: {
+    get() {
+      // requires "accountsRead" permission?
+      return FiltaQuilla.Util.extension.folderManager;
+    },
+  },
+});
+
 Services.scriptloader.loadSubScript(
   FiltaQuilla.Util.extension.rootURI.resolve("content/scripts/notifyTools.js"),
   FiltaQuilla.Util,

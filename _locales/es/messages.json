@@ -57,6 +57,9 @@
   "filtaquilla.filters": {
     "message": "Filtros"
   },
+  "filtaquilla.notificationAlert": {
+    "message": "Mostrar notificación de escritorio"
+  },
   "filtaquilla.inherit": {
     "message": "Heredar"
   },

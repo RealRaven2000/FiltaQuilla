@@ -46,6 +46,8 @@ pref("extensions.filtaquilla.regexpBody.contentType.whiteList", "");
 pref("extensions.filtaquilla.archiveMessage.enabled", false);
 pref("extensions.filtaquilla.smarttemplates.fwd.enabled", false);
 pref("extensions.filtaquilla.smarttemplates.rsp.enabled", false);
+pref("extensions.filtaquilla.notificationAlert.enabled", false);
+pref("extensions.filtaquilla.notificationAlert.clickAction.openMode", "window");
 pref("extensions.filtaquilla.lastSelectedOptionsTab", "actions"); // actions, conditions, support
 // search terms
 pref("extensions.filtaquilla.SubjectRegexEnabled", true);

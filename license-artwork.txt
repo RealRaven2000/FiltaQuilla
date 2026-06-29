@@ -6,3 +6,13 @@ Free Download Github 43 SVG vector file in monocolor and multicolor type for Ske
     COLLECTION: Fontsio Interface Icons
     LICENSE: MIT License
     AUTHOR: Kenan Gundogan
+
+notification-warn.svg
+SOURCE: https://searchfox.org/comm-central/source/mail/themes/shared/mail/icons/new/activity/warning.svg
+ORIGIN: Mozilla Thunderbird (comm-central)
+LICENSE: MPL 2.0
+
+notification-alert.svg
+SOURCE: https://searchfox.org/comm-central/source/mail/themes/shared/mail/icons/new/activity/error.svg
+ORIGIN: Mozilla Thunderbird (comm-central)
+LICENSE: MPL 2.0

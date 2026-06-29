@@ -58,6 +58,9 @@
   "filtaquilla.filters": {
     "message": "Filters"
   },
+  "filtaquilla.notificationAlert": {
+    "message": "デスクトップ通知を表示"
+  },
   "filtaquilla.inherit": {
     "message": "Inherit"
   },

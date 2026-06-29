@@ -34,11 +34,6 @@
 
 (function filtaQuilla()
 {
-  const { ExtensionParent } = ChromeUtils.importESModule(
-    "resource://gre/modules/ExtensionParent.sys.mjs"
-  );
-  const extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
-
   var { MailUtils } = ChromeUtils.importESModule("resource:///modules/MailUtils.sys.mjs");
   var { MessageArchiver } = ChromeUtils.importESModule(
     "resource:///modules/MessageArchiver.sys.mjs"
@@ -133,6 +128,7 @@
     tonequillaEnabled = false,
     saveMessageAsFileEnabled = false,
     moveLaterEnabled = false,
+    notificationAlertEnabled = false,
     regexpCaseInsensitiveEnabled = false,
     archiveMessageEnabled = false,
     fwdSmartTemplatesEnabled = false,
@@ -611,7 +607,7 @@
         // then send a message to SmartTemplates
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           // pass on the message header - similar to printingTools NG
-          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(
+          let MessageHeader = FiltaQuilla.Util.messageManager.convert(
               aMsgHdrs[messageIndex]
             ),
             count = messageIndex + 1,
@@ -663,7 +659,7 @@
         // then send a message to SmartTemplates
         for (var messageIndex = 0; messageIndex < aMsgHdrs.length; messageIndex++) {
           // pass on the message header - similar to printingTools NG
-          let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(
+          let MessageHeader = FiltaQuilla.Util.messageManager.convert(
             aMsgHdrs[messageIndex]
           );
           FiltaQuilla.Util.notifyTools.notifyBackground({
@@ -784,7 +780,7 @@
                 hdr
               );
               if (isPrintingToolsNG) {
-                let MessageHeader = FiltaQuilla.Util.extension.messageManager.convert(hdr);
+                let MessageHeader = FiltaQuilla.Util.messageManager.convert(hdr);
                 if (MessageHeader) {
                   FiltaQuilla.Util.notifyTools.notifyBackground({
                     func: "printMessage",
@@ -991,7 +987,7 @@
           // 2. parts.some( (part) => part.contentType ==="multipart/signed"))
           //  ==> means it is signed, and we can save from the background and skip detachment.
 
-          const messageHeader = extension.messageManager.convert(msgHdr);
+          const messageHeader = FiltaQuilla.Util.messageManager.convert(msgHdr);
           const result = await FiltaQuilla.Util.notifyTools.notifyBackground({
             func: "tryDetachAttachments",
             messageHeader: messageHeader,
@@ -1131,7 +1127,7 @@
             `${mDate.getDate()} ${mDate.getHours()}:${mDate.getMinutes()}`;
 
           // save attachment code
-          const messageHeader = extension.messageManager.convert(msgHdr);
+          const messageHeader = FiltaQuilla.Util.messageManager.convert(msgHdr);
           if (testErr) {
             throw new Error(`Exception test in: saveAttachments background call`);
           }
@@ -2304,6 +2300,85 @@
 
       allowDuplicates: true,
     };
+
+    // notification alert [issue 240] 
+    const notification_alert_name = util.getBundleString("filtaquilla.notificationAlert");
+    self.notificationAlert = {
+      id: "filtaquilla@mesquilla.com#notificationAlert",
+      name: notification_alert_name,
+      applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
+        if (!aMsgHdrs || !aMsgHdrs.length) {
+          return;
+        }
+
+        let msgHeader = null;
+        let apiFolderParam = null;
+        const msgHdr = aMsgHdrs[0];
+
+        // Convert to API message object when possible.
+        try {
+          msgHeader = FiltaQuilla.Util.messageManager.convert(msgHdr);
+        } catch (ex) {
+          util.logException("notificationAlert: messageManager.convert() failed", ex);
+        }
+
+        // Convert folder to API folder object (account key is optional but preferred).
+        try {
+          const folder = msgHdr.folder;
+          const folderManager = FiltaQuilla.Util.folderManager;
+          let accountKey = null;
+          if (folder?.server && MailServices.accounts?.accounts) {
+            for (let account of MailServices.accounts.accounts) {
+              if (account?.incomingServer === folder.server) {
+                accountKey = account.key;
+                break;
+              }
+            }
+          }
+
+          if (folderManager?.convert) {
+            const apiFolder = folderManager.convert(folder, accountKey);
+            if (apiFolder) {
+              apiFolderParam = {
+                accountId: apiFolder.accountId,
+                path: apiFolder.path,
+                name: apiFolder.name,
+              };
+            }
+          }
+        } catch (ex) {
+          util.logException("notificationAlert: folderManager.convert() failed", ex);
+        }
+        const prefs = Services.prefs.getBranch("extensions.filtaquilla.");
+        // "window" "tab" "default"
+        const openMode = prefs.getStringPref("notificationAlert.clickAction.openMode");
+
+        FiltaQuilla.Util.notifyTools.notifyBackground({
+          func: "notificationAlert",
+          msgKey: msgHeader,
+          msgRef: {
+            folderURI: msgHdr.folder?.URI || null,
+            messageKey: msgHdr.messageKey,
+            messageId: msgHdr.messageId,
+            subject: msgHdr.subject,
+            author: msgHdr.author,
+            dateInSeconds: msgHdr.dateInSeconds,
+          },
+          actionValue: aActionValue,
+          messageCount: aMsgHdrs.length,
+          apiFolderParam,
+          openMode
+        });
+      },
+      isValidForType: function (_type, _scope) {
+        return notificationAlertEnabled;
+      },
+      validateActionValue: function (_value, _folder, _type) {
+        return null;
+      },
+      allowDuplicates: true,
+      needsBody: false,
+    };
   };
 
   self.setOptions = function () {
@@ -2410,6 +2485,10 @@
     } catch {;}
 
     try {
+      notificationAlertEnabled = prefs.getBoolPref("notificationAlert.enabled");
+    } catch {;}
+
+    try {
       archiveMessageEnabled = prefs.getBoolPref("archiveMessage.enabled");
     } catch {;}
 
@@ -2500,6 +2579,7 @@
     filterService.addCustomAction(self.javascriptActionBody);
     filterService.addCustomAction(self.saveMessageAsFile);
     filterService.addCustomAction(self.moveLater);
+    filterService.addCustomAction(self.notificationAlert);
     filterService.addCustomAction(self.playSound);
     filterService.addCustomAction(self.archiveMessage);
     filterService.addCustomAction(self.trainAsJunk);

@@ -58,6 +58,9 @@
   "filtaquilla.filters": {
     "message": "Filter"
   },
+  "filtaquilla.notificationAlert": {
+    "message": "Visa skrivbordsavisering"
+  },
   "filtaquilla.inherit": {
     "message": "Ärv"
   },
