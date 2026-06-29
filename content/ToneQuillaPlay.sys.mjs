@@ -458,11 +458,21 @@ export const ToneQuillaPlay = {
 
     async function getLocalFile(fileName) {
       // get the "menuOnTop.json" file in the profile/extensions directory
-      const profileDir = PathUtils.profileDir;
+      const profileDir = PathUtils.profileDir || profileDirForDebug;
       // let path = new Array("extensions", "filtaquilla", fileName);  // was: tonequilla
       // http://dxr.mozilla.org/comm-central/source/mozilla/toolkit/modules/FileUtils.jsm?from=FileUtils.jsm&case=true#41
       // return FileUtils.getFile("ProfD", path); // implements nsIFile
       // [bug 920187] = getFile was deprecated. Use IOUtils / PathUtils
+      if (!profileDir) {
+        logHighlightDebugOptional(
+          "sounds",
+          "getLocalFile() could not resolve profile directory",
+          { background: "rgb(130, 0, 0)", color: "white" },
+          { fileName }
+        );
+        return null;
+      }
+
       let path = PathUtils.join(profileDir, "extensions", "filtaquilla", fileName);
       logHighlightDebugOptional("sounds.files", "getLocalFile() checking", {}, { fileName, path });
       try {
@@ -509,7 +519,7 @@ export const ToneQuillaPlay = {
       let dir = makePath();
       logHighlightDebugOptional("sounds", "init() target sound directory", {}, { dir });
       if (dir) {
-        let isDirectory = await ensureDirectoryExists(dir, PathUtils.profileDir);
+        let isDirectory = await ensureDirectoryExists(dir, profileDirForDebug);
         logHighlightDebugOptional(
           "sounds",
           "init() ensureDirectoryExists result",
@@ -557,6 +567,7 @@ export const ToneQuillaPlay = {
           "scissors-423.ogg",
         ];
         let unpackedCount = 0;
+        let failedCount = 0;
 
         for (const name of fileList) {
           try {
@@ -580,13 +591,15 @@ export const ToneQuillaPlay = {
               logHighlightDebugOptional("sounds", "init() sound already present", {}, { name, path: file.path });
             }
           } catch (ex) {
+            failedCount++;
             logHighlightDebugOptional(
               "sounds",
               "init() failed while processing sound asset",
               { background: "rgb(130, 0, 0)", color: "white" },
               { name, message: ex.message, result: ex.result, stack: ex.stack }
             );
-            re(`Error copying ${name}: ${ex.message ?? ex}`);
+            // Non-fatal: user can still supply their own sounds.
+            continue;
           }
         }
 
@@ -596,6 +609,7 @@ export const ToneQuillaPlay = {
           { background: "rgb(0, 74, 94)", color: "white" },
           {
             unpackedCount,
+            failedCount,
             totalFiles: fileList.length,
             targetFolder: that.soundsDirectory,
           }
