@@ -1,4 +1,4 @@
-**Version 6.2.1** 
+**Version 6.2.2** 
 
 **Improvements**
 *    Increased strict_max_version to 153.*.
@@ -13,8 +13,8 @@
 
 
 **Bug Fixes**
+*    Hardened ToneQuilla against path errors, 6.2.2 Hardened ToneQuilla against path errors. Fixes specific issues for MacOS [issue #380]
 *    Fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match"
-*    Hardened ToneQuilla against path errors [issue #380]
 
 
 **TO DO NEXT**
