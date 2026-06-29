@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "FiltaQuilla",
   "description": "__MSG_extensionDescription__",
-  "version": "6.2.1",
+  "version": "6.2.2",
   "default_locale": "en",
   "author": "R Kent James, Axel Grude",
   "developer": {
