@@ -8,6 +8,10 @@ Users who rely on advanced or experimental functionality may prefer the ESR chan
 
 If you would like to support FiltaQuilla with donation you can now <a href="https://quickfilters.quickfolders.org/filtaquilla.html#donate">do so here</a>. For more ways of supporting me work, please read the section below after the change log.
 
+<b>Maintenance Version 6.2.2</b>
+<ul>
+  <li> 6.2.2 Hardened ToneQuilla against path errors. Fixes specific issues for MacOS <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/380">[issue 380]</a></li>
+</ul> 
 
 <b>Improvements</b>
 <ul>
@@ -29,7 +33,6 @@ If you would like to support FiltaQuilla with donation you can now <a href="http
 </ul>
 <b>Bug Fixes</b>
 <ul>
-  <li> 6.2.2 Hardened ToneQuilla against path errors. Fixes specific issues for MacOS <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/380">[issue 380]</a></li>
   <li> Fixed regex pseudo-flag "c" - which forces case sensitive behavior overriding "Regex case-insensitive Match" </li>
   <li> Header regex: headers like "in-reply-to" are not exposed and do not work <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/395">[issue 395]</a>. You can now search for headers that are not part of the message database, which can be enabled with a separate settings. This requires streaming part of the message and may lead to slowdown during filtering - therefore we recommend it only in filters that run manually.</li>
 </ul>
