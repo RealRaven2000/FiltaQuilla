@@ -72,13 +72,33 @@ function re(e) {
 }
 
 function logHighlightDebugOptional(debugOption, txt, format = {}, ...args) {
-  const options = debugOption.split(",");
+  const options = String(debugOption)
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
   format.color = format.color || "white";
   format.background = format.background || "rgb(15, 96, 6)";
   for (let i = 0; i < options.length; i++) {
     let option = options[i];
     const Prefix = "extensions.filtaquilla";
-    let isDebug = Services.prefs.getBoolPref(`${Prefix}.debug.${option}`);
+    let isDebug = false;
+    try {
+      const exactPref = `${Prefix}.debug.${option}`;
+      const exactType = Services.prefs.getPrefType(exactPref);
+      if (exactType === Ci.nsIPrefBranch.PREF_BOOL) {
+        isDebug = Services.prefs.getBoolPref(exactPref, false);
+      } else {
+        const lowerOption = option.toLowerCase();
+        const lowerPref = `${Prefix}.debug.${lowerOption}`;
+        const lowerType = Services.prefs.getPrefType(lowerPref);
+        if (lowerType === Ci.nsIPrefBranch.PREF_BOOL) {
+          isDebug = Services.prefs.getBoolPref(lowerPref, false);
+          option = lowerOption;
+        }
+      }
+    } catch {
+      isDebug = false;
+    }
     if (!isDebug) {
       continue;
     }
@@ -115,6 +135,37 @@ export const ToneQuillaPlay = {
 
   //function to initialize variables
   init: async function (win = null) {
+    async function getAddonVersionForDebug() {
+      try {
+        const { AddonManager } = ChromeUtils.importESModule(
+          "resource://gre/modules/AddonManager.sys.mjs"
+        );
+        const addon = await AddonManager.getAddonByID(that.MY_ID);
+        return addon?.version || "<unknown>";
+      } catch (ex) {
+        logHighlightDebugOptional(
+          "sounds",
+          "init() could not resolve add-on version from AddonManager",
+          { background: "rgb(95, 48, 0)", color: "yellow" },
+          { name: ex?.name, message: ex?.message, result: ex?.result }
+        );
+        return "<unavailable>";
+      }
+    }
+
+    const initMarker = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const addonVersion = await getAddonVersionForDebug();
+    logHighlightDebugOptional(
+      "sounds",
+      "INIT ENTRY: ToneQuillaPlay.init() invoked",
+      { background: "rgb(0, 74, 94)", color: "white" },
+      {
+        initMarker,
+        addonId: that.MY_ID,
+        addonVersion,
+      }
+    );
+
     // new utility function to unpack a file from the xpi
     async function copyDataURLToFile(aURL, file) {
       let step = 0;
@@ -163,6 +214,20 @@ export const ToneQuillaPlay = {
       } catch (ex) {
         let msg = "ToneQuillaPlay copyDataURLToFile() failed at step " + step + ": " + ex.message;
         ToneQuillaPlay.logDebug(msg);
+        logHighlightDebugOptional(
+          "sounds",
+          "copyDataURLToFile() failed",
+          { background: "rgb(130, 0, 0)", color: "white" },
+          {
+            step,
+            sourceURL: aURL,
+            targetPath: file?.path,
+            name: ex?.name,
+            message: ex?.message,
+            result: ex?.result,
+            stack: ex?.stack,
+          }
+        );
         throw ex; // or return false if you prefer to handle error silently
       }
     }
@@ -194,75 +259,194 @@ export const ToneQuillaPlay = {
         return null;
       }
       let path = PathUtils.join(profileDir, "extensions", "filtaquilla");
+      logHighlightDebugOptional(
+        "sounds",
+        "init.makePath()",
+        {},
+        { profileDir, path }
+      );
       return path;
     }
 
+    const profileDirForDebug = PathUtils.profileDir || Services.dirsvc.get("ProfD", Ci.nsIFile).path;
+    logHighlightDebugOptional(
+      "sounds",
+      "INIT CONTEXT: startup paths",
+      { background: "rgb(0, 74, 94)", color: "white" },
+      {
+        profileDir: profileDirForDebug,
+        stopAtDir: profileDirForDebug,
+      }
+    );
+
     async function ensureDirectoryExists(dir, stopAtDir) {
       if (!dir) {
+        logHighlightDebugOptional("sounds", "ensureDirectoryExists(): empty dir argument");
         return false;
       }
-      const parts = dir.split(/[\\/]/).filter((p) => p); // removes trailing "/"
+
       const stopAtNormalized = stopAtDir.replace(/[\\/]+$/, "").toLowerCase();
+      logHighlightDebugOptional(
+        "sounds",
+        "ensureDirectoryExists() start",
+        {},
+        { dir, stopAtDir, stopAtNormalized }
+      );
 
-      // Build the list of directories from root to target
-      let buildPath = parts[0];
+      // FIX: no split(), no reconstruction
       const fullPaths = [];
+      let current = dir.replace(/[\\/]+$/, "");
 
-      for (let i = 1; i < parts.length; i++) {
-        if (!parts[i]) {
-          continue; // skip empty parts
+      while (true) {
+        fullPaths.unshift(current);
+
+        const parent = PathUtils.parent(current);
+        if (!parent || parent === current) {
+          break;
         }
-        buildPath = PathUtils.join(buildPath, parts[i]);
-        fullPaths.push(buildPath);
+        current = parent;
       }
+
+      logHighlightDebugOptional(
+        "sounds",
+        "ensureDirectoryExists() candidate path chain",
+        {},
+        fullPaths
+      );
 
       // Work backwards to find the first existing parent
       let startIndex = fullPaths.length - 1;
+      let notFoundCount = 0;
+      let lastNotFound = null;
       for (; startIndex >= 0; startIndex--) {
         try {
           const stat = await IOUtils.stat(fullPaths[startIndex]);
           if (stat.type === "directory") {
+            logHighlightDebugOptional(
+              "sounds",
+              "ensureDirectoryExists() found existing parent",
+              {},
+              { existingPath: fullPaths[startIndex], statType: stat.type }
+            );
             break;
-          } // found the first existing parent
+          }
         } catch (ex) {
-          console.error("Error in IOUtils.stat - throwing again:", ex);
+          if (ex.name === "NotFoundError") {
+            notFoundCount++;
+            lastNotFound = {
+              path: fullPaths[startIndex],
+              name: ex.name,
+              message: ex.message,
+              result: ex.result,
+            };
+            continue;
+          }
+          logHighlightDebugOptional(
+            "sounds",
+            "ensureDirectoryExists() unexpected IOUtils.stat failure",
+            { background: "rgb(130, 0, 0)", color: "white" },
+            { path: fullPaths[startIndex], name: ex.name, message: ex.message, result: ex.result }
+          );
           if (ex.name !== "NotFoundError") {
             throw ex;
           }
         }
       }
 
-      // Now create missing folders from the first non-existing after stopAtDir
+      if (notFoundCount > 0) {
+        logHighlightDebugOptional(
+          "sounds",
+          "ensureDirectoryExists() NotFoundError summary while walking parents",
+          {},
+          { notFoundCount, lastNotFound, startIndex }
+        );
+      }
+
+      // Create missing folders
       for (let i = startIndex + 1; i < fullPaths.length; i++) {
         const thisDir = fullPaths[i];
+
         if (thisDir.toLowerCase().startsWith(stopAtNormalized)) {
-          await IOUtils.makeDirectory(thisDir);
+          logHighlightDebugOptional(
+            "sounds",
+            "ensureDirectoryExists() creating directory",
+            {},
+            { thisDir, stopAtNormalized }
+          );
+          try {
+            await IOUtils.makeDirectory(thisDir);
+            logHighlightDebugOptional(
+              "sounds",
+              "ensureDirectoryExists() created directory",
+              {},
+              { thisDir }
+            );
+          } catch (ex) {
+            logHighlightDebugOptional(
+              "sounds",
+              "ensureDirectoryExists() makeDirectory failed",
+              { background: "rgb(130, 0, 0)", color: "white" },
+              { thisDir, name: ex.name, message: ex.message, result: ex.result }
+            );
+            throw ex;
+          }
         } else {
-          // Prevent going outside profileDir
           console.warn(`Stopped creating at ${thisDir}, beyond allowed root.`);
+          logHighlightDebugOptional(
+            "sounds",
+            "ensureDirectoryExists() stopped by root guard",
+            { background: "rgb(95, 48, 0)", color: "yellow" },
+            { thisDir, stopAtNormalized, dir }
+          );
           break;
         }
       }
+
+      logHighlightDebugOptional("sounds", "ensureDirectoryExists() complete", {}, { dir });
 
       return true;
     }
 
     const findFirstExistingParent = async (path) => {
+      logHighlightDebugOptional("sounds", "findFirstExistingParent() start", {}, { path });
       while (true) {
         try {
           const stat = await IOUtils.stat(path);
           if (stat.isDir) {
+            logHighlightDebugOptional(
+              "sounds",
+              "findFirstExistingParent() found directory",
+              {},
+              { path }
+            );
             return path; // Found the first existing parent directory
           } else {
             // It's a file, not a directory — go up one level
+            logHighlightDebugOptional(
+              "sounds",
+              "findFirstExistingParent() encountered file, moving up",
+              {},
+              { path }
+            );
             path = path.replace(/[/\\][^/\\]+$/, "");
           }
         } catch (ex) {
           if (ex.name === "NotFoundError") {
             // Remove the last segment of the path and try again
+            logHighlightDebugOptional(
+              "sounds",
+              "findFirstExistingParent() NotFoundError, moving up",
+              {},
+              { path, message: ex.message, result: ex.result }
+            );
             path = path.replace(/[/\\][^/\\]+$/, "");
             if (!path || /^[a-zA-Z]:\\?$/.test(path)) {
               // Reached root (e.g., C:\)
+              logHighlightDebugOptional(
+                "sounds",
+                "findFirstExistingParent() reached root, returning null",
+                { background: "rgb(95, 48, 0)", color: "yellow" }
+              );
               return null;
             }
           } else {
@@ -280,8 +464,10 @@ export const ToneQuillaPlay = {
       // return FileUtils.getFile("ProfD", path); // implements nsIFile
       // [bug 920187] = getFile was deprecated. Use IOUtils / PathUtils
       let path = PathUtils.join(profileDir, "extensions", "filtaquilla", fileName);
+      logHighlightDebugOptional("sounds.files", "getLocalFile() checking", {}, { fileName, path });
       try {
         const stat = await IOUtils.stat(path); // returns FileInfo
+        logHighlightDebugOptional("sounds", "getLocalFile() exists", {}, { path, stat });
         return {
           path,
           fileInfo: stat,
@@ -289,12 +475,23 @@ export const ToneQuillaPlay = {
       } catch (ex) {
         if (ex.name === "NotFoundError") {
           // File doesn't exist, but return the path anyway
+          logHighlightDebugOptional(
+            "sounds.files",
+            "getLocalFile() file missing",
+            {},
+            { fileName, path, message: ex.message, result: ex.result }
+          );
           return {
             path,
             fileInfo: null, // or undefined, depending on your logic
           };
         }
-        console.warn(`ToneQuillaPlay file not found: ${path}`, ex);
+        logHighlightDebugOptional(
+          "sounds",
+          "getLocalFile() unexpected failure",
+          { background: "rgb(130, 0, 0)", color: "white" },
+          { fileName, path, name: ex.name, message: ex.message, result: ex.result }
+        );
         return null;
       }
     }
@@ -310,13 +507,37 @@ export const ToneQuillaPlay = {
       // new code to unpack sounds...
 
       let dir = makePath();
+      logHighlightDebugOptional("sounds", "init() target sound directory", {}, { dir });
       if (dir) {
         let isDirectory = await ensureDirectoryExists(dir, PathUtils.profileDir);
+        logHighlightDebugOptional(
+          "sounds",
+          "init() ensureDirectoryExists result",
+          {},
+          { dir, isDirectory }
+        );
         if (!isDirectory) {
           that.soundsDirectory = await findFirstExistingParent(dir);
         } else {
           that.soundsDirectory = dir;
         }
+        logHighlightDebugOptional(
+          "sounds",
+          "init() soundsDirectory resolved",
+          {},
+          { soundsDirectory: that.soundsDirectory }
+        );
+        logHighlightDebugOptional(
+          "sounds",
+          "INIT CONTEXT: resolved output directory",
+          { background: "rgb(0, 74, 94)", color: "white" },
+          {
+            profileDir: profileDirForDebug,
+            targetDir: dir,
+            soundsDirectory: that.soundsDirectory,
+            ensuredDirectory: isDirectory,
+          }
+        );
         let fileList = [
           "applause.ogg",
           "duogourd.ogg",
@@ -335,9 +556,11 @@ export const ToneQuillaPlay = {
           "worthwhile-438.ogg",
           "scissors-423.ogg",
         ];
+        let unpackedCount = 0;
 
         for (const name of fileList) {
           try {
+            logHighlightDebugOptional("sounds.files", "init() checking sound asset", {}, { name });
             const file = await getLocalFile(name);
             if (!file) {
               throw new Error(`Couldn't resolve local file path for: ${name}`);
@@ -345,19 +568,46 @@ export const ToneQuillaPlay = {
 
             if (!file.fileInfo) {
               ToneQuillaPlay.logDebug(`Copying ${name} to ${file.path}...`);
+              logHighlightDebugOptional("sounds.files", "init() copying missing sound file", {}, { name, path: file.path });
 
               let localFile = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
               localFile.initWithPath(file.path);
               await copyDataURLToFile("chrome://filtaquilla/content/sounds/" + name, localFile);
+              unpackedCount++;
+              logHighlightDebugOptional("sounds", "init() copy completed", {}, { name, path: file.path });
             } else {
               ToneQuillaPlay.logDebug(`File already exists: ${file.path}`);
+              logHighlightDebugOptional("sounds", "init() sound already present", {}, { name, path: file.path });
             }
           } catch (ex) {
+            logHighlightDebugOptional(
+              "sounds",
+              "init() failed while processing sound asset",
+              { background: "rgb(130, 0, 0)", color: "white" },
+              { name, message: ex.message, result: ex.result, stack: ex.stack }
+            );
             re(`Error copying ${name}: ${ex.message ?? ex}`);
           }
         }
+
+        logHighlightDebugOptional(
+          "sounds",
+          "init() installed sound files",
+          { background: "rgb(0, 74, 94)", color: "white" },
+          {
+            unpackedCount,
+            totalFiles: fileList.length,
+            targetFolder: that.soundsDirectory,
+          }
+        );
       }
     } catch (e) {
+      logHighlightDebugOptional(
+        "sounds",
+        "init() fatal failure",
+        { background: "rgb(130, 0, 0)", color: "white" },
+        { name: e?.name, message: e?.message, result: e?.result, stack: e?.stack }
+      );
       re(e);
     }
   },

@@ -76,6 +76,7 @@ pref("extensions.filtaquilla.debug.timeStrings", false);
 pref("extensions.filtaquilla.debug.mimeBody", false);
 pref("extensions.filtaquilla.debug.isLocal", false);
 pref("extensions.filtaquilla.debug.sounds", false);
+pref("extensions.filtaquilla.debug.sounds.files", false);
 
 
 // upgrade handling stuff
