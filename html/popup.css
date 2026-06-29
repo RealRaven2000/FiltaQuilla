@@ -1,0 +1,13 @@
+
+/* maintenance tag */
+b.maintenance {
+  border-radius: 0.5em;
+  background-color: #550342 !important;
+  background-image: linear-gradient(55deg, rgba(6, 19, 162, 0.9) 0%, rgba(115, 3, 85, 0.9) 100%);
+  border:#900707 1px solid;
+  color: #ffd84d !important;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 0.4em;
+  padding: 0 0.3em;
+}
