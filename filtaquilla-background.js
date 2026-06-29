@@ -602,7 +602,7 @@
     const manifest = await messenger.runtime.getManifest();
 
     if (isDebug) {
-      console.log("%FiltaQuilla onInstalled:", "background: black; color: yellow;", {
+      console.log("%cFiltaQuilla onInstalled:", "background: black; color: yellow;", {
         reason,
         previousVersion,
         temporary,
