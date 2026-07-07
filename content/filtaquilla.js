@@ -795,11 +795,16 @@
                 Services.console.logStringMessage(
                   "Queue filter request to print message: " + hdr.subject
                 );
-                let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
-                rootprefs.setBoolPref("print.always_print_silent", true);
+                let printSilentBackup = null;
+                try {
+                  printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
+                  rootprefs.setBoolPref("print.always_print_silent", true);
+                } catch(e) { /* preference may not exist in newer Thunderbird */ }
                 if (!PrintUtils) {
-                  var { PrintUtils } = window.ownerGlobal;
-                  // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
+                  // [issue 406] window.ownerGlobal is not available in Thunderbird 128+
+                  // Use the window mediator to get the main 3-pane window instead
+                  let mainWin = Services.wm.getMostRecentWindow("mail:3pane") || window.ownerGlobal;
+                  var { PrintUtils } = mainWin || {};
                 }
 
                 // Tb 91
@@ -826,7 +831,11 @@
                     }
                   }
                   printingMessage = false;
-                  rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
+                  if (printSilentBackup !== null) {
+                    try {
+                      rootprefs.setBoolPref("print.always_print_silent", printSilentBackup); // try to restore previous setting
+                    } catch(e) {}
+                  }
                   await printNextMessage();
                 } else {
                   console.warn("No PrintUtils!")
