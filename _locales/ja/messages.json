@@ -293,7 +293,10 @@
     "message": "H"
   },
   "fq.toneQuilla": {
-    "message": "サウンド再生（Tonequilla）"
+    "message": "サウンド再生"
+  },
+  "fq.toneQuilla.unpack": {
+    "message": "バンドルされたサウンドを抽出"
   },
   "fq.trainGood": {
     "message": "良いとして学習"

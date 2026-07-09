@@ -293,7 +293,10 @@
     "message": "U"
   },
   "fq.toneQuilla": {
-    "message": "Klang abspielen (Tonequilla)"
+    "message": "Klang abspielen"
+  },
+  "fq.toneQuilla.unpack": {
+    "message": "Gebündelte Sounds extrahieren"
   },
   "fq.trainGood": {
     "message": "Als kein Junk kategorisieren"

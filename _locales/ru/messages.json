@@ -284,13 +284,16 @@
     "message": "D"
   },
   "fq.toneQuilla": {
-    "message": "Проиграть звук (Tonequilla)"
+    "message": "Проиграть звук"
   },
   "fq.trainGood": {
     "message": "Предположительно хорошее"
   },
   "fq.trainGood.access": {
     "message": "G"
+  },
+  "fq.toneQuilla.unpack": {
+    "message": "Распаковать встроенные звуки"
   },
   "fq.trainJunk": {
     "message": "Предположительно спам"

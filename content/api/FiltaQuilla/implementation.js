@@ -97,6 +97,151 @@ const christophers_code = async () => {
               }
             });
           },
+          readAudioFile: async function (path) {
+            const Ci = Components.interfaces;
+            if (!path || typeof path !== "string") {
+              throw new Error("readAudioFile: invalid path");
+            }
+
+            const bytes = await lazy.IOUtils.read(path);
+            const ext = path.includes(".") ? path.split(".").pop().toLowerCase() : "";
+            const fallbackMimeByExt = {
+              mp3: "audio/mpeg",
+              mpeg: "audio/mpeg",
+              wav: "audio/wav",
+              wave: "audio/wav",
+              ogg: "audio/ogg",
+              aiff: "audio/aiff",
+              aif: "audio/aiff",
+            };
+            let mimeType = "audio/ogg";
+            try {
+              if (ext) {
+                const mimeService = Components.classes["@mozilla.org/mime;1"].getService(
+                  Ci.nsIMIMEService
+                );
+                mimeType = mimeService.getTypeFromExtension(ext) || fallbackMimeByExt[ext] || mimeType;
+              }
+            } catch {
+              mimeType = fallbackMimeByExt[ext] || mimeType;
+            }
+
+            return {
+              bytes: Array.from(bytes),
+              mimeType,
+            };
+          },
+          unpackSampleSounds: async function (path = "") {
+            const Cc = Components.classes;
+            const Ci = Components.interfaces;
+            const { NetUtil } = ChromeUtils.importESModule("resource://gre/modules/NetUtil.sys.mjs");
+            const profileDir = PathUtils.profileDir || Services.dirsvc.get("ProfD", Ci.nsIFile).path;
+            const defaultTargetDir = PathUtils.join(profileDir, "extensions", "filtaquilla");
+
+            let targetDir = defaultTargetDir;
+            if (typeof path === "string" && path.trim()) {
+              const candidate = path.trim();
+              const isAbsolute = /^[a-zA-Z]:[\\/]|^\\\\|^\//.test(candidate);
+              if (isAbsolute) {
+                targetDir = candidate;
+              } else {
+                const normalized = candidate.replace(/^[\\/]+/, "");
+                targetDir = PathUtils.join(profileDir, normalized);
+              }
+            }
+
+            await lazy.IOUtils.makeDirectory(targetDir, { createAncestors: true, ignoreExisting: true });
+
+            const fileList = [
+              "applause.ogg",
+              "duogourd.ogg",
+              "Freedom.ogg",
+              "hold-your-horses-468.ogg",
+              "knob-458.ogg",
+              "maybe-one-day-584.ogg",
+              "nightingale.ogg",
+              "notification-squeak.wav",
+              "notify-1.wav",
+              "pour-1.wav",
+              "pour-2.ogg",
+              "scissors-423.ogg",
+              "scratch-389.ogg",
+              "squeak.wav",
+              "squishbeat.ogg",
+              "TheBrightestStar.ogg",
+              "worthwhile-438.ogg",
+              "your-turn-491.ogg",
+            ];
+
+            async function copyDataURLToPath(sourceURL, targetPath) {
+              const uri = Services.io.newURI(sourceURL);
+              const securityFlags =
+                Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_INHERITS ||
+                Ci.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_INHERITS_SEC_CONTEXT;
+              const channel = Services.io.newChannelFromURI(
+                uri,
+                null,
+                Services.scriptSecurityManager.getSystemPrincipal(),
+                null,
+                securityFlags,
+                Ci.nsIContentPolicy.TYPE_OTHER
+              );
+
+              const istream = await new Promise((resolve, reject) => {
+                NetUtil.asyncFetch(channel, (inputStream, status) => {
+                  if (Components.isSuccessCode(status)) {
+                    resolve(inputStream);
+                  } else {
+                    reject(Components.Exception("Failed to fetch source sound", status));
+                  }
+                });
+              });
+
+              const outFile = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
+              outFile.initWithPath(targetPath);
+              const ostream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(
+                Ci.nsIFileOutputStream
+              );
+              ostream.init(outFile, -1, -1, Ci.nsIFileOutputStream.DEFER_OPEN);
+
+              await new Promise((resolve, reject) => {
+                NetUtil.asyncCopy(istream, ostream, (result) => {
+                  if (Components.isSuccessCode(result)) {
+                    resolve();
+                  } else {
+                    reject(Components.Exception("Failed to copy sound file", result));
+                  }
+                });
+              });
+            }
+
+            let copied = 0;
+            let skipped = 0;
+            let failed = 0;
+
+            for (const name of fileList) {
+              const targetPath = PathUtils.join(targetDir, name);
+              try {
+                await lazy.IOUtils.stat(targetPath);
+                skipped++;
+                continue;
+              } catch (ex) {
+                if (ex.name !== "NotFoundError") {
+                  failed++;
+                  continue;
+                }
+              }
+
+              try {
+                await copyDataURLToPath(`chrome://filtaquilla/content/sounds/${name}`, targetPath);
+                copied++;
+              } catch {
+                failed++;
+              }
+            }
+
+            return { copied, skipped, failed, targetDir };
+          },
           detachAttachments: async function (messageId, savedAttachments) {
             // probably obsolete. Hence no schema entry.
             console.log(`detachAttachments called for messageId: ${messageId}`);   

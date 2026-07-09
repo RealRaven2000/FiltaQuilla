@@ -284,13 +284,16 @@
     "message": "D"
   },
   "fq.toneQuilla": {
-    "message": "Geluid afspelen (Tonequilla)"
+    "message": "Geluid afspelen"
   },
   "fq.trainGood": {
     "message": "Als Gewenst trainen"
   },
   "fq.trainGood.access": {
     "message": "G"
+  },
+  "fq.toneQuilla.unpack": {
+    "message": "Gebundelde geluiden uitpakken"
   },
   "fq.trainJunk": {
     "message": "Als Ongewenst trainen"

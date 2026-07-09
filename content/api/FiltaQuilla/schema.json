@@ -40,6 +40,33 @@
             "description": "(optional) filter string to restrict configuration via search box (read only)"
           }
         ]
+      },
+      {
+        "name": "readAudioFile",
+        "type": "function",
+        "async": true,
+        "description": "Reads a local audio file and returns bytes plus mime type.",
+        "parameters": [
+          {
+            "name": "path",
+            "type": "string",
+            "description": "Absolute local path of the audio file."
+          }
+        ]
+      },
+      {
+        "name": "unpackSampleSounds",
+        "type": "function",
+        "async": true,
+        "description": "Unpacks bundled sample sounds to the profile extensions/filtaquilla folder.",
+        "parameters": [
+          {
+            "name": "path",
+            "type": "string",
+            "optional": true,
+            "description": "Optional destination folder. Relative paths are resolved against the profile directory."
+          }
+        ]
       }
     ]
   }

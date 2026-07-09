@@ -292,7 +292,10 @@
     "message": "H"
   },
   "fq.toneQuilla": {
-    "message": "Reproducir sonido (Tonequilla)"
+    "message": "Reproducir sonido"
+  },
+  "fq.toneQuilla.unpack": {
+    "message": "Extraer sonidos incluidos"
   },
   "fq.trainGood": {
     "message": "Marcar como bueno"

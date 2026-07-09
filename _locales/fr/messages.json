@@ -292,7 +292,10 @@
     "message": "H"
   },
   "fq.toneQuilla": {
-    "message": "Jouer le son (Tonequilla)"
+    "message": "Jouer le son"
+  },
+  "fq.toneQuilla.unpack": {
+    "message": "Extraire les sons intégrés"
   },
   "fq.trainGood": {
     "message": "Marquer comme bon"

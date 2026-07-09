@@ -103,6 +103,96 @@
 
   const notificationMessageMap = new Map();
 
+  const kSoundIgnoreDelayMs = 3000;
+  let soundQueue = [];
+  let soundIgnore = new Set();
+  let soundDrainPromise = null;
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function getSoundDelayMs() {
+    try {
+      const value = await messenger.LegacyPrefs.getPref("extensions.filtaquilla.tonequilla.soundDelay");
+      return Number.isFinite(value) && value >= 0 ? value : 100;
+    } catch {
+      return 100;
+    }
+  }
+
+  async function playQueuedSound(spec) {
+    const result = await messenger.FiltaQuilla.readAudioFile(spec);
+    if (!result || !Array.isArray(result.bytes) || !result.bytes.length) {
+      throw new Error(`Could not load sound data: ${spec}`);
+    }
+
+    const blob = new Blob([new Uint8Array(result.bytes)], { type: result.mimeType || "audio/ogg" });
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+
+    await new Promise((resolve) => {
+      const release = () => URL.revokeObjectURL(url);
+      audio.addEventListener(
+        "ended",
+        () => {
+          release();
+          resolve();
+        },
+        { once: true }
+      );
+      audio.addEventListener(
+        "error",
+        () => {
+          release();
+          resolve();
+        },
+        { once: true }
+      );
+      audio.play().catch((ex) => {
+        release();
+        console.error("playQueuedSound() failed", { spec, ex });
+        resolve();
+      });
+    });
+  }
+
+  async function drainSoundQueue() {
+    while (soundQueue.length) {
+      const spec = soundQueue.shift();
+      try {
+        await playQueuedSound(spec);
+      } catch (ex) {
+        console.error("drainSoundQueue() failed", { spec, ex });
+      }
+
+      const delay = await getSoundDelayMs();
+      if (delay > 0) {
+        await sleep(delay);
+      }
+    }
+  }
+
+  function queueSound(spec) {
+    if (!spec || typeof spec !== "string") {
+      return { queued: false, reason: "invalid-spec" };
+    }
+    if (soundIgnore.has(spec)) {
+      return { queued: false, reason: "ignored-duplicate" };
+    }
+
+    soundQueue.push(spec);
+    soundIgnore.add(spec);
+    setTimeout(() => soundIgnore.delete(spec), kSoundIgnoreDelayMs);
+
+    if (!soundDrainPromise) {
+      soundDrainPromise = drainSoundQueue().finally(() => {
+        soundDrainPromise = null;
+      });
+    }
+    return { queued: true };
+  }
+
   async function openNotificationMessage({ ref }) {
     if (!ref) {
       return false;
@@ -408,6 +498,8 @@
         break;
       case "notificationAlert": 
         return handleNotificationAlert({ data });
+      case "playSound":
+        return queueSound(data.spec);
       case "detachAttachments": {
         // old test code
         const isDebugAttachments = await messenger.LegacyPrefs.getPref(
@@ -678,6 +770,8 @@
         // <== fire-and-forget handler (opens FiltaQuilla config UI)
         messenger.FiltaQuilla.showAboutConfig(data.filter);
         return;
+      case "unpackSounds":
+        return messenger.FiltaQuilla.unpackSampleSounds("extensions/filtaquilla");
       case "showMessage":
         // <== async message dialog with result return
         return new Promise((resolve) => {

@@ -281,7 +281,7 @@
     "message": "s"
   },
   "fq.toneQuilla": {
-    "message": "Spela ljud (Tonequilla)"
+    "message": "Spela ljud"
   },
   "fq.trainGood": {
     "message": "Träna som bra"
@@ -291,6 +291,9 @@
   },
   "fq.trainJunk": {
     "message": "Träna som skräp"
+  },
+  "fq.toneQuilla.unpack": {
+    "message": "Extrahera bundlade ljud"
   },
   "fq.trainJunk.access": {
     "message": "ä"

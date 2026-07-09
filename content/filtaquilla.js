@@ -798,8 +798,8 @@
                 let printSilentBackup = rootprefs.getBoolPref("print.always_print_silent");
                 rootprefs.setBoolPref("print.always_print_silent", true);
                 if (!PrintUtils) {
-                  var { PrintUtils } = window.ownerGlobal;
-                  // window.docShell.chromeEventHandler.ownerGlobal; // not in 91.5 - chromeEventHandler = null
+                  // replace window.ownerGlobal
+                  var { PrintUtils } = globalThis;
                 }
 
                 // Tb 91
@@ -2273,6 +2273,8 @@
       },
     };
 
+    // start ==>> OBSOLETE BLOCK (issue #404): runtime sound playback moved to background + experiment API.
+    // This init is only kept temporarily for compatibility while remaining ToneQuilla UI/editor paths are migrated.
     var { ToneQuillaPlay } = ChromeUtils.importESModule(
       "resource://filtaquilla/ToneQuillaPlay.sys.mjs"
     );
@@ -2282,13 +2284,29 @@
     } catch (ex) {
       FiltaQuilla.Util.logException("ToneQuillaPlay.init failed.", ex);
     }
+    // End <<==== OBSOLETE BLOCK
     let tonequilla_name = util.getBundleString("filtaquilla.playSound");
     self.playSound = {
       id: "tonequilla@mesquilla.com#playSound",
       name: tonequilla_name,
       applyAction: function (aMsgHdrs, aActionValue, _aListener, _aType, _aMsgWindow) {
-        util.logDebug("ToneQuillaPlay.queueToPlay", aActionValue);
-        ToneQuillaPlay.queueToPlay(aActionValue);
+        // pass the value on to the background script
+        // => uses experimental API to read the sound file
+        // then uses Audio to play the sound.
+        util.logDebug("playSound.notifyBackground", aActionValue);
+        // =========================================
+        // Future migration plan:
+        // 1) avoid arbitrary file path dependence for reliability/security hardening.
+        // 2) store user-approved sound payloads in extension storage (or IndexedDB) with stable IDs.
+        // 3) send sound IDs here instead of raw file paths, and keep path mode as legacy fallback only.
+        FiltaQuilla.Util.notifyTools
+          .notifyBackground({
+            func: "playSound",
+            spec: aActionValue,
+          })
+          .catch((ex) => {
+            util.logException("playSound.notifyBackground failed", ex);
+          });
       },
       isValidForType: function (_type, _scope) {
         return tonequillaEnabled;
