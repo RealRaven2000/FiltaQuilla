@@ -126,7 +126,7 @@ Increased strict_min_version to 140.0.
 *    "Play sound" file picker - doesn't work when path textbox is empty [issue #380]
 *    incompatible with Tb147 - bumped strict_max_ver to 149.* [issue #385]
  
-6.2.1 - WIP
+6.2.2 - 29/06/2026
 *    Increased strict_max_version to 153.*.
 *    Added forced needsBody for javascript for added stability [issue #403]. Can be switched off from settings
 *    Added tool tip to regular expression option for case insensitive matching
@@ -137,6 +137,11 @@ Increased strict_min_version to 140.0.
 *              Added %date()% switch for subject prefix / append, for a list of letters you can use in the format string 
 *              check https://smarttemplates.quickfolders.org/variables.html#customDates
 *              Example: Prefix Subject:  `%date("Y-m-d")% [Important] `
+*    Hardened ToneQuilla against path errors. Fixes specific issues for MacOS [issue #380]
+
+6.3 - WIP
+*    Replace sound playing code (ToneQuilla) with WebExtension methods [issue #404]
+*    No Printing with current Thunderbird-Version 152.0.1 [issue #406], [issue #340]
 
 
 
