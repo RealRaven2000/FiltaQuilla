@@ -615,7 +615,8 @@ button.text-link {
   border-radius: 3px;
 }
 
-.hasConfigEvent button.configSettings {
+.hasConfigEvent button.configSettings,
+button.unpackSounds {
   background-color: transparent;
   border-color: transparent;
 	color: currentColor;
@@ -638,6 +639,10 @@ button.text-link {
 
 
 .hasConfigEvent button.configSettings {
+  list-style-image: url('../skin/settings-simple.svg') !important;
+}
+
+button#unpackSounds {
   list-style-image: url('../skin/settings-simple.svg') !important;
 }
 

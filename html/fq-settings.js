@@ -197,6 +197,27 @@ const initEventListeners = async () => {
     });
     window.close();
   });
+
+  const unpackBtn = document.getElementById("unpackSounds");
+  if (unpackBtn) {
+    unpackBtn.addEventListener("click", async () => {
+      const originalTitle = unpackBtn.getAttribute("title") || "";
+      unpackBtn.disabled = true;
+      try {
+        const result = await messenger.runtime.sendMessage({ command: "unpackSounds" });
+        if (result && typeof result === "object") {
+          unpackBtn.setAttribute(
+            "title",
+            `${originalTitle}\nCopied: ${result.copied}, Existing: ${result.skipped}, Failed: ${result.failed}`
+          );
+        }
+      } catch (ex) {
+        console.error("unpackSounds failed", ex);
+      } finally {
+        unpackBtn.disabled = false;
+      }
+    });
+  }
 }
 
 async function dispatchAboutConfig(filter, readOnly, updateUI = false) {
