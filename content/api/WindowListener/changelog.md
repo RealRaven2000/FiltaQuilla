@@ -1,3 +1,11 @@
+Version 1.65
+------------
+- force unsafe URL loading to enable compatibility after TB155 (Bug 1974213)
+
+Version 1.64
+------------
+- removed backwards compatibility for Thunderbird < 140
+
 Version: 1.62
 -------------
 - fix bug in fullyLoaded()

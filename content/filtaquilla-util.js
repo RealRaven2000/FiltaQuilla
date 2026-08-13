@@ -462,11 +462,12 @@ FiltaQuilla.Util = {
     );
 
     let extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
-    Services.scriptloader.loadSubScript(
-      extension.rootURI.resolve("content/i18n.js"),
-      window,
-      "UTF-8"
-    );
+    Services.scriptloader.loadSubScriptWithOptions(extension.rootURI.resolve("content/i18n.js"), {
+      target: window,
+      allowUnsafeURL: true,
+    });
+
+
     window.i18n.updateDocument({ extension: extension });
     if (buttons) {
       for (let [name, label] of Object.entries(buttons)) {
@@ -1721,8 +1722,10 @@ Object.defineProperties(FiltaQuilla.Util, {
   },
 });
 
-Services.scriptloader.loadSubScript(
+Services.scriptloader.loadSubScriptWithOptions(
   FiltaQuilla.Util.extension.rootURI.resolve("content/scripts/notifyTools.js"),
-  FiltaQuilla.Util,
-  "UTF-8"
+  {
+    target: FiltaQuilla.Util,
+    allowUnsafeURL: true,
+  }
 );

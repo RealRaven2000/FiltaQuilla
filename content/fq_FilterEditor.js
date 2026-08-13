@@ -44,11 +44,14 @@
     );
 
     const extension = ExtensionParent.GlobalManager.getExtension("filtaquilla@mesquilla.com");
-    Services.scriptloader.loadSubScript(
+    Services.scriptloader.loadSubScriptWithOptions(
       extension.rootURI.resolve("content/scripts/notifyTools.js"),
-      util,
-      "UTF-8"
+      {
+        target: util,
+        allowUnsafeURL: true,
+      }
     );
+    
 
     util.notifyTools.addListener((data) => {
       if (data.event === "updateFilterScript") {

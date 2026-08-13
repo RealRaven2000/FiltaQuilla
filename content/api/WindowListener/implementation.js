@@ -1,28 +1,34 @@
-/* eslint-disable no-prototype-builtins */
 /*
  * This file is provided by the addon-developer-support repository at
  * https://github.com/thundernest/addon-developer-support
  *
- * Version 1.62
+ * Version 1.65
  *
- * Author: John Bieling (john@thunderbird.net)
+ * Authors (in alphabetical order by surname):
+ *   John Bieling (john@thunderbird.net)
+ *   Axel Grude (axel.grude@gmail.com)
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
+
 /*
-  globals
-    Cc, Ci, Cu
-    */
+  1.65 force unsafe URL loading to enable compatibility after TB155 
+  1.64 removed dependencies on anything before Thunderbird 140
+*/
 
 // Import some things we need.
+var { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
 var { ExtensionCommon } = ChromeUtils.importESModule(
   "resource://gre/modules/ExtensionCommon.sys.mjs"
 );
 var { ExtensionSupport } = ChromeUtils.importESModule("resource:///modules/ExtensionSupport.sys.mjs");
 
-// eslint-disable-next-line no-unused-vars
+var Services = globalThis.Services || 
+  ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
+
 function getThunderbirdVersion() {
   let parts = Services.appinfo.version.split(".");
   return {
@@ -30,13 +36,24 @@ function getThunderbirdVersion() {
     minor: parseInt(parts[1]),
   }
 }
-
-// eslint-disable-next-line no-unused-vars
 var WindowListener = class extends ExtensionCommon.ExtensionAPI {
   log(msg) {
-    if (this.debug) {
-      console.log("WindowListener API: " + msg);
-    }
+    if (this.debug) console.log("WindowListener API: " + msg);
+  }
+
+  /**
+   * Load a WindowListener-owned script from the extension package.
+   *
+   * Thunderbird 155 rejects jar: and file: URLs passed to loadSubScript() unless
+   * the caller explicitly opts in. loadSubScriptWithOptions() and the target
+   * option are available on Thunderbird 140; older versions ignore the new
+   * allowUnsafeURL option.
+   */
+  loadSubScript(url, target) {
+    return Services.scriptloader.loadSubScriptWithOptions(url, {
+      target,
+      allowUnsafeURL: true,
+    });
   }
 
   getCards(e) {
@@ -153,7 +170,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
           localstorage.local.callMethodInParentProcess("remove", args);
         localstorage.local.clear = (...args) =>
           localstorage.local.callMethodInParentProcess("clear", args);
-      } catch {
+      } catch (e) {
         console.info("Storage permission is missing");
       }
       return localstorage;
@@ -174,9 +191,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
   }
 
   error(msg) {
-    if (this.debug) {
-      console.error("WindowListener API: " + msg);
-    }
+    if (this.debug) console.error("WindowListener API: " + msg);
   }
 
   // async sleep function using Promise
@@ -184,9 +199,9 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     let timer = Components.classes["@mozilla.org/timer;1"].createInstance(
       Components.interfaces.nsITimer
     );
-    return new Promise(function (resolve, _reject) {
+    return new Promise(function (resolve, reject) {
       let event = {
-        notify: function (_timer) {
+        notify: function (timer) {
           resolve();
         },
       };
@@ -196,9 +211,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
 
   getAPI(context) {
     // Track if this is the background/main context
-    if (context.viewType != "background") {
+    if (context.viewType != "background")
       throw new Error("The WindowListener API may only be called from the background page.");
-    }
 
     this.context = context;
 
@@ -226,11 +240,11 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
 
     // TabMonitor to detect opening of tabs, to setup the options button in the add-on manager.
     this.tabMonitor = {
-      onTabTitleChanged(_tab) {},
-      onTabClosing(_tab) {},
-      onTabPersist(_tab) {},
-      onTabRestored(_tab) {},
-      onTabSwitched(_newTab, _oldTab) {
+      onTabTitleChanged(aTab) {},
+      onTabClosing(aTab) {},
+      onTabPersist(aTab) {},
+      onTabRestored(aTab) {},
+      onTabSwitched(aNewTab, aOldTab) {
         //self.setupAddonManager(self.getAddonManagerFromTab(aNewTab));
       },
       async onTabOpened(aTab) {
@@ -246,9 +260,9 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                 onStateChange() {},
                 onProgressChange() {},
                 onLocationChange(
-                  /* in nsIWebProgress*/ _WebProgress,
-                  /* in nsIRequest*/ _Request,
-                  /* in nsIURI*/ _Location
+                  /* in nsIWebProgress*/ aWebProgress,
+                  /* in nsIRequest*/ aRequest,
+                  /* in nsIURI*/ aLocation
                 ) {
                   aTab.browser.removeProgressListener(reporterListener);
                   resolve();
@@ -292,7 +306,6 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
           );
           try {
             let uriObject = Services.io.newURI(uriString);
-            // eslint-disable-next-line no-unused-vars
             let content = Cu.readUTF8URI(uriObject);
           } catch (e) {
             Components.utils.reportError(e);
@@ -336,18 +349,15 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                 );
             }
           };
-          Services.scriptloader.loadSubScript(url, prefsObj, "UTF-8");
+          self.loadSubScript(url, prefsObj);
         },
 
         registerChromeUrl(data) {
           let chromeData = [];
           let resourceData = [];
           for (let entry of data) {
-            if (entry[0] == "resource") {
-              resourceData.push(entry);
-            } else {
-              chromeData.push(entry);
-            }
+            if (entry[0] == "resource") resourceData.push(entry);
+            else chromeData.push(entry);
           }
 
           if (chromeData.length > 0) {
@@ -424,7 +434,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
             startupJS.WL.messenger = self.getMessenger(self.context);
             try {
               if (self.pathToStartupScript) {
-                Services.scriptloader.loadSubScript(self.pathToStartupScript, startupJS, "UTF-8");
+                self.loadSubScript(self.pathToStartupScript, startupJS);
                 // delay startup until startup has been finished
                 self.log(
                   "Waiting for async startup() in <" + self.pathToStartupScript + "> to finish."
@@ -474,6 +484,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
   }
 
   _loadIntoNestedBrowsers(window, isAddonActivation) {
+    // console.log("WL._loadIntoNestedBrowsers", window.location.href);
     let elements = [];
     elements = elements.concat(...window.document.getElementsByTagName("browser"));
     elements = elements.concat(...window.document.getElementsByTagName("xul:browser"));
@@ -485,7 +496,9 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
   async _loadIntoWindow(window, isAddonActivation) {
     const fullyLoaded = async (window) => {
       for (let i = 0; i < 20; i++) {
-        await this.sleep(50);
+        await this.sleep(250); // was 50
+        // To do: build a listener for window.document.readyState == "complete"
+        // so we don't need this loop
         if (
           window &&
           window.location.href != "about:blank" &&
@@ -499,11 +512,13 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
 
     try {
       await fullyLoaded(window);
-    } catch {
+    } catch (ex) {
+      // console.warn("WL._loadIntoWindow - error:", window?.location?.href, ex);
       return;
     }
 
     if (!window || window.hasOwnProperty(this.uniqueRandomID)) {
+      // console.log("WL._loadIntoWindow already processed:", window?.location.href)
       return;
     }
 
@@ -543,17 +558,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
 
         // Add helper function to inject CSS to WLDATA object
         window[this.uniqueRandomID].WL.injectCSS = function (cssFile) {
-          let element;
-          let v = parseInt(Services.appinfo.version.split(".").shift());
-
-          // using createElementNS in TB78 delays the insert process and hides any security violation errors
-          if (v > 68) {
-            element = window.document.createElement("link");
-          } else {
-            let ns = window.document.documentElement.lookupNamespaceURI("html");
-            element = window.document.createElementNS(ns, "link");
-          }
-
+          let element = window.document.createElement("link");
           element.setAttribute("wlapi_autoinjected", uniqueRandomID);
           element.setAttribute("rel", "stylesheet");
           element.setAttribute("href", cssFile);
@@ -585,9 +590,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
           }
 
           function injectChildren(elements, container) {
-            if (debug) {
-              console.log(elements);
-            }
+            if (debug) console.log(elements);
 
             for (let i = 0; i < elements.length; i++) {
               // take care of persists
@@ -612,11 +615,14 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
               ) {
                 let insertAfterElement = checkElements(elements[i].getAttribute("insertafter"));
 
-                if (debug) {
+                if (debug)
                   console.log(
-                    `${elements[i].tagName}#${elements[i].id}: insertafter ${insertAfterElement.id}`
+                    elements[i].tagName +
+                      "#" +
+                      elements[i].id +
+                      ": insertafter " +
+                      insertAfterElement.id
                   );
-                }
                 if (debug && elements[i].id && window.document.getElementById(elements[i].id)) {
                   console.error(
                     "The id <" +
@@ -635,50 +641,53 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
               ) {
                 let insertBeforeElement = checkElements(elements[i].getAttribute("insertbefore"));
 
-                if (debug) {
+                if (debug)
                   console.log(
-                    `${elements[i].tagName}#${elements[i].id}: insertbefore ${insertBeforeElement.id}`
+                    elements[i].tagName +
+                      "#" +
+                      elements[i].id +
+                      ": insertbefore " +
+                      insertBeforeElement.id
                   );
-                }
                 if (debug && elements[i].id && window.document.getElementById(elements[i].id)) {
                   console.error(
-                    `The id <${elements[i].id}> of the injected element already exists in the document!`
+                    "The id <" +
+                      elements[i].id +
+                      "> of the injected element already exists in the document!"
                   );
                 }
                 elements[i].setAttribute("wlapi_autoinjected", uniqueRandomID);
                 insertBeforeElement.parentNode.insertBefore(elements[i], insertBeforeElement);
               } else if (elements[i].id && window.document.getElementById(elements[i].id)) {
                 // existing container match, dive into recursivly
-                if (debug) {
+                if (debug)
                   console.log(
-                    `${elements[i].tagName}#${elements[i].id}: is an existing container, injecting into ${elements[i].id}`
+                    elements[i].tagName +
+                      "#" +
+                      elements[i].id +
+                      " is an existing container, injecting into " +
+                      elements[i].id
                   );
-                }
                 injectChildren(
                   Array.from(elements[i].children),
                   window.document.getElementById(elements[i].id)
                 );
               } else if (elements[i].localName === "toolbarpalette") {
                 // These vanish from the document but still exist via the palette property
-                if (debug) {
-                  console.log(elements[i].id + " is a toolbarpalette");
-                }
+                if (debug) console.log(elements[i].id + " is a toolbarpalette");
                 let boxes = [...window.document.getElementsByTagName("toolbox")];
                 let box = boxes.find((box) => box.palette && box.palette.id === elements[i].id);
                 let palette = box ? box.palette : null;
 
                 if (!palette) {
-                  if (debug) {
+                  if (debug)
                     console.log(
                       `The palette for ${elements[i].id} could not be found, deferring to later`
                     );
-                  }
                   continue;
                 }
 
-                if (debug) {
-                  console.log(`The toolbox for ${elements[i].id} is ${box.id}`);
-                }
+                if (debug) console.log(`The toolbox for ${elements[i].id} is ${box.id}`);
 
                 toolbarsToResolve.push(...box.querySelectorAll("toolbar"));
                 toolbarsToResolve.push(
@@ -691,20 +700,17 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                 injectChildren(Array.from(elements[i].children), palette);
               } else {
                 // append element to the current container
-                if (debug) {
+                if (debug)
                   console.log(
-                    `${elements[i].tagName}#${elements[i].id}: append to ${container.id}`
+                    elements[i].tagName + "#" + elements[i].id + ": append to " + container.id
                   );
-                }
                 elements[i].setAttribute("wlapi_autoinjected", uniqueRandomID);
                 container.appendChild(elements[i]);
               }
             }
           }
 
-          if (debug) {
-            console.log("Injecting into root document:");
-          }
+          if (debug) console.log("Injecting into root document:");
           let localizedXulString = xulString.replace(/__MSG_(.*?)__/g, localize);
           injectChildren(
             Array.from(
@@ -728,10 +734,9 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
         // Add messenger object to WLDATA object
         window[this.uniqueRandomID].WL.messenger = this.getMessenger(this.context);
         // Load script into add-on scope
-        Services.scriptloader.loadSubScript(
+        this.loadSubScript(
           this.registeredWindows[window.location.href],
-          window[this.uniqueRandomID],
-          "UTF-8"
+          window[this.uniqueRandomID]
         );
         window[this.uniqueRandomID].onLoad(isAddonActivation);
       } catch (e) {
@@ -827,16 +832,14 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                 origAddonOptionsButton.removeAttribute("hidden");
 
                 let addonOptionsButton = card.querySelector(".windowlistener-options-button");
-                if (addonOptionsButton) {
-                  addonOptionsButton.remove();
-                }
+                if (addonOptionsButton) addonOptionsButton.remove();
                 break;
               }
             }
           }
 
           // Remove tabmonitor
-          if (window[this.uniqueRandomID].hasTabMonitor) {
+          if (window[this.uniqueRandomID] && window[this.uniqueRandomID].hasTabMonitor) {
             this.getTabMail(window).unregisterTabMonitor(this.tabMonitor);
             window[this.uniqueRandomID].hasTabMonitor = false;
           }
@@ -853,9 +856,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     let shutdownJS = {};
     shutdownJS.extension = this.extension;
     try {
-      if (this.pathToShutdownScript) {
-        Services.scriptloader.loadSubScript(this.pathToShutdownScript, shutdownJS, "UTF-8");
-      }
+      if (this.pathToShutdownScript)
+        this.loadSubScript(this.pathToShutdownScript, shutdownJS);
     } catch (e) {
       Components.utils.reportError(e);
     }
@@ -890,3 +892,4 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     }
   }
 };
+
