@@ -6,13 +6,13 @@
     "message": "Kör filter på inkommande e-post"
   },
   "aria.configSettings": {
-    "message": "Avancerade inställningar - för ytterligare inställningar."
+    "message": "Avancerad konfiguration – för ytterligare inställningar."
   },
   "checkJavascriptActionBodyEnabled.accesskey": {
     "message": "c"
   },
   "checkJavascriptActionBodyEnabled.label": {
-    "message": "JavaScript-åtgärd med innehållstext"
+    "message": "JavaScript-åtgärd med meddelandetext"
   },
   "checkJavascriptEnabled.accesskey": {
     "message": "J"
@@ -21,7 +21,7 @@
     "message": "JavaScript"
   },
   "default": {
-    "message": "Använd standardvärden"
+    "message": "Använd standardvärde"
   },
   "editJavascript": {
     "message": "Redigera JavaScript"
@@ -31,20 +31,20 @@
   },
   "extensionDescription": {
     "description": "Description of the extension.",
-    "message": "Lägger till många extra e-postfilteråtgärder och söktermer: skriv ut e-post, ta bort stjärna eller etikett, markera som besvarad eller oläst, kopiera som läst, sökning med reguljära uttryck."
+    "message": "Lägger till många extra filteråtgärder och sökvillkor för e-post: skriv ut meddelanden, ta bort stjärna eller tagg, markera som besvarat eller oläst, kopiera som läst och sök med reguljära uttryck."
   },
   "extensionName": {
     "description": "Name of the extension.",
     "message": "FiltaQuilla"
   },
   "extensions.filtaquilla.description": {
-    "message": "E-postfiltrerande anpassade åtgärder"
+    "message": "Anpassade åtgärder för e-postfilter"
   },
   "feature.unsupported": {
     "message": "Den här funktionen stöds för närvarande inte."
   },
   "filtaquilla.applyIncomingFilters": {
-    "message": "Tillämpa filter för inkommande"
+    "message": "Tillämpa filter på inkommande e-post"
   },
   "filtaquilla.applyIncomingFilters.accesskey": {
     "message": "f"
@@ -68,10 +68,10 @@
     "message": "JavaScript-åtgärd"
   },
   "filtaquilla.javascriptActionBody.name": {
-    "message": "JavaScript-åtgärd med innehållstext"
+    "message": "JavaScript-åtgärd med meddelandetext"
   },
   "filtaquilla.launcher.launch": {
-    "message": "Starta filen!"
+    "message": "Öppna filen!"
   },
   "filtaquilla.launcher.select": {
     "message": "Välj en fil…"
@@ -83,7 +83,7 @@
     "message": "Välj ett program…"
   },
   "filtaquilla.runProgram.title": {
-    "message": "Välj ett program att utföra"
+    "message": "Välj ett program att köra"
   },
   "filtaquilla.selectFolder.btn": {
     "message": "Välj mapp…"
@@ -91,11 +91,14 @@
   "filtaquilla.selectFolder.title": {
     "message": "Välj en mapp"
   },
+  "filtaquilla.template.select": {
+    "message": "Välj en mall…"
+  },
   "filtaquilla.tone.select": {
     "message": "Välj en ljudfil…"
   },
   "filterActions": {
-    "message": "Filtreringsåtgärder"
+    "message": "Filteråtgärder"
   },
   "fq.Bcc": {
     "message": "Hemlig kopia"
@@ -104,16 +107,16 @@
     "message": "H"
   },
   "fq.addSender": {
-    "message": "Lägg till avsändare i adresslistan"
+    "message": "Lägg till avsändaren i adresslistan"
   },
   "fq.addSender.access": {
     "message": "v"
   },
   "fq.attachmentRegex": {
-    "message": "Regexmatchning i bilagans namn"
+    "message": "Matcha bilagenamn med reguljärt uttryck"
   },
   "fq.bodyRegex": {
-    "message": "Body Regexp-matchning"
+    "message": "Matcha meddelandetext med reguljärt uttryck"
   },
   "fq.copyAsRead": {
     "message": "Kopiera som läst"
@@ -122,19 +125,22 @@
     "message": "K"
   },
   "fq.detachAttachments": {
-    "message": "Flytta bifogade filer till"
+    "message": "Koppla loss bilagor till"
   },
   "fq.detachAttachments.access": {
     "message": "F"
   },
   "fq.filtaquilla.mustSelectFolder": {
-    "message": "Du måste markera en målmapp"
+    "message": "Du måste välja en målmapp"
   },
   "fq.fileNameMaxLength": {
     "message": "Maximal längd"
   },
   "fq.fileNameSpaceCharacter": {
     "message": "Ersätt mellanslag i filnamn med"
+  },
+  "fq.fileNameWhiteList": {
+    "message": "Tillåtna tecken"
   },
   "fq.folderName": {
     "message": "Mappnamn"
@@ -143,7 +149,7 @@
     "message": "M"
   },
   "fq.hdrRegex": {
-    "message": "Regex-matchning i sidhuvudet"
+    "message": "Matcha meddelandehuvud med reguljärt uttryck"
   },
   "fq.hdrRegex.access": {
     "message": "m"
@@ -158,7 +164,7 @@
     "message": "v"
   },
   "fq.launchFile": {
-    "message": "Kör fil"
+    "message": "Öppna fil"
   },
   "fq.launchFile.access": {
     "message": "f"
@@ -197,16 +203,16 @@
     "message": "Tillåt dubbletter"
   },
   "fq.printTools": {
-    "message": "Använder PrintingTools NG för utskrift"
+    "message": "Använd PrintingTools NG för utskrift"
   },
   "fq.regex.caseInsensitive": {
-    "message": "Regex skiftlägeskänslig Match"
+    "message": "Skiftlägesokänslig regexmatchning"
   },
   "fq.regex.caseInsensitive.tip": {
-    "message": "Om aktiverat, tillämpar FiltaQuilla automatiskt {s}/i{/s} på ditt regex, vilket kan bryta lookaheads som räknar versaler eller gemener. Inaktivera detta för att behålla skiftlägeskänsliga matchningar eller använd {s}/c{/s} i slutet av ditt regex."
+    "message": "När alternativet är aktiverat lägger FiltaQuilla automatiskt till {s}/i{/s} i ditt reguljära uttryck. Det kan påverka lookahead-uttryck som räknar versaler eller gemener. Inaktivera alternativet för att behålla skiftlägeskänslig matchning, eller använd {s}/c{/s} i slutet av uttrycket."
   },
   "fq.regex.multilineanchors": {
-    "message": "Stöd för ankartoken {s}^{/s} och {s}${/s} i adressrubriker,"
+    "message": "Stöd ankartoken {s}^{/s} och {s}${/s} i adresshuvuden"
   },
   "fq.removeflagged": {
     "message": "Ta bort stjärna"
@@ -215,7 +221,7 @@
     "message": "j"
   },
   "fq.removekeyword": {
-    "message": "Ta bort tag"
+    "message": "Ta bort tagg"
   },
   "fq.removekeyword.access": {
     "message": "b"
@@ -227,13 +233,13 @@
     "message": "k"
   },
   "fq.runFile.unicode": {
-    "message": "UTF-16 som standard"
+    "message": "Använd UTF-16 som standard"
   },
   "fq.runFile.unicode.tooltip": {
-    "message": "Använd tilläggsparametern @UTF16@ eller @UTF8@ för att använda individuell kodning"
+    "message": "Använd tilläggsparametern @UTF16@ eller @UTF8@ för att ange kodning för enskilda fall"
   },
   "fq.saveAttachment": {
-    "message": "Spara bifogade filer till"
+    "message": "Spara bilagor i"
   },
   "fq.saveAttachment.access": {
     "message": "p"
@@ -244,38 +250,44 @@
   "fq.saveMsgAsFile.access": {
     "message": "m"
   },
+  "fq.smartTemplate.fwd": {
+    "message": "Vidarebefordra med SmartTemplate"
+  },
+  "fq.smartTemplate.rsp": {
+    "message": "Svara med SmartTemplate"
+  },
   "fq.archiveMessage": {
-    "message": "arkivpost"
+    "message": "Arkivera meddelande"
   },
   "fq.subjectBodyRegex": {
-    "message": "Regeluttryck för ämne eller e -posttext"
+    "message": "Matcha ämne eller meddelandetext med reguljärt uttryck"
   },
   "fq.subjectRegex": {
-    "message": "Regex-matchning i ämnet"
+    "message": "Matcha ämne med reguljärt uttryck"
   },
   "fq.subjectRegex.access": {
     "message": "ä"
   },
   "fq.subjectappend": {
-    "message": "Lägg till i ämnets slut"
+    "message": "Lägg till sist i ämnet"
   },
   "fq.subjectappend.access": {
     "message": "s"
   },
   "fq.subjectprepend": {
-    "message": "Lägg till i ämnets början"
+    "message": "Lägg till först i ämnet"
   },
   "fq.subjectprepend.access": {
     "message": "l"
   },
   "fq.threadAnyTag": {
-    "message": "Tagg för trådmeddelanden"
+    "message": "Tagg för meddelanden i tråden"
   },
   "fq.threadAnyTag.access": {
     "message": "m"
   },
   "fq.threadHeadTag": {
-    "message": "Tagg för trådsidhuvudet"
+    "message": "Tagg för trådens första meddelande"
   },
   "fq.threadHeadTag.access": {
     "message": "s"
@@ -283,29 +295,29 @@
   "fq.toneQuilla": {
     "message": "Spela ljud"
   },
+  "fq.toneQuilla.unpack": {
+    "message": "Extrahera medföljande ljud"
+  },
   "fq.trainGood": {
-    "message": "Träna som bra"
+    "message": "Träna som önskat"
   },
   "fq.trainGood.access": {
     "message": "b"
   },
   "fq.trainJunk": {
-    "message": "Träna som skräp"
-  },
-  "fq.toneQuilla.unpack": {
-    "message": "Extrahera bundlade ljud"
+    "message": "Träna som skräppost"
   },
   "fq.trainJunk.access": {
     "message": "ä"
   },
   "githubPage": {
-    "message": "Besök FiltaQuilla GitHub-sida"
+    "message": "Besök FiltaQuillas GitHub-sida"
   },
   "helpFeatureTip": {
-    "message": "Visa detaljer om denna funktion"
+    "message": "Visa information om den här funktionen"
   },
   "indexInGlobalDatabase": {
-    "message": "Index i global databas"
+    "message": "Indexera i den globala databasen"
   },
   "inherit": {
     "message": "Ärv"
@@ -313,49 +325,68 @@
   "inheritedProperties": {
     "message": "Ärvda egenskaper"
   },
-  "message.btn.accept": { "message": "OK" },
-  "message.btn.cancel": { "message": "Avbryt" },
+  "message.btn.accept": {
+    "message": "OK"
+  },
+  "message.btn.cancel": {
+    "message": "Avbryt"
+  },
   "message.btn.changeLog": {
     "message": "Visa senaste ändringar $versionPart$…",
-    "placeholders": { "versionPart": { "content": "$1" } }
+    "placeholders": {
+      "versionPart": {
+        "content": "$1",
+        "example": " version 6.0"
+      }
+    }
   },
-  "message.btn.no": { "message": "Nej" },
-  "message.btn.yes": { "message": "Ja" },
-  "message.linkInTab": { "message": "(Länk öppnad i flik)" },
-  "message.placeholder": { "message": "Meddelande saknas." },
+  "message.btn.no": {
+    "message": "Nej"
+  },
+  "message.btn.yes": {
+    "message": "Ja"
+  },
+  "message.linkInTab": {
+    "message": "(Länken öppnades i en flik)"
+  },
+  "message.placeholder": {
+    "message": "Meddelande saknas."
+  },
   "message.restart": {
-    "message": "FiltaQuilla har gjort ändringar i vissa av sina anpassade filteråtgärder – dessa kan bara tillämpas efter att Thunderbird har startats om. Starta om Thunderbird så snart som möjligt för att säkerställa att filtren fungerar smidigt."
+    "message": "FiltaQuilla har ändrat några av sina anpassade filteråtgärder. Ändringarna börjar gälla först när Thunderbird har startats om. Starta om Thunderbird så snart som möjligt för att filtren ska fungera korrekt."
   },
-  "newsHead": { "message": "Senaste nytt" },
+  "newsHead": {
+    "message": "Senaste nytt"
+  },
   "newsMsgForced": {
-    "message": "{P}Den planerade begränsningen av användningen av Experiment API:er i Release-kanalen har skjutits upp och är nu planerad för nästa ESR-cykel 2027.{/P}{P}Med Thunderbird 153 ESR i juli öppnas ett övergångsfönster där användare kan byta från Thunderbird 153 Release till ESR-kanalen för att få en stabilare uppdateringsväg. Från nästa ESR-cykel 2027 kommer legacy-tillägg {b}endast att stödjas på ESR-versioner{/b}.{/P}{P}{b}{+extensionName}{/b} fortsätter att fungera på både Release- och ESR-versioner av Thunderbird där det stöds, även om experimentella gränssnitt kan fortsätta att ändras i takt med att plattformen utvecklas.{/P}"
+    "message": "{P}Den planerade begränsningen av användningen av Experiment API:er på Release-kanalen har skjutits upp och är nu planerad till nästa ESR-cykel 2027.{/P}{P}När Thunderbird 153 ESR lanseras i juli öppnas en övergångsperiod då användare kan byta från Thunderbird 153 Release till ESR-kanalen för en stabilare uppdateringsväg. Från och med nästa ESR-cykel 2027 kommer äldre tillägg {b}endast att stödjas i ESR-versioner{/b}.{/P}{P}{b}{+extensionName}{/b} fortsätter att fungera i både Release- och ESR-versioner av Thunderbird där det stöds, även om experimentella gränssnitt fortfarande kan ändras i takt med att plattformen utvecklas.{/P}"
   },
   "optionsIntro": {
-    "message": "Aktivera alla elemet du vill ha tillgängliga i dialogruan &quot;Filtreringsregler&quot;. Starta om efter ändringar."
+    "message": "Aktivera alla objekt som du vill ha tillgängliga i dialogrutan ”Filterregler”. Starta om efter ändringarna."
   },
   "pane1.title": {
-    "message": "Alternativ för FiltaQuilla"
+    "message": "Inställningar för FiltaQuilla"
   },
   "prefPanel-inheritPane": {
     "message": "Ärvda egenskaper"
   },
   "prefwindow.title": {
-    "message": "Alternativ för FiltaQuilla"
+    "message": "Inställningar för FiltaQuilla"
   },
   "purchase-a-license": {
     "message": "Köp en licens."
   },
   "purchase-heading": {
-    "message": "Att köpa en licens!"
+    "message": "Köp en licens"
   },
   "quickFiltersPage": {
     "message": "Hämta quickFilters!"
   },
   "quickFiltersPage_desc": {
-    "message": "Ladda ned detta häftiga tillägg för att turboladda din filtrering. quickFilters förenklar filterdefinition och -hantering."
+    "message": "Ladda ned det här tillägget för att effektivisera filtreringen. quickFilters gör det enkelt att skapa och hantera filter."
   },
   "regex.accept": {
-    "message": "Acceptera"
+    "message": "Godkänn"
   },
   "regex.btnBuilder.tooltip": {
     "message": "Klicka här för att testa ditt reguljära uttryck"
@@ -364,16 +395,19 @@
     "message": "Avbryt"
   },
   "regex.collapseWhiteSpace": {
-    "message": "ta bort all vit yta"
+    "message": "komprimera alla blanktecken"
   },
   "regex.contentfilter": {
     "message": "Innehållsbegränsningar:"
   },
   "regex.content.plaintext": {
-    "message": "bearbeta textdelar"
+    "message": "bearbeta delar med oformaterad text"
   },
   "regex.content.html": {
     "message": "bearbeta HTML-delar"
+  },
+  "regex.content.raw": {
+    "message": "Råläge: förbehandla inte delar med oformaterad text."
   },
   "regex.content.vcard": {
     "message": "bearbeta vCard-delar"
@@ -382,7 +416,7 @@
     "message": "uteslut alla HTML-taggar"
   },
   "regex.exclude.quotes": {
-    "message": "uteslut citat (html+ren text)"
+    "message": "uteslut citerad text (HTML och oformaterad text)"
   },
   "regex.exclude.style": {
     "message": "uteslut globala &lt;style&gt;-taggar och CSS"
@@ -391,47 +425,55 @@
     "message": "Reguljärt uttryck"
   },
   "regex.popup": {
-    "message": "Sök alternativ…"
+    "message": "Sökalternativ…"
   },
   "regex.raw.help": {
-    "message": "FiltaQuilla bearbetar som standard ren text genom att slå ihop alla stycken, dvs. ta bort radbrytningar som orsakas av textflöde. Detta tar också bort citattecken {>} i slutet av ett stycke. Aktivera detta alternativ om du vill söka i det obehandlade meddelandet."
+    "message": "FiltaQuilla förbehandlar som standard delar med oformaterad text genom att slå ihop stycken, det vill säga ta bort radbrytningar som uppstår genom omflödning. Då tas även avslutande citattecken {>} inne i ett stycke bort. Aktivera det här alternativet om du i stället vill söka i det obehandlade meddelandet."
   },
   "regex.switches": {
-    "message": "Sök inställningar"
+    "message": "Sökmodifierare"
   },
   "searchTerms": {
     "message": "Söktermer"
   },
   "supportFiltaquilla": {
-    "message": "Support FiltaQuilla"
+    "message": "Stöd FiltaQuilla"
   },
   "supportFiltaquilla_desc": {
-    "message": "FiltaQuilla is free to download and use - the best way to support the development team is by buying a license for quickFilters Pro. It is the most awesome filter extensions for managing and creating filters in a super convenient way."
+    "message": "FiltaQuilla är gratis att ladda ned och använda. Det bästa sättet att stödja utvecklingsteamet är att köpa en licens för quickFilters Pro. Det är ett kraftfullt filtertillägg som gör det mycket enkelt att skapa och hantera filter."
   },
   "supportPage": {
-    "message": "Besök supportsida"
+    "message": "Besök supportsidan"
   },
   "supportPage_desc": {
-    "message": "Denna sida beskriver de olika åtgärderna och villkoren du kan lägga till i e-postfilter med FiltaQuilla."
+    "message": "Den här sidan beskriver de olika åtgärder och villkor som du kan lägga till i e-postfilter med FiltaQuilla."
   },
   "versionPart": {
-    "message": "(версия $1$)",
-    "placeholders": { "1": { "content": "$1", "example": "6.0" } }
+    "message": " (version $1$)",
+    "placeholders": {
+      "1": {
+        "content": "$1",
+        "example": "6.0"
+      }
+    }
   },
   "whats-new-head": {
     "message": "Viktiga ändringar"
   },
   "whats-new-intro": {
-    "message": "FiltaQuilla stöds stolt genom mitt arbete med mina andra tillägg: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A} och {A-ST}SmartTemplates{/A}. Kolla gärna in dem i tilläggsbutiken!"
+    "message": "FiltaQuilla stöds genom mitt arbete med mina andra tillägg: {A-qI}quickFilters{/A}, {A-QF}QuickFolders{/A} och {A-ST}SmartTemplates{/A}. Ta gärna en titt på dem i tilläggsbutiken!"
   },
   "whats-new-list": {
-    "description": "🇸🇪 change log",
-    "message": "{U}{L}{b class=maintenance}6.2.2{/b}Fixar för ljudväljaren på macOS [issue 380]{/L}{L}FiltaQuilla är nu kompatibelt med Thunderbird {bold}153.*{/bold}.{/L}{L}Stöd har lagts till för att lägga till eller lägga till datum i ämnesraden med hjälp av {s}%date()%{/s}-platshållaren. Datumformat är kompatibla med SmartTemplates. Du kan välja mellan aktuellt datum och e-postens datum. [issue 398]{/L}{L}Header-regex kan nu komma åt meddelandehuvuden som Thunderbird normalt inte exponerar (t.ex. {s}In-Reply-To{/s}). Denna funktion är inaktiverad som standard eftersom den kräver åtkomst till e-postinnehåll, vilket kan påverka prestandan vid filtrering, särskilt med stora brevlådor eller vid start. Den kan aktiveras i inställningarna. [issue 395]{/L}{L}JavaScript-söktermer kräver nu att Thunderbird tillhandahåller e-postinnehåll. Detta förbättrar tillförlitligheten och undviker prestandaproblem vid hämtning av e-post. Funktionen gör det möjligt att skriva filtervillkor som sandboxad JavaScript-kod. Åtkomst till e-postinnehåll kan också triggas av funktioner som {s}Services{/s} eller {s}Util.extractRawHeaders(){/s}. Om du är säker på att dina skript inte använder dessa funktioner kan detta beteende inaktiveras i inställningarna. [issue 403]{/L}{L}Förbättrad temakompatibilitet för regex-panelen.{/L}{L}Tooltip har lagts till för regex-alternativet för skiftlägesokänslig matchning.{/L}{/U}"
+    "description": "🇬🇧 change log",
+    "message": "{U}{L}{b class=maintenance}6.2.2{/b}Korrigeringar för ljudväljaren på macOS [issue 380]{/L}{L}FiltaQuilla är nu kompatibelt med Thunderbird {bold}153.*{/bold}.{/L}{L}Stöd har lagts till för att lägga till datum före eller efter ämnet med hjälp av platshållaren {s}%date()%{/s}. Datumformaten är kompatibla med SmartTemplates. Du kan välja mellan dagens datum och e-postmeddelandets datum. [issue 398]{/L}{L}Regex för meddelandehuvuden kan nu söka i huvudfält som Thunderbird normalt inte exponerar (t.ex. {s}In-Reply-To{/s}). Funktionen är inaktiverad som standard eftersom den kräver åtkomst till e-postinnehållet, vilket kan påverka prestandan vid filtrering, särskilt med stora brevlådor eller vid start. Den kan aktiveras i inställningarna. [issue 395]{/L}{L}JavaScript-sökvillkor kräver nu att Thunderbird tillhandahåller e-postinnehåll. Det förbättrar tillförlitligheten och undviker prestandaproblem vid hämtning av e-postmeddelanden. Funktionen gör det möjligt att skriva filtervillkor som JavaScript-kod i en sandlåda. Åtkomst till e-postinnehåll kan också utlösas av funktioner som {s}Services{/s} eller {s}Util.extractRawHeaders(){/s}. Om du är säker på att dina skript inte använder dessa funktioner kan beteendet inaktiveras i inställningarna. [issue 403]{/L}{L}Förbättrad temakompatibilitet i panelen för regexalternativ.{/L}{L}Ett verktygstips har lagts till för skiftlägesokänslig matchning med reguljära uttryck.{/L}{/U}"
   },
   "whats-new-maintenance": {
-    "message": "Underhållsuppdatering $ver$. Denna specifika fix har lagts till sedan föregående version.",
+    "message": "Underhållsuppdatering $ver$. Den här korrigeringen har lagts till sedan föregående version.",
     "placeholders": {
-      "ver": { "content": "$1", "example": "6.12.3" }
+      "ver": {
+        "content": "$1",
+        "example": "6.12.3"
+      }
     }
   }
 }
