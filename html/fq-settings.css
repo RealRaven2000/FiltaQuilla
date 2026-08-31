@@ -1,8 +1,22 @@
+:root {
+  --color-gray-05: #fafafa;
+  --color-gray-10: #f4f4f5;
+  --color-gray-20: #e4e4e7;
+  --color-gray-40: #a1a1aa;
+  --color-gray-50: #71717a;
+  --color-gray-60: #52525b;
+  --color-gray-90: #18181b;  
+  
+  --button-active-background-color: var(--button-primary-active-background-color, light-dark(rgba(4, 53, 105, 0.9), rgba(2, 152, 233, 0.905)));
+  --button-active-color: var(--activecolor, light-dark(rgba(255, 255, 255, 0.9), rgba(0, 0, 0, 0.9))) !important;
+  --tab-hover-background: light-dark(var(--color-gray-30), var(--color-gray-50));
+}
+
 
 @media (prefers-color-scheme: dark) {
   :root {
     --hovercolor: #113e6a;
-    --hoverbackground: #ffffffcb;
+    --hoverbackground: #4b8eedcb;
     --selectedbackground:#1d3e7dad;
     --clickedbackground:var(--selectedbackground);
     --selectedcolor: #FFFFFF;
@@ -494,10 +508,15 @@ button.text-link {
 #FiltaQuilla-Options-Tabbox li button:not(.active):focus {
   fill: var(--hovercolor);
   color: var(--hovercolor) !important;  
+  background-color: var(--hoverbackground) !important;
 }
 #FiltaQuilla-Options-Tabbox li button:active:hover {
-  fill: var(--activecolor);
-  color: var(--activecolor) !important;
+  fill: var(--button-active-color) !important;
+  color: var(--button-active-color) !important;
+  background-color: var(--button-active-background-color) !important;
+}
+.tabs li[role="tab"] button:hover {
+  background-color: var(--tab-hover-background) !important;
 }
 
 
