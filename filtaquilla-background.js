@@ -250,7 +250,9 @@
     };
     const iconPath = iconMap[severity] || iconMap.default;
     const countText =
-      data.messageCount && data.messageCount > 1 ? ` (${data.messageCount} messages)` : "";
+      data.messageCount && data.messageCount > 1
+        ? ` ${messenger.i18n.getMessage("notificationAlert.messageCount", [data.messageCount])}`
+        : "";
 
     const notificationId = `fq-notification-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
     const options = {
