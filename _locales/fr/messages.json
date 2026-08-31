@@ -60,6 +60,10 @@
   "filtaquilla.notificationAlert": {
     "message": "Afficher une notification de bureau"
   },
+  "notificationAlert.messageCount": {
+    "message": "($COUNT$ messages)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "filtaquilla.inherit": {
     "message": "Hériter"
   },

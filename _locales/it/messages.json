@@ -60,6 +60,10 @@
   "filtaquilla.notificationAlert": {
     "message": "Mostra notifica desktop"
   },
+  "notificationAlert.messageCount": {
+    "message": "($COUNT$ messaggi)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "filtaquilla.inherit": {
     "message": "Eredita"
   },

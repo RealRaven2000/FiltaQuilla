@@ -61,6 +61,10 @@
   "filtaquilla.notificationAlert": {
     "message": "Desktopmelding tonen"
   },
+  "notificationAlert.messageCount": {
+    "message": "($COUNT$ berichten)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "filtaquilla.inherit": {
     "message": "Erven"
   },

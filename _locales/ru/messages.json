@@ -61,6 +61,10 @@
   "filtaquilla.notificationAlert": {
     "message": "Показать уведомление на рабочем столе"
   },
+  "notificationAlert.messageCount": {
+    "message": "($COUNT$ сообщений)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "filtaquilla.inherit": {
     "message": "Унаследованное"
   },

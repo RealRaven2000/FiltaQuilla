@@ -60,6 +60,10 @@
   "filtaquilla.notificationAlert": {
     "message": "Mostrar notificación de escritorio"
   },
+  "notificationAlert.messageCount": {
+    "message": "($COUNT$ mensajes)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "filtaquilla.inherit": {
     "message": "Heredar"
   },

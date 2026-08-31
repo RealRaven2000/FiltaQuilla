@@ -61,6 +61,10 @@
   "filtaquilla.notificationAlert": {
     "message": "デスクトップ通知を表示"
   },
+  "notificationAlert.messageCount": {
+    "message": "（$COUNT$ 件のメッセージ）",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "filtaquilla.inherit": {
     "message": "Inherit"
   },

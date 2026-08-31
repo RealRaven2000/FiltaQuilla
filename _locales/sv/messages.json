@@ -61,6 +61,10 @@
   "filtaquilla.notificationAlert": {
     "message": "Visa skrivbordsavisering"
   },
+  "notificationAlert.messageCount": {
+    "message": "($COUNT$ meddelanden)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "filtaquilla.inherit": {
     "message": "Ärv"
   },
