@@ -1,3 +1,9 @@
+Version 1.66
+------------
+- expose extension context via WL.context to enable direct access to parent-side
+  storage API from chrome-privileged code without requiring separate Experiment
+  API methods
+
 Version 1.65
 ------------
 - force unsafe URL loading to enable compatibility after TB155 (Bug 1974213)

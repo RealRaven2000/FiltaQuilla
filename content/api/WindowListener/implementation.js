@@ -15,6 +15,7 @@
 
 
 /*
+  1.66 add WL.context for all windows
   1.65 force unsafe URL loading to enable compatibility after TB155 
   1.64 removed dependencies on anything before Thunderbird 140
 */
@@ -37,8 +38,8 @@ function getThunderbirdVersion() {
   }
 }
 var WindowListener = class extends ExtensionCommon.ExtensionAPI {
-  log(msg) {
-    if (this.debug) console.log("WindowListener API: " + msg);
+  log(...msg) {
+    if (this.debug) console.log("WindowListener API: ", ...msg);
   }
 
   /**
@@ -71,6 +72,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
           e.preventDefault();
           e.stopPropagation();
           let WL = {};
+          WL.context = self.context;
+          self.log("[handleEvent (options)] context:", WL.context);
           WL.extension = this.extension;
           WL.messenger = this.getMessenger(this.context);
           let w = Services.wm.getMostRecentWindow("mail:3pane");
@@ -414,6 +417,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
         openOptionsDialog(windowId) {
           let window = context.extension.windowManager.get(windowId, context).window;
           let WL = {};
+          WL.context = self.context;
+          self.log("[openOptionsDialog context]", WL.context);
           WL.extension = self.extension;
           WL.messenger = self.getMessenger(self.context);
           window.openDialog(
@@ -430,6 +435,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
           if (self.pathToStartupScript) {
             let startupJS = {};
             startupJS.WL = {};
+            startupJS.WL.context = self.context;
+            self.log("[startListening startupJS context]", startupJS.WL.context);
             startupJS.WL.extension = self.extension;
             startupJS.WL.messenger = self.getMessenger(self.context);
             try {
@@ -733,6 +740,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
         window[this.uniqueRandomID].WL.extension = this.extension;
         // Add messenger object to WLDATA object
         window[this.uniqueRandomID].WL.messenger = this.getMessenger(this.context);
+        window[this.uniqueRandomID].WL.context = this.context;
         // Load script into add-on scope
         this.loadSubScript(
           this.registeredWindows[window.location.href],
