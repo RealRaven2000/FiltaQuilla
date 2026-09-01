@@ -340,7 +340,7 @@
   "message.linkInTab": { "message": "(リンクはタブで開きます)" },
   "message.placeholder": { "message": "メッセージがありません。" },
   "message.restart": {
-    "message": "FiltaQuillaは一部のカスタムフィルターアクションを変更しました。これらの変更は次回Thunderbird起動時にのみ適用されます。"
+    "message": ""
   },
   "newsHead": { "message": "最新情報" },
   "newsMsgForced": {
@@ -445,7 +445,7 @@
   },
   "whats-new-list": {
     "description": "🇯🇵 change log",
-    "message": "{U}{L}{b class=maintenance}6.2.2{/b}macOS でのサウンド選択ダイアログの修正 [issue 380]{/L}{L}FiltaQuilla は Thunderbird {bold}153.*{/bold} に対応しました。{/L}{L}{s}%date()%{/s} プレースホルダーを使用して、件名の前後に日付を追加できるようになりました。日付フォーマットは SmartTemplates と互換性があります。現在の日付とメールの日付のどちらかを選択できます。[issue 398]{/L}{L}ヘッダ正規表現検索で、Thunderbird が通常公開しないメッセージヘッダ（例：{s}In-Reply-To{/s}）にアクセスできるようになりました。この機能はデフォルトで無効になっています。Eメールの内容へのアクセスが必要となり、特に大きなメールボックスや起動時のフィルタリングでパフォーマンスに影響する可能性があるためです。設定で有効化できます。[issue 395]{/L}{L}JavaScript 検索条件は Thunderbird に Eメール内容の提供を要求するようになりました。これにより信頼性が向上し、メール取得時のパフォーマンス問題を回避できます。この機能により、サンドボックス化された JavaScript でフィルタ条件を記述できます。Eメール内容へのアクセスは {s}Services{/s} や {s}Util.extractRawHeaders(){/s} などの関数によっても発生します。これらを使用していない場合、この動作は設定で無効化できます。[issue 403]{/L}{L}regex オプションパネルのテーマ互換性を改善しました。{/L}{L}正規表現の大文字小文字区別オプションにツールチップを追加しました。{/L}{/U}"
+    "message": "{U}{L} {+extensionName} は Thunderbird {bold}157.*{/bold} に対応しました。{/L}{L} デスクトップ通知のフィルターアクションを追加しました。通知をクリックすると元のメッセージが開きます。この機能の初期バージョンではメールごとに通知が1件表示されます。個別のリンクを含むメッセージ一覧の集約表示は、今後のバージョンで対応予定です。[issue 240]{/L}{L}従来の ToneQuilla サウンド再生コードを WebExtension メソッドに置き換えました。[issue 404]{/L}{L} 現行バージョンの Thunderbird で印刷できない問題を修正しました。[issue 406] [issue 340]{/L}{L}設定ページのテーマ互換性を改善しました。{/L}{L} Thunderbird 155 以降に対応するため、スクリプトの読み込み処理を更新しました。[issue 411]{/L}{L} スウェーデン語翻訳を更新しました。PR 410 に貢献してくださった Jonatan Nyberg（@NickWick13）さんに感謝します。{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "メンテナンス更新 $ver$。この特定の修正は前回のリリース以降に追加されました。",

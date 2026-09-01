@@ -331,7 +331,7 @@
   "message.linkInTab": { "message": "(Link geopend in tabblad)" },
   "message.placeholder": { "message": "Bericht ontbreekt." },
   "message.restart": {
-    "message": "FiltaQuilla heeft enkele aangepaste filteracties gewijzigd – deze kunnen pas worden toegepast na een herstart van Thunderbird. Start Thunderbird alstublieft zo snel mogelijk opnieuw op om een goede werking van de filters te garanderen."
+    "message": ""
   },
   "newsHead": { "message": "Laatste nieuws" },
   "newsMsgForced": {
@@ -433,7 +433,7 @@
   },
   "whats-new-list": {
     "description": "🇷🇺 change log",
-    "message": "{U}{L}{b class=maintenance}6.2.2{/b}Oplossingen voor de geluidskiezer op macOS [issue 380]{/L}{L}FiltaQuilla теперь совместима с Thunderbird {bold}153.*{/bold}.{/L}{L}Добавлена поддержка добавления или добавления префикса даты к теме с помощью заполнителя {s}%date()%{/s}. Форматы даты совместимы со SmartTemplates. Можно выбрать между текущей датой и датой письма. [issue 398]{/L}{L}Регулярные выражения по заголовкам теперь могут обращаться к заголовкам сообщений, которые Thunderbird обычно не предоставляет (например, {s}In-Reply-To{/s}). Эта функция отключена по умолчанию, так как требует доступа к содержимому письма, что может повлиять на производительность при фильтрации, особенно при больших почтовых ящиках или при запуске. Её можно включить в настройках. [issue 395]{/L}{L}JavaScript-условия поиска теперь требуют, чтобы Thunderbird предоставлял содержимое письма. Это повышает надёжность и предотвращает проблемы с производительностью при получении писем. Эта функция позволяет писать условия фильтрации как JavaScript в песочнице. Доступ к содержимому письма также может быть вызван функциями {s}Services{/s} или {s}Util.extractRawHeaders(){/s}. Если вы уверены, что ваши скрипты не используют эти функции, это поведение можно отключить в настройках. [issue 403]{/L}{L}Улучшена совместимость панели regex с темами.{/L}{L}Добавлена подсказка для опции нечувствительности к регистру в регулярных выражениях.{/L}{/U}"
+    "message": "{U}{L} {+extensionName} is nu compatibel met Thunderbird {bold}157.*{/bold}.{/L}{L} Er is een filteractie voor bureaubladmeldingen toegevoegd: als u op de melding klikt, wordt het oorspronkelijke bericht geopend. Deze eerste versie van de functie toont één melding voor elk e-mailbericht; gegroepeerde berichtenlijsten met afzonderlijke koppelingen zijn gepland voor een toekomstige versie. [issue 240]{/L}{L}De verouderde ToneQuilla-code voor het afspelen van geluid is vervangen door WebExtension-methoden. [issue 404]{/L}{L} Afdrukken met huidige Thunderbird-versies is hersteld. [issue 406] [issue 340]{/L}{L}De themacompatibiliteit van de instellingenpagina is verbeterd.{/L}{L} Het laden van scripts is bijgewerkt voor Thunderbird 155 en nieuwer. [issue 411]{/L}{L} De Zweedse vertaling is bijgewerkt — veel dank aan Jonatan Nyberg (@NickWick13) voor zijn bijdrage aan PR 410.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Onderhoudsupdate $ver$. Deze specifieke fix is toegevoegd sinds de vorige release.",

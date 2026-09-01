@@ -357,7 +357,7 @@
     "message": "Meddelande saknas."
   },
   "message.restart": {
-    "message": "FiltaQuilla har ändrat några av sina anpassade filteråtgärder. Ändringarna börjar gälla först när Thunderbird har startats om. Starta om Thunderbird så snart som möjligt för att filtren ska fungera korrekt."
+    "message": ""
   },
   "newsHead": {
     "message": "Senaste nytt"
@@ -469,7 +469,7 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}{b class=maintenance}6.2.2{/b}Korrigeringar för ljudväljaren på macOS [issue 380]{/L}{L}FiltaQuilla är nu kompatibelt med Thunderbird {bold}153.*{/bold}.{/L}{L}Stöd har lagts till för att lägga till datum före eller efter ämnet med hjälp av platshållaren {s}%date()%{/s}. Datumformaten är kompatibla med SmartTemplates. Du kan välja mellan dagens datum och e-postmeddelandets datum. [issue 398]{/L}{L}Regex för meddelandehuvuden kan nu söka i huvudfält som Thunderbird normalt inte exponerar (t.ex. {s}In-Reply-To{/s}). Funktionen är inaktiverad som standard eftersom den kräver åtkomst till e-postinnehållet, vilket kan påverka prestandan vid filtrering, särskilt med stora brevlådor eller vid start. Den kan aktiveras i inställningarna. [issue 395]{/L}{L}JavaScript-sökvillkor kräver nu att Thunderbird tillhandahåller e-postinnehåll. Det förbättrar tillförlitligheten och undviker prestandaproblem vid hämtning av e-postmeddelanden. Funktionen gör det möjligt att skriva filtervillkor som JavaScript-kod i en sandlåda. Åtkomst till e-postinnehåll kan också utlösas av funktioner som {s}Services{/s} eller {s}Util.extractRawHeaders(){/s}. Om du är säker på att dina skript inte använder dessa funktioner kan beteendet inaktiveras i inställningarna. [issue 403]{/L}{L}Förbättrad temakompatibilitet i panelen för regexalternativ.{/L}{L}Ett verktygstips har lagts till för skiftlägesokänslig matchning med reguljära uttryck.{/L}{/U}"
+    "message": "{U}{L} {+extensionName} är nu kompatibelt med Thunderbird {bold}157.*{/bold}.{/L}{L} En filteråtgärd för skrivbordsaviseringar har lagts till – när du klickar på aviseringen öppnas det ursprungliga meddelandet. Den här första versionen av funktionen visar en avisering för varje e-postmeddelande; grupperade meddelandelistor med enskilda länkar planeras för en framtida version. [issue 240]{/L}{L}Den äldre ToneQuilla-koden för ljuduppspelning har ersatts med WebExtension-metoder. [issue 404]{/L}{L} Utskrift med aktuella Thunderbird-versioner har åtgärdats. [issue 406] [issue 340]{/L}{L}Inställningssidans temakompatibilitet har förbättrats.{/L}{L} Skriptinläsningen har uppdaterats för Thunderbird 155 och senare. [issue 411]{/L}{L} Den svenska översättningen har uppdaterats – stort tack till Jonatan Nyberg (@NickWick13) för bidraget till PR 410.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Underhållsuppdatering $ver$. Den här korrigeringen har lagts till sedan föregående version.",

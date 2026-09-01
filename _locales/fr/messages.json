@@ -339,7 +339,7 @@
   "message.linkInTab": { "message": "(Lien ouvert dans un onglet)" },
   "message.placeholder": { "message": "Message manquant." },
   "message.restart": {
-    "message": "FiltaQuilla a modifié certaines de ses actions de filtre personnalisées. Ces changements ne peuvent être appliqués qu'après le redémarrage de Thunderbird. Veuillez redémarrer Thunderbird dès que possible pour assurer le bon fonctionnement des filtres."
+    "message": ""
   },
   "newsHead": { "message": "Dernières nouvelles" },
   "newsMsgForced": {
@@ -444,7 +444,7 @@
   },
   "whats-new-list": {
     "description": "🇫🇷 change log",
-    "message": "{U}{L}{b class=maintenance}6.2.2{/b}Corrections du sélecteur de sons pour macOS [issue 380]{/L}{L}FiltaQuilla est maintenant compatible avec Thunderbird {bold}153.*{/bold}.{/L}{L}Ajout de la prise en charge de l’ajout ou de la préfixation de la date dans l’objet à l’aide du marqueur {s}%date()%{/s}. Les formats de date sont compatibles avec SmartTemplates. Vous pouvez choisir entre la date actuelle et la date du message. [issue 398]{/L}{L}La recherche regex sur les en-têtes peut désormais accéder à des en-têtes que Thunderbird n’expose normalement pas (par exemple {s}In-Reply-To{/s}). Cette fonctionnalité est désactivée par défaut car elle nécessite l’accès au contenu de l’e-mail, ce qui peut affecter les performances lors du filtrage, notamment avec de grandes boîtes aux lettres ou au démarrage. Elle peut être activée dans les paramètres. [issue 395]{/L}{L}Les termes de recherche JavaScript exigent désormais que Thunderbird fournisse le contenu de l’e-mail. Cela améliore la fiabilité et évite des problèmes de performance lors de la récupération des e-mails. Cette fonctionnalité permet d’écrire des conditions de filtrage en JavaScript sandboxé. L’accès au contenu de l’e-mail peut également être déclenché par des fonctions telles que {s}Services{/s} ou {s}Util.extractRawHeaders(){/s}. Si vous êtes certain que vos scripts n’utilisent pas ces fonctions, ce comportement peut être désactivé dans les paramètres. [issue 403]{/L}{L}Compatibilité améliorée du panneau d’options regex avec les thèmes.{/L}{L}Ajout d’une infobulle pour l’option de correspondance insensible à la casse des expressions régulières.{/L}{/U}"
+    "message": "{U}{L} {+extensionName} est maintenant compatible avec Thunderbird {bold}157.*{/bold}.{/L}{L} Ajout d’une action de filtre de notification de bureau : cliquer sur la notification ouvre le message d’origine. Cette première version de la fonctionnalité affiche une notification pour chaque message ; des listes de messages regroupées avec des liens individuels sont prévues dans une prochaine version. [issue 240]{/L}{L}L’ancien code de lecture audio ToneQuilla a été remplacé par des méthodes WebExtension. [issue 404]{/L}{L} Correction de l’impression avec les versions actuelles de Thunderbird. [issue 406] [issue 340]{/L}{L}Amélioration de la compatibilité de la page des paramètres avec les thèmes.{/L}{L} Mise à jour du chargement des scripts pour Thunderbird 155 et versions ultérieures. [issue 411]{/L}{L} Mise à jour de la traduction suédoise — un grand merci à Jonatan Nyberg (@NickWick13) pour sa contribution à la PR 410.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Mise à jour de maintenance $ver$. Ce correctif spécifique a été ajouté depuis la version précédente.",

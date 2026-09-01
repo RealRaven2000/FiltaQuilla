@@ -340,11 +340,12 @@
   "message.linkInTab": { "message": "(Link opened in Tab)" },
   "message.placeholder": { "message": "Message missing." },
   "message.restart": {
-    "message": "FiltaQuilla has made modifications to some of its custom filter actions - these can only be applied after a restart of Thunderbird. Please restart Thunderbird at your earliest convenience to ensure smooth filters operation."
+    "description": "Leave this message empty if no special message into is needed in news message",
+    "message": ""
   },
   "newsHead": { "message": "Latest News" },
   "newsMsgForced": {
-    "message": "{P}The planned restriction on the use of Experiment APIs on the Release channel has been postponed and is now scheduled for the following ESR cycle in 2027.{/P}{P}With Thunderbird 153 ESR arriving in July, a transition window opens during which users can switch from Thunderbird 153 Release to the ESR channel to secure a more stable update path. From the following ESR cycle in 2027 onwards, legacy add-ons will {b}only be supported on ESR versions{/b}.{/P}{P}{b}{+extensionName}{/b} continues to work on both Release and ESR versions of Thunderbird where supported, although experimental interfaces may still change as the platform evolves.{/P}"
+    "message": "{P}Important for Release channel users ({emph}155 and later{/emph}): With Thunderbird's new 2-week release cycle, there is an elevated risk of unexpected breakages. While I regularly test {+extensionName} against Thunderbird's daily builds, timely fixes depend on {b}early reporting{/b} from Release users. Please follow the {a href='https://github.com/RealRaven2000/FiltaQuilla/issues'}issue tracker{/a} and report any regressions promptly to help maintain compatibility.{/P}"
   },
   "optionsIntro": {
     "message": "Enable all items that you want to have available in the 'filter rules' dialog. Restart after changes."
@@ -445,7 +446,7 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}{b class=maintenance}6.2.2{/b}Play sound picker fixes for MacOS [issue 380]{/L}{L}FiltaQuilla is now compatible with Thunderbird {bold}153.*{/bold}.{/L}{L}Support added for prepending or appending the date to the subject using the {s}%date()%{/s} placeholder. Date formats are compatible with SmartTemplates. You can choose between the current date and the date of the email. [issue 398]{/L}{L}Header regex can now search message headers that Thunderbird does not normally expose (e.g. {s}In-Reply-To{/s}). This feature is disabled by default because it requires access to email content, which may affect performance when filtering, especially with large mailboxes or at startup. It can be enabled in Settings. [issue 395]{/L}{L}JavaScript search terms now require Thunderbird to provide email content. This improves reliability and avoids performance issues when retrieving emails. This feature allows writing filter conditions as sandboxed JavaScript code. Access to email content may also be triggered by functions such as {s}Services{/s} or {s}Util.extractRawHeaders(){/s}. If you are sure your scripts do not use these functions, this behavior can be disabled in Settings. [issue 403]{/L}{L}Improved theme compatibility of the regex options panel.{/L}{L}Added a tooltip for case-insensitive regular expression matching.{/L}{/U}"
+    "message": "{U}{L} {+extensionName} is now compatible with Thunderbird {bold}157.*{/bold}.{/L}{L} Added a desktop notification filter action - clicking the notification opens the original message. This initial version of the feature shows one notification for each mail; collated message lists with individual links are planned for a future version. [issue 240]{/L}{L}Replaced the legacy ToneQuilla sound-playing code with WebExtension methods. [issue 404]{/L}{L} Fixed printing with current Thunderbird versions. [issue 406] [issue 340]{/L}{L}Improved the theme compatibility of the settings page.{/L}{L} Updated script loading for Thunderbird 155 and newer. [issue 411]{/L}{L} Updated the Swedish translation—many thanks to Jonatan Nyberg (@NickWick13) for contributing PR 410.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Maintenance Update $ver$. This particular fix was added since the previous release.",

@@ -4,6 +4,7 @@
   --commandbar: rgba(10,10,10,0.1)
   --actionbtn-backcolor: darkred;
   --actionbtn-color: white;
+  --color-emphasis: #ff69b4;
   color-scheme: light dark;  
 }
 @media (prefers-color-scheme: dark) {
@@ -13,6 +14,8 @@
     --commandbar: rgba(250,250,250,0.1)
   }
 }
+
+
 
 body {
   background-color: var(--canvas);
@@ -175,6 +178,10 @@ pre {
   overflow-wrap: break-word;
 }
 
+span.important {
+  color: var(--color-emphasis) !important;
+  font-style: italic;
+}
 
 .announcement {
   color: white !important;

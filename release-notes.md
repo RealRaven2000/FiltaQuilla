@@ -1,11 +1,13 @@
 **FiltaQuilla 6.3**
 
+Important for Release channel users (**154 and later**): With Thunderbird's new 2-week release cycle, there is an elevated risk of unexpected breakages. While I regularly test SmartTemplates against daily builds, timely fixes depend on **early reporting** from Release users. Please follow the <a href='https://github.com/RealRaven2000/FiltaQuilla/issues'>issue tracker</a> and report any regressions promptly to help maintain compatibility.
+
 **Improvements**
 
-- Made FiltaQuilla compatible with Thunderbird 157.*.
-- Updated the Swedish translation, contributed by [Jonatan Nyberg (@NickWick13)](https://github.com/NickWick13) [PR #410](https://github.com/RealRaven2000/FiltaQuilla/pull/410).
+- FiltaQuilla is now compatible with Thunderbird 157.*.
+- Updated the Swedish translation, many thanks to [Jonatan Nyberg (@NickWick13)](https://github.com/NickWick13) [PR #410](https://github.com/RealRaven2000/FiltaQuilla/pull/410).
 - Replaced the legacy ToneQuilla sound-playing code with WebExtension methods [issue #404](https://github.com/RealRaven2000/FiltaQuilla/issues/404).
-- **Preview:** Added a notification alert filter action. Clicking the desktop notification opens the original message. This first version shows one notification for the filter result; collated message lists with individual links are planned for a future version [issue #240](https://github.com/RealRaven2000/FiltaQuilla/issues/240).
+- Added a desktop notification filter action - clicking the notification opens the original message. This initial version of the feature shows one notification for each mail; collated message lists with individual links are planned for a future version [issue #240](https://github.com/RealRaven2000/FiltaQuilla/issues/240).
 - Updated script loading where required for Thunderbird 155 compatibility [issue #411](https://github.com/RealRaven2000/FiltaQuilla/issues/411).
 
 **Bug Fixes**
