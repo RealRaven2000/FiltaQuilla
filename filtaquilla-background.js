@@ -1023,7 +1023,12 @@
       console.log("FQ displayUpdateMessage()\n", ...args);
     };
 
-    const features = ["ok", "cancel", "restart", "changeLog"];
+    const features = ["ok", "cancel", "changeLog"];
+    const restartMessage = messenger.i18n.getMessage("message.restart");
+
+    if (restartMessage.trim()) {
+      features.push("restart");
+    }
 
     // reflects last addon version installed with a msg.
     let lastMessage =
