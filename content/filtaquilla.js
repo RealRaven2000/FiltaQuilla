@@ -2924,10 +2924,15 @@
 
         try {
           // in Tb115 this used to be called SaveMessageToDisk
-          if (service.saveMessageToDisk) {
-            service.saveMessageToDisk(msgSpec, file, false, urlListener, true, null);
-          } else {
+          if (!service.saveMessageToDisk) {
             reject(new Error("No valid saveMessageToDisk method found."));
+            return;
+          }
+          if (util.versionGreaterOrEqual(util.AppverFull, "156")) {
+            // [issue 417]
+            service.saveMessageToDisk(msgSpec, file, urlListener, true, null);
+          } else {
+            service.saveMessageToDisk(msgSpec, file, false, urlListener, true, null);
           }
         } catch (ex) {
           console.error("Error saving message:", ex);
