@@ -1,25 +1,22 @@
-<b>FiltaQuilla 6.3</b>
+<strong>FiltaQuilla 6.3.1</strong>
 
 
-Important for Release channel users (<i>154 and later</i>): With Thunderbird's new 2-week release cycle, there is an elevated risk of unexpected breakages. While I regularly test SmartTemplates against daily builds, timely fixes depend on <b>early reporting</b> from Release users. Please follow the <a href='https://github.com/RealRaven2000/FiltaQuilla/issues'>issue tracker</a> and report any regressions promptly to help maintain compatibility.
+Important for Release channel users (<i>154 and later</i>): With Thunderbird's new 2-week release cycle, there is an elevated risk of unexpected breakages. While I regularly test FiltaQuilla against daily builds, timely fixes depend on <b>early reporting</b> from Release users. Please follow the <a href='https://github.com/RealRaven2000/FiltaQuilla/issues'>issue tracker</a> and report any regressions promptly to help maintain compatibility.
 
 Additional regressions are expected within the Thunderbird release branch and will be addressed as they occur. Users who rely on advanced or experimental functionality may prefer the ESR channel for a more stable environment with fewer platform changes.
 
-<b>Improvements</b>
+<strong>Improvements</strong>
 <ul>
-  <li>Made FiltaQuilla compatible with Thunderbird 157.*.</li>
-  <li>Updated the Swedish translation, many thanks to <a href="https://github.com/NickWick13">Jonatan Nyberg (@NickWick13)</a>. <a href="https://github.com/RealRaven2000/FiltaQuilla/pull/410">[PR 410]</a></li>
-  <li>Replaced the legacy ToneQuilla sound-playing code with WebExtension methods. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/404">[issue 404]</a></li>
-  <li>Added a desktop notification filter action - clicking the notification opens the original message. This initial version of the feature shows one notification for each mail; collated message lists with individual links are planned for a future version. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/240">[issue 240]</a></li>
-  <li>Updated script loading where required for Thunderbird 155 compatibility. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/411">[issue 411]</a></li>
+  <li>Made FiltaQuilla compatible with Thunderbird 159.*.</li>
+  <li>Improved startup reliability by allowing more time for Thunderbird windows to finish loading.</li>
 </ul>
 
-<b>Bug Fixes</b>
+<strong>Bug Fixes</strong>
 <ul>
-  <li>Fixed printing with current Thunderbird versions. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/406">[issue 406]</a>, <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/340">[issue 340]</a></li>
+  <li>Fixed errors in the Save Message as File filter action caused by a changed Thunderbird API. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/417">[issue 417]</a></li>
 </ul>
 
-<b>Planned Next</b>
+<strong>Planned Next</strong>
 <ul>
   <li>Restore the “Folder Name” search term on newer Thunderbird versions. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/377">[issue 377]</a></li>
   <li>Support custom filenames when saving or detaching attachments. <a href="https://github.com/RealRaven2000/FiltaQuilla/issues/219">[issue 219]</a></li>

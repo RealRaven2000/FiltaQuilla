@@ -139,13 +139,18 @@ Increased strict_min_version to 140.0.
 -           Example: Prefix Subject:  `%date("Y-m-d")% [Important] `
 - Hardened ToneQuilla against path errors. Fixes specific issues for MacOS [issue #380]
 
-6.3 - WIP
+6.3 - 01/09/2026
 - Increased strict_max_version to 157.*.
 - Updated the Swedish translation, contributed by Jonatan Nyberg (@NickWick13) [PR #410].
 - Replace sound playing code (ToneQuilla) with WebExtension methods [issue #404]
 - No Printing with current Thunderbird-Version 152.0.1 [issue #406], [issue #340]
 - Use `scriptloader.loadSubScriptWithOptions()` with `allowUnsafeURL: true` where required for Thunderbird 155 compatibility [issue #411]
 - Preview: Notification alert filter action. Clicking the desktop notification opens the original message; collated message lists with individual links are planned for a future version [issue #240]
+
+6.3.1 - WIP
+- compatible with Thunderbird 159
+- Fixed: Save Message as File throws errors due to modified function signature [issue #417]
+- WindowListener readyness hardening
 
 ======================================
 

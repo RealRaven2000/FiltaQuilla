@@ -469,7 +469,7 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L} {+extensionName} är nu kompatibelt med Thunderbird {bold}157.*{/bold}.{/L}{L} En filteråtgärd för skrivbordsaviseringar har lagts till – när du klickar på aviseringen öppnas det ursprungliga meddelandet. Den här första versionen av funktionen visar en avisering för varje e-postmeddelande; grupperade meddelandelistor med enskilda länkar planeras för en framtida version. [issue 240]{/L}{L}Den äldre ToneQuilla-koden för ljuduppspelning har ersatts med WebExtension-metoder. [issue 404]{/L}{L} Utskrift med aktuella Thunderbird-versioner har åtgärdats. [issue 406] [issue 340]{/L}{L}Inställningssidans temakompatibilitet har förbättrats.{/L}{L} Skriptinläsningen har uppdaterats för Thunderbird 155 och senare. [issue 411]{/L}{L} Den svenska översättningen har uppdaterats – stort tack till Jonatan Nyberg (@NickWick13) för bidraget till PR 410.{/L}{/U}"
+    "message": "{U}{L}{+extensionName} är nu kompatibelt med Thunderbird {bold}159.*{/bold}.{/L}{L}Åtgärdade fel i filteråtgärden {i}{+fq.saveMsgAsFile}{/i} som orsakades av en ändring i Thunderbirds API. [issue 417]{/L}{L}Tillförlitligare start genom att ge Thunderbird-fönster mer tid att laddas färdigt.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Underhållsuppdatering $ver$. Den här korrigeringen har lagts till sedan föregående version.",

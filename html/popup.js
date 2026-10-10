@@ -120,8 +120,8 @@ const formatAll = (txt) => {
       return attrStr ? `<b ${attrStr}>${content}</b>` : `<b>${content}</b>`;
     })
     .replace(/\{hr\}/g, "<hr>")
-    .replace(/\{italic\}/g, "<i>")
-    .replace(/\{\/italic\}/g, "</i>")
+    .replace(/\{i\}/g, "<i>")
+    .replace(/\{\/i\}/g, "</i>")
     .replace(/\{emph\}/g, "<span class='important'>")
     .replace(/\{\/emph\}/g, "</span>")
     .replace(/\{U\}/g, "<ul>")

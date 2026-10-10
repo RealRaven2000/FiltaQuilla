@@ -444,7 +444,7 @@
   },
   "whats-new-list": {
     "description": "🇫🇷 change log",
-    "message": "{U}{L} {+extensionName} est maintenant compatible avec Thunderbird {bold}157.*{/bold}.{/L}{L} Ajout d’une action de filtre de notification de bureau : cliquer sur la notification ouvre le message d’origine. Cette première version de la fonctionnalité affiche une notification pour chaque message ; des listes de messages regroupées avec des liens individuels sont prévues dans une prochaine version. [issue 240]{/L}{L}L’ancien code de lecture audio ToneQuilla a été remplacé par des méthodes WebExtension. [issue 404]{/L}{L} Correction de l’impression avec les versions actuelles de Thunderbird. [issue 406] [issue 340]{/L}{L}Amélioration de la compatibilité de la page des paramètres avec les thèmes.{/L}{L} Mise à jour du chargement des scripts pour Thunderbird 155 et versions ultérieures. [issue 411]{/L}{L} Mise à jour de la traduction suédoise — un grand merci à Jonatan Nyberg (@NickWick13) pour sa contribution à la PR 410.{/L}{/U}"
+    "message": "{U}{L}{+extensionName} est désormais compatible avec Thunderbird {bold}159.*{/bold}.{/L}{L}Correction des erreurs de l’action de filtre {i}{+fq.saveMsgAsFile}{/i} dues à une modification de l’API Thunderbird. [issue 417]{/L}{L}Démarrage plus fiable : les fenêtres de Thunderbird disposent de plus de temps pour terminer leur chargement.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Mise à jour de maintenance $ver$. Ce correctif spécifique a été ajouté depuis la version précédente.",

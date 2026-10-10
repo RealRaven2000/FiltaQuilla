@@ -442,7 +442,7 @@
   },
   "whats-new-list": {
     "description": "🇩🇪 change log",
-    "message": "{U}{L} {+extensionName} ist jetzt mit Thunderbird {bold}157.*{/bold} kompatibel.{/L}{L} Eine Filteraktion für Desktop-Benachrichtigungen wurde hinzugefügt – durch Anklicken der Benachrichtigung wird die ursprüngliche Nachricht geöffnet. Diese erste Version der Funktion zeigt für jede E-Mail eine Benachrichtigung; zusammengefasste Nachrichtenlisten mit einzelnen Links sind für eine zukünftige Version geplant. [issue 240]{/L}{L}Der alte ToneQuilla-Code zur Klangwiedergabe wurde durch WebExtension-Methoden ersetzt. [issue 404]{/L}{L} Das Drucken mit aktuellen Thunderbird-Versionen wurde korrigiert. [issue 406] [issue 340]{/L}{L}Die Theme-Kompatibilität der Einstellungsseite wurde verbessert.{/L}{L} Das Laden von Skripten wurde für Thunderbird 155 und neuer aktualisiert. [issue 411]{/L}{L} Die schwedische Übersetzung wurde aktualisiert – vielen Dank an Jonatan Nyberg (@NickWick13) für den Beitrag zu PR 410.{/L}{/U}"
+    "message": "{U}{L}{+extensionName} ist jetzt mit Thunderbird {bold}159.*{/bold} kompatibel.{/L}{L}Fehler in der Filteraktion {i}{+fq.saveMsgAsFile}{/i} durch eine geänderte Thunderbird-API wurden behoben. [issue 417]{/L}{L}Zuverlässigerer Start: Thunderbird-Fenster erhalten mehr Zeit zum vollständigen Laden.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Wartungsupdate $ver$. Dieser spezifische Fix wurde seit der vorherigen Version hinzugefügt.",

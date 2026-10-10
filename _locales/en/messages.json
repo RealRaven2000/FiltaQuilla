@@ -446,7 +446,7 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L} {+extensionName} is now compatible with Thunderbird {bold}157.*{/bold}.{/L}{L} Added a desktop notification filter action - clicking the notification opens the original message. This initial version of the feature shows one notification for each mail; collated message lists with individual links are planned for a future version. [issue 240]{/L}{L}Replaced the legacy ToneQuilla sound-playing code with WebExtension methods. [issue 404]{/L}{L} Fixed printing with current Thunderbird versions. [issue 406] [issue 340]{/L}{L}Improved the theme compatibility of the settings page.{/L}{L} Updated script loading for Thunderbird 155 and newer. [issue 411]{/L}{L} Updated the Swedish translation—many thanks to Jonatan Nyberg (@NickWick13) for contributing PR 410.{/L}{/U}"
+    "message": "{U}{L}{+extensionName} is now compatible with Thunderbird {bold}159.*{/bold}.{/L}{L}Fixed errors in the {i}{+fq.saveMsgAsFile}{/i} filter action caused by a changed Thunderbird API. [issue 417]{/L}{L}Improved startup reliability by allowing more time for Thunderbird windows to finish loading.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Maintenance Update $ver$. This particular fix was added since the previous release.",

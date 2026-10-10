@@ -444,7 +444,7 @@
   },
   "whats-new-list": {
     "description": "🇪🇸 change log",
-    "message": "{U}{L} {+extensionName} ahora es compatible con Thunderbird {bold}157.*{/bold}.{/L}{L} Se añadió una acción de filtro de notificación de escritorio: al hacer clic en la notificación se abre el mensaje original. Esta versión inicial de la función muestra una notificación por cada correo; las listas agrupadas de mensajes con enlaces individuales están previstas para una versión futura. [issue 240]{/L}{L}Se reemplazó el código heredado de reproducción de sonido de ToneQuilla por métodos de WebExtension. [issue 404]{/L}{L} Se corrigió la impresión con las versiones actuales de Thunderbird. [issue 406] [issue 340]{/L}{L}Se mejoró la compatibilidad con temas de la página de configuración.{/L}{L} Se actualizó la carga de scripts para Thunderbird 155 y versiones posteriores. [issue 411]{/L}{L} Se actualizó la traducción al sueco; muchas gracias a Jonatan Nyberg (@NickWick13) por contribuir con la PR 410.{/L}{/U}"
+    "message": "{U}{L}{+extensionName} ahora es compatible con Thunderbird {bold}159.*{/bold}.{/L}{L}Se corrigieron errores en la acción de filtro {i}{+fq.saveMsgAsFile}{/i} causados por un cambio en la API de Thunderbird. [issue 417]{/L}{L}Se mejoró la fiabilidad del inicio dando más tiempo a las ventanas de Thunderbird para terminar de cargarse.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Actualización de mantenimiento $ver$. Esta corrección específica se añadió desde la versión anterior.",
