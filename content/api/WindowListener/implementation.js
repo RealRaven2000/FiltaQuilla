@@ -2,7 +2,7 @@
  * This file is provided by the addon-developer-support repository at
  * https://github.com/thundernest/addon-developer-support
  *
- * Version 1.65
+ * Version 1.67
  *
  * Authors (in alphabetical order by surname):
  *   John Bieling (john@thunderbird.net)
@@ -15,8 +15,10 @@
 
 
 /*
+  1.68 fix options dialog logging; configurable startup tracing, longer readiness wait,
+       and reporting of asynchronous onLoad failures
   1.66 add WL.context for all windows
-  1.65 force unsafe URL loading to enable compatibility after TB155 
+  1.65 force unsafe URL loading to enable compatibility after TB 155 
   1.64 removed dependencies on anything before Thunderbird 140
 */
 
@@ -72,8 +74,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
           e.preventDefault();
           e.stopPropagation();
           let WL = {};
-          WL.context = self.context;
-          self.log("[handleEvent (options)] context:", WL.context);
+          WL.context = this.context;
+          this.log("[handleEvent (options)] context:", WL.context);
           WL.extension = this.extension;
           WL.messenger = this.getMessenger(this.context);
           let w = Services.wm.getMostRecentWindow("mail:3pane");
@@ -231,6 +233,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     this.resourceData = null;
     this.openWindows = [];
     this.debug = context.extension.addonData.temporarilyInstalled;
+    this.startupTrace = null;
 
     const aomStartup = Cc["@mozilla.org/addons/addon-manager-startup;1"].getService(
       Ci.amIAddonManagerStartup
@@ -417,7 +420,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
         openOptionsDialog(windowId) {
           let window = context.extension.windowManager.get(windowId, context).window;
           let WL = {};
-          WL.context = self.context;
+          WL.context = this.context;
           self.log("[openOptionsDialog context]", WL.context);
           WL.extension = self.extension;
           WL.messenger = self.getMessenger(self.context);
@@ -427,6 +430,11 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
             "chrome,resizable,centerscreen",
             WL
           );
+        },
+
+        initLog(startupTrace = null) {
+          // Optional caller-owned legacy preference and startup logging configuration.
+          self.startupTrace = startupTrace;
         },
 
         async startListening() {
@@ -501,16 +509,56 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
   }
 
   async _loadIntoWindow(window, isAddonActivation) {
+    const readinessStarted = Date.now();
+    let readinessChecks = 0;
+    const trace = (stage, error) => {
+      const options = this.startupTrace;
+      if (!options) {
+        return;
+      }
+      try {
+        if ((options.windowUrls && !options.windowUrls.includes(window?.location?.href)) ||
+            !Services.prefs.getBoolPref(options.preference, false)) {
+          return;
+        }
+        const tabs = Array.from(window?.top?.document.getElementById("tabmail")?.tabInfo || []);
+        const tabIndex = tabs.findIndex((tab) => tab.chromeBrowser?.contentWindow === window);
+        console.log((options.logPrefix || "WindowListener") + " " + stage + " " + JSON.stringify({
+          extensionId: this.extension.id,
+          scope: this.uniqueRandomID,
+          url: window?.location?.href,
+          readyState: window?.document?.readyState,
+          tabIndex,
+          firstTab: tabIndex < 0 ? null : tabIndex === 0,
+          isAddonActivation,
+          contextUnloaded: this.context?.unloaded,
+          elapsedMs: Date.now() - readinessStarted,
+          readinessChecks,
+          error: error ? String(error) : undefined,
+          stack: error?.stack,
+        }));
+      } catch (ex) {
+        console.warn((options.logPrefix || "WindowListener") + " trace failed: " + stage, String(ex));
+      }
+    };
+    trace("load requested");
     const fullyLoaded = async (window) => {
-      for (let i = 0; i < 20; i++) {
-        await this.sleep(250); // was 50
-        // To do: build a listener for window.document.readyState == "complete"
-        // so we don't need this loop
+      const intervals = [250, 500, 1000, 1500, 2000];
+      const maxWaitMs = 60000;
+      while (Date.now() - readinessStarted < maxWaitMs) {
+        const remainingMs = maxWaitMs - (Date.now() - readinessStarted);
+        await this.sleep(Math.max(1, Math.min(
+          intervals[Math.min(readinessChecks, intervals.length - 1)],
+          remainingMs
+        )));
+        readinessChecks++;
+        // Check readiness even if a busy main thread delivered the timer late.
         if (
           window &&
           window.location.href != "about:blank" &&
           window.document.readyState == "complete"
         ) {
+          trace("readiness complete");
           return;
         }
       }
@@ -520,11 +568,12 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     try {
       await fullyLoaded(window);
     } catch (ex) {
-      // console.warn("WL._loadIntoWindow - error:", window?.location?.href, ex);
+      trace("readiness failed; skipping window", ex);
       return;
     }
 
     if (!window || window.hasOwnProperty(this.uniqueRandomID)) {
+      trace("skipped: missing window or existing scope");
       // console.log("WL._loadIntoWindow already processed:", window?.location.href)
       return;
     }
@@ -667,7 +716,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                 insertBeforeElement.parentNode.insertBefore(elements[i], insertBeforeElement);
               } else if (elements[i].id && window.document.getElementById(elements[i].id)) {
                 // existing container match, dive into recursivly
-                if (debug)
+                if (debug) 
                   console.log(
                     elements[i].tagName +
                       "#" +
@@ -741,13 +790,19 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
         // Add messenger object to WLDATA object
         window[this.uniqueRandomID].WL.messenger = this.getMessenger(this.context);
         window[this.uniqueRandomID].WL.context = this.context;
+        trace("loading registered script");
         // Load script into add-on scope
         this.loadSubScript(
           this.registeredWindows[window.location.href],
           window[this.uniqueRandomID]
         );
-        window[this.uniqueRandomID].onLoad(isAddonActivation);
+        // Observe asynchronous failures as well as synchronous script errors.
+        Promise.resolve(window[this.uniqueRandomID].onLoad(isAddonActivation)).catch((error) => {
+          trace("onLoad rejected", error);
+          Components.utils.reportError(error);
+        });
       } catch (e) {
+        trace("script load / onLoad failed", e);
         Components.utils.reportError(e);
       }
     }

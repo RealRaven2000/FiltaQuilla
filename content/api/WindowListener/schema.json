@@ -1,6 +1,6 @@
 [
   {
-    "namespace": "WindowListener",
+    "namespace": "WindowListener",    
     "functions": [
       {
         "name": "registerDefaultPrefs",
@@ -64,6 +64,36 @@
         "type": "function",
         "async": true,
         "parameters": []
+      },
+      {
+        "name": "initLog",
+        "type": "function",
+        "description": "Configure optional startup diagnostics independently of window listening. Call without arguments to disable tracing.",
+        "parameters": [
+          {
+            "name": "startupTrace",
+            "type": "object",
+            "optional": true,
+            "description": "Optional startup tracing configuration. Tracing is disabled when omitted; the legacy boolean preference is checked for each trace.",
+            "properties": {
+              "preference": {
+                "type": "string",
+                "description": "Full legacy boolean preference name controlling startup tracing. Missing preferences default to false."
+              },
+              "logPrefix": {
+                "type": "string",
+                "optional": true,
+                "description": "Console log prefix. Defaults to WindowListener."
+              },
+              "windowUrls": {
+                "type": "array",
+                "optional": true,
+                "items": { "type": "string" },
+                "description": "Trace only these exact window URLs. Omit to trace all windows."
+              }
+            }
+          }
+        ]
       },
       {
         "name": "registerWindow",

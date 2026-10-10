@@ -1,3 +1,17 @@
+Version 1.67
+------------
+- fix the add-on manager options button: use this.log() in handleEvent(); self
+  belongs to the getAPI() closure and is not available in this event handler
+- route context diagnostics through the debug logger and support multiple log
+  arguments, avoiding unconditional context logging
+- add optional initLog({ preference, logPrefix, windowUrls }) startup diagnostics;
+  configuration is supplied by the caller, with no add-on-specific preferences
+  or log prefixes embedded in WindowListener; call initLog() to disable tracing
+- wait up to 60 seconds for window readiness with progressively longer polling
+  intervals (250, 500, 1000, 1500, then 2000 ms), replacing the previous 5-second wait
+- report rejected asynchronous onLoad() calls as well as synchronous failures
+- correct the implementation header version (previously still marked 1.65)
+
 Version 1.66
 ------------
 - expose extension context via WL.context to enable direct access to parent-side
