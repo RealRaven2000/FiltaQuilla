@@ -3118,7 +3118,7 @@
       OnStopRunningUrl: function (aUrl, status) {
         let messageUri;
         if (aUrl instanceof Ci.nsIMsgMessageUrl) {messageUri = aUrl.uri;}
-        const msgHdr = messenger.msgHdrFromURI(messageUri);
+        const msgHdr = MailServices.messageServiceFromURI(messageUri).messageURIToMsgHdr(messageUri);
         const moveLaterCount = msgHdr.getUint32Property("moveLaterCount");
         if (moveLaterCount) {
           msgHdr.setUint32Property("moveLaterCount", moveLaterCount - 1);
