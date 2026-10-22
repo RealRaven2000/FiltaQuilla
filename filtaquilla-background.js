@@ -690,14 +690,14 @@
 
           // Open the editor in a popup window
           const url = browser.runtime.getURL("content/jsEditor.html");
-          let screenH = window.screen.height,
-            windowHeight = screenH / 2 > 600 ? 600 : screenH / 2;
+          const windowHeight = Math.min(600, Math.floor(window.screen.height / 2));
+
           editorWindow = await browser.windows.create({
             url,
             type: "popup",
             width: 600,
-            height: windowHeight, // Or use your desired height
-            allowScriptsToClose: true, // Optional, allows script to close the window from within
+            height: windowHeight, 
+            allowScriptsToClose: true,
           });
 
           // After the window is created, bring it into focus (using `browser.windows.update`)
