@@ -147,11 +147,15 @@ Increased strict_min_version to 140.0.
 - Use `scriptloader.loadSubScriptWithOptions()` with `allowUnsafeURL: true` where required for Thunderbird 155 compatibility [issue #411]
 - Preview: Notification alert filter action. Clicking the desktop notification opens the original message; collated message lists with individual links are planned for a future version [issue #240]
 
-6.3.1 - WIP
+6.3.1 - 10/10/2026
 - compatible with Thunderbird 159
 - Fixed: Save Message as File throws errors due to modified function signature [issue #417]
 - WindowListener readyness hardening
 
+6.3.2 - 22/10/2026
+- compatible with Thunderbird 160
+- Thunderbird 159 beta: `msgHdrFromURI` removed [issue #421]
+- Fixed JavaScript editor failing to open when the calculated popup height was not an integer. #419
 ======================================
 
 **TO DO NEXT**

@@ -446,7 +446,7 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}{+extensionName} is now compatible with Thunderbird {bold}159.*{/bold}.{/L}{L}Fixed errors in the {i}{+fq.saveMsgAsFile}{/i} filter action caused by a changed Thunderbird API. [issue 417]{/L}{L}Improved startup reliability by allowing more time for Thunderbird windows to finish loading.{/L}{/U}"
+    "message": "{U}{L}{b class=maintenance}6.3.2{/b} {+extensionName} is now compatible with Thunderbird {bold}160.*{/bold}.{/L}{L}{b class=maintenance}6.3.2{/b} Fixed save completion errors on Thunderbird 159 beta after removal of {s}msgHdrFromURI{/s}, which could also delay subsequent move actions. [issue 421]{/L}{L}{b class=maintenance}6.3.2{/b} Fixed JavaScript editor failing to open with odd screen sizes (Linux or VMs). [issue 419]{/L}{/U}{P}{bold}Recent History: 6.3.1{/bold}{/P}{U}{L}{+extensionName} is now compatible with Thunderbird {bold}159.*{/bold}.{/L}{L}Fixed errors in the {i}{+fq.saveMsgAsFile}{/i} filter action caused by a changed Thunderbird API. [issue 417]{/L}{L}Improved startup reliability by allowing more time for Thunderbird windows to finish loading.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Maintenance Update $ver$. This particular fix was added since the previous release.",

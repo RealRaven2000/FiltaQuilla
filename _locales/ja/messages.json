@@ -445,7 +445,7 @@
   },
   "whats-new-list": {
     "description": "🇯🇵 change log",
-    "message": "{U}{L}{+extensionName} は Thunderbird {bold}159.*{/bold} に対応しました。{/L}{L}Thunderbird API の変更によるフィルターアクション「{i}{+fq.saveMsgAsFile}{/i}」のエラーを修正しました。 [issue 417]{/L}{L}Thunderbird のウィンドウの読み込み完了を待つ時間を延長し、起動時の信頼性を向上しました。{/L}{/U}"
+    "message": "{U}{L}{b class=maintenance}6.3.2{/b} {+extensionName} は Thunderbird {bold}160.*{/bold} に対応しました。{/L}{L}{b class=maintenance}6.3.2{/b} Thunderbird 159 ベータで {s}msgHdrFromURI{/s} が削除されたことによる保存完了時のエラーを修正しました。このエラーは後続の移動アクションを遅らせる場合もありました。 [issue 421]{/L}{L}{b class=maintenance}6.3.2{/b} 画面サイズが奇数の場合（Linux または仮想マシン）に JavaScript エディターが開かない問題を修正しました。 [issue 419]{/L}{/U}{P}{bold}最近の変更: 6.3.1{/bold}{/P}{U}{L}{+extensionName} は Thunderbird {bold}159.*{/bold} に対応しました。{/L}{L}Thunderbird API の変更によるフィルターアクション「{i}{+fq.saveMsgAsFile}{/i}」のエラーを修正しました。 [issue 417]{/L}{L}Thunderbird のウィンドウの読み込み完了を待つ時間を延長し、起動時の信頼性を向上しました。{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "メンテナンス更新 $ver$。この特定の修正は前回のリリース以降に追加されました。",

@@ -1,14 +1,15 @@
-**FiltaQuilla 6.3.1**
-
 Important for Release channel users (**154 and later**): With Thunderbird's new 2-week release cycle, there is an elevated risk of unexpected breakages. While I regularly test FiltaQuilla against daily builds, timely fixes depend on **early reporting** from Release users. Please follow the <a href='https://github.com/RealRaven2000/FiltaQuilla/issues'>issue tracker</a> and report any regressions promptly to help maintain compatibility.
 
-**Improvements**
+**Changes in 6.3.2**
+
+- Made FiltaQuilla compatible with Thunderbird 160.*.
+- Fixed save completion errors on Thunderbird 159 beta caused by the removal of `msgHdrFromURI`, which could also delay subsequent move actions. #421
+- Fixed JavaScript editor failing to open when the calculated popup height was not an integer. #419
+
+**Recent History: 6.3.1**
 
 - Made FiltaQuilla compatible with Thunderbird 159.*.
 - Improved startup reliability by allowing more time for Thunderbird windows to finish loading.
-
-**Bug Fixes**
-
 - Fixed errors in the Save Message as File filter action caused by a changed Thunderbird API. #417
 
 **TO DO NEXT**

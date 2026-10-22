@@ -442,7 +442,7 @@
   },
   "whats-new-list": {
     "description": "🇩🇪 change log",
-    "message": "{U}{L}{+extensionName} ist jetzt mit Thunderbird {bold}159.*{/bold} kompatibel.{/L}{L}Fehler in der Filteraktion {i}{+fq.saveMsgAsFile}{/i} durch eine geänderte Thunderbird-API wurden behoben. [issue 417]{/L}{L}Zuverlässigerer Start: Thunderbird-Fenster erhalten mehr Zeit zum vollständigen Laden.{/L}{/U}"
+    "message": "{U}{L}{b class=maintenance}6.3.2{/b} {+extensionName} ist jetzt mit Thunderbird {bold}160.*{/bold} kompatibel.{/L}{L}{b class=maintenance}6.3.2{/b} Fehler beim Abschluss des Speicherns in Thunderbird 159 Beta nach Entfernung von {s}msgHdrFromURI{/s} wurden behoben. Diese konnten auch nachfolgende Verschiebeaktionen verzögern. [issue 421]{/L}{L}{b class=maintenance}6.3.2{/b} Der JavaScript-Editor öffnet sich jetzt auch bei ungeraden Bildschirmgrößen (Linux oder virtuelle Maschinen). [issue 419]{/L}{/U}{P}{bold}Letzte Änderungen: 6.3.1{/bold}{/P}{U}{L}{+extensionName} ist jetzt mit Thunderbird {bold}159.*{/bold} kompatibel.{/L}{L}Fehler in der Filteraktion {i}{+fq.saveMsgAsFile}{/i} durch eine geänderte Thunderbird-API wurden behoben. [issue 417]{/L}{L}Zuverlässigerer Start: Thunderbird-Fenster erhalten mehr Zeit zum vollständigen Laden.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Wartungsupdate $ver$. Dieser spezifische Fix wurde seit der vorherigen Version hinzugefügt.",

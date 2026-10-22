@@ -429,7 +429,7 @@
   },
   "whats-new-list": {
     "description": "🇷🇺 change log",
-    "message": "{U}{L}{+extensionName} теперь совместим с Thunderbird {bold}159.*{/bold}.{/L}{L}Исправлены ошибки действия фильтра «{i}{+fq.saveMsgAsFile}{/i}», вызванные изменением API Thunderbird. [issue 417]{/L}{L}Повышена надёжность запуска: окнам Thunderbird предоставляется больше времени для завершения загрузки.{/L}{/U}"
+    "message": "{U}{L}{b class=maintenance}6.3.2{/b} {+extensionName} теперь совместим с Thunderbird {bold}160.*{/bold}.{/L}{L}{b class=maintenance}6.3.2{/b} Исправлены ошибки завершения сохранения в Thunderbird 159 beta после удаления {s}msgHdrFromURI{/s}, которые также могли задерживать последующие действия перемещения. [issue 421]{/L}{L}{b class=maintenance}6.3.2{/b} Исправлена ошибка открытия редактора JavaScript при нечётных размерах экрана (Linux или виртуальные машины). [issue 419]{/L}{/U}{P}{bold}Недавние изменения: 6.3.1{/bold}{/P}{U}{L}{+extensionName} теперь совместим с Thunderbird {bold}159.*{/bold}.{/L}{L}Исправлены ошибки действия фильтра «{i}{+fq.saveMsgAsFile}{/i}», вызванные изменением API Thunderbird. [issue 417]{/L}{L}Повышена надёжность запуска: окнам Thunderbird предоставляется больше времени для завершения загрузки.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Обновление обслуживания $ver$. Это конкретное исправление было добавлено с предыдущего релиза.",

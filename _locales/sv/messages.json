@@ -469,7 +469,7 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}{+extensionName} är nu kompatibelt med Thunderbird {bold}159.*{/bold}.{/L}{L}Åtgärdade fel i filteråtgärden {i}{+fq.saveMsgAsFile}{/i} som orsakades av en ändring i Thunderbirds API. [issue 417]{/L}{L}Tillförlitligare start genom att ge Thunderbird-fönster mer tid att laddas färdigt.{/L}{/U}"
+    "message": "{U}{L}{b class=maintenance}6.3.2{/b} {+extensionName} är nu kompatibelt med Thunderbird {bold}160.*{/bold}.{/L}{L}{b class=maintenance}6.3.2{/b} Åtgärdade fel när sparandet slutfördes i Thunderbird 159 beta efter att {s}msgHdrFromURI{/s} tagits bort, vilket även kunde fördröja efterföljande flyttåtgärder. [issue 421]{/L}{L}{b class=maintenance}6.3.2{/b} Åtgärdade att JavaScript-redigeraren inte öppnades vid udda skärmstorlekar (Linux eller virtuella maskiner). [issue 419]{/L}{/U}{P}{bold}Senaste historik: 6.3.1{/bold}{/P}{U}{L}{+extensionName} är nu kompatibelt med Thunderbird {bold}159.*{/bold}.{/L}{L}Åtgärdade fel i filteråtgärden {i}{+fq.saveMsgAsFile}{/i} som orsakades av en ändring i Thunderbirds API. [issue 417]{/L}{L}Tillförlitligare start genom att ge Thunderbird-fönster mer tid att laddas färdigt.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Underhållsuppdatering $ver$. Den här korrigeringen har lagts till sedan föregående version.",
