@@ -20,6 +20,9 @@
   "checkJavascriptEnabled.label": {
     "message": "Javascript"
   },
+  "debug.label": {
+    "message": "Debug"
+  },
   "default": {
     "message": "Use default"
   },

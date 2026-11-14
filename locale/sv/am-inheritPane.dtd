@@ -1,4 +1,4 @@
 <!ENTITY enabled "Aktiverad">
-<!ENTITY default "Använd standardvärden">
+<!ENTITY default "Använd standardvärde">
 <!ENTITY inheritedProperties "Ärvda egenskaper">
-<!ENTITY indexInGlobalDatabase "Index i global databas">
+<!ENTITY indexInGlobalDatabase "Indexera i den globala databasen">
