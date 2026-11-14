@@ -20,6 +20,9 @@
   "checkJavascriptEnabled.label": {
     "message": "JavaScript"
   },
+  "debug.label": {
+    "message": "Felsökning"
+  },
   "default": {
     "message": "Använd standardvärde"
   },
@@ -129,10 +132,10 @@
     "message": "K"
   },
   "fq.detachAttachments": {
-    "message": "Koppla loss bilagor till"
+    "message": "Koppla loss bilagor och spara i"
   },
   "fq.detachAttachments.access": {
-    "message": "F"
+    "message": "o"
   },
   "fq.filtaquilla.mustSelectFolder": {
     "message": "Du måste välja en målmapp"
@@ -174,7 +177,7 @@
     "message": "f"
   },
   "fq.markReplied": {
-    "message": "Markera som besvarad"
+    "message": "Markera som besvarat"
   },
   "fq.markReplied.access": {
     "message": "b"
@@ -213,10 +216,10 @@
     "message": "Skiftlägesokänslig regexmatchning"
   },
   "fq.regex.caseInsensitive.tip": {
-    "message": "När alternativet är aktiverat lägger FiltaQuilla automatiskt till {s}/i{/s} i ditt reguljära uttryck. Det kan påverka lookahead-uttryck som räknar versaler eller gemener. Inaktivera alternativet för att behålla skiftlägeskänslig matchning, eller använd {s}/c{/s} i slutet av uttrycket."
+    "message": "När alternativet är aktiverat lägger FiltaQuilla automatiskt till {s}/i{/s} i ditt reguljära uttryck. Det kan göra att lookahead-uttryck som räknar versaler eller gemener slutar fungera som avsett. Inaktivera alternativet för att behålla skiftlägeskänslig matchning, eller använd {s}/c{/s} i slutet av uttrycket."
   },
   "fq.regex.multilineanchors": {
-    "message": "Stöd ankartoken {s}^{/s} och {s}${/s} i adresshuvuden"
+    "message": "Stöd för ankarsymbolerna {s}^{/s} och {s}${/s} i adresshuvudfält"
   },
   "fq.removeflagged": {
     "message": "Ta bort stjärna"
@@ -303,10 +306,10 @@
     "message": "Extrahera medföljande ljud"
   },
   "fq.trainGood": {
-    "message": "Träna som önskat"
+    "message": "Träna som ej skräppost"
   },
   "fq.trainGood.access": {
-    "message": "b"
+    "message": "r"
   },
   "fq.trainJunk": {
     "message": "Träna som skräppost"
@@ -363,10 +366,10 @@
     "message": "Senaste nytt"
   },
   "newsMsgForced": {
-    "message": "{P}Den planerade begränsningen av användningen av Experiment API:er på Release-kanalen har skjutits upp och är nu planerad till nästa ESR-cykel 2027.{/P}{P}När Thunderbird 153 ESR lanseras i juli öppnas en övergångsperiod då användare kan byta från Thunderbird 153 Release till ESR-kanalen för en stabilare uppdateringsväg. Från och med nästa ESR-cykel 2027 kommer äldre tillägg {b}endast att stödjas i ESR-versioner{/b}.{/P}{P}{b}{+extensionName}{/b} fortsätter att fungera i både Release- och ESR-versioner av Thunderbird där det stöds, även om experimentella gränssnitt fortfarande kan ändras i takt med att plattformen utvecklas.{/P}"
+    "message": "{P}Viktigt för användare av Release-kanalen ({emph}155 och senare{/emph}): Thunderbirds nya utgivningscykel på 2 veckor innebär en ökad risk för oväntade fel. Jag testar regelbundet {+extensionName} med Thunderbirds dagliga utvecklingsversioner, men för att kunna rätta fel i tid behöver användare av Release-kanalen {b}rapportera dem tidigt{/b}. Följ {a href='https://github.com/RealRaven2000/FiltaQuilla/issues'}ärendesidan{/a} och rapportera snarast funktioner som slutar fungera efter en uppdatering, så att kompatibiliteten kan upprätthållas.{/P}"
   },
   "optionsIntro": {
-    "message": "Aktivera alla objekt som du vill ha tillgängliga i dialogrutan ”Filterregler”. Starta om efter ändringarna."
+    "message": "Aktivera de funktioner du vill ha tillgängliga i dialogrutan ”Filterregler”. Starta om efter ändringarna."
   },
   "pane1.title": {
     "message": "Inställningar för FiltaQuilla"
@@ -399,7 +402,7 @@
     "message": "Avbryt"
   },
   "regex.collapseWhiteSpace": {
-    "message": "komprimera alla blanktecken"
+    "message": "slå ihop följder av blanktecken"
   },
   "regex.contentfilter": {
     "message": "Innehållsbegränsningar:"
@@ -432,13 +435,13 @@
     "message": "Sökalternativ…"
   },
   "regex.raw.help": {
-    "message": "FiltaQuilla förbehandlar som standard delar med oformaterad text genom att slå ihop stycken, det vill säga ta bort radbrytningar som uppstår genom omflödning. Då tas även avslutande citattecken {>} inne i ett stycke bort. Aktivera det här alternativet om du i stället vill söka i det obehandlade meddelandet."
+    "message": "FiltaQuilla förbehandlar som standard delar med oformaterad text genom att ta bort den automatiska radbrytningen inom varje stycke. Då tas även citeringsmarkörer {>} inne i styckena bort. Aktivera det här alternativet om du i stället vill söka i det obehandlade meddelandet."
   },
   "regex.switches": {
     "message": "Sökmodifierare"
   },
   "searchTerms": {
-    "message": "Söktermer"
+    "message": "Sökvillkor"
   },
   "supportFiltaquilla": {
     "message": "Stöd FiltaQuilla"
@@ -469,7 +472,7 @@
   },
   "whats-new-list": {
     "description": "🇬🇧 change log",
-    "message": "{U}{L}{b class=maintenance}6.3.2{/b} {+extensionName} är nu kompatibelt med Thunderbird {bold}160.*{/bold}.{/L}{L}{b class=maintenance}6.3.2{/b} Åtgärdade fel när sparandet slutfördes i Thunderbird 159 beta efter att {s}msgHdrFromURI{/s} tagits bort, vilket även kunde fördröja efterföljande flyttåtgärder. [issue 421]{/L}{L}{b class=maintenance}6.3.2{/b} Åtgärdade att JavaScript-redigeraren inte öppnades vid udda skärmstorlekar (Linux eller virtuella maskiner). [issue 419]{/L}{/U}{P}{bold}Senaste historik: 6.3.1{/bold}{/P}{U}{L}{+extensionName} är nu kompatibelt med Thunderbird {bold}159.*{/bold}.{/L}{L}Åtgärdade fel i filteråtgärden {i}{+fq.saveMsgAsFile}{/i} som orsakades av en ändring i Thunderbirds API. [issue 417]{/L}{L}Tillförlitligare start genom att ge Thunderbird-fönster mer tid att laddas färdigt.{/L}{/U}"
+    "message": "{U}{L}{b class=maintenance}6.3.2{/b} {+extensionName} är nu kompatibelt med Thunderbird {bold}160.*{/bold}.{/L}{L}{b class=maintenance}6.3.2{/b} Rättade fel när sparandet slutfördes i Thunderbird 159 beta efter att {s}msgHdrFromURI{/s} tagits bort, vilket även kunde fördröja efterföljande flyttåtgärder. [issue 421]{/L}{L}{b class=maintenance}6.3.2{/b} Rättade ett fel som hindrade JavaScript-redigeraren från att öppnas vid ovanliga skärmstorlekar (Linux eller virtuella maskiner). [issue 419]{/L}{/U}{P}{bold}Tidigare ändringar: 6.3.1{/bold}{/P}{U}{L}{+extensionName} är nu kompatibelt med Thunderbird {bold}159.*{/bold}.{/L}{L}Rättade fel i filteråtgärden {i}{+fq.saveMsgAsFile}{/i} som orsakades av en ändring i Thunderbirds API. [issue 417]{/L}{L}Tillförlitligare start genom att ge Thunderbird-fönster mer tid att laddas färdigt.{/L}{/U}"
   },
   "whats-new-maintenance": {
     "message": "Underhållsuppdatering $ver$. Den här korrigeringen har lagts till sedan föregående version.",
